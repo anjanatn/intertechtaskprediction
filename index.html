@@ -2935,6 +2935,7 @@
   .model-metrics-grid { grid-template-columns: repeat(3, 1fr); }
 
   .mitigation-grid { grid-template-columns: 1fr; }
+  }
 
     /* ── AI ASSISTANT WIDGET — PROFESSIONAL REDESIGN ── */
     @keyframes pulsering {
@@ -3271,6 +3272,28 @@
       font-family: 'Inter', sans-serif;
     }
 
+    .ai-live-panel { padding: 12px 14px; background: #ffffff; border-bottom: 1px solid var(--border-subtle); }
+    .ai-live-panel-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 9px; }
+    .ai-live-label { display: flex; align-items: center; gap: 6px; color: #0f172a; font: 700 10px 'JetBrains Mono', monospace; letter-spacing: .06em; text-transform: uppercase; }
+    .ai-live-dot { width: 6px; height: 6px; background: #10b981; border-radius: 50%; box-shadow: 0 0 0 3px #d1fae5; }
+    .ai-model-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+    .ai-model-select { min-width: 0; height: 34px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 9px; background: #f8fafc; color: #334155; font: 600 11.5px 'Inter', sans-serif; outline: none; }
+    .ai-model-select:focus { border-color: var(--brand-primary); box-shadow: 0 0 0 3px rgba(2,132,199,.1); }
+    .ai-model-show-btn { border: 0; border-radius: 6px; padding: 0 11px; background: #0f172a; color: #ffffff; cursor: pointer; font: 700 11px 'Inter', sans-serif; }
+    .ai-model-show-btn:hover { background: #1e293b; }
+    .ai-live-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 10px; }
+    .ai-live-metric { min-width: 0; border: 1px solid #e2e8f0; border-radius: 6px; padding: 7px; background: #f8fafc; }
+    .ai-live-metric-label { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #64748b; font-size: 9px; font-weight: 600; }
+    .ai-live-metric-value { display: block; margin-top: 2px; color: #0f172a; font-size: 15px; font-weight: 700; }
+    .ai-selected-results { display: grid; gap: 7px; margin-top: 10px; }
+    .ai-model-result { border-left: 3px solid #38bdf8; padding: 7px 9px; background: #f8fafc; border-radius: 0 5px 5px 0; }
+    .ai-model-result.champion { border-left-color: #10b981; background: #f0fdf4; }
+    .ai-model-result-name { display: flex; justify-content: space-between; gap: 8px; color: #0f172a; font-size: 11px; font-weight: 700; }
+    .ai-model-result-values { margin-top: 3px; color: #64748b; font: 10px 'JetBrains Mono', monospace; }
+    @media (max-width: 600px) {
+      .ai-assistant-drawer { right: 12px; bottom: 76px; max-width: calc(100vw - 24px); height: min(680px, calc(100vh - 94px)); }
+      .ai-assistant-fab { right: 12px; bottom: 14px; }
+    }
   </style>
 
 </head>
@@ -4375,6 +4398,19 @@
       </div>
     </div>
 
+    <div class="ai-live-panel" aria-label="Live model dashboard">
+      <div class="ai-live-panel-top">
+        <span class="ai-live-label"><span class="ai-live-dot"></span>Live model workspace</span>
+        <span class="ai-status-pill" id="ai-data-status">Synced</span>
+      </div>
+      <div class="ai-model-controls">
+        <select id="ai-model-select" class="ai-model-select" multiple aria-label="Select models to compare"></select>
+        <button class="ai-model-show-btn" type="button" onclick="showSelectedModelResults()">Show</button>
+      </div>
+      <div class="ai-live-metrics" id="ai-live-metrics"></div>
+      <div class="ai-selected-results" id="ai-selected-results"></div>
+    </div>
+
     <div class="ai-messages-container" id="ai-messages-container">
       <div class="ai-msg-wrap bot">
         <div class="ai-msg-bubble">
@@ -4679,6 +4715,8 @@
   renderFeatureWeights();
 
   renderModelStrip();
+
+  renderAILiveWorkspace();
 
   renderTasksTable();
 
@@ -5897,6 +5935,8 @@
   a.download = `InterTech_PRJ001_Delay_Predictions_${new Date().toISOString().slice(0,10)}.csv`;
 
   a.click();
+  URL.revokeObjectURL(url);
+  }
 
     /* ── AI ASSISTANT CLIENT — PROFESSIONAL REDESIGN ── */
 
@@ -5908,6 +5948,58 @@
 
     function formatAITime() {
       return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function escapeAIText(value) {
+      return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function renderAILiveWorkspace() {
+      const select = document.getElementById('ai-model-select');
+      const metricPanel = document.getElementById('ai-live-metrics');
+      const resultPanel = document.getElementById('ai-selected-results');
+      if (!select || !metricPanel || !resultPanel) return;
+
+      const meta = APP_DATA.meta || {};
+      const tasks = APP_DATA.tasks || [];
+      const models = meta.cv_accuracy || {};
+      const priorSelection = Array.from(select.selectedOptions).map(option => option.value);
+      const modelNames = Object.keys(models);
+      const defaultSelection = priorSelection.length ? priorSelection : [meta.champion || modelNames[0]].filter(Boolean);
+
+      select.innerHTML = modelNames.map(name => `<option value="${escapeAIText(name)}"${defaultSelection.includes(name) ? ' selected' : ''}>${escapeAIText(name)}</option>`).join('');
+      const openTasks = tasks.filter(task => task.status === 'Open');
+      const highRisk = openTasks.filter(task => task.cat === 'HIGH');
+      metricPanel.innerHTML = `
+        <div class="ai-live-metric"><span class="ai-live-metric-label">Tasks</span><span class="ai-live-metric-value">${meta.total_tasks || tasks.length}</span></div>
+        <div class="ai-live-metric"><span class="ai-live-metric-label">Open risk</span><span class="ai-live-metric-value">${highRisk.length}</span></div>
+        <div class="ai-live-metric"><span class="ai-live-metric-label">Avg delay</span><span class="ai-live-metric-value">+${meta.avg_delay_days || 0}d</span></div>`;
+      renderSelectedModelResults(defaultSelection);
+    }
+
+    function renderSelectedModelResults(selection) {
+      const resultPanel = document.getElementById('ai-selected-results');
+      const meta = APP_DATA.meta || {};
+      const models = meta.cv_accuracy || {};
+      if (!resultPanel) return;
+      const selected = selection.filter(name => models[name]);
+      resultPanel.innerHTML = selected.length ? selected.map(name => {
+        const model = models[name];
+        const champion = name === meta.champion;
+        return `<div class="ai-model-result${champion ? ' champion' : ''}">
+          <div class="ai-model-result-name"><span>${escapeAIText(name)}</span><span>${champion ? 'Champion' : 'Selected'}</span></div>
+          <div class="ai-model-result-values">F1 ${model.f1 ?? '-'}% | AUC ${model.auc ?? '-'}% | ACC ${model.mean ?? '-'}% | PREC ${model.precision ?? '-'}% | REC ${model.recall ?? '-'}% | MCC ${model.mcc ?? '-'}</div>
+        </div>`;
+      }).join('') : '<div class="ai-model-result"><div class="ai-model-result-name">Select one or more models</div></div>';
+    }
+
+    function showSelectedModelResults() {
+      const select = document.getElementById('ai-model-select');
+      if (!select) return;
+      const selection = Array.from(select.selectedOptions).map(option => option.value);
+      renderSelectedModelResults(selection);
+      const status = document.getElementById('ai-data-status');
+      if (status) status.textContent = `Updated ${formatAITime()}`;
     }
 
     function toggleAIAssistant() {

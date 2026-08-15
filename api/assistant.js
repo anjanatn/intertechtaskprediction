@@ -56,14 +56,13 @@ Answer concisely with actionable recommendations.`;
     if (lower.includes("high risk") || lower.includes("open task") || lower.includes("at risk")) {
       reply = `**High Risk Open Tasks Summary:**\nThere are **${openHighRisk.length} open tasks** currently classified in the **HIGH Risk Tier** (Probability ≥ 70%).\n\nTop Priority Actions:\n` +
         openHighRisk.slice(0, 3).map(t => `- **${t.id} (${t.desc})**: Discipline ${t.disc}, Score: ${t.score}%. *Action: Notify PM & Reallocate Subcontractors.*`).join("\n");
-    } else if (lower.includes("model") || lower.includes("xgboost") || lower.includes("random forest") || lower.includes("algorithm")) {
+    } else if (lower.includes("model") || lower.includes("xgboost") || lower.includes("random forest") || lower.includes("algorithm") || lower.includes("compare")) {
       const champ = meta.champion || 'Random Forest';
       const cvData = meta.cv_accuracy || {};
       reply = `**ML Model Comparison (${meta.cv_method || '5-Fold CV'}):**\n` +
-        `- **Champion Model**: ${champ} (F1: ${cvData[champ]?.f1 || 69.5}%, AUC: ${cvData[champ]?.auc || 77.9}%)\n` +
-        `- **XGBoost**: F1: ${cvData["XGBoost"]?.f1 || 66.4}%, AUC: ${cvData["XGBoost"]?.auc || 75.5}%\n` +
-        `- **Stacking Ensemble**: F1: ${cvData["Stacking Ensemble"]?.f1 || 68.2}%, AUC: ${cvData["Stacking Ensemble"]?.auc || 79.2}%\n` +
-        `- **Logistic Regression**: F1: ${cvData["Logistic Regression"]?.f1 || 68.8}%, AUC: ${cvData["Logistic Regression"]?.auc || 80.4}%\n\n*Note: Post-hoc features were removed to prevent data leakage.*`;
+        Object.entries(cvData).sort((a, b) => (b[1].f1 || 0) - (a[1].f1 || 0))
+          .map(([name, metrics]) => `- **${name}${name === champ ? ' (Champion)' : ''}**: F1 ${metrics.f1 ?? '-'}%, AUC ${metrics.auc ?? '-'}%, Accuracy ${metrics.mean ?? '-'}%, Precision ${metrics.precision ?? '-'}%, Recall ${metrics.recall ?? '-'}%, MCC ${metrics.mcc ?? '-'}`)
+          .join('\n') + `\n\n*All available models are shown. Champion is selected by F1 score.*`;
     } else if (lower.includes("delay rate") || lower.includes("discipline") || lower.includes("site") || lower.includes("mep")) {
       reply = `**Discipline Delay Rate Breakdown:**\n` +
         Object.entries(dashboardData.disc_stats || {}).map(([disc, info]) => `- **${disc}**: ${info.rate}% historical delay rate (${info.delayed}/${info.total} completed tasks delayed)`).join("\n");
