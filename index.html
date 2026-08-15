@@ -2936,7 +2936,21 @@
 
   .mitigation-grid { grid-template-columns: 1fr; }
 
-    /* ── AI ASSISTANT WIDGET (PREMIUM SUITABLE UI) ── */
+    /* ── AI ASSISTANT WIDGET — PROFESSIONAL REDESIGN ── */
+    @keyframes pulsering {
+      0%   { transform: scale(1);   opacity: 0.7; }
+      70%  { transform: scale(2.2); opacity: 0; }
+      100% { transform: scale(2.2); opacity: 0; }
+    }
+    @keyframes dotbounce {
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+      40%            { transform: translateY(-6px); opacity: 1; }
+    }
+    @keyframes msgSlideIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
     .ai-assistant-fab {
       position: fixed;
       bottom: 24px;
@@ -2947,68 +2961,78 @@
       gap: 10px;
       background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
       color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255,255,255,0.15);
       border-radius: 30px;
-      padding: 10px 18px 10px 14px;
+      padding: 10px 18px 10px 10px;
       font-family: 'Inter', sans-serif;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
-      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(255,255,255,0.05);
+      box-shadow: 0 10px 30px rgba(15,23,42,0.3), 0 0 0 1px rgba(255,255,255,0.05);
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .ai-assistant-fab:hover {
       transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 14px 36px rgba(15, 23, 42, 0.35);
-      border-color: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 16px 40px rgba(15,23,42,0.4);
+      border-color: rgba(255,255,255,0.3);
     }
-    .ai-assistant-fab-icon {
-      width: 24px;
-      height: 24px;
+    .ai-fab-icon-wrap {
+      position: relative;
+      width: 30px;
+      height: 30px;
+      flex-shrink: 0;
+    }
+    .ai-fab-pulse {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: #38bdf8;
+      animation: pulsering 2s ease-out infinite;
+    }
+    .ai-fab-icon-circle {
+      position: relative;
+      z-index: 1;
+      width: 30px;
+      height: 30px;
       background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 800;
-      font-size: 10px;
-      letter-spacing: -0.5px;
-      color: #ffffff;
-      box-shadow: 0 2px 8px rgba(56, 189, 248, 0.4);
+      box-shadow: 0 2px 8px rgba(56,189,248,0.45);
     }
 
     .ai-assistant-drawer {
       position: fixed;
       bottom: 84px;
       right: 24px;
-      width: 400px;
+      width: 420px;
       max-width: calc(100vw - 32px);
-      height: 560px;
+      height: 580px;
       max-height: calc(100vh - 110px);
       background: #ffffff;
       border: 1px solid var(--border-subtle);
-      border-radius: 20px;
-      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.18);
+      border-radius: 22px;
+      box-shadow: 0 24px 60px rgba(15,23,42,0.2), 0 0 0 1px rgba(15,23,42,0.04);
       z-index: 1200;
       display: none;
       flex-direction: column;
       overflow: hidden;
-      animation: slideUpFade 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      animation: slideUpFade 0.28s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .ai-assistant-drawer.open {
-      display: flex;
-    }
+    .ai-assistant-drawer.open { display: flex; }
 
     .ai-drawer-header {
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      background: linear-gradient(135deg, #0a1628 0%, #0f2044 50%, #1a2d5a 100%);
       color: #ffffff;
-      padding: 16px 20px;
+      padding: 14px 18px 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
     }
     .ai-drawer-title {
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 700;
       display: flex;
       align-items: center;
@@ -3016,87 +3040,105 @@
       letter-spacing: -0.01em;
     }
     .ai-drawer-avatar {
-      width: 28px;
-      height: 28px;
+      width: 34px;
+      height: 34px;
       background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
-      border-radius: 8px;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 800;
-      font-size: 11px;
-      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(56,189,248,0.35);
+      flex-shrink: 0;
     }
+    .ai-drawer-meta { display: flex; flex-direction: column; gap: 3px; }
+    .ai-drawer-name { font-size: 13.5px; font-weight: 700; color: #f1f5f9; line-height: 1; }
+    .ai-drawer-sub  { display: flex; align-items: center; gap: 6px; }
     .ai-status-pill {
-      font-size: 9.5px;
+      font-size: 9px;
       font-family: 'JetBrains Mono', monospace;
-      background: rgba(16, 185, 129, 0.15);
-      border: 1px solid rgba(16, 185, 129, 0.3);
+      background: rgba(16,185,129,0.18);
+      border: 1px solid rgba(16,185,129,0.35);
       color: #34d399;
       padding: 2px 7px;
       border-radius: 10px;
       text-transform: uppercase;
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: 0.04em;
     }
-
-    .ai-drawer-actions {
+    .ai-gemini-badge {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 3px;
+      font-size: 9.5px;
+      color: rgba(148,163,184,0.8);
+      font-family: 'JetBrains Mono', monospace;
     }
+    .ai-drawer-actions { display: flex; align-items: center; gap: 6px; }
     .ai-action-btn {
-      background: rgba(255,255,255,0.1);
-      border: none;
-      color: #cbd5e1;
-      font-size: 13px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #94a3b8;
+      font-size: 14px;
       cursor: pointer;
-      padding: 6px 10px;
-      border-radius: 6px;
-      transition: background 0.15s ease, color 0.15s ease;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
     }
-    .ai-action-btn:hover {
-      background: rgba(255,255,255,0.2);
-      color: #ffffff;
-    }
+    .ai-action-btn:hover { background: rgba(255,255,255,0.18); color: #ffffff; border-color: rgba(255,255,255,0.25); }
 
     .ai-messages-container {
       flex: 1;
-      padding: 18px;
+      padding: 16px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 14px;
-      background: #f8fafc;
+      gap: 12px;
+      background: #f1f5f9;
+      scroll-behavior: smooth;
     }
+    .ai-messages-container::-webkit-scrollbar { width: 4px; }
+    .ai-messages-container::-webkit-scrollbar-track { background: transparent; }
+    .ai-messages-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
 
-    .ai-msg {
+    .ai-msg-wrap {
+      display: flex;
+      flex-direction: column;
+      animation: msgSlideIn 0.22s ease both;
+    }
+    .ai-msg-wrap.user { align-items: flex-end; }
+    .ai-msg-wrap.bot  { align-items: flex-start; }
+
+    .ai-msg-bubble {
       max-width: 88%;
-      padding: 12px 16px;
-      border-radius: 14px;
+      padding: 11px 15px;
+      border-radius: 16px;
       font-size: 13px;
-      line-height: 1.55;
+      line-height: 1.6;
       word-break: break-word;
     }
-    .ai-msg.user {
-      align-self: flex-end;
+    .ai-msg-wrap.user .ai-msg-bubble {
       background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       color: #ffffff;
-      border-bottom-right-radius: 3px;
-      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
+      border-bottom-right-radius: 4px;
+      box-shadow: 0 4px 14px rgba(2,132,199,0.25);
     }
-    .ai-msg.bot {
-      align-self: flex-start;
+    .ai-msg-wrap.bot .ai-msg-bubble {
       background: #ffffff;
       color: var(--text-primary);
-      border: 1px solid var(--border-subtle);
-      border-bottom-left-radius: 3px;
-      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+      border: 1px solid #e2e8f0;
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 2px 8px rgba(15,23,42,0.05);
     }
-    .ai-msg.bot p { margin-bottom: 8px; }
-    .ai-msg.bot p:last-child { margin-bottom: 0; }
-    .ai-msg.bot ul { padding-left: 16px; margin: 6px 0; }
-    .ai-msg.bot li { margin-bottom: 4px; }
-    .ai-msg.bot code {
+    .ai-msg-wrap.bot .ai-msg-bubble p { margin: 0 0 7px; }
+    .ai-msg-wrap.bot .ai-msg-bubble p:last-child { margin-bottom: 0; }
+    .ai-msg-wrap.bot .ai-msg-bubble ul { padding-left: 18px; margin: 6px 0; }
+    .ai-msg-wrap.bot .ai-msg-bubble li { margin-bottom: 5px; }
+    .ai-msg-wrap.bot .ai-msg-bubble strong { color: #0f172a; font-weight: 700; }
+    .ai-msg-wrap.bot .ai-msg-bubble code {
       font-family: 'JetBrains Mono', monospace;
       background: #f1f5f9;
       padding: 2px 6px;
@@ -3104,10 +3146,40 @@
       font-size: 11.5px;
       color: #0284c7;
     }
+    .ai-msg-timestamp {
+      font-size: 10px;
+      color: #94a3b8;
+      margin-top: 4px;
+      padding: 0 4px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Typing dots indicator */
+    .ai-typing-dots {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 12px 16px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      border-bottom-left-radius: 4px;
+      width: fit-content;
+      box-shadow: 0 2px 8px rgba(15,23,42,0.05);
+    }
+    .ai-typing-dots span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #94a3b8;
+      animation: dotbounce 1.2s ease infinite;
+    }
+    .ai-typing-dots span:nth-child(2) { animation-delay: 0.15s; }
+    .ai-typing-dots span:nth-child(3) { animation-delay: 0.3s; }
 
     .ai-quick-prompts {
       display: flex;
-      gap: 8px;
+      gap: 7px;
       padding: 10px 14px;
       background: #ffffff;
       border-top: 1px solid var(--border-subtle);
@@ -3119,29 +3191,30 @@
 
     .ai-prompt-chip {
       font-size: 11.5px;
-      background: #f1f5f9;
+      background: #f8fafc;
       color: var(--text-secondary);
-      border: 1px solid var(--border-subtle);
+      border: 1px solid #e2e8f0;
       border-radius: 20px;
-      padding: 6px 12px;
+      padding: 6px 13px;
       cursor: pointer;
       white-space: nowrap;
       transition: all 0.2s ease;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       font-weight: 500;
     }
     .ai-prompt-chip:hover {
-      background: #e2e8f0;
+      background: #eff6ff;
       color: var(--brand-primary);
-      border-color: #cbd5e1;
+      border-color: #bfdbfe;
       transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(2,132,199,0.12);
     }
 
     .ai-input-bar {
       display: flex;
-      padding: 12px 14px;
+      padding: 10px 12px;
       background: #ffffff;
       border-top: 1px solid var(--border-subtle);
       gap: 8px;
@@ -3149,24 +3222,25 @@
     }
     .ai-input {
       flex: 1;
-      border: 1px solid var(--border-subtle);
+      border: 1.5px solid #e2e8f0;
       border-radius: 24px;
       padding: 10px 16px;
       font-size: 13px;
       outline: none;
       font-family: 'Inter', sans-serif;
       background: #f8fafc;
+      color: var(--text-primary);
       transition: all 0.2s ease;
     }
+    .ai-input::placeholder { color: #94a3b8; }
     .ai-input:focus {
       background: #ffffff;
-      border-color: var(--brand-primary);
-      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12);
+      border-color: #0284c7;
+      box-shadow: 0 0 0 3px rgba(2,132,199,0.1);
     }
-
     .ai-send-btn {
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       color: #ffffff;
       border: none;
@@ -3176,12 +3250,25 @@
       justify-content: center;
       cursor: pointer;
       transition: all 0.2s ease;
-      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+      box-shadow: 0 4px 12px rgba(2,132,199,0.35);
       flex-shrink: 0;
     }
     .ai-send-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 6px 16px rgba(2, 132, 199, 0.4);
+      transform: scale(1.08);
+      box-shadow: 0 6px 18px rgba(2,132,199,0.45);
+    }
+    .ai-send-btn:active { transform: scale(0.95); }
+    .ai-powered-bar {
+      padding: 6px 14px;
+      background: #f8fafc;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      font-size: 10.5px;
+      color: #94a3b8;
+      font-family: 'Inter', sans-serif;
     }
 
   </style>
@@ -4250,50 +4337,70 @@
 
 
 
-  <!-- AI ASSISTANT FLOATING BUTTON & CHAT DRAWER (SUITABLE PREMIUM UI) -->
+  <!-- AI ASSISTANT FLOATING BUTTON & CHAT DRAWER — PROFESSIONAL UI -->
   <button class="ai-assistant-fab" onclick="toggleAIAssistant()" title="Open AI Delay Intelligence Assistant">
-    <div class="ai-assistant-fab-icon">AI</div>
-    <span>AI Assistant</span>
+    <div class="ai-fab-icon-wrap">
+      <div class="ai-fab-pulse"></div>
+      <div class="ai-fab-icon-circle">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+    </div>
+    <span>Delay Intelligence</span>
   </button>
 
   <div class="ai-assistant-drawer" id="ai-assistant-drawer">
     <div class="ai-drawer-header">
       <div class="ai-drawer-title">
-        <div class="ai-drawer-avatar">AI</div>
-        <div>
-          <div style="line-height: 1.2;">PRJ001 Delay Agent</div>
-          <div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
-            <span class="ai-status-pill">ONLINE</span>
-            <span style="font-size:10px;color:#94a3b8;font-family:'JetBrains Mono',monospace;">Gemini ML</span>
+        <div class="ai-drawer-avatar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        </div>
+        <div class="ai-drawer-meta">
+          <div class="ai-drawer-name">PRJ001 Delay Intelligence</div>
+          <div class="ai-drawer-sub">
+            <span class="ai-status-pill">● ONLINE</span>
+            <div class="ai-gemini-badge">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="#60a5fa"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+              Gemini AI
+            </div>
           </div>
         </div>
       </div>
       <div class="ai-drawer-actions">
-        <button class="ai-action-btn" onclick="clearAIChat()" title="Clear Chat History">&#x21bb;</button>
-        <button class="ai-action-btn" onclick="toggleAIAssistant()" title="Close">&times;</button>
+        <button class="ai-action-btn" onclick="clearAIChat()" title="Clear Chat">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+        </button>
+        <button class="ai-action-btn" onclick="toggleAIAssistant()" title="Close">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       </div>
     </div>
-    
+
     <div class="ai-messages-container" id="ai-messages-container">
-      <div class="ai-msg bot">
-        <p>Welcome to <strong>PRJ001 Delay Intelligence AI</strong>.</p>
-        <p>I monitor your project dataset, ML delay risk tiers, and predictive mitigations in real time.</p>
-        <p style="font-size:11.5px;color:var(--text-muted);margin-top:4px;">Ask a question below or pick a quick prompt:</p>
+      <div class="ai-msg-wrap bot">
+        <div class="ai-msg-bubble">
+          <p>Welcome to <strong>PRJ001 Delay Intelligence AI</strong>.</p>
+          <p>I analyze your 1,000-task dataset, ML risk tiers, and delay patterns in real time. Ask me anything or pick a quick prompt below.</p>
+        </div>
+        <div class="ai-msg-timestamp" id="ai-welcome-ts"></div>
       </div>
     </div>
 
     <div class="ai-quick-prompts">
-      <button class="ai-prompt-chip" onclick="quickAskAI('Which open tasks are at highest risk?')">High Risk Tasks</button>
-      <button class="ai-prompt-chip" onclick="quickAskAI('Compare algorithm metrics')">Compare Models</button>
-      <button class="ai-prompt-chip" onclick="quickAskAI('What is the delay rate by discipline?')">Discipline Stats</button>
-      <button class="ai-prompt-chip" onclick="quickAskAI('Suggest resource reallocation strategy')">Mitigation Strategy</button>
+      <button class="ai-prompt-chip" onclick="quickAskAI('Which open tasks are at highest risk?')">🔴 High Risk Tasks</button>
+      <button class="ai-prompt-chip" onclick="quickAskAI('Compare algorithm metrics')">📊 Compare Models</button>
+      <button class="ai-prompt-chip" onclick="quickAskAI('What is the delay rate by discipline?')">🏗️ By Discipline</button>
+      <button class="ai-prompt-chip" onclick="quickAskAI('Suggest resource reallocation strategy')">⚡ Mitigation</button>
     </div>
 
     <div class="ai-input-bar">
-      <input type="text" id="ai-input-field" class="ai-input" placeholder="Ask AI Assistant about risk, delays, ML models..." onkeypress="handleAIInputKey(event)">
-      <button class="ai-send-btn" onclick="sendAIMessage()" title="Send Message">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+      <input type="text" id="ai-input-field" class="ai-input" placeholder="Ask about risk, delays, ML models..." onkeypress="handleAIInputKey(event)" autocomplete="off">
+      <button class="ai-send-btn" id="ai-send-btn" onclick="sendAIMessage()" title="Send">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
       </button>
+    </div>
+    <div class="ai-powered-bar">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="#60a5fa"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      Powered by Gemini AI &nbsp;·&nbsp; PRJ001 Dataset · 1,000 Tasks
     </div>
   </div>
 
@@ -4607,7 +4714,9 @@
 
   
 
-  const delayRate = closedCount > 0 ? ((delayedCount / closedCount) * 100).toFixed(1) : '0.0';
+  // Use total tasks as denominator for a true project-wide delay rate
+
+  const delayRate = totalCount > 0 ? ((delayedCount / totalCount) * 100).toFixed(1) : '0.0';
 
   const openRiskCount = openTasks.filter(t => t.cat === 'HIGH' || t.cat === 'MEDIUM').length || openCount;
 
@@ -5789,27 +5898,37 @@
 
   a.click();
 
-    /* ── AI ASSISTANT CLIENT & API INTEGRATION (PREMIUM SUITABLE UI) ── */
+    /* ── AI ASSISTANT CLIENT — PROFESSIONAL REDESIGN ── */
+
+    // Set welcome timestamp
+    document.addEventListener('DOMContentLoaded', () => {
+      const ts = document.getElementById('ai-welcome-ts');
+      if (ts) ts.textContent = formatAITime();
+    });
+
+    function formatAITime() {
+      return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
     function toggleAIAssistant() {
       const drawer = document.getElementById('ai-assistant-drawer');
-      if (drawer) {
-        drawer.classList.toggle('open');
-        if (drawer.classList.contains('open')) {
-          document.getElementById('ai-input-field').focus();
-        }
+      if (!drawer) return;
+      drawer.classList.toggle('open');
+      if (drawer.classList.contains('open')) {
+        setTimeout(() => document.getElementById('ai-input-field').focus(), 100);
       }
     }
 
     function clearAIChat() {
       const container = document.getElementById('ai-messages-container');
-      if (container) {
-        container.innerHTML = `
-          <div class="ai-msg bot">
-            <p>Welcome to <strong>PRJ001 Delay Intelligence AI</strong>.</p>
-            <p>Chat cleared. Ask a new question or pick a prompt below!</p>
+      if (!container) return;
+      container.innerHTML = `
+        <div class="ai-msg-wrap bot">
+          <div class="ai-msg-bubble">
+            <p>Chat cleared. How can I help you with <strong>PRJ001</strong>?</p>
           </div>
-        `;
-      }
+          <div class="ai-msg-timestamp">${formatAITime()}</div>
+        </div>`;
     }
 
     function handleAIInputKey(e) {
@@ -5817,42 +5936,82 @@
     }
 
     function quickAskAI(promptText) {
-      document.getElementById('ai-input-field').value = promptText;
+      const input = document.getElementById('ai-input-field');
+      if (input) { input.value = promptText; }
       sendAIMessage();
     }
 
-    function appendAIMessage(text, sender) {
-      const container = document.getElementById('ai-messages-container');
-      const msgDiv = document.createElement('div');
-      msgDiv.className = `ai-msg ${sender}`;
-      
-      let formatted = text
+    function renderAIMarkdown(text) {
+      // Escape HTML first
+      let html = text
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      // Bold, italic, code
+      html = html
         .replace(/`([^`]+)`/g, '<code>$1</code>')
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\*(.*?)\*/g, '<em>$1</em>')
-        .replace(/\n- (.*)/g, '<li>$1</li>')
-        .replace(/\n/g, '<br>');
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>');
+      // Convert list items to proper <ul>
+      html = html.replace(/((?:^|\n)- .+)+/gm, (block) => {
+        const items = block.trim().split('\n').filter(l => l.startsWith('- '));
+        return '<ul>' + items.map(l => `<li>${l.slice(2)}</li>`).join('') + '</ul>';
+      });
+      // Remaining newlines -> paragraphs
+      const paras = html.split(/\n\n+/).filter(p => p.trim());
+      if (paras.length > 1) {
+        html = paras.map(p => p.startsWith('<ul>') ? p : `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+      } else {
+        html = html.replace(/\n/g, '<br>');
+      }
+      return html;
+    }
 
-      msgDiv.innerHTML = formatted;
-      container.appendChild(msgDiv);
+    function appendAIMessage(text, role) {
+      const container = document.getElementById('ai-messages-container');
+      const wrap = document.createElement('div');
+      wrap.className = `ai-msg-wrap ${role}`;
+
+      const bubble = document.createElement('div');
+      bubble.className = 'ai-msg-bubble';
+      bubble.innerHTML = role === 'user'
+        ? text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        : renderAIMarkdown(text);
+
+      const ts = document.createElement('div');
+      ts.className = 'ai-msg-timestamp';
+      ts.textContent = formatAITime();
+
+      wrap.appendChild(bubble);
+      wrap.appendChild(ts);
+      container.appendChild(wrap);
       container.scrollTop = container.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+      const container = document.getElementById('ai-messages-container');
+      const wrap = document.createElement('div');
+      wrap.className = 'ai-msg-wrap bot';
+      wrap.id = 'ai-typing-wrap';
+      wrap.innerHTML = `<div class="ai-typing-dots"><span></span><span></span><span></span></div>`;
+      container.appendChild(wrap);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function removeTypingIndicator() {
+      const el = document.getElementById('ai-typing-wrap');
+      if (el) el.remove();
     }
 
     async function sendAIMessage() {
       const inputEl = document.getElementById('ai-input-field');
+      const sendBtn = document.getElementById('ai-send-btn');
       const query = inputEl.value.trim();
       if (!query) return;
 
       appendAIMessage(query, 'user');
       inputEl.value = '';
+      if (sendBtn) sendBtn.disabled = true;
 
-      const container = document.getElementById('ai-messages-container');
-      const typingDiv = document.createElement('div');
-      typingDiv.className = 'ai-msg bot';
-      typingDiv.id = 'ai-typing-indicator';
-      typingDiv.innerHTML = '<span style="font-size:12px;color:var(--text-muted);">Gemini AI analyzing project dataset...</span>';
-      container.appendChild(typingDiv);
-      container.scrollTop = container.scrollHeight;
+      showTypingIndicator();
 
       try {
         const res = await fetch('/api/assistant', {
@@ -5860,46 +6019,62 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ message: query })
         });
-        const data = await res.json();
-        const indicator = document.getElementById('ai-typing-indicator');
-        if (indicator) indicator.remove();
+        removeTypingIndicator();
+        if (sendBtn) sendBtn.disabled = false;
 
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
         if (data && data.reply) {
           appendAIMessage(data.reply, 'bot');
           return;
         }
+        throw new Error('Empty reply');
       } catch (err) {
-        console.warn('API endpoint unavailable, falling back to local JS engine:', err);
+        removeTypingIndicator();
+        if (sendBtn) sendBtn.disabled = false;
+        console.warn('API unavailable, using local engine:', err);
       }
 
-      const indicator = document.getElementById('ai-typing-indicator');
-      if (indicator) indicator.remove();
-
+      // ── Local fallback engine ──
       const tasks = APP_DATA.tasks || [];
-      const meta = APP_DATA.meta || {};
+      const meta  = APP_DATA.meta  || {};
       const lower = query.toLowerCase();
-      let response = "";
+      let response = '';
 
       const openHighRisk = tasks.filter(t => t.status === 'Open' && t.cat === 'HIGH');
-      const openTasks = tasks.filter(t => t.status === 'Open');
-      const closedTasks = tasks.filter(t => t.status === 'Closed');
+      const openTasks    = tasks.filter(t => t.status === 'Open');
+      const closedTasks  = tasks.filter(t => t.status === 'Closed');
 
-      if (lower.includes("high risk") || lower.includes("open task") || lower.includes("at risk")) {
-        response = `**High Risk Open Tasks Summary:**\nThere are **${openHighRisk.length} open tasks** in the **HIGH Risk Tier** (Probability >= 70%).\n\nTop Priority Actions:\n` +
-          openHighRisk.slice(0, 3).map(t => `- **${t.id} (${t.desc})**: Discipline ${t.disc}, Score: **${t.score}%**. *Action: Notify PM & Reallocate Subcontractors.*`).join("\n");
-      } else if (lower.includes("model") || lower.includes("xgboost") || lower.includes("random forest") || lower.includes("algorithm")) {
-        const champ = meta.champion || 'Random Forest';
+      if (lower.includes('high risk') || lower.includes('open task') || lower.includes('at risk')) {
+        response = `**High Risk Open Tasks Summary:**\n\nThere are **${openHighRisk.length} open tasks** in the **HIGH Risk Tier** (Probability ≥ 70%).\n\nTop Priority Actions:\n` +
+          openHighRisk.slice(0, 5).map(t => `- **${t.id} — ${t.desc}** (${t.disc}): Risk Score **${t.score}%** — *Notify PM & reallocate subcontractors*`).join('\n');
+      } else if (lower.includes('model') || lower.includes('xgboost') || lower.includes('random forest') || lower.includes('algorithm') || lower.includes('compare')) {
+        const champ  = meta.champion || 'Random Forest';
         const cvData = meta.cv_accuracy || {};
-        response = `**ML Model Comparison (${meta.cv_method || '5-Fold CV'}):**\n` +
-          `- **Champion Model**: ${champ} (F1: ${cvData[champ]?.f1 || 69.5}%, AUC: ${cvData[champ]?.auc || 77.9}%)\n` +
-          `- **XGBoost**: F1: ${cvData["XGBoost"]?.f1 || 66.4}%, AUC: ${cvData["XGBoost"]?.auc || 75.5}%\n` +
-          `- **Stacking Ensemble**: F1: ${cvData["Stacking Ensemble"]?.f1 || 68.2}%, AUC: ${cvData["Stacking Ensemble"]?.auc || 79.2}%\n` +
-          `- **Logistic Regression**: F1: ${cvData["Logistic Regression"]?.f1 || 68.8}%, AUC: ${cvData["Logistic Regression"]?.auc || 80.4}%\n\n*Note: Post-hoc features were removed to prevent data leakage.*`;
-      } else if (lower.includes("delay rate") || lower.includes("discipline") || lower.includes("site") || lower.includes("mep") || lower.includes("str") || lower.includes("arc")) {
-        response = `**Discipline Delay Rate Breakdown:**\n` +
-          Object.entries(APP_DATA.disc_stats || {}).map(([disc, info]) => `- **${disc}**: ${info.rate}% historical delay rate (${info.delayed}/${info.total} completed tasks delayed)`).join("\n");
+        response = `**ML Model Comparison (${meta.cv_method || '5-Fold CV'}):**\n\n` +
+          `- **${champ} ✦ Champion**: F1 ${cvData[champ]?.f1 || 69.5}%, AUC ${cvData[champ]?.auc || 77.9}%, MCC ${cvData[champ]?.mcc || 44.4}%\n` +
+          `- **Logistic Regression**: F1 ${cvData['Logistic Regression']?.f1 || 68.8}%, AUC ${cvData['Logistic Regression']?.auc || 80.4}%\n` +
+          `- **Stacking Ensemble**: F1 ${cvData['Stacking Ensemble']?.f1 || 68.2}%, AUC ${cvData['Stacking Ensemble']?.auc || 79.2}%\n` +
+          `- **XGBoost**: F1 ${cvData['XGBoost']?.f1 || 66.4}%, AUC ${cvData['XGBoost']?.auc || 75.5}%\n\n` +
+          `*Post-hoc leakage features removed. Calibrated with Platt Scaling.*`;
+      } else if (lower.includes('delay rate') || lower.includes('discipline') || lower.includes('site') || lower.includes('mep') || lower.includes('str') || lower.includes('arc') || lower.includes('int')) {
+        response = `**Delay Rate by Discipline (completed tasks only):**\n\n` +
+          Object.entries(APP_DATA.disc_stats || {}).sort((a,b) => b[1].rate - a[1].rate)
+            .map(([disc, info]) => `- **${disc}**: ${info.rate}% delay rate — ${info.delayed} of ${info.total} tasks delayed`).join('\n');
+      } else if (lower.includes('mitigation') || lower.includes('reallocation') || lower.includes('strategy') || lower.includes('recommend')) {
+        response = `**Recommended Mitigation Strategy:**\n\n` +
+          `- **Crane & Equipment**: Pre-book backup crane for HIGH-risk structural tasks — 25 crane breakdown incidents recorded\n` +
+          `- **Approval Delays**: Assign dedicated RFI coordinator; target <48h turnaround (17 incidents)\n` +
+          `- **Labor Shortage**: Activate secondary subcontractor roster 2 weeks before critical-path tasks\n` +
+          `- **PRJ-SITE Focus**: Highest delay rate at ${APP_DATA.disc_stats?.['PRJ-SITE']?.rate || 47.7}% — prioritize site logistics and weather contingency\n\n` +
+          `*Based on root cause analysis of ${closedTasks.length} completed tasks.*`;
       } else {
-        response = `**Project PRJ001 Status Snapshot:**\n- **Total Tasks**: ${meta.total_tasks || tasks.length} (${openTasks.length} Open, ${closedTasks.length} Closed)\n- **Average Delay**: +${meta.avg_delay_days || 3.5} days\n- **Champion Model**: ${meta.champion || 'Random Forest'} (${meta.champion_metrics?.f1 || 69.5}% F1)\n\nTry asking me:\n- *"Which open tasks are at highest risk?"*\n- *"Compare algorithm metrics"*\n- *"What is the delay rate by discipline?"*`;
+        response = `**Project PRJ001 — Live Status:**\n\n` +
+          `- **Total Tasks**: ${meta.total_tasks || tasks.length} (${openTasks.length} Open · ${closedTasks.length} Closed)\n` +
+          `- **Delayed Tasks**: ${meta.delayed_tasks || 123} (${((( meta.delayed_tasks || 123) / (meta.total_tasks || 1000))*100).toFixed(1)}% rate)\n` +
+          `- **Average Delay**: +${meta.avg_delay_days || 3.5} days (max +${meta.max_delay_days || 12} days)\n` +
+          `- **Champion Model**: ${meta.champion || 'Random Forest'} — F1 ${meta.champion_metrics?.f1 || 69.5}%, AUC ${meta.champion_metrics?.auc_roc || 77.9}%\n\n` +
+          `Try asking:\n- *"Which open tasks are at highest risk?"*\n- *"Compare algorithm metrics"*\n- *"What is the delay rate by discipline?"*\n- *"Suggest mitigation strategy"*`;
       }
 
       appendAIMessage(response, 'bot');
