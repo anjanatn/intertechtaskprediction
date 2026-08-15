@@ -111,7 +111,9 @@ disc_dummies = pd.get_dummies(df["ProjectDiscipline"], prefix="disc")
 df = pd.concat([df, disc_dummies], axis=1)
 disc_cols = [c for c in df.columns if c.startswith("disc_")]
 
-# Historical discipline delay rate (computed only on training closed tasks)
+# Historical discipline delay rate for the final production model. During model
+# evaluation this value is rebuilt inside each fold so validation labels never
+# influence their own features.
 train_closed_mask = df["Status"] == "Closed"
 disc_delay_rate = (
     df[train_closed_mask]
@@ -203,6 +205,20 @@ print("=" * 65)
 print(f"  {'Model':<25}  {'Acc':>6}  {'F1':>6}  {'AUC':>6}  {'Prec':>6}  {'Rec':>6}  {'MCC':>6}")
 print(f"  {'-'*25}  {'-'*6}  {'-'*6}  {'-'*6}  {'-'*6}  {'-'*6}  {'-'*6}")
 
+def fold_features(fit_idx, eval_idx):
+    """Build features with discipline rates learned only from the fold's fit set."""
+    fold_train = train_df.iloc[fit_idx]
+    fold_rate = fold_train.groupby("ProjectDiscipline")["is_delayed"].mean()
+    fallback_rate = float(fold_train["is_delayed"].mean())
+
+    def apply_rate(indices):
+        features = X_train.iloc[indices].copy()
+        disciplines = train_df.iloc[indices]["ProjectDiscipline"]
+        features.loc[:, "disc_hist_delay_rate"] = disciplines.map(fold_rate).fillna(fallback_rate).to_numpy()
+        return features
+
+    return apply_rate(fit_idx), apply_rate(eval_idx)
+
 loo_results = {}
 
 for name, model in models.items():
@@ -210,11 +226,12 @@ for name, model in models.items():
     y_prob_cv = np.zeros(len(y_arr))
 
     for train_idx, test_idx in cv_splitter.split(X_arr, y_arr):
+        X_fold_train, X_fold_test = fold_features(train_idx, test_idx)
         m = clone(model)
-        m.fit(X_arr[train_idx], y_arr[train_idx])
-        y_pred_cv[test_idx] = m.predict(X_arr[test_idx])
+        m.fit(X_fold_train, y_arr[train_idx])
+        y_pred_cv[test_idx] = m.predict(X_fold_test)
         if hasattr(m, "predict_proba"):
-            y_prob_cv[test_idx] = m.predict_proba(X_arr[test_idx])[:, 1]
+            y_prob_cv[test_idx] = m.predict_proba(X_fold_test)[:, 1]
         else:
             y_prob_cv[test_idx] = float(y_pred_cv[test_idx][0])
 
@@ -236,6 +253,13 @@ for name, model in models.items():
 
 print()
 
+# Cross-fitted rates keep the final training matrix aligned with the honest
+# validation scheme while production predictions use all known closed history.
+X_train_final = X_train.copy()
+for train_idx, test_idx in cv_splitter.split(X_arr, y_arr):
+    _, X_fold_test = fold_features(train_idx, test_idx)
+    X_train_final.iloc[test_idx] = X_fold_test
+
 # ---------------------------------------------------------------------------
 # 6. SELECT CHAMPION (highest LOO-CV F1)
 # ---------------------------------------------------------------------------
@@ -252,11 +276,11 @@ print("=" * 65 + "\n")
 # 7. TRAIN FINAL CALIBRATED MODEL
 # ---------------------------------------------------------------------------
 base_champion = models[champion_name]
-base_champion.fit(X_train, y_train)
+base_champion.fit(X_train_final, y_train)
 
 try:
     calibrated     = CalibratedClassifierCV(base_champion, cv=3, method="isotonic")
-    calibrated.fit(X_train, y_train)
+    calibrated.fit(X_train_final, y_train)
     final_model    = calibrated
     use_calibrated = True
     print("[*] Probability calibration applied (isotonic regression).")
@@ -270,7 +294,7 @@ except Exception as e:
 # ---------------------------------------------------------------------------
 print("[*] Computing SHAP values...")
 X_all_filled   = df[FEATURES].fillna(0)
-X_train_filled = X_train.fillna(0)
+X_train_filled = X_train_final.fillna(0)
 shap_vals      = None
 shap_method    = "None"
 
