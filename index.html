@@ -8,6 +8,16 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <meta name="description" content="InterTech Task Prediction & Delay Intelligence Platform for project delay forecasting and mitigation planning.">
+
+  <meta name="canonical" content="https://intertechtaskprediction.vercel.app">
+
+  <meta property="og:url" content="https://intertechtaskprediction.vercel.app">
+
+  <meta property="og:title" content="InterTech™ | Task Prediction & Delay Intelligence Platform">
+
+  <meta property="og:description" content="AI-powered delay risk monitoring for project execution and mitigation planning.">
+
   <title>InterTech | Task Prediction & Delay Intelligence Platform</title>
 
   
@@ -3311,9 +3321,41 @@
     .ai-model-result.champion { border-left-color: #10b981; background: #f0fdf4; }
     .ai-model-result-name { display: flex; justify-content: space-between; gap: 8px; color: #0f172a; font-size: 11px; font-weight: 700; }
     .ai-model-result-values { margin-top: 3px; color: #64748b; font: 10px 'JetBrains Mono', monospace; }
+    .ai-insights-modal { position: fixed; inset: 0; z-index: 2200; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(15, 23, 42, .55); backdrop-filter: blur(5px); }
+    .ai-insights-modal.open { display: flex; }
+    .ai-insights-dialog { width: min(1040px, 100%); max-height: min(760px, calc(100vh - 48px)); overflow: auto; background: #f8fafc; border: 1px solid rgba(255,255,255,.65); border-radius: 8px; box-shadow: 0 28px 80px rgba(15,23,42,.35); }
+    .ai-insights-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; padding: 20px 24px; background: #0f172a; color: #fff; }
+    .ai-insights-eyebrow { color: #7dd3fc; font: 700 10px 'JetBrains Mono', monospace; letter-spacing: .08em; text-transform: uppercase; }
+    .ai-insights-title { margin-top: 4px; font: 700 20px 'Plus Jakarta Sans', sans-serif; }
+    .ai-insights-subtitle { margin-top: 4px; color: #cbd5e1; font-size: 12px; }
+    .ai-insights-close { width: 32px; height: 32px; border: 1px solid rgba(255,255,255,.2); border-radius: 5px; background: transparent; color: #fff; cursor: pointer; font-size: 20px; line-height: 1; }
+    .ai-insights-content { padding: 20px 24px 24px; }
+    .ai-insights-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .ai-insights-kpi-card { padding: 13px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; }
+    .ai-insights-kpi-label { display: block; color: #64748b; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+    .ai-insights-kpi-value { display: block; margin-top: 5px; color: #0f172a; font-size: 20px; font-weight: 700; }
+    .ai-insights-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(240px, .8fr); gap: 14px; margin-top: 14px; }
+    .ai-insights-section { padding: 16px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; }
+    .ai-insights-section-title { color: #0f172a; font-size: 12px; font-weight: 700; }
+    .ai-insights-section-note { margin-top: 3px; color: #64748b; font-size: 10.5px; }
+    .ai-model-matrix { margin-top: 14px; display: grid; gap: 12px; }
+    .ai-model-empty { padding: 18px; text-align: center; color: #64748b; font-size: 12px; border: 1px dashed #cbd5e1; border-radius: 6px; background: #f8fafc; }
+    .ai-model-matrix-grid { display: grid; grid-template-columns: minmax(120px, 1.5fr) repeat(6, minmax(45px, 1fr)); gap: 8px; align-items: center; }
+    .ai-model-matrix-head { color: #64748b; font: 700 10px 'JetBrains Mono', monospace; letter-spacing: .04em; text-transform: uppercase; padding-bottom: 6px; border-bottom: 1px solid #e2e8f0; }
+    .ai-model-matrix-row-name { color: #0f172a; font-size: 11px; font-weight: 700; padding: 6px 0; }
+    .ai-model-matrix-row-value { color: #0f172a; font: 600 11px 'JetBrains Mono', monospace; text-align: center; }
+    .ai-insights-detail-list { margin-top: 12px; display: grid; gap: 10px; }
+    .ai-insights-detail-item { padding: 10px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; }
+    .ai-insights-detail-label { display: block; color: #64748b; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+    .ai-insights-detail-text { display: block; margin-top: 5px; color: #0f172a; font-size: 12px; line-height: 1.5; }
     @media (max-width: 600px) {
       .ai-assistant-drawer { right: 12px; bottom: 76px; max-width: calc(100vw - 24px); height: min(680px, calc(100vh - 94px)); }
       .ai-assistant-fab { right: 12px; bottom: 14px; }
+      .ai-insights-modal { padding: 10px; }
+      .ai-insights-dialog { max-height: calc(100vh - 20px); }
+      .ai-insights-header, .ai-insights-content { padding: 16px; }
+      .ai-insights-kpis { grid-template-columns: repeat(2, 1fr); }
+      .ai-insights-grid { grid-template-columns: 1fr; }
     }
   </style>
 
@@ -3419,7 +3461,7 @@
 
   <span>Task Prediction Matrix</span>
 
-  <span class="tab-badge" id="badge-total-tasks">35</span>
+  <span class="tab-badge" id="badge-total-tasks">1000</span>
 
   </button>
 
@@ -3427,7 +3469,7 @@
 
   <span>Action & Mitigation Planner</span>
 
-  <span class="tab-badge" id="badge-open-tasks">8</span>
+  <span class="tab-badge" id="badge-open-tasks">260</span>
 
   </button>
 
@@ -3747,13 +3789,13 @@
 
   <div class="filter-chips">
 
-  <button class="filter-chip active" data-status="ALL" onclick="setChipFilter('status', 'ALL', this)">All (35)</button>
+  <button class="filter-chip active" data-status="ALL" onclick="setChipFilter('status', 'ALL', this)">All (0)</button>
 
-  <button class="filter-chip" data-status="Open" onclick="setChipFilter('status', 'Open', this)">Open (8)</button>
+  <button class="filter-chip" data-status="Open" onclick="setChipFilter('status', 'Open', this)">Open (0)</button>
 
-  <button class="filter-chip" data-status="Closed" onclick="setChipFilter('status', 'Closed', this)">Closed (27)</button>
+  <button class="filter-chip" data-status="Closed" onclick="setChipFilter('status', 'Closed', this)">Closed (0)</button>
 
-  <button class="filter-chip" data-status="Delayed" onclick="setChipFilter('status', 'Delayed', this)">Delayed (18)</button>
+  <button class="filter-chip" data-status="Delayed" onclick="setChipFilter('status', 'Delayed', this)">Delayed (0)</button>
 
   </div>
 
@@ -4426,7 +4468,7 @@
       </div>
       <div class="ai-model-controls">
         <select id="ai-model-select" class="ai-model-select" multiple aria-label="Select models to compare"></select>
-        <button class="ai-model-show-btn" type="button" onclick="showSelectedModelResults()">Show</button>
+        <button class="ai-model-show-btn" type="button" onclick="showSelectedModelResults()">Dashboard</button>
       </div>
       <div class="ai-live-metrics" id="ai-live-metrics"></div>
       <div class="ai-selected-results" id="ai-selected-results"></div>
@@ -4461,6 +4503,34 @@
     </div>
   </div>
 
+  <div class="ai-insights-modal" id="ai-insights-modal" role="dialog" aria-modal="true" aria-labelledby="ai-insights-title" onclick="closeAIInsightsOnBackdrop(event)">
+    <section class="ai-insights-dialog">
+      <header class="ai-insights-header">
+        <div>
+          <div class="ai-insights-eyebrow">Live LLM analysis</div>
+          <h2 class="ai-insights-title" id="ai-insights-title">Model Performance Dashboard</h2>
+          <p class="ai-insights-subtitle" id="ai-insights-subtitle">Selected prediction models</p>
+        </div>
+        <button class="ai-insights-close" type="button" onclick="closeAIInsightsDashboard()" aria-label="Close model performance dashboard">&times;</button>
+      </header>
+      <div class="ai-insights-content">
+        <div class="ai-insights-kpis" id="ai-insights-kpis"></div>
+        <div class="ai-insights-grid">
+          <section class="ai-insights-section">
+            <h3 class="ai-insights-section-title">Selected Model Comparison</h3>
+            <p class="ai-insights-section-note">Validation metrics refresh from the active prediction payload.</p>
+            <div class="ai-model-matrix" id="ai-model-matrix"></div>
+          </section>
+          <section class="ai-insights-section">
+            <h3 class="ai-insights-section-title">Prediction Context</h3>
+            <p class="ai-insights-section-note">Operational and validation details.</p>
+            <div class="ai-insights-detail-list" id="ai-insights-details"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </div>
+
   <!-- TOAST -->
 
   <div class="toast-msg" id="toast-msg">
@@ -4483,36 +4553,45 @@
 
   project_id: "PRJ001",
 
-  total_tasks: 35,
+  total_tasks: 1000,
 
-  delayed_tasks: 18,
+  delayed_tasks: 123,
 
-  open_tasks: 8,
+  open_tasks: 260,
 
-  avg_delay_days: 4.7,
+  avg_delay_days: 3.5,
 
-  max_delay_days: 11,
+  max_delay_days: 12,
 
-  model: "Random Forest (Calibrated)",
+  model: "Random Forest (Calibrated: True)",
 
   champion: "Random Forest",
 
   calibrated: true,
 
-  cv_method: "Leave-One-Out CV",
+  cv_method: "5-Fold Stratified CV",
 
   cv_accuracy: {
 
-  "Random Forest":     { mean: 72.3, std: 0, f1: 69.5, auc: 77.9, mcc: 44.4, precision: 66.9, recall: 72.4 },
+  "Logistic Regression": { mean: 72.3, std: 0.0, f1: 68.8, auc: 80.5, mcc: 44.0, precision: 67.7, recall: 69.9 },
 
-  "Logistic Regression":{ mean: 72.3, std: 0, f1: 68.8, auc: 80.4, mcc: 44.0, precision: 67.7, recall: 69.9 },
+  "Random Forest": { mean: 72.0, std: 0.0, f1: 69.3, auc: 77.8, mcc: 43.7, precision: 66.4, recall: 72.4 },
 
-  "Stacking Ensemble": { mean: 71.3, std: 0, f1: 68.2, auc: 79.2, mcc: 42.2, precision: 65.9, recall: 70.7 },
+  "Gradient Boosting": { mean: 70.2, std: 0.0, f1: 66.1, auc: 74.6, mcc: 39.6, precision: 65.6, recall: 66.7 },
 
-  "Gradient Boosting": { mean: 70.6, std: 0, f1: 66.7, auc: 75.3, mcc: 40.3, precision: 65.9, recall: 67.5 },
+  "XGBoost": { mean: 69.5, std: 0.0, f1: 66.4, auc: 75.7, mcc: 38.7, precision: 63.9, recall: 69.1 },
 
-  "XGBoost":           { mean: 69.5, std: 0, f1: 66.4, auc: 75.5, mcc: 38.7, precision: 63.9, recall: 69.1 }
+  "Stacking Ensemble": { mean: 70.6, std: 0.0, f1: 67.5, auc: 78.8, mcc: 40.7, precision: 65.2, recall: 69.9 }
 
+  },
+
+  champion_metrics: {
+    acc: 72.0,
+    f1: 69.3,
+    precision: 66.4,
+    recall: 72.4,
+    mcc: 43.7,
+    auc_roc: 77.8
   }
 
   },
@@ -4673,6 +4752,17 @@
 
   let selectedTask = null;
 
+  let renderQueued = false;
+
+  function scheduleDashboardRender() {
+    if (renderQueued) return;
+    renderQueued = true;
+    requestAnimationFrame(() => {
+      renderQueued = false;
+      renderDashboard();
+    });
+  }
+
 
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -4689,38 +4779,67 @@
 
   if (window.location.protocol.startsWith('http')) {
 
-  fetch('/api/data')
+  const candidates = ['/api/data', './dashboard_data.json', './public/dashboard_data.json'];
 
-  .then(res => res.json())
+  const loadDataset = async (index = 0) => {
+    if (index >= candidates.length) {
+      console.warn('No live dataset found; using embedded sample only.');
+      scheduleDashboardRender();
+      return;
+    }
 
-  .then(data => {
+    try {
+      const res = await fetch(candidates[index]);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      if (data && data.tasks) {
+        const cvData = data.meta?.cv_accuracy || {};
+        const computedChampion = resolveChampionModel(cvData, data.meta?.champion || '');
+        data.meta = data.meta || {};
+        data.meta.champion = computedChampion || data.meta.champion || '';
+        data.meta.champion_metrics = cvData[data.meta.champion] || data.meta.champion_metrics || {};
+        APP_DATA = data;
+        const syncEl = document.getElementById('last-sync-time');
+        if (syncEl) syncEl.innerText = `Synced: ${new Date().toLocaleTimeString()}  |  Live`;
+      }
+      scheduleDashboardRender();
+    } catch (err) {
+      console.warn(`Dataset fetch failed for ${candidates[index]}, trying next source:`, err);
+      loadDataset(index + 1);
+    }
+  };
 
-  if (data && data.tasks) {
-
-  APP_DATA = data;
-
-  document.getElementById('last-sync-time').innerText = `Synced: ${new Date().toLocaleTimeString()}  |  Live`;
-
-  }
-
-  renderDashboard();
-
-  })
-
-  .catch(err => {
-
-  console.warn('Fallback to embedded dataset:', err);
-
-  renderDashboard();
-
-  });
+  loadDataset();
 
   } else {
 
-  renderDashboard();
+  scheduleDashboardRender();
 
   }
 
+  }
+
+
+
+  function resolveChampionModel(cvData = {}, fallback = '') {
+    const entries = Object.entries(cvData || {});
+    if (!entries.length) return fallback || '';
+
+    return entries.reduce((best, current) => {
+      const [bestName, bestMeta] = best;
+      const [currentName, currentMeta] = current;
+
+      const bestScore = Number(bestMeta?.f1 ?? bestMeta?.mean ?? bestMeta?.acc ?? bestMeta?.auc ?? bestMeta?.auc_roc ?? 0);
+      const currentScore = Number(currentMeta?.f1 ?? currentMeta?.mean ?? currentMeta?.acc ?? currentMeta?.auc ?? currentMeta?.auc_roc ?? 0);
+
+      if (currentScore > bestScore) return current;
+      if (currentScore === bestScore) {
+        const bestAuc = Number(bestMeta?.auc ?? bestMeta?.auc_roc ?? 0);
+        const currentAuc = Number(currentMeta?.auc ?? currentMeta?.auc_roc ?? 0);
+        return currentAuc > bestAuc ? current : best;
+      }
+      return best;
+    }, entries[0])[0];
   }
 
 
@@ -4750,6 +4869,10 @@
   function renderOverviewKPIs() {
 
   const meta = APP_DATA.meta || {};
+
+  const cvData = meta.cv_accuracy || {};
+  meta.champion = resolveChampionModel(cvData, meta.champion || 'Random Forest');
+  meta.champion_metrics = cvData[meta.champion] || meta.champion_metrics || {};
 
   const tasks = APP_DATA.tasks || [];
 
@@ -4782,8 +4905,6 @@
   
 
   const champion = meta.champion || 'Random Forest';
-
-  const cvData = meta.cv_accuracy || {};
 
   const champMetrics = cvData[champion] || meta.champion_metrics || {};
 
@@ -5045,9 +5166,11 @@
 
   const cvData = (APP_DATA.meta || {}).cv_accuracy || {};
 
-  const champion = (APP_DATA.meta || {}).champion || '';
+  const meta = APP_DATA.meta || {};
+  const champion = resolveChampionModel(meta.cv_accuracy || {}, meta.champion || '');
+  meta.champion = champion || meta.champion || '';
 
-  const calibrated = (APP_DATA.meta || {}).calibrated;
+  const calibrated = meta.calibrated;
 
   const cvMethod = (APP_DATA.meta || {}).cv_method || 'CV';
 
@@ -5167,11 +5290,33 @@
 
 
 
+  function syncTaskFilterCounts() {
+  const tasks = APP_DATA.tasks || [];
+  const openCount = tasks.filter(t => t.status === 'Open').length;
+  const closedCount = tasks.filter(t => t.status === 'Closed').length;
+  const delayedCount = tasks.filter(t => t.actual === 'Delayed' || (t.delay != null && t.delay > 0)).length;
+
+  const chipMap = {
+    ALL: () => tasks.length,
+    Open: () => openCount,
+    Closed: () => closedCount,
+    Delayed: () => delayedCount
+  };
+
+  document.querySelectorAll('.filter-chip').forEach(chip => {
+    const key = chip.dataset.status;
+    const count = chipMap[key] ? chipMap[key]() : 0;
+    chip.textContent = `${chip.textContent.split('(')[0].trim()} (${count})`;
+  });
+  }
+
   function renderTasksTable() {
 
   const tbody = document.getElementById('task-table-body');
 
   let tasks = [...APP_DATA.tasks];
+
+  syncTaskFilterCounts();
 
 
 
@@ -5972,6 +6117,18 @@
     document.addEventListener('DOMContentLoaded', () => {
       const ts = document.getElementById('ai-welcome-ts');
       if (ts) ts.textContent = formatAITime();
+
+      const modelSelect = document.getElementById('ai-model-select');
+      if (modelSelect) {
+        modelSelect.addEventListener('change', () => {
+          const selection = Array.from(modelSelect.selectedOptions).map(option => option.value);
+          if (selection.length) {
+            renderSelectedModelResults(selection);
+            renderAIInsightsDashboard(selection);
+            showToast(`Mitigation review ready: ${selection.length} model(s) selected`);
+          }
+        });
+      }
     });
 
     function formatAITime() {
@@ -5991,6 +6148,7 @@
       const meta = APP_DATA.meta || {};
       const tasks = APP_DATA.tasks || [];
       const models = meta.cv_accuracy || {};
+      meta.champion = resolveChampionModel(models, meta.champion || '');
       const priorSelection = Array.from(select.selectedOptions).map(option => option.value);
       const modelNames = Object.keys(models);
       const defaultSelection = priorSelection.length ? priorSelection : [meta.champion || modelNames[0]].filter(Boolean);
@@ -6009,6 +6167,7 @@
       const resultPanel = document.getElementById('ai-selected-results');
       const meta = APP_DATA.meta || {};
       const models = meta.cv_accuracy || {};
+      meta.champion = resolveChampionModel(models, meta.champion || '');
       if (!resultPanel) return;
       const selected = selection.filter(name => models[name]);
       resultPanel.innerHTML = selected.length ? selected.map(name => {
@@ -6021,11 +6180,161 @@
       }).join('') : '<div class="ai-model-result"><div class="ai-model-result-name">Select one or more models</div></div>';
     }
 
+    function generateSelectionNarrative(selectedModels, meta, models) {
+      if (!selectedModels.length) return 'No model has been selected for dashboarding yet.';
+
+      const entries = selectedModels.map(name => ({ name, metrics: models[name] || {} }));
+      const bestModel = entries.reduce((best, current) => {
+        const currentF1 = Number(current.metrics.f1 ?? 0);
+        const bestF1 = Number(best.metrics.f1 ?? 0);
+        return currentF1 > bestF1 ? current : best;
+      }, entries[0]);
+
+      const avgF1 = entries.reduce((sum, item) => sum + Number(item.metrics.f1 ?? 0), 0) / entries.length;
+      const avgAUC = entries.reduce((sum, item) => sum + Number(item.metrics.auc ?? 0), 0) / entries.length;
+      const totalOpen = (APP_DATA.tasks || []).filter(task => task.status === 'Open').length;
+      const highRiskOpen = (APP_DATA.tasks || []).filter(task => task.status === 'Open' && task.cat === 'HIGH').length;
+
+      const championText = meta.champion ? `The current champion is ${meta.champion}.` : 'No champion is assigned yet.';
+      const selectedText = selectedModels.length > 1 ? `${selectedModels.join(', ')} are being compared.` : `${selectedModels[0]} is being evaluated.`;
+      const summary = `${selectedText} ${championText} Average selected F1 is ${avgF1.toFixed(1)}% and average AUC is ${avgAUC.toFixed(1)}%.`;
+      const action = bestModel && Number(bestModel.metrics.f1 ?? 0) >= 70
+        ? ` ${bestModel.name} is the strongest performer for operational rollout, with the best F1 score in this selection.`
+        : ' The current selection suggests mixed performance, so monitor calibration and operational conditions before committing to a final model.';
+
+      return `${summary}${action} There are ${totalOpen} open tasks in the portfolio, including ${highRiskOpen} high-risk items that should be prioritized for mitigation.`;
+    }
+
+    function renderAIInsightsDashboard(selection) {
+      const modal = document.getElementById('ai-insights-modal');
+      const title = document.getElementById('ai-insights-title');
+      const subtitle = document.getElementById('ai-insights-subtitle');
+      const kpiContainer = document.getElementById('ai-insights-kpis');
+      const matrixContainer = document.getElementById('ai-model-matrix');
+      const detailContainer = document.getElementById('ai-insights-details');
+      if (!modal || !title || !subtitle || !kpiContainer || !matrixContainer || !detailContainer) return;
+
+      const meta = APP_DATA.meta || {};
+      const models = meta.cv_accuracy || {};
+      meta.champion = resolveChampionModel(models, meta.champion || '');
+      const selected = (selection || []).filter(name => models[name]);
+
+      if (!selected.length) {
+        title.textContent = 'Model Performance Dashboard';
+        subtitle.textContent = 'No model selected';
+        kpiContainer.innerHTML = '';
+        matrixContainer.innerHTML = '<div class="ai-model-empty">Choose one or more models to compare.</div>';
+        detailContainer.innerHTML = '<div class="ai-insights-detail-item"><strong>AI assessment:</strong> No dashboard is active yet.</div>';
+        modal.classList.add('open');
+        return;
+      }
+
+      const bestModel = selected.reduce((best, name) => {
+        const currentF1 = Number(models[name]?.f1 ?? 0);
+        const bestF1 = Number(models[best]?.f1 ?? 0);
+        return currentF1 > bestF1 ? name : best;
+      }, selected[0]);
+
+      const avgF1 = selected.reduce((sum, name) => sum + Number(models[name]?.f1 ?? 0), 0) / selected.length;
+      const avgAUC = selected.reduce((sum, name) => sum + Number(models[name]?.auc ?? 0), 0) / selected.length;
+      const avgAccuracy = selected.reduce((sum, name) => sum + Number(models[name]?.mean ?? 0), 0) / selected.length;
+      const allOpenTasks = (APP_DATA.tasks || []).filter(task => task.status === 'Open');
+      const highRiskOpen = allOpenTasks.filter(task => task.cat === 'HIGH').length;
+      const mitigationList = allOpenTasks.map(task => {
+        const action = task.cat === 'HIGH'
+          ? 'PM alert + resource reallocation'
+          : task.cat === 'MEDIUM'
+            ? 'Status sync meeting'
+            : 'Weekly monitor';
+        return `<li>${escapeAIText(task.id)} — ${escapeAIText(task.desc)} (${escapeAIText(task.disc)}) • ${escapeAIText(action)}</li>`;
+      }).join('');
+
+      title.textContent = selected.length > 1 ? `${selected.length}-Model Performance Dashboard` : `${selected[0]} Performance Dashboard`;
+      subtitle.textContent = `${selected.join(', ')} selected via AI analysis`;
+
+      kpiContainer.innerHTML = `
+        <div class="ai-insights-kpi-card">
+          <span class="ai-insights-kpi-label">Avg F1</span>
+          <strong class="ai-insights-kpi-value">${avgF1.toFixed(1)}%</strong>
+        </div>
+        <div class="ai-insights-kpi-card">
+          <span class="ai-insights-kpi-label">Avg AUC</span>
+          <strong class="ai-insights-kpi-value">${avgAUC.toFixed(1)}%</strong>
+        </div>
+        <div class="ai-insights-kpi-card">
+          <span class="ai-insights-kpi-label">Avg Acc</span>
+          <strong class="ai-insights-kpi-value">${avgAccuracy.toFixed(1)}%</strong>
+        </div>
+        <div class="ai-insights-kpi-card">
+          <span class="ai-insights-kpi-label">High-risk open</span>
+          <strong class="ai-insights-kpi-value">${highRiskOpen}</strong>
+        </div>
+      `;
+
+      matrixContainer.innerHTML = `
+        <div class="ai-model-matrix-grid">
+          <div class="ai-model-matrix-head">Model</div>
+          <div class="ai-model-matrix-head">F1</div>
+          <div class="ai-model-matrix-head">AUC</div>
+          <div class="ai-model-matrix-head">ACC</div>
+          <div class="ai-model-matrix-head">PREC</div>
+          <div class="ai-model-matrix-head">REC</div>
+          <div class="ai-model-matrix-head">MCC</div>
+          ${selected.map(name => `
+            <div class="ai-model-matrix-row-name">${escapeAIText(name)}${name === meta.champion ? ' ★' : ''}</div>
+            <div class="ai-model-matrix-row-value">${models[name]?.f1 ?? '-'}%</div>
+            <div class="ai-model-matrix-row-value">${models[name]?.auc ?? '-'}%</div>
+            <div class="ai-model-matrix-row-value">${models[name]?.mean ?? '-'}%</div>
+            <div class="ai-model-matrix-row-value">${models[name]?.precision ?? '-'}%</div>
+            <div class="ai-model-matrix-row-value">${models[name]?.recall ?? '-'}%</div>
+            <div class="ai-model-matrix-row-value">${models[name]?.mcc ?? '-'}</div>
+          `).join('')}
+        </div>
+      `;
+
+      const narrative = generateSelectionNarrative(selected, meta, models);
+      detailContainer.innerHTML = `
+        <div class="ai-insights-detail-item">
+          <div class="ai-insights-detail-label">AI recommendation</div>
+          <div class="ai-insights-detail-text">${escapeAIText(narrative)}</div>
+        </div>
+        <div class="ai-insights-detail-item">
+          <div class="ai-insights-detail-label">Selected models</div>
+          <div class="ai-insights-detail-text">${selected.map(name => `${escapeAIText(name)} (${models[name]?.f1 ?? '-'}% F1)`).join(' • ')}</div>
+        </div>
+        <div class="ai-insights-detail-item">
+          <div class="ai-insights-detail-label">Decision cue</div>
+          <div class="ai-insights-detail-text">Best current performer: ${escapeAIText(bestModel)} with ${models[bestModel]?.f1 ?? '-'}% F1 and ${models[bestModel]?.auc ?? '-'}% AUC.</div>
+        </div>
+        <div class="ai-insights-detail-item">
+          <div class="ai-insights-detail-label">Mitigation notification</div>
+          <div class="ai-insights-detail-text">
+            <div style="font-weight:700; margin-bottom:6px; color:#0f172a;">${allOpenTasks.length} open tasks queued for action</div>
+            <ul style="margin:0; padding-left:18px; line-height:1.6;">${mitigationList}</ul>
+          </div>
+        </div>
+      `;
+
+      modal.classList.add('open');
+    }
+
+    function closeAIInsightsOnBackdrop(event) {
+      const modal = document.getElementById('ai-insights-modal');
+      if (!modal) return;
+      if (event.target === modal) closeAIInsightsDashboard();
+    }
+
+    function closeAIInsightsDashboard() {
+      const modal = document.getElementById('ai-insights-modal');
+      if (modal) modal.classList.remove('open');
+    }
+
     function showSelectedModelResults() {
       const select = document.getElementById('ai-model-select');
       if (!select) return;
       const selection = Array.from(select.selectedOptions).map(option => option.value);
       renderSelectedModelResults(selection);
+      renderAIInsightsDashboard(selection);
       const status = document.getElementById('ai-data-status');
       if (status) status.textContent = `Updated ${formatAITime()}`;
     }

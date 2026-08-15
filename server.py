@@ -29,27 +29,25 @@ class CustomHandler(SimpleHTTPRequestHandler):
 
     def do_GET(self):
         if self.path == "/" or self.path == "/index.html":
-            self.path = "/web.html"
-        elif self.path == "/api/data":
+            self.path = "/index.html"
+        elif self.path == "/api/data" or self.path == "/api/run":
+            if self.path == "/api/run":
+                run_ml_pipeline()
             json_path = os.path.join(BASE_DIR, "dashboard_data.json")
             if not os.path.exists(json_path):
                 run_ml_pipeline()
-            self.send_response(200)
-            self.send_header("Content-type", "application/json")
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.end_headers()
-            with open(json_path, "rb") as f:
-                self.wfile.write(f.read())
-            return
-        elif self.path == "/api/run":
-            run_ml_pipeline()
-            json_path = os.path.join(BASE_DIR, "dashboard_data.json")
-            self.send_response(200)
-            self.send_header("Content-type", "application/json")
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.end_headers()
-            with open(json_path, "rb") as f:
-                self.wfile.write(f.read())
+            if os.path.exists(json_path):
+                self.send_response(200)
+                self.send_header("Content-type", "application/json")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
+                with open(json_path, "rb") as f:
+                    self.wfile.write(f.read())
+            else:
+                self.send_response(500)
+                self.send_header("Content-type", "application/json")
+                self.end_headers()
+                self.wfile.write(b'{"error": "dashboard_data.json not found"}')
             return
         return super().do_GET()
 

@@ -3,6 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="InterTech Task Prediction & Delay Intelligence Platform for project delay forecasting and mitigation planning.">
+  <meta name="canonical" content="https://intertechtaskprediction.vercel.app">
+  <meta property="og:url" content="https://intertechtaskprediction.vercel.app">
+  <meta property="og:title" content="InterTech™ | Task Prediction & Delay Intelligence Platform">
+  <meta property="og:description" content="AI-powered delay risk monitoring for project execution and mitigation planning.">
   <title>InterTech™ | Task Prediction & Delay Intelligence Platform</title>
   
   <!-- Modern Fonts -->
@@ -2065,21 +2070,59 @@
       runSimulation();
     });
 
+    function resolveChampionModel(cvData = {}, fallback = '') {
+      const entries = Object.entries(cvData || {});
+      if (!entries.length) return fallback || '';
+
+      return entries.reduce((best, current) => {
+        const [, bestMeta] = best;
+        const [, currentMeta] = current;
+        const bestScore = Number(bestMeta?.f1 ?? bestMeta?.mean ?? bestMeta?.acc ?? bestMeta?.auc ?? bestMeta?.auc_roc ?? 0);
+        const currentScore = Number(currentMeta?.f1 ?? currentMeta?.mean ?? currentMeta?.acc ?? currentMeta?.auc ?? currentMeta?.auc_roc ?? 0);
+
+        if (currentScore > bestScore) return current;
+        if (currentScore === bestScore) {
+          const bestAuc = Number(bestMeta?.auc ?? bestMeta?.auc_roc ?? 0);
+          const currentAuc = Number(currentMeta?.auc ?? currentMeta?.auc_roc ?? 0);
+          return currentAuc > bestAuc ? current : best;
+        }
+        return best;
+      }, entries[0])[0];
+    }
+
     function loadData() {
       if (window.location.protocol.startsWith('http')) {
-        fetch('/api/data')
-          .then(res => res.json())
-          .then(data => {
+        const candidates = ['/api/data', './dashboard_data.json', './public/dashboard_data.json'];
+
+        const loadDataset = async (index = 0) => {
+          if (index >= candidates.length) {
+            console.warn('No live dataset found; using embedded sample only.');
+            renderDashboard();
+            return;
+          }
+
+          try {
+            const res = await fetch(candidates[index]);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const data = await res.json();
             if (data && data.tasks) {
+              const cvData = data.meta?.cv_accuracy || {};
+              const computedChampion = resolveChampionModel(cvData, data.meta?.champion || '');
+              data.meta = data.meta || {};
+              data.meta.champion = computedChampion || data.meta.champion || '';
+              data.meta.champion_metrics = cvData[data.meta.champion] || data.meta.champion_metrics || {};
               APP_DATA = data;
-              document.getElementById('last-sync-time').innerText = `Synced: ${new Date().toLocaleTimeString()} · Live`;
+              const syncEl = document.getElementById('last-sync-time');
+              if (syncEl) syncEl.innerText = `Synced: ${new Date().toLocaleTimeString()} · Live`;
             }
             renderDashboard();
-          })
-          .catch(err => {
-            console.warn('Fallback to embedded dataset:', err);
-            renderDashboard();
-          });
+          } catch (err) {
+            console.warn(`Dataset fetch failed for ${candidates[index]}, trying next source:`, err);
+            loadDataset(index + 1);
+          }
+        };
+
+        loadDataset();
       } else {
         renderDashboard();
       }
@@ -2097,8 +2140,12 @@
 
     function renderOverviewKPIs() {
       const meta = APP_DATA.meta || {};
-      document.getElementById('kpi-total-tasks').innerText = meta.total_tasks || APP_DATA.tasks.length;
-      document.getElementById('kpi-delay-rate').innerText = '66.7%';
+      meta.champion = resolveChampionModel(meta.cv_accuracy || {}, meta.champion || '');
+      const totTasks = meta.total_tasks || APP_DATA.tasks.length;
+      const delTasks = meta.delayed_tasks != null ? meta.delayed_tasks : APP_DATA.tasks.filter(t => t.actual === 'Delayed' || (t.delay != null && t.delay > 0)).length;
+      const delayRate = totTasks > 0 ? ((delTasks / totTasks) * 100).toFixed(1) : '0.0';
+      document.getElementById('kpi-total-tasks').innerText = totTasks;
+      document.getElementById('kpi-delay-rate').innerText = `${delayRate}%`;
       document.getElementById('kpi-avg-delay').innerText = `+${meta.avg_delay_days || 4.7}d`;
       document.getElementById('kpi-open-risk').innerText = meta.open_tasks || 8;
       document.getElementById('badge-total-tasks').innerText = APP_DATA.tasks.length;
@@ -2190,9 +2237,11 @@
     function renderModelStrip() {
       const container = document.getElementById('models-strip-container');
       if (!container) return;
-      const cvData   = (APP_DATA.meta || {}).cv_accuracy || {};
-      const champion = (APP_DATA.meta || {}).champion || '';
-      const calibrated = (APP_DATA.meta || {}).calibrated;
+      const meta = APP_DATA.meta || {};
+      const cvData = meta.cv_accuracy || {};
+      meta.champion = resolveChampionModel(cvData, meta.champion || '');
+      const champion = meta.champion || '';
+      const calibrated = meta.calibrated;
 
       if (!Object.keys(cvData).length) return;
 

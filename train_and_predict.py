@@ -359,26 +359,31 @@ def classify_risk(p):
 
 df["risk_cat"]       = df["delay_prob"].apply(classify_risk)
 df["actual_delayed"] = df["is_delayed"].map({1: "Delayed", 0: "On-time"})
-df.loc[df["Status"] == "Open", "actual_delayed"] = "Unknown"
+df.loc[df["Status"] != "Closed", "actual_delayed"] = "Unknown"
 
 # Feature importance
 feat_imp_export = {}
 try:
     src = base_champion
     if hasattr(src, "estimators_"):
-        for _, est in src.estimators_:
+        for est in src.estimators_:
             if hasattr(est, "feature_importances_"):
                 src = est
                 break
     if hasattr(src, "feature_importances_"):
         fi = pd.Series(src.feature_importances_, index=FEATURES).sort_values(ascending=False)
-        feat_imp_export = {k: round(v * 100, 1) for k, v in fi.items()}
+        feat_imp_export = {str(k): round(float(v) * 100, 2) for k, v in fi.items()}
     elif hasattr(src, "coef_"):
         coefs = np.abs(src.coef_[0])
-        coefs = coefs / coefs.sum() * 100
-        feat_imp_export = {k: round(float(v), 1)
+        total_c = coefs.sum()
+        if total_c > 0:
+            coefs = coefs / total_c * 100
+        feat_imp_export = {str(k): round(float(v), 2)
                            for k, v in sorted(zip(FEATURES, coefs), key=lambda x: x[1], reverse=True)}
-except Exception:
+    else:
+        feat_imp_export = {f: 0.0 for f in FEATURES}
+except Exception as e:
+    print(f"[!] Feature importance error: {e}")
     feat_imp_export = {f: 0.0 for f in FEATURES}
 
 # Mitigation alerts
