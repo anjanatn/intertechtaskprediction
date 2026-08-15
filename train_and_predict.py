@@ -59,9 +59,9 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 csv_path = None
 for candidate in [
-    os.path.join(BASE_DIR, "SAMPLE DATA(Book2).csv"),
-    os.path.join(BASE_DIR, "..", "SAMPLE DATA(Book2).csv"),
     os.path.join(BASE_DIR, "simulated_project_delay_dataset_1000.csv"),
+    os.path.join(BASE_DIR, "SAMPLE DATA(Book2).csv"),
+    os.path.join(BASE_DIR, "..", "simulated_project_delay_dataset_1000.csv"),
     os.path.join(BASE_DIR, "project_data.csv"),
 ]:
     if os.path.exists(candidate):
