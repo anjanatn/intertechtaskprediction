@@ -1,0 +1,8 @@
+{
+  "name": "intertechlivedashboard",
+  "version": "1.0.0",
+  "description": "InterTech PRJ001 Project Delay Intelligence & Mitigation Platform",
+  "scripts": {
+    "start": "python server.py"
+  }
+}

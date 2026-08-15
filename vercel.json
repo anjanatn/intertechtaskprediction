@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "name": "intertechtaskprediction",
+  "outputDirectory": ".",
+  "rewrites": [
+    { "source": "/api/data", "destination": "/api/data.js" },
+    { "source": "/api/run", "destination": "/api/run.js" },
+    { "source": "/api/assistant", "destination": "/api/assistant.js" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    }
+  ]
+}

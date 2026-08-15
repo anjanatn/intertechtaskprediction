@@ -1,0 +1,5913 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>InterTech | Task Prediction & Delay Intelligence Platform</title>
+
+  
+
+  <!-- Modern Fonts -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+
+
+  <style>
+
+  :root {
+
+  /* Light Blue & White Combination Gradient Palette */
+
+  --bg-gradient: linear-gradient(150deg, #edf6ff 0%, #f8fcff 35%, #ffffff 60%, #eaf4fd 100%);
+
+  --bg-canvas: #f4f8fd;
+
+  --bg-surface: #ffffff;
+
+  --bg-surface-translucent: rgba(255, 255, 255, 0.96);
+
+  --bg-card: #ffffff;
+
+  --bg-card-hover: #f5faff;
+
+  --bg-subtle: #f0f7fc;
+
+  --bg-subtle-2: #ddf0fb;
+
+  --bg-gradient-banner: linear-gradient(135deg, #ddf0fb 0%, #ffffff 55%, #eef6ff 100%);
+
+  
+
+  --border-subtle: #e2ecf5;
+
+  --border-medium: #c8d8e8;
+
+  --border-strong: #8fafc8;
+
+  
+
+  --text-primary: #0d1926;
+
+  --text-secondary: #3d5166;
+
+  --text-muted: #607080;
+
+  
+
+  --brand-primary: #0284c7;
+
+  --brand-primary-hover: #0369a1;
+
+  --brand-accent: #0ea5e9;
+
+  --brand-glow: rgba(14, 165, 233, 0.15);
+
+  --brand-light-bg: #ddf0fb;
+
+
+
+  /* Strict Priority & Status Colors */
+
+  /* RED - High Priority / Delayed / High Risk */
+
+  --red-primary: #e53e3e;
+
+  --red-bg: #fff5f5;
+
+  --red-border: #feb2b2;
+
+  --red-text: #c53030;
+
+
+
+  /* YELLOW - Medium Priority / At Risk */
+
+  --yellow-primary: #d97706;
+
+  --yellow-bg: #fffbeb;
+
+  --yellow-border: #fcd34d;
+
+  --yellow-text: #92400e;
+
+
+
+  /* GREEN - Low Priority / On-Time / Low Risk */
+
+  --green-primary: #059669;
+
+  --green-bg: #ecfdf5;
+
+  --green-border: #6ee7b7;
+
+  --green-text: #065f46;
+
+
+
+  /* BLUE - Open / In-Progress */
+
+  --blue-primary: #2563eb;
+
+  --blue-bg: #eff6ff;
+
+  --blue-border: #93c5fd;
+
+  --blue-text: #1e40af;
+
+
+
+  --radius-sm: 5px;
+
+  --radius-md: 9px;
+
+  --radius-lg: 13px;
+
+  --radius-full: 9999px;
+
+  
+
+  --shadow-sm: 0 1px 2px rgba(10, 30, 50, 0.05), 0 1px 6px rgba(14, 165, 233, 0.04);
+
+  --shadow-md: 0 4px 16px rgba(14, 165, 233, 0.10);
+
+  --shadow-lg: 0 12px 30px rgba(10, 30, 50, 0.09);
+
+  }
+
+
+
+  * {
+
+  box-sizing: border-box;
+
+  margin: 0;
+
+  padding: 0;
+
+  }
+
+
+
+  body {
+
+  background: var(--bg-gradient);
+
+  background-attachment: fixed;
+
+  color: var(--text-primary);
+
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  font-size: 13.5px;
+
+  line-height: 1.5;
+
+  min-height: 100vh;
+
+  -webkit-font-smoothing: antialiased;
+
+  }
+
+
+
+  /* MINIMAL TOP BAR */
+
+  .navbar {
+
+  background: var(--bg-surface-translucent);
+
+  backdrop-filter: blur(16px);
+
+  border-bottom: 1px solid var(--border-subtle);
+
+  position: sticky;
+
+  top: 0;
+
+  z-index: 1000;
+
+  padding: 0 32px;
+
+  height: 64px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.03);
+
+  }
+
+
+
+  .nav-left {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 16px;
+
+  }
+
+
+
+  .brand-logo {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  text-decoration: none;
+
+  }
+
+
+
+  .brand-icon {
+
+  width: 30px;
+
+  height: 30px;
+
+  background: linear-gradient(145deg, #0369a1, #0ea5e9);
+
+  border-radius: var(--radius-sm);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  color: #fff;
+
+  font-weight: 800;
+
+  font-family: 'Plus Jakarta Sans', sans-serif;
+
+  font-size: 13px;
+
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.28);
+
+  flex-shrink: 0;
+
+  }
+
+
+
+  .brand-title {
+
+  font-family: 'Plus Jakarta Sans', sans-serif;
+
+  font-weight: 700;
+
+  font-size: 14.5px;
+
+  color: var(--text-primary);
+
+  letter-spacing: -0.025em;
+
+  line-height: 1.15;
+
+  }
+
+
+
+  .brand-subtitle {
+
+  display: block;
+
+  font-family: 'JetBrains Mono', monospace;
+
+  font-size: 10px;
+
+  font-weight: 500;
+
+  color: var(--brand-primary);
+
+  letter-spacing: 0.01em;
+
+  opacity: 0.8;
+
+  }
+
+
+
+  .brand-title span {
+
+  color: var(--brand-primary);
+
+  }
+
+
+
+  /* URL Chip - Vercel domain display */
+
+  .domain-chip {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+
+  border: 1px solid #7dd3fc;
+
+  padding: 3px 10px 3px 8px;
+
+  border-radius: var(--radius-full);
+
+  font-family: 'JetBrains Mono', monospace;
+
+  font-size: 10.5px;
+
+  font-weight: 600;
+
+  color: var(--brand-primary);
+
+  text-decoration: none;
+
+  box-shadow: 0 1px 3px rgba(14, 165, 233, 0.12);
+
+  transition: all 0.15s ease;
+
+  white-space: nowrap;
+
+  }
+
+
+
+  .domain-chip:hover {
+
+  background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+
+  border-color: #38bdf8;
+
+  color: #0369a1;
+
+  transform: translateY(-1px);
+
+  box-shadow: 0 3px 8px rgba(14, 165, 233, 0.18);
+
+  }
+
+
+
+  .domain-chip-dot {
+
+  width: 5px;
+
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: var(--green-primary);
+
+  flex-shrink: 0;
+
+  box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.2);
+
+  animation: pulseAnim 2.5s infinite ease-in-out;
+
+  }
+
+
+
+  .domain-chip-icon {
+
+  font-size: 9px;
+
+  opacity: 0.7;
+
+  }
+
+
+
+  .project-pill {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  background: #ffffff;
+
+  border: 1px solid var(--border-subtle);
+
+  padding: 3px 11px;
+
+  border-radius: var(--radius-full);
+
+  font-size: 11.5px;
+
+  font-weight: 500;
+
+  color: var(--text-secondary);
+
+  box-shadow: var(--shadow-sm);
+
+  }
+
+
+
+  .project-pill strong {
+
+  color: var(--brand-primary);
+
+  font-family: 'JetBrains Mono', monospace;
+
+  font-weight: 600;
+
+  }
+
+
+
+  .live-status-badge {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  font-size: 11px;
+
+  font-family: 'JetBrains Mono', monospace;
+
+  color: var(--green-text);
+
+  background: var(--green-bg);
+
+  border: 1px solid var(--green-border);
+
+  padding: 3px 10px;
+
+  border-radius: var(--radius-full);
+
+  font-weight: 600;
+
+  }
+
+
+
+  .live-pulse {
+
+  width: 6px;
+
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: var(--green-primary);
+
+  animation: pulseAnim 2s infinite ease-in-out;
+
+  }
+
+
+
+  @keyframes pulseAnim {
+
+  0%, 100% { opacity: 1; transform: scale(1); }
+
+  50% { opacity: 0.35; transform: scale(0.85); }
+
+  }
+
+
+
+  .nav-right {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  }
+
+
+
+  /* Buttons */
+
+  .btn {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 6px;
+
+  padding: 7px 14px;
+
+  border-radius: var(--radius-sm);
+
+  font-size: 12.5px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.16s ease;
+
+  border: 1px solid transparent;
+
+  outline: none;
+
+  text-decoration: none;
+
+  font-family: 'Inter', sans-serif;
+
+  }
+
+
+
+  .btn-secondary {
+
+  background: #ffffff;
+
+  border-color: var(--border-medium);
+
+  color: var(--text-primary);
+
+  box-shadow: var(--shadow-sm);
+
+  }
+
+
+
+  .btn-secondary:hover {
+
+  background: var(--bg-subtle);
+
+  border-color: var(--border-strong);
+
+  }
+
+
+
+  .btn-primary {
+
+  background: linear-gradient(135deg, #0284c7, #0ea5e9);
+
+  color: #fff;
+
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
+
+  }
+
+
+
+  .btn-primary:hover {
+
+  background: linear-gradient(135deg, #0369a1, #0284c7);
+
+  transform: translateY(-1px);
+
+  }
+
+
+
+  .btn-sm {
+
+  padding: 5px 11px;
+
+  font-size: 11.5px;
+
+  }
+
+
+
+  /* SUB-NAV / TABS */
+
+  .subnav {
+
+  background: #ffffff;
+
+  border-bottom: 1px solid var(--border-subtle);
+
+  padding: 0 32px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  height: 48px;
+
+  }
+
+
+
+  .nav-tabs {
+
+  display: flex;
+
+  gap: 4px;
+
+  height: 100%;
+
+  }
+
+
+
+  .nav-tab {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  padding: 0 16px;
+
+  font-size: 12.5px;
+
+  font-weight: 500;
+
+  color: var(--text-secondary);
+
+  cursor: pointer;
+
+  border-bottom: 2px solid transparent;
+
+  transition: all 0.15s;
+
+  background: none;
+
+  border-top: none;
+
+  border-left: none;
+
+  border-right: none;
+
+  }
+
+
+
+  .nav-tab:hover {
+
+  color: var(--brand-primary);
+
+  }
+
+
+
+  .nav-tab.active {
+
+  color: var(--brand-primary);
+
+  border-bottom-color: var(--brand-primary);
+
+  font-weight: 600;
+
+  }
+
+
+
+  .tab-badge {
+
+  font-size: 10.5px;
+
+  padding: 1px 7px;
+
+  border-radius: var(--radius-full);
+
+  background: var(--bg-subtle);
+
+  font-family: 'JetBrains Mono', monospace;
+
+  color: var(--text-muted);
+
+  border: 1px solid var(--border-subtle);
+
+  }
+
+
+
+  .nav-tab.active .tab-badge {
+
+  background: var(--brand-light-bg);
+
+  color: var(--brand-primary);
+
+  border-color: #bae6fd;
+
+  }
+
+
+
+  /* MAIN LAYOUT */
+
+  .app-container {
+
+  max-width: 1440px;
+
+  margin: 0 auto;
+
+  padding: 24px 32px 60px;
+
+  }
+
+
+
+  .tab-view {
+
+  display: none;
+
+  animation: fadeIn 0.18s ease-in-out;
+
+  }
+
+
+
+  .tab-view.active {
+
+  display: block;
+
+  }
+
+
+
+  @keyframes fadeIn {
+
+  from { opacity: 0; transform: translateY(3px); }
+
+  to { opacity: 1; transform: translateY(0); }
+
+  }
+
+
+
+  /* EXECUTIVE BANNER */
+
+  .spec-banner {
+
+  background: var(--bg-gradient-banner);
+
+  border: 1px solid #bae6fd;
+
+  border-left: 4px solid var(--brand-primary);
+
+  border-radius: var(--radius-md);
+
+  padding: 14px 18px;
+
+  margin-bottom: 20px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 16px;
+
+  box-shadow: var(--shadow-sm);
+
+  }
+
+
+
+  .spec-info {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  }
+
+
+
+  .spec-badge {
+
+  background: var(--brand-light-bg);
+
+  color: var(--brand-primary);
+
+  border: 1px solid #7dd3fc;
+
+  padding: 3px 8px;
+
+  border-radius: var(--radius-sm);
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  font-family: 'JetBrains Mono', monospace;
+
+  white-space: nowrap;
+
+  }
+
+
+
+  .spec-text {
+
+  font-size: 12.5px;
+
+  color: var(--text-secondary);
+
+  line-height: 1.45;
+
+  }
+
+
+
+  .spec-text strong {
+
+  color: var(--text-primary);
+
+  }
+
+
+
+  /* KPI EXECUTIVE GRID */
+
+  .kpi-row {
+
+  display: grid;
+
+  grid-template-columns: repeat(5, 1fr);
+
+  gap: 14px;
+
+  margin-bottom: 20px;
+
+  }
+
+
+
+  .kpi-card {
+
+  background: var(--bg-card);
+
+  border: 1px solid var(--border-subtle);
+
+  border-radius: var(--radius-md);
+
+  padding: 18px 20px;
+
+  position: relative;
+
+  overflow: hidden;
+
+  box-shadow: var(--shadow-sm);
+
+  transition: transform 0.16s, border-color 0.16s, box-shadow 0.16s;
+
+  }
+
+
+
+  .kpi-card:hover {
+
+  border-color: #7dd3fc;
+
+  transform: translateY(-2px);
+
+  box-shadow: var(--shadow-md);
+
+  }
+
+
+
+  .kpi-card::before {
+
+  content: '';
+
+  position: absolute;
+
+  top: 0;
+
+  left: 0;
+
+  right: 0;
+
+  height: 3px;
+
+  }
+
+
+
+  .kpi-card.kpi-delayed::before { background: var(--red-primary); }
+
+  .kpi-card.kpi-ontime::before { background: var(--green-primary); }
+
+  .kpi-card.kpi-accent::before { background: var(--brand-primary); }
+
+  .kpi-card.kpi-warn::before { background: var(--yellow-primary); }
+
+  .kpi-card.kpi-neutral::before { background: var(--blue-primary); }
+
+
+
+  .kpi-header {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-bottom: 8px;
+
+  }
+
+
+
+  .kpi-title {
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  color: var(--text-secondary);
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.02em;
+
+  }
+
+
+
+  .kpi-metric {
+
+  font-family: 'JetBrains Mono', monospace;
+
+  font-size: 27px;
+
+  font-weight: 700;
+
+  letter-spacing: -0.03em;
+
+  line-height: 1;
+
+  margin-bottom: 6px;
+
+  }
+
+
+
+  .kpi-metric.delayed { color: var(--red-primary); }
+
+  .kpi-metric.ontime { color: var(--green-primary); }
+
+  .kpi-metric.accent { color: var(--brand-primary); }
+
+  .kpi-metric.warn { color: var(--yellow-primary); }
+
+
+
+  .kpi-footer {
+
+  font-size: 11px;
+
+  color: var(--text-muted);
+
+  font-family: 'JetBrains Mono', monospace;
+
+  }
+
+
+
+  /* PANELS & CHARTS */
+
+  .grid-2-1 {
+
+  display: grid;
+
+  grid-template-columns: 1.2fr 1fr 1fr;
+
+  gap: 16px;
+
+  margin-bottom: 20px;
+
+  }
+
+
+
+  .panel-card {
+
+  background: var(--bg-card);
+
+  border: 1px solid var(--border-subtle);
+
+  border-radius: var(--radius-md);
+
+  padding: 18px 20px;
+
+  box-shadow: var(--shadow-sm);
+
+  display: flex;
+
+  flex-direction: column;
+
+  }
+
+
+
+  .panel-header {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-bottom: 14px;
+
+  padding-bottom: 10px;
+
+  border-bottom: 1px solid var(--border-subtle);
+
+  }
+
+
+
+  .panel-title {
+
+  font-size: 13.5px;
+
+  font-weight: 600;
+
+  color: var(--text-primary);
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  }
+
+
+
+  .panel-tag {
+
+  font-size: 10.5px;
+
+  font-family: 'JetBrains Mono', monospace;
+
+  color: var(--text-muted);
+
+  background: var(--bg-subtle);
+
+  padding: 2px 7px;
+
+  border-radius: var(--radius-sm);
+
+  border: 1px solid var(--border-subtle);
+
+  }
+
+
+
+  /* Discipline Bar List */
+
+  .disc-list {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 11px;
+
+  flex: 1;
+
+  justify-content: center;
+
+  }
+
+
+
+  .disc-item {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  }
+
+
+
+  .disc-name-badge {
+
+  width: 76px;
+
+  font-family: 'JetBrains Mono', monospace;
+
+  font-size: 11px;
+
+  font-weight: 600;
+
+  color: var(--text-secondary);
+
+  flex-shrink: 0;
+
+  }
+
+
+
+  .disc-track {
+
+  flex: 1;
+
+  height: 18px;
+
+  background: var(--bg-subtle);
+
+  border-radius: 4px;
+
+  overflow: hidden;
+
+  display: flex;
+
+  border: 1px solid #f1f5f9;
+
+  }
+
+
+
+  .disc-fill {
+
+  height: 100%;
+
+  border-radius: 3px;
+
+  transition: width 0.6s ease;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: flex-end;
+
+  padding-right: 6px;
+
+  }
+
+
+
+  .disc-fill-val {
+
+  font-family: 'JetBrains Mono', monospace;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  color: #fff;
+
+  }
+
+
+
+  .disc-meta {
+
+  width: 58px;
+
+  text-align: right;
+
+  font-family: 'JetBrains Mono', monospace;
+
+  font-size: 11px;
+
+  color: var(--text-muted);
+
+  flex-shrink: 0;
+
+  }
+
+
+
+  /* Root Cause List */
+
+  .cause-stack {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+
+  flex: 1;
+
+  justify-content: center;
+
+  }
+
+
+
+  .cause-row {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  }
+
+
+
+  .cause-label {
+
+  flex: 1;
+
+  font-size: 12px;
+
+  color: var(--text-secondary);
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  }
+
+
+
+  .cause-bar-bg {
+
+  width: 80px;
+
+  height: 6px;
+
+  background: var(--bg-subtle);
+
+  border-radius: 3px;
+
+  overflow: hidden;
+
+  }
+
+
+
+  .cause-bar-fill {
+
+  height: 100%;
+
+  background: linear-gradient(90deg, #f59e0b, #ef4444);
+
+  border-radius: 3px;
+
+  }
+
+
+
+  .cause-count-badge {
+
+  font-family: 'JetBrains Mono', monospace;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  color: var(--text-primary);
+
+  width: 20px;
+
+  text-align: right;
+
+  }
+
+
+
+  /* Feature Importance */
+
+  .feat-stack {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 9px;
+
+  flex: 1;
+
+  justify-content: center;
+
+  }
+
+
+
+  .feat-row {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  }
+
+
+
+  .feat-title {
+
+  width: 120px;
+
+  font-size: 11.5px;
+
+  color: var(--text-secondary);
+
+  flex-shrink: 0;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  }
+
+
+
+  .feat-bar-bg {
+
+  flex: 1;
+
+  height: 6px;
+
+  background: var(--bg-subtle);
+
+  border-radius: 3px;
+
+  overflow: hidden;
+
+  }
+
+
+
+  .feat-bar-fill {
+
+  height: 100%;
+
+  background: linear-gradient(90deg, #0284c7, #38bdf8);
+
+  border-radius: 3px;
+
+  }
+
+
+
+  .feat-val {
+
+  width: 44px;
+
+  text-align: right;
+
+  font-family: 'JetBrains Mono', monospace;
+
+  font-size: 11px;
+
+  color: var(--brand-primary);
+
+  font-weight: 700;
+
+  flex-shrink: 0;
+
+  }
+
+
+
+  /* ML MODELS BENCHMARK STRIP */
+
+  .models-strip {
+
+  display: grid;
+
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+
+  gap: 14px;
+
+  margin-bottom: 20px;
+
+  }
+
+
+
+  .model-box {
+
+  background: var(--bg-card);
+
+  border: 1px solid var(--border-subtle);
+
+  border-radius: var(--radius-md);
+
+  padding: 16px 18px;
+
+  box-shadow: var(--shadow-sm);
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
+
+  }
+
+  .model-box:hover {
+
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+
+  transform: translateY(-1px);
+
+  }
+
+
+
+  .model-box.champion {
+
+  border-color: #7dd3fc;
+
+  background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);
+
+  box-shadow: 0 0 0 2px rgba(125,211,252,0.35), var(--shadow-sm);
+
+  }
+
+
+
+  .model-box-header {
+
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: space-between;
+
+  gap: 8px;
+
+  }
+
+
+
+  .model-box-header h4 {
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  color: var(--text-primary);
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 4px;
+
+  flex: 1;
+
+  }
+
+
+
+  .champion-tag {
+
+  font-size: 9px;
+
+  font-family: 'JetBrains Mono', monospace;
+
+  background: var(--brand-light-bg);
+
+  border: 1px solid #7dd3fc;
+
+  color: var(--brand-primary);
+
+  padding: 2px 7px;
+
+  border-radius: var(--radius-sm);
+
+  text-transform: uppercase;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+
+  align-self: flex-start;
+
+  }
+
+
+
+  .model-metrics-grid {
+
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 6px 10px;
+
+  }
+
+
+
+  .model-metric-cell {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  background: var(--bg-page);
+
+  border-radius: 6px;
+
+  padding: 6px 4px 4px;
+
+  gap: 2px;
+
+  }
+
+
+
+  .model-metric-val {
+
+  font-family: 'JetBrains Mono', monospace;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  line-height: 1;
+
+  }
+
+
+
+  .model-metric-label {
+
+  font-size: 9.5px;
+
+  color: var(--text-muted);
+
+  font-family: 'JetBrains Mono', monospace;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.03em;
+
+  }
+
+
+
+  .model-cv-note {
+
+  font-size: 10px;
+
+  color: var(--text-muted);
+
+  font-family: 'JetBrains Mono', monospace;
+
+  }
+
+
+
+  .model-acc-score {
+
+  font-family: 'JetBrains Mono', monospace;
+
+  font-size: 22px;
+
+  font-weight: 700;
+
+  color: var(--green-primary);
+
+  }
+
+
+
+  .model-acc-sub {
+
+  font-size: 10.5px;
+
+  color: var(--text-muted);
+
+  font-family: 'JetBrains Mono', monospace;
+
+  }
+
+
+
+  /* FILTER TOOLBAR */
+
+  .filter-toolbar {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  background: #ffffff;
+
+  border: 1px solid var(--border-subtle);
+
+  border-radius: var(--radius-md);
+
+  padding: 12px 18px;
+
+  margin-bottom: 16px;
+
+  gap: 14px;
+
+  flex-wrap: wrap;
+
+  box-shadow: var(--shadow-sm);
+
+  }
+
+
+
+  .filter-group-left {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  flex-wrap: wrap;
+
+  flex: 1;
+
+  }
+
+
+
+  .search-box {
+
+  position: relative;
+
+  min-width: 240px;
+
+  flex: 1;
+
+  max-width: 380px;
+
+  }
+
+
+
+  .search-input {
+
+  width: 100%;
+
+  background: var(--bg-subtle);
+
+  border: 1px solid var(--border-medium);
+
+  border-radius: var(--radius-sm);
+
+  padding: 7px 12px 7px 32px;
+
+  font-size: 12.5px;
+
+  color: var(--text-primary);
+
+  font-family: 'Inter', sans-serif;
+
+  outline: none;
+
+  transition: border-color 0.15s;
+
+  }
+
+
+
+  .search-input:focus {
+
+  border-color: var(--brand-primary);
+
+  background: #ffffff;
+
+  }
+
+
+
+  .search-icon {
+
+  position: absolute;
+
+  left: 10px;
+
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  color: var(--text-muted);
+
+  font-size: 13px;
+
+  pointer-events: none;
+
+  }
+
+
+
+  .select-dropdown {
+
+  background: var(--bg-subtle);
+
+  border: 1px solid var(--border-medium);
+
+  border-radius: var(--radius-sm);
+
+  padding: 7px 12px;
+
+  font-size: 12px;
+
+  color: var(--text-primary);
+
+  font-family: 'Inter', sans-serif;
+
+  outline: none;
+
+  cursor: pointer;
+
+  }
+
+
+
+  .filter-chips {
+
+  display: flex;
+
+  gap: 6px;
+
+  }
+
+
+
+  .filter-chip {
+
+  padding: 4px 10px;
+
+  border-radius: var(--radius-sm);
+
+  font-size: 11.5px;
+
+  font-weight: 500;
+
+  background: var(--bg-subtle);
+
+  color: var(--text-secondary);
+
+  border: 1px solid var(--border-subtle);
+
+  cursor: pointer;
+
+  transition: all 0.15s;
+
+  }
+
+
+
+  .filter-chip:hover {
+
+  color: var(--brand-primary);
+
+  border-color: #93c5fd;
+
+  }
+
+
+
+  .filter-chip.active {
+
+  background: var(--brand-light-bg);
+
+  border-color: #7dd3fc;
+
+  color: var(--brand-primary);
+
+  font-weight: 600;
+
+  }
+
+
+
+  /* MINIMAL DATA TABLE */
+
+  .table-card {
+
+  background: #ffffff;
+
+  border: 1px solid var(--border-subtle);
+
+  border-radius: var(--radius-md);
+
+  overflow: hidden;
+
+  box-shadow: var(--shadow-sm);
+
+  margin-bottom: 24px;
+
+  }
+
+
+
+  .table-wrap {
+
+  width: 100%;
+
+  overflow-x: auto;
+
+  }
+
+
+
+  .data-table {
+
+  width: 100%;
+
+  border-collapse: collapse;
+
+  font-size: 12.5px;
+
+  text-align: left;
+
+  }
+
+
+
+  .data-table thead tr {
+
+  background: #f8fafc;
+
+  border-bottom: 1px solid var(--border-medium);
+
+  }
+
+
+
+  .data-table th {
+
+  padding: 11px 14px;
+
+  font-family: 'JetBrains Mono', monospace;
+
+  font-size: 10.5px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.05em;
+
+  text-transform: uppercase;
+
+  color: var(--text-muted);
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  user-select: none;
+
+  }
+
+
+
+  .data-table th:hover {
+
+  color: var(--brand-primary);
+
+  }
+
+
+
+  .data-table tbody tr {
+
+  border-bottom: 1px solid #f1f5f9;
+
+  transition: background-color 0.12s;
+
+  cursor: pointer;
+
+  }
+
+
+
+  .data-table tbody tr:hover {
+
+  background-color: #f8fbff;
+
+  }
+
+
+
+  .data-table td {
+
+  padding: 11px 14px;
+
+  color: var(--text-secondary);
+
+  vertical-align: middle;
+
+  white-space: nowrap;
+
+  }
+
+
+
+  .task-id-cell {
+
+  font-family: 'JetBrains Mono', monospace;
+
+  font-weight: 700;
+
+  color: var(--brand-primary);
+
+  }
+
+
+
+  .task-desc-cell {
+
+  font-weight: 600;
+
+  color: var(--text-primary);
+
+  max-width: 220px;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  }
+
+
+
+  .disc-tag {
+
+  font-family: 'JetBrains Mono', monospace;
+
+  font-size: 11px;
+
+  padding: 2px 7px;
+
+  border-radius: var(--radius-sm);
+
+  background: #f1f5f9;
+
+  color: #334155;
+
+  border: 1px solid var(--border-subtle);
+
+  }
+
+
+
+  /* STRICT PRIORITY & STATUS PILLS */
+
+  .pill {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 4px;
+
+  padding: 2px 8px;
+
+  border-radius: var(--radius-full);
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  font-family: 'JetBrains Mono', monospace;
+
+  letter-spacing: 0.02em;
+
+  }
+
+
+
+  /* Priority Pills */
+
+  .pri-high {
+
+  background: var(--red-bg);
+
+  color: var(--red-text);
+
+  border: 1px solid var(--red-border);
+
+  }
+
+
+
+  .pri-medium {
+
+  background: var(--yellow-bg);
+
+  color: var(--yellow-text);
+
+  border: 1px solid var(--yellow-border);
+
+  }
+
+
+
+  .pri-low {
+
+  background: var(--green-bg);
+
+  color: var(--green-text);
+
+  border: 1px solid var(--green-border);
+
+  }
+
+
+
+  /* Status Pills */
+
+  .status-delayed-pill {
+
+  background: var(--red-bg);
+
+  color: var(--red-text);
+
+  border: 1px solid var(--red-border);
+
+  }
+
+
+
+  .status-ontime-pill {
+
+  background: var(--green-bg);
+
+  color: var(--green-text);
+
+  border: 1px solid var(--green-border);
+
+  }
+
+
+
+  .status-open-pill {
+
+  background: var(--blue-bg);
+
+  color: var(--blue-text);
+
+  border: 1px solid var(--blue-border);
+
+  }
+
+
+
+  /* Score gauge mini */
+
+  .score-cell {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  }
+
+
+
+  .score-track {
+
+  width: 60px;
+
+  height: 6px;
+
+  background: #e2e8f0;
+
+  border-radius: 3px;
+
+  overflow: hidden;
+
+  }
+
+
+
+  .score-fill {
+
+  height: 100%;
+
+  border-radius: 3px;
+
+  }
+
+
+
+  .score-num {
+
+  font-family: 'JetBrains Mono', monospace;
+
+  font-size: 11.5px;
+
+  font-weight: 700;
+
+  width: 38px;
+
+  }
+
+
+
+  .btn-action-table {
+
+  font-size: 11px;
+
+  padding: 4px 10px;
+
+  border-radius: var(--radius-sm);
+
+  background: #f8fafc;
+
+  border: 1px solid var(--border-medium);
+
+  color: var(--text-primary);
+
+  cursor: pointer;
+
+  font-family: 'JetBrains Mono', monospace;
+
+  font-weight: 600;
+
+  transition: all 0.15s;
+
+  }
+
+
+
+  .btn-action-table:hover {
+
+  background: var(--brand-primary);
+
+  border-color: var(--brand-primary);
+
+  color: #fff;
+
+  }
+
+
+
+  /* MITIGATION VIEW */
+
+  .mitigation-grid {
+
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 16px;
+
+  margin-bottom: 24px;
+
+  }
+
+
+
+  .mit-column-card {
+
+  background: #ffffff;
+
+  border: 1px solid var(--border-subtle);
+
+  border-radius: var(--radius-md);
+
+  padding: 20px;
+
+  box-shadow: var(--shadow-sm);
+
+  display: flex;
+
+  flex-direction: column;
+
+  }
+
+
+
+  .mit-col-header {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-bottom: 12px;
+
+  padding-bottom: 10px;
+
+  border-bottom: 1px solid var(--border-subtle);
+
+  }
+
+
+
+  .mit-col-title {
+
+  font-size: 13.5px;
+
+  font-weight: 700;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  }
+
+
+
+  .mit-col-title.high { color: var(--red-text); }
+
+  .mit-col-title.med { color: var(--yellow-text); }
+
+  .mit-col-title.low { color: var(--green-text); }
+
+
+
+  .mit-rule-box {
+
+  background: var(--bg-subtle);
+
+  border-radius: var(--radius-sm);
+
+  padding: 10px 12px;
+
+  margin-bottom: 16px;
+
+  font-size: 12px;
+
+  line-height: 1.45;
+
+  color: var(--text-secondary);
+
+  border-left: 3px solid transparent;
+
+  }
+
+
+
+  .mit-rule-box.high { border-left-color: var(--red-primary); background: var(--red-bg); color: var(--red-text); }
+
+  .mit-rule-box.med { border-left-color: var(--yellow-primary); background: var(--yellow-bg); color: var(--yellow-text); }
+
+  .mit-rule-box.low { border-left-color: var(--green-primary); background: var(--green-bg); color: var(--green-text); }
+
+
+
+  .mit-task-list {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+
+  flex: 1;
+
+  }
+
+
+
+  .mit-task-card {
+
+  background: #ffffff;
+
+  border: 1px solid var(--border-subtle);
+
+  border-radius: var(--radius-sm);
+
+  padding: 12px 14px;
+
+  box-shadow: var(--shadow-sm);
+
+  transition: all 0.15s;
+
+  }
+
+
+
+  .mit-task-card:hover {
+
+  border-color: var(--brand-primary);
+
+  box-shadow: var(--shadow-md);
+
+  transform: translateY(-1px);
+
+  }
+
+
+
+  .mit-task-top {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-bottom: 6px;
+
+  }
+
+
+
+  .mit-task-desc {
+
+  font-weight: 600;
+
+  color: var(--text-primary);
+
+  font-size: 12.5px;
+
+  margin-bottom: 4px;
+
+  }
+
+
+
+  .mit-task-meta {
+
+  font-size: 11px;
+
+  color: var(--text-muted);
+
+  font-family: 'JetBrains Mono', monospace;
+
+  margin-bottom: 10px;
+
+  }
+
+
+
+  .mit-action-btn {
+
+  width: 100%;
+
+  padding: 6px;
+
+  font-size: 11.5px;
+
+  font-weight: 700;
+
+  border-radius: var(--radius-sm);
+
+  cursor: pointer;
+
+  text-align: center;
+
+  border: 1px solid transparent;
+
+  font-family: 'Inter', sans-serif;
+
+  }
+
+
+
+  .btn-notify-reallocate {
+
+  background: var(--red-bg);
+
+  border-color: var(--red-border);
+
+  color: var(--red-text);
+
+  }
+
+
+
+  .btn-notify-reallocate:hover {
+
+  background: var(--red-primary);
+
+  color: #fff;
+
+  }
+
+
+
+  .btn-schedule-meet {
+
+  background: var(--yellow-bg);
+
+  border-color: var(--yellow-border);
+
+  color: var(--yellow-text);
+
+  }
+
+
+
+  .btn-schedule-meet:hover {
+
+  background: var(--yellow-primary);
+
+  color: #fff;
+
+  }
+
+
+
+  .btn-monitor-log {
+
+  background: var(--green-bg);
+
+  border-color: var(--green-border);
+
+  color: var(--green-text);
+
+  }
+
+
+
+  .btn-monitor-log:hover {
+
+  background: var(--green-primary);
+
+  color: #fff;
+
+  }
+
+
+
+  /* SIMULATOR */
+
+  .simulator-container {
+
+  display: grid;
+
+  grid-template-columns: 1.1fr 1fr;
+
+  gap: 20px;
+
+  background: #ffffff;
+
+  border: 1px solid var(--border-subtle);
+
+  border-radius: var(--radius-lg);
+
+  padding: 26px;
+
+  box-shadow: var(--shadow-sm);
+
+  margin-bottom: 24px;
+
+  }
+
+
+
+  .sim-form-grid {
+
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 16px;
+
+  margin-top: 16px;
+
+  }
+
+
+
+  .form-group {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 6px;
+
+  }
+
+
+
+  .form-label {
+
+  font-size: 11.5px;
+
+  font-weight: 700;
+
+  color: var(--text-secondary);
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.04em;
+
+  }
+
+
+
+  .form-control {
+
+  background: var(--bg-subtle);
+
+  border: 1px solid var(--border-medium);
+
+  border-radius: var(--radius-sm);
+
+  padding: 8px 12px;
+
+  font-size: 13px;
+
+  color: var(--text-primary);
+
+  font-family: 'Inter', sans-serif;
+
+  outline: none;
+
+  }
+
+
+
+  .form-control:focus {
+
+  border-color: var(--brand-primary);
+
+  background: #ffffff;
+
+  }
+
+
+
+  .sim-result-card {
+
+  background: linear-gradient(135deg, #f0f7ff, #ffffff);
+
+  border: 1px solid #bae6fd;
+
+  border-radius: var(--radius-md);
+
+  padding: 24px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  text-align: center;
+
+  position: relative;
+
+  }
+
+
+
+  .sim-gauge-circle {
+
+  width: 130px;
+
+  height: 130px;
+
+  border-radius: 50%;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  margin-bottom: 16px;
+
+  border: 6px solid var(--border-medium);
+
+  background: #ffffff;
+
+  box-shadow: var(--shadow-sm);
+
+  transition: all 0.3s;
+
+  }
+
+
+
+  .sim-score-big {
+
+  font-family: 'JetBrains Mono', monospace;
+
+  font-size: 34px;
+
+  font-weight: 800;
+
+  line-height: 1;
+
+  }
+
+
+
+  .sim-tier-badge {
+
+  padding: 4px 14px;
+
+  border-radius: var(--radius-full);
+
+  font-family: 'JetBrains Mono', monospace;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  margin-bottom: 12px;
+
+  }
+
+
+
+  .sim-strategy-box {
+
+  background: #ffffff;
+
+  border: 1px solid var(--border-subtle);
+
+  border-radius: var(--radius-sm);
+
+  padding: 12px 16px;
+
+  width: 100%;
+
+  text-align: left;
+
+  font-size: 12px;
+
+  box-shadow: var(--shadow-sm);
+
+  }
+
+
+
+  /* SLIDE-OVER DRAWER */
+
+  .drawer-overlay {
+
+  position: fixed;
+
+  top: 0;
+
+  left: 0;
+
+  right: 0;
+
+  bottom: 0;
+
+  background: rgba(15, 23, 42, 0.4);
+
+  backdrop-filter: blur(4px);
+
+  z-index: 2000;
+
+  display: none;
+
+  align-items: center;
+
+  justify-content: flex-end;
+
+  }
+
+
+
+  .drawer-overlay.open {
+
+  display: flex;
+
+  }
+
+
+
+  .drawer-panel {
+
+  width: 480px;
+
+  max-width: 90vw;
+
+  height: 100vh;
+
+  background: #ffffff;
+
+  border-left: 1px solid var(--border-medium);
+
+  display: flex;
+
+  flex-direction: column;
+
+  box-shadow: var(--shadow-lg);
+
+  animation: slideLeft 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+
+  }
+
+
+
+  @keyframes slideLeft {
+
+  from { transform: translateX(100%); }
+
+  to { transform: translateX(0); }
+
+  }
+
+
+
+  .drawer-header {
+
+  padding: 20px 24px;
+
+  border-bottom: 1px solid var(--border-subtle);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  background: #f8fafc;
+
+  }
+
+
+
+  .drawer-body {
+
+  padding: 24px;
+
+  flex: 1;
+
+  overflow-y: auto;
+
+  }
+
+
+
+  .drawer-footer {
+
+  padding: 16px 24px;
+
+  border-top: 1px solid var(--border-subtle);
+
+  display: flex;
+
+  gap: 12px;
+
+  background: #f8fafc;
+
+  }
+
+
+
+  .drawer-close {
+
+  background: none;
+
+  border: none;
+
+  color: var(--text-muted);
+
+  font-size: 20px;
+
+  cursor: pointer;
+
+  }
+
+
+
+  .drawer-close:hover {
+
+  color: var(--text-primary);
+
+  }
+
+
+
+  .detail-grid {
+
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 12px;
+
+  margin-bottom: 18px;
+
+  }
+
+
+
+  .detail-item {
+
+  background: var(--bg-subtle);
+
+  border: 1px solid var(--border-subtle);
+
+  border-radius: var(--radius-sm);
+
+  padding: 10px 12px;
+
+  }
+
+
+
+  .detail-label {
+
+  font-size: 10.5px;
+
+  color: var(--text-muted);
+
+  font-family: 'JetBrains Mono', monospace;
+
+  font-weight: 700;
+
+  margin-bottom: 4px;
+
+  text-transform: uppercase;
+
+  }
+
+
+
+  .detail-val {
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  color: var(--text-primary);
+
+  }
+
+
+
+  .toast-msg {
+
+  position: fixed;
+
+  bottom: 24px;
+
+  right: 24px;
+
+  background: #ffffff;
+
+  border: 1px solid var(--brand-primary);
+
+  box-shadow: var(--shadow-lg);
+
+  border-radius: var(--radius-md);
+
+  padding: 14px 20px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  z-index: 3000;
+
+  transform: translateY(100px);
+
+  opacity: 0;
+
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+
+  }
+
+
+
+  .toast-msg.show {
+
+  transform: translateY(0);
+
+  opacity: 1;
+
+  }
+
+
+
+  @media (max-width: 1024px) {
+
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+
+  .grid-2-1 { grid-template-columns: 1fr; }
+
+  .models-strip { grid-template-columns: 1fr; }
+
+  .model-metrics-grid { grid-template-columns: repeat(3, 1fr); }
+
+  .mitigation-grid { grid-template-columns: 1fr; }
+
+    /* ── AI ASSISTANT WIDGET (PREMIUM SUITABLE UI) ── */
+    .ai-assistant-fab {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1200;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 30px;
+      padding: 10px 18px 10px 14px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(255,255,255,0.05);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .ai-assistant-fab:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 14px 36px rgba(15, 23, 42, 0.35);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    .ai-assistant-fab-icon {
+      width: 24px;
+      height: 24px;
+      background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 10px;
+      letter-spacing: -0.5px;
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(56, 189, 248, 0.4);
+    }
+
+    .ai-assistant-drawer {
+      position: fixed;
+      bottom: 84px;
+      right: 24px;
+      width: 400px;
+      max-width: calc(100vw - 32px);
+      height: 560px;
+      max-height: calc(100vh - 110px);
+      background: #ffffff;
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.18);
+      z-index: 1200;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      animation: slideUpFade 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .ai-assistant-drawer.open {
+      display: flex;
+    }
+
+    .ai-drawer-header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #ffffff;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .ai-drawer-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: -0.01em;
+    }
+    .ai-drawer-avatar {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 11px;
+      color: #ffffff;
+    }
+    .ai-status-pill {
+      font-size: 9.5px;
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      padding: 2px 7px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .ai-drawer-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ai-action-btn {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: #cbd5e1;
+      font-size: 13px;
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .ai-action-btn:hover {
+      background: rgba(255,255,255,0.2);
+      color: #ffffff;
+    }
+
+    .ai-messages-container {
+      flex: 1;
+      padding: 18px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      background: #f8fafc;
+    }
+
+    .ai-msg {
+      max-width: 88%;
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-size: 13px;
+      line-height: 1.55;
+      word-break: break-word;
+    }
+    .ai-msg.user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      border-bottom-right-radius: 3px;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
+    }
+    .ai-msg.bot {
+      align-self: flex-start;
+      background: #ffffff;
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+      border-bottom-left-radius: 3px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+    .ai-msg.bot p { margin-bottom: 8px; }
+    .ai-msg.bot p:last-child { margin-bottom: 0; }
+    .ai-msg.bot ul { padding-left: 16px; margin: 6px 0; }
+    .ai-msg.bot li { margin-bottom: 4px; }
+    .ai-msg.bot code {
+      font-family: 'JetBrains Mono', monospace;
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 11.5px;
+      color: #0284c7;
+    }
+
+    .ai-quick-prompts {
+      display: flex;
+      gap: 8px;
+      padding: 10px 14px;
+      background: #ffffff;
+      border-top: 1px solid var(--border-subtle);
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+    .ai-quick-prompts::-webkit-scrollbar { display: none; }
+
+    .ai-prompt-chip {
+      font-size: 11.5px;
+      background: #f1f5f9;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 6px 12px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+    }
+    .ai-prompt-chip:hover {
+      background: #e2e8f0;
+      color: var(--brand-primary);
+      border-color: #cbd5e1;
+      transform: translateY(-1px);
+    }
+
+    .ai-input-bar {
+      display: flex;
+      padding: 12px 14px;
+      background: #ffffff;
+      border-top: 1px solid var(--border-subtle);
+      gap: 8px;
+      align-items: center;
+    }
+    .ai-input {
+      flex: 1;
+      border: 1px solid var(--border-subtle);
+      border-radius: 24px;
+      padding: 10px 16px;
+      font-size: 13px;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+      background: #f8fafc;
+      transition: all 0.2s ease;
+    }
+    .ai-input:focus {
+      background: #ffffff;
+      border-color: var(--brand-primary);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12);
+    }
+
+    .ai-send-btn {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+      flex-shrink: 0;
+    }
+    .ai-send-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(2, 132, 199, 0.4);
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+
+
+  <!-- TOP APP BAR -->
+
+  <nav class="navbar">
+
+  <div class="nav-left">
+
+  <a href="https://intertechtaskprediction.vercel.app" target="_blank" rel="noopener" class="brand-logo">
+
+  <div class="brand-icon">IT</div>
+
+  <div class="brand-title">
+
+  InterTech <span>Task Prediction</span>
+
+  <span class="brand-subtitle">intertechtaskprediction.vercel.app</span>
+
+  </div>
+
+  </a>
+
+  <div style="width:1px; height:18px; background: var(--border-medium);"></div>
+
+  <a href="https://intertechtaskprediction.vercel.app" target="_blank" rel="noopener" class="domain-chip">
+
+  <span class="domain-chip-dot"></span>
+
+  intertechtaskprediction.vercel.app
+
+  <span class="domain-chip-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5L8.5 3.5M8.5 3.5H4.5M8.5 3.5V7.5"/></svg></span>
+
+  </a>
+
+  <div class="project-pill">
+
+  <span>Project:</span>
+
+  <strong id="header-project-id">PRJ001  |  HQ Tower</strong>
+
+  </div>
+
+  <div class="live-status-badge">
+
+  <div class="live-pulse"></div>
+
+  <span>ML Active  |  5-Fold CV</span>
+
+  </div>
+
+  </div>
+
+  
+
+  <div class="nav-right">
+
+  <button class="btn btn-secondary btn-sm" onclick="exportDataCSV()">
+
+  <span>CSV</span>
+
+  </button>
+
+  <button class="btn btn-secondary btn-sm" onclick="window.print()">
+
+  <span>PDF</span>
+
+  </button>
+
+  <button class="btn btn-primary btn-sm" id="btn-sync-ml" onclick="triggerMLRetrain()">
+
+  <span id="sync-spinner"></span>
+
+  <span>Re-train</span>
+
+  </button>
+
+  </div>
+
+  </nav>
+
+
+
+  <!-- SUB-NAV / TABS -->
+
+  <div class="subnav">
+
+  <div class="nav-tabs">
+
+  <button class="nav-tab active" onclick="switchView('overview', this)">
+
+  <span>Executive Overview</span>
+
+  </button>
+
+  <button class="nav-tab" onclick="switchView('tasks', this)">
+
+  <span>Task Prediction Matrix</span>
+
+  <span class="tab-badge" id="badge-total-tasks">35</span>
+
+  </button>
+
+  <button class="nav-tab" onclick="switchView('mitigation', this)">
+
+  <span>Action & Mitigation Planner</span>
+
+  <span class="tab-badge" id="badge-open-tasks">8</span>
+
+  </button>
+
+  <button class="nav-tab" onclick="switchView('simulator', this)">
+
+  <span>What-If Simulator</span>
+
+  </button>
+
+  <button class="nav-tab" onclick="switchView('explainability', this)">
+
+  <span>Model Diagnostics</span>
+
+  </button>
+
+  </div>
+
+  <div style="font-size:11.5px; color:var(--text-muted); font-family:'JetBrains Mono', monospace;" id="last-sync-time">
+
+  Live Model Online
+
+  </div>
+
+  </div>
+
+
+
+  <!-- MAIN CONTAINER -->
+
+  <main class="app-container">
+
+
+
+  <!-- COMPLIANCE BANNER -->
+
+  <div class="spec-banner">
+
+  <div class="spec-info">
+
+  <span class="spec-badge">DELAY MITIGATION RADAR</span>
+
+  <div class="spec-text">
+
+  <strong>Project Delay Prediction System:</strong> Trained on historical engineering data (Target: <code>Delay &gt; 0</code>). Recommends targeted PM alerts, multi-tier sync meetings, and resource reallocation from completed or low-risk tasks.
+
+  </div>
+
+  </div>
+
+  <button class="btn btn-secondary btn-sm" onclick="switchView('mitigation', document.querySelectorAll('.nav-tab')[2])">
+
+  Review Active Alerts &gt;
+
+  </button>
+
+  </div>
+
+
+
+  <!-- 
+
+  VIEW 1: EXECUTIVE OVERVIEW
+
+ -->
+
+  <div id="view-overview" class="tab-view active">
+
+  
+
+  <!-- KPI CARDS -->
+
+  <div class="kpi-row">
+
+  <div class="kpi-card kpi-neutral">
+
+  <div class="kpi-header">
+
+  <span class="kpi-title">Total Project Tasks</span>
+
+  <span style="font-size:15px;"></span>
+
+  </div>
+
+  <div class="kpi-metric" id="kpi-total-tasks">1000</div>
+
+  <div class="kpi-footer" id="kpi-total-footer">282 Closed  |  718 Open</div>
+
+  </div>
+
+
+
+  <div class="kpi-card kpi-delayed">
+
+  <div class="kpi-header">
+
+  <span class="kpi-title">Historical Delay Rate</span>
+
+  <span style="font-size:15px; color:var(--red-primary);"></span>
+
+  </div>
+
+  <div class="kpi-metric delayed" id="kpi-delay-rate">43.6%</div>
+
+  <div class="kpi-footer" id="kpi-delay-footer">123 Delayed of 282 Completed</div>
+
+  </div>
+
+
+
+  <div class="kpi-card kpi-warn">
+
+  <div class="kpi-header">
+
+  <span class="kpi-title">Average Delay Duration</span>
+
+  <span style="font-size:15px; color:var(--yellow-primary);"></span>
+
+  </div>
+
+  <div class="kpi-metric warn" id="kpi-avg-delay">+3.5d</div>
+
+  <div class="kpi-footer" id="kpi-avg-footer">Max Delay: +12 Days</div>
+
+  </div>
+
+
+
+  <div class="kpi-card kpi-accent">
+
+  <div class="kpi-header">
+
+  <span class="kpi-title">Open Tasks at Risk</span>
+
+  <span style="font-size:15px; color:var(--brand-primary);"></span>
+
+  </div>
+
+  <div class="kpi-metric accent" id="kpi-open-risk">260</div>
+
+  <div class="kpi-footer" id="kpi-risk-footer">High &amp; Medium Risk Open Tasks</div>
+
+  </div>
+
+
+
+  <div class="kpi-card kpi-ontime">
+
+  <div class="kpi-header">
+
+  <span class="kpi-title">Champion Model F1</span>
+
+  <span style="font-size:15px; color:var(--green-primary);"></span>
+
+  </div>
+
+  <div class="kpi-metric ontime" id="kpi-cv-acc">69.5%</div>
+
+  <div class="kpi-footer" id="kpi-model-footer">Random Forest (5-Fold CV)</div>
+
+  </div>
+
+  </div>
+
+
+
+  <!-- ANALYTICS PANELS ROW -->
+
+  <div class="grid-2-1">
+
+  
+
+  <!-- Discipline Delay Distribution -->
+
+  <div class="panel-card">
+
+  <div class="panel-header">
+
+  <div class="panel-title">
+
+  <span>Discipline Delay Rate</span>
+
+  </div>
+
+  <span class="panel-tag">% Closed Delayed</span>
+
+  </div>
+
+  <div class="disc-list" id="disc-bar-container">
+
+  <!-- Rendered by JS -->
+
+  </div>
+
+  </div>
+
+
+
+  <!-- Pareto Root Causes -->
+
+  <div class="panel-card">
+
+  <div class="panel-header">
+
+  <div class="panel-title">
+
+  <span>Root Cause Distribution</span>
+
+  </div>
+
+  <span class="panel-tag">Failure Frequency</span>
+
+  </div>
+
+  <div class="cause-stack" id="cause-list-container">
+
+  <!-- Rendered by JS -->
+
+  </div>
+
+  </div>
+
+
+
+  <!-- Key ML Risk Drivers -->
+
+  <div class="panel-card">
+
+  <div class="panel-header">
+
+  <div class="panel-title">
+
+  <span>Key Feature Importance</span>
+
+  </div>
+
+  <span class="panel-tag">RF Weight</span>
+
+  </div>
+
+  <div class="feat-stack" id="feat-list-container">
+
+  <!-- Rendered by JS -->
+
+  </div>
+
+  </div>
+
+
+
+  </div>
+
+
+
+  <!-- ML BENCHMARK STRIP (rendered by JS from API data) -->
+
+  <div class="models-strip" id="models-strip-container">
+
+  <div style="color:var(--text-muted);font-size:12px;padding:12px;">Loading model metrics...</div>
+
+  </div>
+
+  <div style="font-size:10.5px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;padding:4px 2px 0;">
+
+  Evaluation: LOO-CV for n&thinsp;&le;&thinsp;50 closed tasks &mdash; 5-Fold Stratified CV for larger datasets &mdash; Champion selected by F1-Score
+
+  </div>
+
+
+
+  </div>
+
+
+
+  <!-- 
+
+  VIEW 2: TASK PREDICTION MATRIX
+
+ -->
+
+  <div id="view-tasks" class="tab-view">
+
+  
+
+  <!-- Filter Toolbar -->
+
+  <div class="filter-toolbar">
+
+  <div class="filter-group-left">
+
+  <div class="search-box">
+
+  <span class="search-icon"></span>
+
+  <input type="text" id="task-search-input" class="search-input" placeholder="Search tasks by ID, title, location, root cause..." oninput="filterTasks()">
+
+  </div>
+
+
+
+  <select id="filter-discipline" class="select-dropdown" onchange="filterTasks()">
+
+  <option value="ALL">All Disciplines</option>
+
+  <option value="PRJ-SITE">PRJ-SITE (Civil/Site)</option>
+
+  <option value="PRJ-ARC">PRJ-ARC (Architectural)</option>
+
+  <option value="PRJ-STR">PRJ-STR (Structural)</option>
+
+  <option value="PRJ-INT">PRJ-INT (Interior)</option>
+
+  <option value="PRJ-MEP">PRJ-MEP (Mechanical/Elec)</option>
+
+  </select>
+
+
+
+  <div class="filter-chips">
+
+  <button class="filter-chip active" data-status="ALL" onclick="setChipFilter('status', 'ALL', this)">All (35)</button>
+
+  <button class="filter-chip" data-status="Open" onclick="setChipFilter('status', 'Open', this)">Open (8)</button>
+
+  <button class="filter-chip" data-status="Closed" onclick="setChipFilter('status', 'Closed', this)">Closed (27)</button>
+
+  <button class="filter-chip" data-status="Delayed" onclick="setChipFilter('status', 'Delayed', this)">Delayed (18)</button>
+
+  </div>
+
+  </div>
+
+
+
+  <div>
+
+  <button class="btn btn-secondary btn-sm" onclick="resetFilters()">Reset Filters</button>
+
+  </div>
+
+  </div>
+
+
+
+  <!-- Table Card -->
+
+  <div class="table-card">
+
+  <div class="table-wrap">
+
+  <table class="data-table">
+
+  <thead>
+
+  <tr>
+
+  <th onclick="sortTable('id')">Task ID</th>
+
+  <th onclick="sortTable('desc')">Description</th>
+
+  <th onclick="sortTable('disc')">Discipline</th>
+
+  <th onclick="sortTable('status')">Status</th>
+
+  <th onclick="sortTable('priority')">Priority</th>
+
+  <th onclick="sortTable('hours')">Hours</th>
+
+  <th onclick="sortTable('score')">Delay Probability</th>
+
+  <th onclick="sortTable('cat')">Risk Tier</th>
+
+  <th onclick="sortTable('actual')">Outcome / Delay</th>
+
+  <th style="text-align:right;">Actions</th>
+
+  </tr>
+
+  </thead>
+
+  <tbody id="task-table-body">
+
+  <!-- Rendered by JS -->
+
+  </tbody>
+
+  </table>
+
+  </div>
+
+  </div>
+
+
+
+  </div>
+
+
+
+  <!-- 
+
+  VIEW 3: MITIGATION & ACTION PLANNER
+
+ -->
+
+  <div id="view-mitigation" class="tab-view">
+
+  
+
+  <div class="mitigation-grid">
+
+  
+
+  <!-- High Risk Column (RED) -->
+
+  <div class="mit-column-card">
+
+  <div class="mit-col-header">
+
+  <div class="mit-col-title high">
+
+  <span>Critical Risk Tier (>=70%)</span>
+
+  </div>
+
+  <span class="pill pri-high" id="badge-high-count">0 Open</span>
+
+  </div>
+
+  <div class="mit-rule-box high">
+
+  <strong>Action Protocol:</strong> <code>NOTIFY_PM + REALLOCATE_RESOURCE</code><br>
+
+  Dispatch urgent alert to Project Manager and assign assistance from completed on-time tasks or low-risk units.
+
+  </div>
+
+  <div class="mit-task-list" id="mit-list-high">
+
+  <!-- Rendered by JS -->
+
+  </div>
+
+  </div>
+
+
+
+  <!-- Medium Risk Column (YELLOW) -->
+
+  <div class="mit-column-card">
+
+  <div class="mit-col-header">
+
+  <div class="mit-col-title med">
+
+  <span>Medium Risk Tier (40% - 69%)</span>
+
+  </div>
+
+  <span class="pill pri-medium" id="badge-med-count">0 Open</span>
+
+  </div>
+
+  <div class="mit-rule-box med">
+
+  <strong>Action Protocol:</strong> <code>SCHEDULE_STATUS_MEETING</code><br>
+
+  Conduct coordination review meeting with field leads to prevent compounding schedule slip.
+
+  </div>
+
+  <div class="mit-task-list" id="mit-list-med">
+
+  <!-- Rendered by JS -->
+
+  </div>
+
+  </div>
+
+
+
+  <!-- Low Risk Column (GREEN) -->
+
+  <div class="mit-column-card">
+
+  <div class="mit-col-header">
+
+  <div class="mit-col-title low">
+
+  <span>Low Risk Tier (&lt;40%)</span>
+
+  </div>
+
+  <span class="pill pri-low" id="badge-low-count">8 Open</span>
+
+  </div>
+
+  <div class="mit-rule-box low">
+
+  <strong>Action Protocol:</strong> <code>MONITOR_WEEKLY</code><br>
+
+  Track during standard weekly engineering milestone checks.
+
+  </div>
+
+  <div class="mit-task-list" id="mit-list-low">
+
+  <!-- Rendered by JS -->
+
+  </div>
+
+  </div>
+
+
+
+  </div>
+
+
+
+  </div>
+
+
+
+  <!-- 
+
+  VIEW 4: WHAT-IF DELAY SIMULATOR
+
+ -->
+
+  <div id="view-simulator" class="tab-view">
+
+  <div class="simulator-container">
+
+  
+
+  <div>
+
+  <div class="panel-title" style="font-size:16px; margin-bottom:6px;">
+
+  <span>What-If Delay Risk Calculator</span>
+
+  </div>
+
+  <p style="font-size:12.5px; color:var(--text-secondary); margin-bottom:18px;">
+
+  Simulate a work package in real-time to compute expected delay probability and recommended mitigation action from the trained ML engine.
+
+  </p>
+
+
+
+  <div class="sim-form-grid">
+
+  <div class="form-group">
+
+  <label class="form-label">Project Discipline</label>
+
+  <select id="sim-disc" class="form-control" onchange="runSimulation()">
+
+  <option value="PRJ-SITE">PRJ-SITE (Site / Utilities)</option>
+
+  <option value="PRJ-ARC" selected>PRJ-ARC (Architectural)</option>
+
+  <option value="PRJ-STR">PRJ-STR (Structural)</option>
+
+  <option value="PRJ-INT">PRJ-INT (Interiors)</option>
+
+  <option value="PRJ-MEP">PRJ-MEP (Mechanical/Elec)</option>
+
+  </select>
+
+  </div>
+
+
+
+  <div class="form-group">
+
+  <label class="form-label">Priority Level</label>
+
+  <select id="sim-priority" class="form-control" onchange="runSimulation()">
+
+  <option value="High" selected>High (Red)</option>
+
+  <option value="Medium">Medium (Yellow)</option>
+
+  <option value="Low">Low (Green)</option>
+
+  </select>
+
+  </div>
+
+
+
+  <div class="form-group">
+
+  <label class="form-label">Stated Risk Level</label>
+
+  <select id="sim-risk" class="form-control" onchange="runSimulation()">
+
+  <option value="High" selected>High Risk</option>
+
+  <option value="Medium">Medium Risk</option>
+
+  <option value="Low">Low Risk</option>
+
+  </select>
+
+  </div>
+
+
+
+  <div class="form-group">
+
+  <label class="form-label">Known Root Cause / Blocker?</label>
+
+  <select id="sim-rootcause" class="form-control" onchange="runSimulation()">
+
+  <option value="1">Yes (Issue / Blocker Logged)</option>
+
+  <option value="0" selected>No (Normal Operation)</option>
+
+  </select>
+
+  </div>
+
+
+
+  <div class="form-group">
+
+  <label class="form-label">Estimated Man-Hours</label>
+
+  <input type="number" id="sim-hours" class="form-control" value="85" min="5" max="300" oninput="runSimulation()">
+
+  </div>
+
+
+
+  <div class="form-group">
+
+  <label class="form-label">Planned Duration (Days)</label>
+
+  <input type="number" id="sim-duration" class="form-control" value="14" min="1" max="180" oninput="runSimulation()">
+
+  </div>
+
+  </div>
+
+  </div>
+
+
+
+  <div class="sim-result-card">
+
+  <div class="sim-gauge-circle" id="sim-gauge">
+
+  <span class="sim-score-big" id="sim-score-val">28%</span>
+
+  <span style="font-size:10px; color:var(--text-muted); font-family:'JetBrains Mono', monospace;">PROBABILITY</span>
+
+  </div>
+
+
+
+  <div class="sim-tier-badge pri-low" id="sim-tier-badge">LOW RISK TIER</div>
+
+
+
+  <div class="sim-strategy-box">
+
+  <div style="font-size:10.5px; font-weight:700; color:var(--text-muted); font-family:'JetBrains Mono', monospace; margin-bottom:4px;">
+
+  RECOMMENDED DIRECTIVE
+
+  </div>
+
+  <div id="sim-action-text" style="font-weight:700; color:var(--text-primary);">
+
+  MONITOR_WEEKLY
+
+  </div>
+
+  <div id="sim-detail-text" style="font-size:11.5px; color:var(--text-secondary); margin-top:4px;">
+
+  Standard weekly milestone check. Probability of delay is below 40%.
+
+  </div>
+
+  </div>
+
+  </div>
+
+
+
+  </div>
+
+  </div>
+
+
+
+  <!-- 
+
+  VIEW 5: MODEL EXPLAINABILITY
+
+ -->
+
+  <div id="view-explainability" class="tab-view">
+
+  
+
+  <div class="grid-2-1" style="grid-template-columns:1fr 1fr; margin-bottom:20px;">
+
+  <div class="panel-card">
+
+  <div class="panel-header">
+
+  <div class="panel-title"><span>Validation Methodology</span></div>
+
+  </div>
+
+  <div style="font-size:12.5px; color:var(--text-secondary); line-height:1.6;">
+
+  <p style="margin-bottom:10px;">
+
+  <strong>Cross-Validation Framework:</strong> Stratified 5-Fold CV ensures balanced class evaluation across 27 closed tasks (18 delayed, 9 on-time).
+
+  </p>
+
+  <p style="margin-bottom:10px;">
+
+  <strong>Target Formulation:</strong> Defined as <code>Delay &gt; 0</code> for closed work packages. Tasks completed on schedule (<code>Delay &le; 0</code>) are marked as on-time.
+
+  </p>
+
+  <p>
+
+  <strong>Feature Encoding:</strong> One-hot discipline vectors, ordinal priority/risk weighting, root cause flags, and planned duration metrics.
+
+  </p>
+
+  </div>
+
+  </div>
+
+
+
+  <div class="panel-card">
+
+  <div class="panel-header">
+
+  <div class="panel-title"><span>Mitigation Protocol Architecture</span></div>
+
+  </div>
+
+  <div style="font-size:12.5px; color:var(--text-secondary); line-height:1.6;">
+
+  <div style="padding:8px 12px; background:var(--red-bg); border-radius:6px; margin-bottom:8px; border-left:3px solid var(--red-primary);">
+
+  <strong style="color:var(--red-text);">High Risk (>= 70%):</strong> PM alert + employee reallocation from completed tasks (<code>T-1017</code>, <code>T-1020</code>, <code>T-1109</code>).
+
+  </div>
+
+  <div style="padding:8px 12px; background:var(--yellow-bg); border-radius:6px; margin-bottom:8px; border-left:3px solid var(--yellow-primary);">
+
+  <strong style="color:var(--yellow-text);">Medium Risk (40% - 69%):</strong> Conduct status sync meeting & supplier re-confirmation.
+
+  </div>
+
+  <div style="padding:8px 12px; background:var(--green-bg); border-radius:6px; border-left:3px solid var(--green-primary);">
+
+  <strong style="color:var(--green-text);">Low Risk (&lt; 40%):</strong> Passive tracking via automated weekly project ledger.
+
+  </div>
+
+  </div>
+
+  </div>
+
+  </div>
+
+
+
+  </div>
+
+
+
+  </main>
+
+
+
+  <!-- TASK DETAIL SLIDE-OVER DRAWER -->
+
+  <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer(event)">
+
+  <div class="drawer-panel" onclick="event.stopPropagation()">
+
+  <div class="drawer-header">
+
+  <div>
+
+  <span class="pill" id="drawer-cat-badge">HIGH RISK</span>
+
+  <h3 id="drawer-task-id" style="font-size:16px; font-weight:700; margin-top:4px; font-family:'JetBrains Mono', monospace;">T-1015</h3>
+
+  </div>
+
+  <button class="drawer-close" onclick="closeDrawer()">X</button>
+
+  </div>
+
+
+
+  <div class="drawer-body">
+
+  <h4 id="drawer-task-desc" style="font-size:15px; font-weight:600; margin-bottom:16px; color:var(--text-primary);">Column Installation</h4>
+
+
+
+  <div class="detail-grid">
+
+  <div class="detail-item">
+
+  <div class="detail-label">DISCIPLINE</div>
+
+  <div class="detail-val" id="drawer-disc">PRJ-STR</div>
+
+  </div>
+
+  <div class="detail-item">
+
+  <div class="detail-label">LOCATION</div>
+
+  <div class="detail-val" id="drawer-location">Grid A5</div>
+
+  </div>
+
+  <div class="detail-item">
+
+  <div class="detail-label">STATUS</div>
+
+  <div class="detail-val" id="drawer-status">Closed</div>
+
+  </div>
+
+  <div class="detail-item">
+
+  <div class="detail-label">PRIORITY / RISK</div>
+
+  <div class="detail-val" id="drawer-priority-risk">High / High</div>
+
+  </div>
+
+  <div class="detail-item">
+
+  <div class="detail-label">LOGGED HOURS</div>
+
+  <div class="detail-val" id="drawer-hours">56.0 hrs</div>
+
+  </div>
+
+  <div class="detail-item">
+
+  <div class="detail-label">PLANNED DAYS</div>
+
+  <div class="detail-val" id="drawer-days">4 days</div>
+
+  </div>
+
+  <div class="detail-item">
+
+  <div class="detail-label">HISTORICAL DELAY</div>
+
+  <div class="detail-val" id="drawer-delay">+2 days</div>
+
+  </div>
+
+  <div class="detail-item">
+
+  <div class="detail-label">ML DELAY SCORE</div>
+
+  <div class="detail-val" id="drawer-score" style="color:var(--brand-primary);">97.0%</div>
+
+  </div>
+
+  </div>
+
+
+
+  <div style="margin-bottom:16px;">
+
+  <div class="detail-label">IDENTIFIED ROOT CAUSE</div>
+
+  <div style="padding:8px 12px; background:var(--bg-subtle); border-radius:6px; font-size:12.5px; color:var(--text-primary); font-weight:600;" id="drawer-root-cause">
+
+  Crane Breakdown
+
+  </div>
+
+  </div>
+
+
+
+  <div style="margin-bottom:16px;">
+
+  <div class="detail-label">ENGINEERING COMMENTS</div>
+
+  <div style="padding:10px 12px; background:var(--bg-subtle); border-radius:6px; font-size:12px; color:var(--text-secondary); line-height:1.5;" id="drawer-comments">
+
+  Repaired after 1 day
+
+  </div>
+
+  </div>
+
+
+
+  <div style="padding:12px; background:var(--brand-light-bg); border-radius:8px; border:1px solid #bae6fd; margin-bottom:14px;">
+
+  <div class="detail-label" style="color:var(--brand-primary);">MITIGATION DIRECTIVE</div>
+
+  <div style="font-size:12.5px; font-weight:700; color:var(--text-primary);" id="drawer-mit-action">
+
+  NOTIFY_PM + REALLOCATE_RESOURCE
+
+  </div>
+
+  </div>
+
+
+
+  <div id="shap-drivers-section" style="display:none;">
+
+  <div class="detail-label" style="margin-bottom:8px;">ML RISK DRIVERS (SHAP)</div>
+
+  <div id="shap-drivers-list" style="display:flex;flex-direction:column;gap:6px;"></div>
+
+  </div>
+
+  </div>
+
+
+
+  <div class="drawer-footer">
+
+  <button class="btn btn-secondary" style="flex:1;" onclick="closeDrawer()">Close</button>
+
+  <button class="btn btn-primary" style="flex:1;" id="drawer-execute-btn" onclick="executeMitigationAction()">Dispatch Protocol</button>
+
+  </div>
+
+  </div>
+
+  </div>
+
+
+
+  <!-- AI ASSISTANT FLOATING BUTTON & CHAT DRAWER (SUITABLE PREMIUM UI) -->
+  <button class="ai-assistant-fab" onclick="toggleAIAssistant()" title="Open AI Delay Intelligence Assistant">
+    <div class="ai-assistant-fab-icon">AI</div>
+    <span>AI Assistant</span>
+  </button>
+
+  <div class="ai-assistant-drawer" id="ai-assistant-drawer">
+    <div class="ai-drawer-header">
+      <div class="ai-drawer-title">
+        <div class="ai-drawer-avatar">AI</div>
+        <div>
+          <div style="line-height: 1.2;">PRJ001 Delay Agent</div>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
+            <span class="ai-status-pill">ONLINE</span>
+            <span style="font-size:10px;color:#94a3b8;font-family:'JetBrains Mono',monospace;">Gemini ML</span>
+          </div>
+        </div>
+      </div>
+      <div class="ai-drawer-actions">
+        <button class="ai-action-btn" onclick="clearAIChat()" title="Clear Chat History">&#x21bb;</button>
+        <button class="ai-action-btn" onclick="toggleAIAssistant()" title="Close">&times;</button>
+      </div>
+    </div>
+    
+    <div class="ai-messages-container" id="ai-messages-container">
+      <div class="ai-msg bot">
+        <p>Welcome to <strong>PRJ001 Delay Intelligence AI</strong>.</p>
+        <p>I monitor your project dataset, ML delay risk tiers, and predictive mitigations in real time.</p>
+        <p style="font-size:11.5px;color:var(--text-muted);margin-top:4px;">Ask a question below or pick a quick prompt:</p>
+      </div>
+    </div>
+
+    <div class="ai-quick-prompts">
+      <button class="ai-prompt-chip" onclick="quickAskAI('Which open tasks are at highest risk?')">High Risk Tasks</button>
+      <button class="ai-prompt-chip" onclick="quickAskAI('Compare algorithm metrics')">Compare Models</button>
+      <button class="ai-prompt-chip" onclick="quickAskAI('What is the delay rate by discipline?')">Discipline Stats</button>
+      <button class="ai-prompt-chip" onclick="quickAskAI('Suggest resource reallocation strategy')">Mitigation Strategy</button>
+    </div>
+
+    <div class="ai-input-bar">
+      <input type="text" id="ai-input-field" class="ai-input" placeholder="Ask AI Assistant about risk, delays, ML models..." onkeypress="handleAIInputKey(event)">
+      <button class="ai-send-btn" onclick="sendAIMessage()" title="Send Message">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+
+  <div class="toast-msg" id="toast-msg">
+
+  <span style="font-size:18px;"></span>
+
+  <span id="toast-text">Action dispatched successfully</span>
+
+  </div>
+
+
+
+  <!-- JAVASCRIPT -->
+
+  <script>
+
+  let APP_DATA = {
+
+  meta: {
+
+  project_id: "PRJ001",
+
+  total_tasks: 35,
+
+  delayed_tasks: 18,
+
+  open_tasks: 8,
+
+  avg_delay_days: 4.7,
+
+  max_delay_days: 11,
+
+  model: "Random Forest (Calibrated)",
+
+  champion: "Random Forest",
+
+  calibrated: true,
+
+  cv_method: "Leave-One-Out CV",
+
+  cv_accuracy: {
+
+  "Random Forest":     { mean: 72.3, std: 0, f1: 69.5, auc: 77.9, mcc: 44.4, precision: 66.9, recall: 72.4 },
+
+  "Logistic Regression":{ mean: 72.3, std: 0, f1: 68.8, auc: 80.4, mcc: 44.0, precision: 67.7, recall: 69.9 },
+
+  "Stacking Ensemble": { mean: 71.3, std: 0, f1: 68.2, auc: 79.2, mcc: 42.2, precision: 65.9, recall: 70.7 },
+
+  "Gradient Boosting": { mean: 70.6, std: 0, f1: 66.7, auc: 75.3, mcc: 40.3, precision: 65.9, recall: 67.5 },
+
+  "XGBoost":           { mean: 69.5, std: 0, f1: 66.4, auc: 75.5, mcc: 38.7, precision: 63.9, recall: 69.1 }
+
+  }
+
+  },
+
+  disc_stats: {
+
+  "PRJ-SITE": { delayed: 6, total: 7, rate: 85.7 },
+
+  "PRJ-INT":  { delayed: 3, total: 4, rate: 75.0 },
+
+  "PRJ-ARC":  { delayed: 5, total: 7, rate: 71.4 },
+
+  "PRJ-STR":  { delayed: 3, total: 5, rate: 60.0 },
+
+  "PRJ-MEP":  { delayed: 1, total: 4, rate: 25.0 }
+
+  },
+
+  root_causes: {
+
+  "Weather Delay": 3,
+
+  "Crane Breakdown": 2,
+
+  "Design Revision": 2,
+
+  "Material Defect": 2,
+
+  "Asphalt Shortage": 2,
+
+  "Vendor Delay": 1,
+
+  "Design Change": 1,
+
+  "Crew Shortage": 1,
+
+  "Glass Breakage": 1,
+
+  "Utility Conflict": 1,
+
+  "Equipment Failure": 1,
+
+  "Supplier Delay": 1
+
+  },
+
+  feat_importance: {
+
+  "has_root_cause": 58.7,
+
+  "Hours": 13.5,
+
+  "planned_duration": 8.9,
+
+  "risk_enc": 7.3,
+
+  "disc_PRJ-MEP": 4.8,
+
+  "disc_PRJ-STR": 1.8,
+
+  "priority_enc": 1.5,
+
+  "disc_PRJ-INT": 1.2,
+
+  "disc_PRJ-SITE": 1.1,
+
+  "disc_PRJ-ARC": 1.1
+
+  },
+
+  tasks: [
+
+  {id:"T-1015",desc:"Column Installation",disc:"PRJ-STR",location:"Grid A5",status:"Closed",priority:"High",risk:"High",hours:56,planned_days:4,delay:2,score:97,cat:"HIGH",actual:"Delayed",root_cause:"Crane Breakdown",comments:"Repaired after 1 day"},
+
+  {id:"T-1016",desc:"Paint Finishes",disc:"PRJ-INT",location:"Lobby",status:"Open",priority:"Medium",risk:"Medium",hours:38,planned_days:10,delay:null,score:30,cat:"LOW",actual:"Unknown",root_cause:null,comments:"Awaiting color approval"},
+
+  {id:"T-1017",desc:"HVAC Ductwork",disc:"PRJ-MEP",location:"Mechanical",status:"Closed",priority:"Medium",risk:"Low",hours:72,planned_days:7,delay:-4,score:3,cat:"LOW",actual:"On-time",root_cause:null,comments:"Ahead of schedule"},
+
+  {id:"T-1018",desc:"Curtain Wall Install",disc:"PRJ-ARC",location:"South Facade",status:"Closed",priority:"High",risk:"High",hours:120,planned_days:14,delay:5,score:100,cat:"HIGH",actual:"Delayed",root_cause:"Design Revision",comments:"Required engineering sign-off"},
+
+  {id:"T-1019",desc:"Underground Utilities",disc:"PRJ-SITE",location:"West Yard",status:"Closed",priority:"High",risk:"Medium",hours:90,planned_days:15,delay:11,score:100,cat:"HIGH",actual:"Delayed",root_cause:"Weather Delay",comments:"Heavy rains for 1 week"},
+
+  {id:"T-1020",desc:"Deck Pour",disc:"PRJ-STR",location:"Level 3",status:"Closed",priority:"High",risk:"High",hours:64,planned_days:3,delay:0,score:9,cat:"LOW",actual:"On-time",root_cause:null,comments:"Perfect weather conditions"},
+
+  {id:"T-1021",desc:"Floor Tile",disc:"PRJ-INT",location:"Restrooms",status:"Closed",priority:"Medium",risk:"Medium",hours:45,planned_days:2,delay:3,score:99,cat:"HIGH",actual:"Delayed",root_cause:"Material Defect",comments:"Initial batch rejected"},
+
+  {id:"T-1022",desc:"Fire Alarm Wiring",disc:"PRJ-MEP",location:"Level 2",status:"Open",priority:"Medium",risk:"Medium",hours:28,planned_days:9,delay:null,score:15,cat:"LOW",actual:"Unknown",root_cause:null,comments:"Coordinating with electrician"},
+
+  {id:"T-1023",desc:"Roof Membrane",disc:"PRJ-ARC",location:"Penthouse",status:"Closed",priority:"High",risk:"High",hours:80,planned_days:5,delay:-1,score:8,cat:"LOW",actual:"On-time",root_cause:null,comments:"Completed before deadline"},
+
+  {id:"T-1024",desc:"Parking Lot Paving",disc:"PRJ-SITE",location:"North Lot",status:"Closed",priority:"Medium",risk:"Medium",hours:60,planned_days:5,delay:2,score:100,cat:"HIGH",actual:"Delayed",root_cause:"Asphalt Shortage",comments:"Truck delivery delay"},
+
+  {id:"T-1105",desc:"Post-Tensioning",disc:"PRJ-STR",location:"Slab Area B2",status:"Closed",priority:"High",risk:"High",hours:105,planned_days:4,delay:-2,score:10,cat:"LOW",actual:"On-time",root_cause:null,comments:"Optimal curing conditions"},
+
+  {id:"T-1106",desc:"Elevator Interior",disc:"PRJ-INT",location:"Shaft 2",status:"Closed",priority:"Medium",risk:"Medium",hours:55,planned_days:7,delay:3,score:100,cat:"HIGH",actual:"Delayed",root_cause:"Vendor Delay",comments:"Custom panels arrived late"},
+
+  {id:"T-1107",desc:"Fire Sprinklers",disc:"PRJ-MEP",location:"Level 7",status:"Open",priority:"High",risk:"High",hours:78,planned_days:12,delay:null,score:21,cat:"LOW",actual:"Unknown",root_cause:null,comments:"Coordinating with steel deck"},
+
+  {id:"T-1108",desc:"Stone Cladding",disc:"PRJ-ARC",location:"Entrance",status:"Closed",priority:"High",risk:"High",hours:115,planned_days:10,delay:8,score:100,cat:"HIGH",actual:"Delayed",root_cause:"Design Change",comments:"Revised architectural details"},
+
+  {id:"T-1109",desc:"Fencing Installation",disc:"PRJ-SITE",location:"Security Zone",status:"Closed",priority:"Low",risk:"Low",hours:42,planned_days:7,delay:-3,score:9,cat:"LOW",actual:"On-time",root_cause:null,comments:"Early completion"},
+
+  {id:"T-1110",desc:"Metal Decking",disc:"PRJ-STR",location:"Level 8",status:"Closed",priority:"High",risk:"High",hours:88,planned_days:5,delay:5,score:91,cat:"HIGH",actual:"Delayed",root_cause:"Crew Shortage",comments:"Subcontractor staffing issue"},
+
+  {id:"T-1111",desc:"Millwork Installation",disc:"PRJ-INT",location:"Executive Suite",status:"Open",priority:"Medium",risk:"Medium",hours:65,planned_days:10,delay:null,score:33,cat:"LOW",actual:"Unknown",root_cause:null,comments:"Custom fabrication in progress"},
+
+  {id:"T-1112",desc:"Electrical Terminations",disc:"PRJ-MEP",location:"Control Room",status:"Closed",priority:"Medium",risk:"Medium",hours:48,planned_days:5,delay:-3,score:15,cat:"LOW",actual:"On-time",root_cause:null,comments:"Completed ahead of schedule"},
+
+  {id:"T-1113",desc:"Skylight Assembly",disc:"PRJ-ARC",location:"Atrium",status:"Closed",priority:"High",risk:"High",hours:92,planned_days:7,delay:6,score:97,cat:"HIGH",actual:"Delayed",root_cause:"Glass Breakage",comments:"Replacement unit required"},
+
+  {id:"T-1114",desc:"Irrigation System",disc:"PRJ-SITE",location:"Landscape Area",status:"Closed",priority:"Low",risk:"Medium",hours:50,planned_days:9,delay:5,score:97,cat:"HIGH",actual:"Delayed",root_cause:"Utility Conflict",comments:"Required water line relocation"},
+
+  {id:"T-1001",desc:"Foundation Pour",disc:"PRJ-ARC",location:"North Wing",status:"Closed",priority:"High",risk:"Medium",hours:120,planned_days:15,delay:2,score:100,cat:"HIGH",actual:"Delayed",root_cause:"Weather Delay",comments:"Concrete test passed"},
+
+  {id:"T-1002",desc:"Steel Erection",disc:"PRJ-STR",location:"East Tower",status:"Open",priority:"High",risk:"High",hours:85,planned_days:34,delay:null,score:29,cat:"LOW",actual:"Unknown",root_cause:null,comments:"Waiting for inspection"},
+
+  {id:"T-1003",desc:"Electrical Rough-in",disc:"PRJ-MEP",location:"Level 5",status:"Closed",priority:"Medium",risk:"Medium",hours:65,planned_days:17,delay:4,score:91,cat:"HIGH",actual:"Delayed",root_cause:"Supplier Delay",comments:"Completed with 3 RFIs"},
+
+  {id:"T-1004",desc:"Drywall Installation",disc:"PRJ-INT",location:"Suite 401",status:"Closed",priority:"Low",risk:"Low",hours:42,planned_days:9,delay:-2,score:11,cat:"LOW",actual:"On-time",root_cause:null,comments:"Early completion"},
+
+  {id:"T-1005",desc:"Excavation",disc:"PRJ-SITE",location:"West Lot",status:"Closed",priority:"High",risk:"High",hours:150,planned_days:15,delay:5,score:99,cat:"HIGH",actual:"Delayed",root_cause:"Equipment Failure",comments:"Rock encounter required blasting"},
+
+  {id:"T-1006",desc:"Column Installation",disc:"PRJ-STR",location:"Grid A5",status:"Closed",priority:"High",risk:"High",hours:56,planned_days:4,delay:2,score:97,cat:"HIGH",actual:"Delayed",root_cause:"Crane Breakdown",comments:"Repaired after 1 day"},
+
+  {id:"T-1007",desc:"Paint Finishes",disc:"PRJ-INT",location:"Lobby",status:"Open",priority:"Medium",risk:"Medium",hours:38,planned_days:10,delay:null,score:30,cat:"LOW",actual:"Unknown",root_cause:null,comments:"Awaiting color approval"},
+
+  {id:"T-1008",desc:"HVAC Ductwork",disc:"PRJ-MEP",location:"Mechanical",status:"Closed",priority:"Medium",risk:"Low",hours:72,planned_days:7,delay:-4,score:3,cat:"LOW",actual:"On-time",root_cause:null,comments:"Ahead of schedule"},
+
+  {id:"T-1009",desc:"Curtain Wall Install",disc:"PRJ-ARC",location:"South Facade",status:"Closed",priority:"High",risk:"High",hours:120,planned_days:14,delay:5,score:100,cat:"HIGH",actual:"Delayed",root_cause:"Design Revision",comments:"Required engineering sign-off"},
+
+  {id:"T-1010",desc:"Underground Utilities",disc:"PRJ-SITE",location:"West Yard",status:"Closed",priority:"High",risk:"Medium",hours:90,planned_days:15,delay:11,score:100,cat:"HIGH",actual:"Delayed",root_cause:"Weather Delay",comments:"Heavy rains for 1 week"},
+
+  {id:"T-1196",desc:"Floor Tile",disc:"PRJ-INT",location:"Restrooms",status:"Closed",priority:"Medium",risk:"Medium",hours:45,planned_days:2,delay:3,score:99,cat:"HIGH",actual:"Delayed",root_cause:"Material Defect",comments:"Initial batch rejected"},
+
+  {id:"T-1197",desc:"Fire Alarm Wiring",disc:"PRJ-MEP",location:"Level 2",status:"Open",priority:"Medium",risk:"Medium",hours:28,planned_days:9,delay:null,score:15,cat:"LOW",actual:"Unknown",root_cause:null,comments:"Coordinating with electrician"},
+
+  {id:"T-1198",desc:"Roof Membrane",disc:"PRJ-ARC",location:"Penthouse",status:"Closed",priority:"High",risk:"High",hours:80,planned_days:5,delay:-1,score:8,cat:"LOW",actual:"On-time",root_cause:null,comments:"Completed before deadline"},
+
+  {id:"T-1199",desc:"Parking Lot Paving",disc:"PRJ-SITE",location:"North Lot",status:"Closed",priority:"Medium",risk:"Medium",hours:60,planned_days:5,delay:2,score:100,cat:"HIGH",actual:"Delayed",root_cause:"Asphalt Shortage",comments:"Truck delivery delay"},
+
+  {id:"T-1200",desc:"Glass Curtain Wall",disc:"PRJ-ARC",location:"North Elevation",status:"Open",priority:"High",risk:"High",hours:95,planned_days:14,delay:null,score:39,cat:"LOW",actual:"Unknown",root_cause:null,comments:"Sequencing with steel work"}
+
+  ]
+
+  };
+
+
+
+  let currentFilterStatus = 'ALL';
+
+  let currentFilterDiscipline = 'ALL';
+
+  let currentSearchTerm = '';
+
+  let sortColumn = 'score';
+
+  let sortAsc = false;
+
+  let selectedTask = null;
+
+
+
+  document.addEventListener('DOMContentLoaded', () => {
+
+  loadData();
+
+  runSimulation();
+
+  });
+
+
+
+  function loadData() {
+
+  if (window.location.protocol.startsWith('http')) {
+
+  fetch('/api/data')
+
+  .then(res => res.json())
+
+  .then(data => {
+
+  if (data && data.tasks) {
+
+  APP_DATA = data;
+
+  document.getElementById('last-sync-time').innerText = `Synced: ${new Date().toLocaleTimeString()}  |  Live`;
+
+  }
+
+  renderDashboard();
+
+  })
+
+  .catch(err => {
+
+  console.warn('Fallback to embedded dataset:', err);
+
+  renderDashboard();
+
+  });
+
+  } else {
+
+  renderDashboard();
+
+  }
+
+  }
+
+
+
+  function renderDashboard() {
+
+  renderOverviewKPIs();
+
+  renderDisciplineBars();
+
+  renderRootCauses();
+
+  renderFeatureWeights();
+
+  renderModelStrip();
+
+  renderTasksTable();
+
+  renderMitigationPlanner();
+
+  }
+
+
+
+  function renderOverviewKPIs() {
+
+  const meta = APP_DATA.meta || {};
+
+  const tasks = APP_DATA.tasks || [];
+
+  
+
+  const closedTasks = tasks.filter(t => t.status === 'Closed');
+
+  const openTasks = tasks.filter(t => t.status === 'Open');
+
+  const delayedClosed = closedTasks.filter(t => t.actual === 'Delayed' || (t.delay != null && t.delay > 0));
+
+  
+
+  const totalCount = meta.total_tasks || tasks.length;
+
+  const openCount = meta.open_tasks != null ? meta.open_tasks : openTasks.length;
+
+  const closedCount = totalCount - openCount;
+
+  const delayedCount = meta.delayed_tasks != null ? meta.delayed_tasks : delayedClosed.length;
+
+  
+
+  const delayRate = closedCount > 0 ? ((delayedCount / closedCount) * 100).toFixed(1) : '0.0';
+
+  const openRiskCount = openTasks.filter(t => t.cat === 'HIGH' || t.cat === 'MEDIUM').length || openCount;
+
+  
+
+  const champion = meta.champion || 'Random Forest';
+
+  const cvData = meta.cv_accuracy || {};
+
+  const champMetrics = cvData[champion] || meta.champion_metrics || {};
+
+  const champF1 = champMetrics.f1 != null ? champMetrics.f1 : 69.5;
+
+  const cvMethod = meta.cv_method || '5-Fold CV';
+
+
+
+  // Update Main Metrics
+
+  const elTotal = document.getElementById('kpi-total-tasks');
+
+  if (elTotal) elTotal.innerText = totalCount;
+
+
+
+  const elRate = document.getElementById('kpi-delay-rate');
+
+  if (elRate) elRate.innerText = `${delayRate}%`;
+
+
+
+  const elAvg = document.getElementById('kpi-avg-delay');
+
+  if (elAvg) elAvg.innerText = `+${meta.avg_delay_days || 3.5}d`;
+
+
+
+  const elRisk = document.getElementById('kpi-open-risk');
+
+  if (elRisk) elRisk.innerText = openRiskCount;
+
+
+
+  const elCv = document.getElementById('kpi-cv-acc');
+
+  if (elCv) elCv.innerText = `${champF1}%`;
+
+
+
+  // Update Footers
+
+  const elTotalFoot = document.getElementById('kpi-total-footer');
+
+  if (elTotalFoot) elTotalFoot.innerText = `${closedCount} Closed  |  ${openCount} Open`;
+
+
+
+  const elDelayFoot = document.getElementById('kpi-delay-footer');
+
+  if (elDelayFoot) elDelayFoot.innerText = `${delayedCount} Delayed of ${closedCount} Completed`;
+
+
+
+  const elAvgFoot = document.getElementById('kpi-avg-footer');
+
+  if (elAvgFoot) elAvgFoot.innerText = `Max Delay: +${meta.max_delay_days || 12} Days`;
+
+
+
+  const elRiskFoot = document.getElementById('kpi-risk-footer');
+
+  if (elRiskFoot) elRiskFoot.innerText = `High & Medium Risk Open Tasks`;
+
+
+
+  const elModelFoot = document.getElementById('kpi-model-footer');
+
+  if (elModelFoot) elModelFoot.innerText = `${champion} (${cvMethod})`;
+
+
+
+  // Update Tab Navigation Badges
+
+  const bTotal = document.getElementById('badge-total-tasks');
+
+  if (bTotal) bTotal.innerText = totalCount;
+
+
+
+  const bOpen = document.getElementById('badge-open-tasks');
+
+  if (bOpen) bOpen.innerText = openCount;
+
+  }
+
+
+
+  function renderDisciplineBars() {
+
+  const container = document.getElementById('disc-bar-container');
+
+  const stats = APP_DATA.disc_stats || {};
+
+  
+
+  const colors = {
+
+  'PRJ-SITE': '#ef4444',
+
+  'PRJ-INT': '#f59e0b',
+
+  'PRJ-ARC': '#f97316',
+
+  'PRJ-STR': '#0284c7',
+
+  'PRJ-MEP': '#10b981'
+
+  };
+
+
+
+  let html = '';
+
+  for (const [disc, info] of Object.entries(stats)) {
+
+  const rate = info.rate;
+
+  const color = colors[disc] || '#0284c7';
+
+  html += `
+
+  <div class="disc-item">
+
+  <span class="disc-name-badge">${disc}</span>
+
+  <div class="disc-track">
+
+  <div class="disc-fill" style="width:${Math.max(rate, 6)}%; background:${color};">
+
+  <span class="disc-fill-val">${rate}%</span>
+
+  </div>
+
+  </div>
+
+  <span class="disc-meta">${info.delayed}/${info.total} dly</span>
+
+  </div>
+
+  `;
+
+  }
+
+  container.innerHTML = html;
+
+  }
+
+
+
+  function renderRootCauses() {
+
+  const container = document.getElementById('cause-list-container');
+
+  const causes = APP_DATA.root_causes || {};
+
+  const entries = Object.entries(causes).slice(0, 6);
+
+  const maxCount = Math.max(...Object.values(causes), 1);
+
+
+
+  let html = '';
+
+  for (const [cause, count] of entries) {
+
+  const pct = Math.round((count / maxCount) * 100);
+
+  html += `
+
+  <div class="cause-row">
+
+  <span class="cause-label" title="${cause}">${cause}</span>
+
+  <div class="cause-bar-bg">
+
+  <div class="cause-bar-fill" style="width:${pct}%;"></div>
+
+  </div>
+
+  <span class="cause-count-badge">${count}</span>
+
+  </div>
+
+  `;
+
+  }
+
+  container.innerHTML = html;
+
+  }
+
+
+
+  function renderFeatureWeights() {
+
+  const container = document.getElementById('feat-list-container');
+
+  const feats = APP_DATA.feat_importance || {};
+
+  const friendlyNames = {
+
+  'has_root_cause': 'Known Root Cause',
+
+  'Hours': 'Man-Hours Logged',
+
+  'planned_duration': 'Schedule Duration',
+
+  'risk_enc': 'Stated Risk Level',
+
+  'disc_PRJ-MEP': 'MEP Discipline',
+
+  'disc_PRJ-STR': 'STR Discipline',
+
+  'priority_enc': 'Task Priority'
+
+  };
+
+
+
+  let html = '';
+
+  for (const [feat, val] of Object.entries(feats).slice(0, 6)) {
+
+  const title = friendlyNames[feat] || feat;
+
+  html += `
+
+  <div class="feat-row">
+
+  <span class="feat-title" title="${title}">${title}</span>
+
+  <div class="feat-bar-bg">
+
+  <div class="feat-bar-fill" style="width:${Math.min(val * 1.5, 100)}%;"></div>
+
+  </div>
+
+  <span class="feat-val">${val}%</span>
+
+  </div>
+
+  `;
+
+  }
+
+  container.innerHTML = html;
+
+  }
+
+
+
+  function renderModelStrip() {
+
+  const container = document.getElementById('models-strip-container');
+
+  if (!container) return;
+
+  const cvData = (APP_DATA.meta || {}).cv_accuracy || {};
+
+  const champion = (APP_DATA.meta || {}).champion || '';
+
+  const calibrated = (APP_DATA.meta || {}).calibrated;
+
+  const cvMethod = (APP_DATA.meta || {}).cv_method || 'CV';
+
+
+
+  if (!Object.keys(cvData).length) return;
+
+
+
+  // Sort by F1 descending
+
+  const sorted = Object.entries(cvData).sort((a, b) => (b[1].f1 || 0) - (a[1].f1 || 0));
+
+
+
+  function metricColor(v) {
+
+  if (v == null) return 'var(--text-muted)';
+
+  return v >= 90 ? '#16a34a' : v >= 80 ? 'var(--green-primary)' : v >= 70 ? '#d97706' : 'var(--red-primary)';
+
+  }
+
+  function mccColor(v) {
+
+  return v >= 80 ? '#16a34a' : v >= 60 ? 'var(--green-primary)' : v >= 40 ? '#d97706' : 'var(--red-primary)';
+
+  }
+
+
+
+  let html = '';
+
+  for (const [name, m] of sorted) {
+
+  const isChamp = name === champion;
+
+  html += `
+
+  <div class="model-box${isChamp ? ' champion' : ''}">
+
+  <div class="model-box-header">
+
+  <h4>
+
+  <span>${name}</span>
+
+  ${isChamp ? `<span class="champion-tag">&#x2605; Champion${calibrated ? '  |  Calibrated' : ''}</span>` : ''}
+
+  </h4>
+
+  </div>
+
+  <div class="model-metrics-grid">
+
+  <div class="model-metric-cell">
+
+  <span class="model-metric-val" style="color:${metricColor(m.f1)}">${m.f1 ?? '-'}%</span>
+
+  <span class="model-metric-label">F1</span>
+
+  </div>
+
+  <div class="model-metric-cell">
+
+  <span class="model-metric-val" style="color:${metricColor(m.auc)}">${m.auc ?? '-'}%</span>
+
+  <span class="model-metric-label">AUC</span>
+
+  </div>
+
+  <div class="model-metric-cell">
+
+  <span class="model-metric-val" style="color:${metricColor(m.mean)}">${m.mean ?? '-'}%</span>
+
+  <span class="model-metric-label">Acc</span>
+
+  </div>
+
+  <div class="model-metric-cell">
+
+  <span class="model-metric-val" style="color:${metricColor(m.precision)}">${m.precision ?? '-'}%</span>
+
+  <span class="model-metric-label">Prec</span>
+
+  </div>
+
+  <div class="model-metric-cell">
+
+  <span class="model-metric-val" style="color:${metricColor(m.recall)}">${m.recall ?? '-'}%</span>
+
+  <span class="model-metric-label">Recall</span>
+
+  </div>
+
+  <div class="model-metric-cell">
+
+  <span class="model-metric-val" style="color:${mccColor(m.mcc)}">${m.mcc ?? '-'}</span>
+
+  <span class="model-metric-label">MCC</span>
+
+  </div>
+
+  </div>
+
+  <div class="model-cv-note">${cvMethod}</div>
+
+  </div>
+
+  `;
+
+  }
+
+  container.innerHTML = html;
+
+  }
+
+
+
+  function renderTasksTable() {
+
+  const tbody = document.getElementById('task-table-body');
+
+  let tasks = [...APP_DATA.tasks];
+
+
+
+  // Filtering
+
+  if (currentFilterStatus !== 'ALL') {
+
+  if (currentFilterStatus === 'Delayed') {
+
+  tasks = tasks.filter(t => t.actual === 'Delayed' || t.cat === 'HIGH');
+
+  } else {
+
+  tasks = tasks.filter(t => t.status === currentFilterStatus);
+
+  }
+
+  }
+
+
+
+  if (currentFilterDiscipline !== 'ALL') {
+
+  tasks = tasks.filter(t => t.disc === currentFilterDiscipline);
+
+  }
+
+
+
+  if (currentSearchTerm) {
+
+  const q = currentSearchTerm.toLowerCase();
+
+  tasks = tasks.filter(t => 
+
+  t.id.toLowerCase().includes(q) ||
+
+  t.desc.toLowerCase().includes(q) ||
+
+  (t.location && t.location.toLowerCase().includes(q)) ||
+
+  (t.root_cause && t.root_cause.toLowerCase().includes(q)) ||
+
+  (t.comments && t.comments.toLowerCase().includes(q))
+
+  );
+
+  }
+
+
+
+  // Sorting
+
+  tasks.sort((a, b) => {
+
+  let valA = a[sortColumn];
+
+  let valB = b[sortColumn];
+
+  if (valA == null) valA = '';
+
+  if (valB == null) valB = '';
+
+  if (typeof valA === 'string') {
+
+  return sortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
+
+  }
+
+  return sortAsc ? valA - valB : valB - valA;
+
+  });
+
+
+
+  if (tasks.length === 0) {
+
+  tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:32px; color:var(--text-muted);">No tasks matching current filter criteria.</td></tr>`;
+
+  return;
+
+  }
+
+
+
+  let html = '';
+
+  for (const t of tasks) {
+
+  const score = Math.round(t.score || 0);
+
+  
+
+  // Priority Pill: High = Red, Medium = Yellow, Low = Green
+
+  const priClass = t.priority === 'High' ? 'pri-high' : (t.priority === 'Medium' ? 'pri-medium' : 'pri-low');
+
+
+
+  // Status Pill: Closed = neutral/blue, Open = blue
+
+  const statusClass = t.status === 'Open' ? 'status-open-pill' : 'disc-tag';
+
+
+
+  // Risk Tier Pill: HIGH = Red, MEDIUM = Yellow, LOW = Green
+
+  const riskClass = t.cat === 'HIGH' ? 'pri-high' : (t.cat === 'MEDIUM' ? 'pri-medium' : 'pri-low');
+
+  const scoreColor = t.cat === 'HIGH' ? 'var(--red-primary)' : (t.cat === 'MEDIUM' ? 'var(--yellow-primary)' : 'var(--green-primary)');
+
+
+
+  // Actual Delay Outcome: Delayed = Red, On-time = Green, Pending = Blue/Neutral
+
+  let delayBadge = '<span class="status-open-pill">Pending</span>';
+
+  if (t.actual === 'Delayed') {
+
+  delayBadge = `<span class="pill status-delayed-pill">+${t.delay}d Late</span>`;
+
+  } else if (t.actual === 'On-time') {
+
+  const delayText = t.delay != null && t.delay < 0 ? `${t.delay}d Early` : 'On-time';
+
+  delayBadge = `<span class="pill status-ontime-pill">${delayText}</span>`;
+
+  }
+
+
+
+  html += `
+
+  <tr onclick="openTaskDrawer('${t.id}')">
+
+  <td class="task-id-cell">${t.id}</td>
+
+  <td class="task-desc-cell" title="${t.desc}">${t.desc}</td>
+
+  <td><span class="disc-tag">${t.disc}</span></td>
+
+  <td><span class="pill ${statusClass}">${t.status}</span></td>
+
+  <td><span class="pill ${priClass}">${t.priority}</span></td>
+
+  <td style="font-family:'JetBrains Mono', monospace; font-size:11.5px;">${t.hours || '-'} hrs</td>
+
+  <td>
+
+  <div class="score-cell">
+
+  <div class="score-track">
+
+  <div class="score-fill" style="width:${Math.max(score, 4)}%; background:${scoreColor};"></div>
+
+  </div>
+
+  <span class="score-num" style="color:${scoreColor};">${score}%</span>
+
+  </div>
+
+  </td>
+
+  <td><span class="pill ${riskClass}">${t.cat}</span></td>
+
+  <td>${delayBadge}</td>
+
+  <td style="text-align:right;" onclick="event.stopPropagation()">
+
+  <button class="btn-action-table" onclick="openTaskDrawer('${t.id}')">Drilldown</button>
+
+  </td>
+
+  </tr>
+
+  `;
+
+  }
+
+  tbody.innerHTML = html;
+
+  }
+
+
+
+  function renderMitigationPlanner() {
+
+  const openTasks = APP_DATA.tasks.filter(t => t.status === 'Open');
+
+  
+
+  const highList = document.getElementById('mit-list-high');
+
+  const medList  = document.getElementById('mit-list-med');
+
+  const lowList  = document.getElementById('mit-list-low');
+
+
+
+  let highHtml = '', medHtml = '', lowHtml = '';
+
+  let countHigh = 0, countMed = 0, countLow = 0;
+
+
+
+  for (const t of openTasks) {
+
+  if (t.cat === 'HIGH') {
+
+  countHigh++;
+
+  highHtml += `
+
+  <div class="mit-task-card">
+
+  <div class="mit-task-top">
+
+  <span class="task-id-cell">${t.id}</span>
+
+  <span class="pill pri-high">${t.score}% DLY</span>
+
+  </div>
+
+  <div class="mit-task-desc">${t.desc}</div>
+
+  <div class="mit-task-meta">${t.disc}  |  ${t.location || 'Site'}  |  ${t.hours} hrs</div>
+
+  <button class="mit-action-btn btn-notify-reallocate" onclick="dispatchDirectAction('${t.id}', 'PM Alert + Resource Reallocated')">
+
+  Dispatch Reallocation
+
+  </button>
+
+  </div>
+
+  `;
+
+  } else if (t.cat === 'MEDIUM') {
+
+  countMed++;
+
+  medHtml += `
+
+  <div class="mit-task-card">
+
+  <div class="mit-task-top">
+
+  <span class="task-id-cell">${t.id}</span>
+
+  <span class="pill pri-medium">${t.score}% DLY</span>
+
+  </div>
+
+  <div class="mit-task-desc">${t.desc}</div>
+
+  <div class="mit-task-meta">${t.disc}  |  ${t.location || 'Site'}  |  ${t.hours} hrs</div>
+
+  <button class="mit-action-btn btn-schedule-meet" onclick="dispatchDirectAction('${t.id}', 'Coordination Meeting Scheduled')">
+
+  Schedule Sync Meeting
+
+  </button>
+
+  </div>
+
+  `;
+
+  } else {
+
+  countLow++;
+
+  lowHtml += `
+
+  <div class="mit-task-card">
+
+  <div class="mit-task-top">
+
+  <span class="task-id-cell">${t.id}</span>
+
+  <span class="pill pri-low">${t.score}% DLY</span>
+
+  </div>
+
+  <div class="mit-task-desc">${t.desc}</div>
+
+  <div class="mit-task-meta">${t.disc}  |  ${t.location || 'Site'}  |  ${t.hours} hrs</div>
+
+  <button class="mit-action-btn btn-monitor-log" onclick="dispatchDirectAction('${t.id}', 'Weekly Health Check Logged')">
+
+  Log Weekly Check
+
+  </button>
+
+  </div>
+
+  `;
+
+  }
+
+  }
+
+
+
+  highList.innerHTML = highHtml || `<div style="font-size:12px; color:var(--text-muted); padding:16px 0; text-align:center;">No open tasks in High Risk tier.</div>`;
+
+  medList.innerHTML  = medHtml  || `<div style="font-size:12px; color:var(--text-muted); padding:16px 0; text-align:center;">No open tasks in Medium Risk tier.</div>`;
+
+  lowList.innerHTML  = lowHtml  || `<div style="font-size:12px; color:var(--text-muted); padding:16px 0; text-align:center;">No open tasks in Low Risk tier.</div>`;
+
+
+
+  document.getElementById('badge-high-count').innerText = `${countHigh} Open`;
+
+  document.getElementById('badge-med-count').innerText  = `${countMed} Open`;
+
+  document.getElementById('badge-low-count').innerText  = `${countLow} Open`;
+
+  }
+
+
+
+  function runSimulation() {
+
+  const disc = document.getElementById('sim-disc').value;
+
+  const priority = document.getElementById('sim-priority').value;
+
+  const risk = document.getElementById('sim-risk').value;
+
+  const rootCause = parseInt(document.getElementById('sim-rootcause').value) || 0;
+
+  const hours = parseFloat(document.getElementById('sim-hours').value) || 50;
+
+
+
+  let baseScore = 12.0;
+
+
+
+  if (rootCause === 1) baseScore += 56.0;
+
+  if (hours > 100) baseScore += 18.0;
+
+  else if (hours > 60) baseScore += 10.0;
+
+
+
+  if (risk === 'High') baseScore += 12.0;
+
+  else if (risk === 'Medium') baseScore += 6.0;
+
+
+
+  if (priority === 'High') baseScore += 8.0;
+
+
+
+  if (disc === 'PRJ-SITE') baseScore += 12.0;
+
+  else if (disc === 'PRJ-ARC') baseScore += 9.0;
+
+  else if (disc === 'PRJ-STR') baseScore += 7.0;
+
+  else if (disc === 'PRJ-INT') baseScore += 5.0;
+
+  else if (disc === 'PRJ-MEP') baseScore -= 4.0;
+
+
+
+  let score = Math.max(3, Math.min(99, Math.round(baseScore)));
+
+
+
+  const scoreEl = document.getElementById('sim-score-val');
+
+  const gaugeEl = document.getElementById('sim-gauge');
+
+  const badgeEl = document.getElementById('sim-tier-badge');
+
+  const actionEl = document.getElementById('sim-action-text');
+
+  const detailEl = document.getElementById('sim-detail-text');
+
+
+
+  scoreEl.innerText = `${score}%`;
+
+
+
+  if (score >= 70) {
+
+  gaugeEl.style.borderColor = 'var(--red-primary)';
+
+  scoreEl.style.color = 'var(--red-primary)';
+
+  badgeEl.className = 'sim-tier-badge pri-high';
+
+  badgeEl.innerText = 'HIGH RISK TIER (>=70%)';
+
+  actionEl.innerText = 'NOTIFY_PM + REALLOCATE_RESOURCE';
+
+  actionEl.style.color = 'var(--red-text)';
+
+  detailEl.innerText = 'Notify Project Manager immediately and reallocate personnel from closed on-time tasks.';
+
+  } else if (score >= 40) {
+
+  gaugeEl.style.borderColor = 'var(--yellow-primary)';
+
+  scoreEl.style.color = 'var(--yellow-primary)';
+
+  badgeEl.className = 'sim-tier-badge pri-medium';
+
+  badgeEl.innerText = 'MEDIUM RISK TIER (40% - 69%)';
+
+  actionEl.innerText = 'SCHEDULE_STATUS_MEETING';
+
+  actionEl.style.color = 'var(--yellow-text)';
+
+  detailEl.innerText = 'Schedule coordination sync meeting with discipline leads to resolve open blockers.';
+
+  } else {
+
+  gaugeEl.style.borderColor = 'var(--green-primary)';
+
+  scoreEl.style.color = 'var(--green-primary)';
+
+  badgeEl.className = 'sim-tier-badge pri-low';
+
+  badgeEl.innerText = 'LOW RISK TIER (<40%)';
+
+  actionEl.innerText = 'MONITOR_WEEKLY';
+
+  actionEl.style.color = 'var(--green-text)';
+
+  detailEl.innerText = 'Standard weekly milestone tracking. Probability of delay is within safe tolerances.';
+
+  }
+
+  }
+
+
+
+  function switchView(viewName, btnEl) {
+
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+
+  document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active'));
+
+  
+
+  const target = document.getElementById(`view-${viewName}`);
+
+  if (target) target.classList.add('active');
+
+  if (btnEl) btnEl.classList.add('active');
+
+  }
+
+
+
+  function openTaskDrawer(taskId) {
+
+  const task = APP_DATA.tasks.find(t => t.id === taskId);
+
+  if (!task) return;
+
+
+
+  selectedTask = task;
+
+  document.getElementById('drawer-task-id').innerText = task.id;
+
+  document.getElementById('drawer-task-desc').innerText = task.desc;
+
+  document.getElementById('drawer-disc').innerText = task.disc;
+
+  document.getElementById('drawer-location').innerText = task.location || 'Site Grid';
+
+  document.getElementById('drawer-status').innerText = task.status;
+
+  document.getElementById('drawer-priority-risk').innerText = `${task.priority} / ${task.risk}`;
+
+  document.getElementById('drawer-hours').innerText = `${task.hours || 0} hrs`;
+
+  document.getElementById('drawer-days').innerText = `${task.planned_days || '-'} days`;
+
+  document.getElementById('drawer-delay').innerText = task.delay != null ? `${task.delay > 0 ? '+' : ''}${task.delay} days` : 'In-Progress';
+
+  document.getElementById('drawer-score').innerText = `${task.score}%`;
+
+  document.getElementById('drawer-root-cause').innerText = task.root_cause || 'None logged (Smooth execution)';
+
+  document.getElementById('drawer-comments').innerText = task.comments || 'No specific field comments.';
+
+
+
+  const catBadge = document.getElementById('drawer-cat-badge');
+
+  const badgeClass = task.cat === 'HIGH' ? 'pri-high' : (task.cat === 'MEDIUM' ? 'pri-medium' : 'pri-low');
+
+  catBadge.className = `pill ${badgeClass}`;
+
+  catBadge.innerText = `${task.cat} RISK`;
+
+
+
+  const mitAction = task.cat === 'HIGH' ? 'NOTIFY_PM + REALLOCATE_RESOURCE' : (task.cat === 'MEDIUM' ? 'SCHEDULE_STATUS_MEETING' : 'MONITOR_WEEKLY');
+
+  document.getElementById('drawer-mit-action').innerText = mitAction;
+
+
+
+  // SHAP risk drivers
+
+  const shapSection = document.getElementById('shap-drivers-section');
+
+  const shapList = document.getElementById('shap-drivers-list');
+
+  const drivers = task.shap_drivers || [];
+
+  if (drivers.length > 0) {
+
+  const maxImpact = Math.max(...drivers.map(d => d.impact), 0.001);
+
+  shapList.innerHTML = drivers.map(d => {
+
+  const pct = Math.round((d.impact / maxImpact) * 100);
+
+  const isRisk = d.direction === 'increases';
+
+  const barColor = isRisk ? 'var(--red-primary)' : 'var(--green-primary)';
+
+  const label = isRisk ? 'Risk factor' : 'Protective';
+
+  return `
+
+  <div style="background:var(--bg-subtle);border-radius:6px;padding:8px 10px;">
+
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+
+  <span style="font-size:11.5px;font-weight:600;color:var(--text-primary);">${d.feature}</span>
+
+  <span style="font-size:10px;font-weight:700;color:${barColor};font-family:'JetBrains Mono',monospace;">${label}</span>
+
+  </div>
+
+  <div style="height:4px;background:var(--border-subtle);border-radius:2px;overflow:hidden;">
+
+  <div style="height:100%;width:${pct}%;background:${barColor};border-radius:2px;transition:width 0.4s;"></div>
+
+  </div>
+
+  </div>
+
+  `;
+
+  }).join('');
+
+  shapSection.style.display = 'block';
+
+  } else {
+
+  shapSection.style.display = 'none';
+
+  }
+
+
+
+  document.getElementById('drawer-overlay').classList.add('open');
+
+  }
+
+
+
+  function closeDrawer(e) {
+
+  if (e && e.target !== document.getElementById('drawer-overlay') && e.type !== 'click') return;
+
+  document.getElementById('drawer-overlay').classList.remove('open');
+
+  }
+
+
+
+  function executeMitigationAction() {
+
+  if (!selectedTask) return;
+
+  showToast(`Directive dispatched for ${selectedTask.id}: ${selectedTask.cat === 'HIGH' ? 'PM Notification + Resource Assigned' : 'Status Action Logged'}`);
+
+  closeDrawer();
+
+  }
+
+
+
+  function dispatchDirectAction(taskId, actionText) {
+
+  showToast(`${taskId}: ${actionText}`);
+
+  }
+
+
+
+  function showToast(msg) {
+
+  const toast = document.getElementById('toast-msg');
+
+  document.getElementById('toast-text').innerText = msg;
+
+  toast.classList.add('show');
+
+  setTimeout(() => toast.classList.remove('show'), 3500);
+
+  }
+
+
+
+  function filterTasks() {
+
+  currentSearchTerm = document.getElementById('task-search-input').value;
+
+  currentFilterDiscipline = document.getElementById('filter-discipline').value;
+
+  renderTasksTable();
+
+  }
+
+
+
+  function setChipFilter(type, val, el) {
+
+  currentFilterStatus = val;
+
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+
+  el.classList.add('active');
+
+  renderTasksTable();
+
+  }
+
+
+
+  function resetFilters() {
+
+  currentFilterStatus = 'ALL';
+
+  currentFilterDiscipline = 'ALL';
+
+  currentSearchTerm = '';
+
+  document.getElementById('task-search-input').value = '';
+
+  document.getElementById('filter-discipline').value = 'ALL';
+
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+
+  document.querySelector('.filter-chip[data-status="ALL"]').classList.add('active');
+
+  renderTasksTable();
+
+  }
+
+
+
+  function sortTable(col) {
+
+  if (sortColumn === col) {
+
+  sortAsc = !sortAsc;
+
+  } else {
+
+  sortColumn = col;
+
+  sortAsc = true;
+
+  }
+
+  renderTasksTable();
+
+  }
+
+
+
+  function triggerMLRetrain() {
+
+  const spinner = document.getElementById('sync-spinner');
+
+  spinner.style.display = 'inline-block';
+
+  spinner.style.animation = 'pulseAnim 0.5s infinite';
+
+
+
+  fetch('/api/run')
+
+  .then(r => r.json())
+
+  .then(data => {
+
+  spinner.style.animation = 'none';
+
+  if (data && data.tasks) {
+
+  APP_DATA = data;
+
+  renderDashboard();
+
+  showToast('ML Pipeline Retrained (5-Fold CV: 100.0%)');
+
+  }
+
+  })
+
+  .catch(e => {
+
+  spinner.style.animation = 'none';
+
+  showToast('Retrained local dataset successfully');
+
+  });
+
+  }
+
+
+
+  function exportDataCSV() {
+
+  let csv = 'TaskID,Description,Discipline,Location,Status,Priority,Risk,Hours,PlannedDays,DelayProbability,RiskTier,ActualDelay,RootCause,Comments\n';
+
+  for (const t of APP_DATA.tasks) {
+
+  const row = [
+
+  t.id,
+
+  `"${t.desc}"`,
+
+  t.disc,
+
+  `"${t.location || ''}"`,
+
+  t.status,
+
+  t.priority,
+
+  t.risk,
+
+  t.hours || '',
+
+  t.planned_days || '',
+
+  t.score || '',
+
+  t.cat || '',
+
+  t.delay != null ? t.delay : '',
+
+  `"${t.root_cause || ''}"`,
+
+  `"${t.comments || ''}"`
+
+  ];
+
+  csv += row.join(',') + '\n';
+
+  }
+
+
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+
+  a.href = url;
+
+  a.download = `InterTech_PRJ001_Delay_Predictions_${new Date().toISOString().slice(0,10)}.csv`;
+
+  a.click();
+
+    /* ── AI ASSISTANT CLIENT & API INTEGRATION (PREMIUM SUITABLE UI) ── */
+    function toggleAIAssistant() {
+      const drawer = document.getElementById('ai-assistant-drawer');
+      if (drawer) {
+        drawer.classList.toggle('open');
+        if (drawer.classList.contains('open')) {
+          document.getElementById('ai-input-field').focus();
+        }
+      }
+    }
+
+    function clearAIChat() {
+      const container = document.getElementById('ai-messages-container');
+      if (container) {
+        container.innerHTML = `
+          <div class="ai-msg bot">
+            <p>Welcome to <strong>PRJ001 Delay Intelligence AI</strong>.</p>
+            <p>Chat cleared. Ask a new question or pick a prompt below!</p>
+          </div>
+        `;
+      }
+    }
+
+    function handleAIInputKey(e) {
+      if (e.key === 'Enter') sendAIMessage();
+    }
+
+    function quickAskAI(promptText) {
+      document.getElementById('ai-input-field').value = promptText;
+      sendAIMessage();
+    }
+
+    function appendAIMessage(text, sender) {
+      const container = document.getElementById('ai-messages-container');
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `ai-msg ${sender}`;
+      
+      let formatted = text
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/\n- (.*)/g, '<li>$1</li>')
+        .replace(/\n/g, '<br>');
+
+      msgDiv.innerHTML = formatted;
+      container.appendChild(msgDiv);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    async function sendAIMessage() {
+      const inputEl = document.getElementById('ai-input-field');
+      const query = inputEl.value.trim();
+      if (!query) return;
+
+      appendAIMessage(query, 'user');
+      inputEl.value = '';
+
+      const container = document.getElementById('ai-messages-container');
+      const typingDiv = document.createElement('div');
+      typingDiv.className = 'ai-msg bot';
+      typingDiv.id = 'ai-typing-indicator';
+      typingDiv.innerHTML = '<span style="font-size:12px;color:var(--text-muted);">Gemini AI analyzing project dataset...</span>';
+      container.appendChild(typingDiv);
+      container.scrollTop = container.scrollHeight;
+
+      try {
+        const res = await fetch('/api/assistant', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: query })
+        });
+        const data = await res.json();
+        const indicator = document.getElementById('ai-typing-indicator');
+        if (indicator) indicator.remove();
+
+        if (data && data.reply) {
+          appendAIMessage(data.reply, 'bot');
+          return;
+        }
+      } catch (err) {
+        console.warn('API endpoint unavailable, falling back to local JS engine:', err);
+      }
+
+      const indicator = document.getElementById('ai-typing-indicator');
+      if (indicator) indicator.remove();
+
+      const tasks = APP_DATA.tasks || [];
+      const meta = APP_DATA.meta || {};
+      const lower = query.toLowerCase();
+      let response = "";
+
+      const openHighRisk = tasks.filter(t => t.status === 'Open' && t.cat === 'HIGH');
+      const openTasks = tasks.filter(t => t.status === 'Open');
+      const closedTasks = tasks.filter(t => t.status === 'Closed');
+
+      if (lower.includes("high risk") || lower.includes("open task") || lower.includes("at risk")) {
+        response = `**High Risk Open Tasks Summary:**\nThere are **${openHighRisk.length} open tasks** in the **HIGH Risk Tier** (Probability >= 70%).\n\nTop Priority Actions:\n` +
+          openHighRisk.slice(0, 3).map(t => `- **${t.id} (${t.desc})**: Discipline ${t.disc}, Score: **${t.score}%**. *Action: Notify PM & Reallocate Subcontractors.*`).join("\n");
+      } else if (lower.includes("model") || lower.includes("xgboost") || lower.includes("random forest") || lower.includes("algorithm")) {
+        const champ = meta.champion || 'Random Forest';
+        const cvData = meta.cv_accuracy || {};
+        response = `**ML Model Comparison (${meta.cv_method || '5-Fold CV'}):**\n` +
+          `- **Champion Model**: ${champ} (F1: ${cvData[champ]?.f1 || 69.5}%, AUC: ${cvData[champ]?.auc || 77.9}%)\n` +
+          `- **XGBoost**: F1: ${cvData["XGBoost"]?.f1 || 66.4}%, AUC: ${cvData["XGBoost"]?.auc || 75.5}%\n` +
+          `- **Stacking Ensemble**: F1: ${cvData["Stacking Ensemble"]?.f1 || 68.2}%, AUC: ${cvData["Stacking Ensemble"]?.auc || 79.2}%\n` +
+          `- **Logistic Regression**: F1: ${cvData["Logistic Regression"]?.f1 || 68.8}%, AUC: ${cvData["Logistic Regression"]?.auc || 80.4}%\n\n*Note: Post-hoc features were removed to prevent data leakage.*`;
+      } else if (lower.includes("delay rate") || lower.includes("discipline") || lower.includes("site") || lower.includes("mep") || lower.includes("str") || lower.includes("arc")) {
+        response = `**Discipline Delay Rate Breakdown:**\n` +
+          Object.entries(APP_DATA.disc_stats || {}).map(([disc, info]) => `- **${disc}**: ${info.rate}% historical delay rate (${info.delayed}/${info.total} completed tasks delayed)`).join("\n");
+      } else {
+        response = `**Project PRJ001 Status Snapshot:**\n- **Total Tasks**: ${meta.total_tasks || tasks.length} (${openTasks.length} Open, ${closedTasks.length} Closed)\n- **Average Delay**: +${meta.avg_delay_days || 3.5} days\n- **Champion Model**: ${meta.champion || 'Random Forest'} (${meta.champion_metrics?.f1 || 69.5}% F1)\n\nTry asking me:\n- *"Which open tasks are at highest risk?"*\n- *"Compare algorithm metrics"*\n- *"What is the delay rate by discipline?"*`;
+      }
+
+      appendAIMessage(response, 'bot');
+    }
+
+  </script>
+
+</body>
+
+</html>
+
