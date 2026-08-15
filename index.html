@@ -3321,6 +3321,22 @@
     .ai-model-result.champion { border-left-color: #10b981; background: #f0fdf4; }
     .ai-model-result-name { display: flex; justify-content: space-between; gap: 8px; color: #0f172a; font-size: 11px; font-weight: 700; }
     .ai-model-result-values { margin-top: 3px; color: #64748b; font: 10px 'JetBrains Mono', monospace; }
+    
+    /* LLM Popup Comparison Graph */
+    .ai-drawer-graph-card { margin-top: 10px; padding: 10px 11px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .ai-graph-header { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 9px; }
+    .ai-graph-title { font: 700 10.5px 'Plus Jakarta Sans', sans-serif; color: #0f172a; display: flex; align-items: center; gap: 5px; }
+    .ai-graph-tabs { display: flex; gap: 3px; background: #f1f5f9; padding: 2px; border-radius: 5px; border: 1px solid #e2e8f0; }
+    .ai-graph-tab { border: 0; background: transparent; color: #64748b; font: 700 9px 'JetBrains Mono', monospace; padding: 2px 6px; border-radius: 4px; cursor: pointer; transition: all 0.15s ease; }
+    .ai-graph-tab.active { background: #0284c7; color: #ffffff; box-shadow: 0 1px 2px rgba(2,132,199,0.25); }
+    .ai-graph-bars { display: grid; gap: 6px; }
+    .ai-graph-bar-row { display: grid; grid-template-columns: minmax(105px, 1.2fr) minmax(0, 2fr) 42px; align-items: center; gap: 8px; font-size: 10.5px; }
+    .ai-graph-bar-name { color: #334155; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 4px; font-size: 10.5px; }
+    .ai-graph-bar-name .champ-badge { background: #dcfce7; color: #15803d; font-size: 8px; padding: 1px 4px; border-radius: 3px; font-weight: 700; border: 1px solid #bbf7d0; }
+    .ai-graph-bar-track { height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden; border: 1px solid #e2e8f0; }
+    .ai-graph-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, #0284c7, #38bdf8); transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+    .ai-graph-bar-fill.champion { background: linear-gradient(90deg, #10b981, #34d399); }
+    .ai-graph-bar-val { color: #0f172a; font: 700 10.5px 'JetBrains Mono', monospace; text-align: right; }
     .ai-insights-modal { position: fixed; inset: 0; z-index: 2200; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(15, 23, 42, .55); backdrop-filter: blur(5px); }
     .ai-insights-modal.open { display: flex; }
     .ai-insights-dialog { width: min(1040px, 100%); max-height: min(760px, calc(100vh - 48px)); overflow: auto; background: #f8fafc; border: 1px solid rgba(255,255,255,.65); border-radius: 8px; box-shadow: 0 28px 80px rgba(15,23,42,.35); }
@@ -4472,6 +4488,22 @@
       </div>
       <div class="ai-live-metrics" id="ai-live-metrics"></div>
       <div class="ai-selected-results" id="ai-selected-results"></div>
+      
+      <div class="ai-drawer-graph-card" id="ai-drawer-graph-card">
+        <div class="ai-graph-header">
+          <div class="ai-graph-title">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            <span>Model Performance Comparison</span>
+          </div>
+          <div class="ai-graph-tabs">
+            <button class="ai-graph-tab active" id="tab-metric-f1" onclick="switchAIGraphMetric('f1')">F1</button>
+            <button class="ai-graph-tab" id="tab-metric-auc" onclick="switchAIGraphMetric('auc')">AUC</button>
+            <button class="ai-graph-tab" id="tab-metric-mean" onclick="switchAIGraphMetric('mean')">ACC</button>
+            <button class="ai-graph-tab" id="tab-metric-mcc" onclick="switchAIGraphMetric('mcc')">MCC</button>
+          </div>
+        </div>
+        <div class="ai-graph-bars" id="ai-drawer-graph-bars"></div>
+      </div>
     </div>
 
     <div class="ai-messages-container" id="ai-messages-container">
@@ -6156,11 +6188,50 @@
       select.innerHTML = modelNames.map(name => `<option value="${escapeAIText(name)}"${defaultSelection.includes(name) ? ' selected' : ''}>${escapeAIText(name)}</option>`).join('');
       const openTasks = tasks.filter(task => task.status === 'Open');
       const highRisk = openTasks.filter(task => task.cat === 'HIGH');
-      metricPanel.innerHTML = `
-        <div class="ai-live-metric"><span class="ai-live-metric-label">Tasks</span><span class="ai-live-metric-value">${meta.total_tasks || tasks.length}</span></div>
-        <div class="ai-live-metric"><span class="ai-live-metric-label">Open risk</span><span class="ai-live-metric-value">${highRisk.length}</span></div>
-        <div class="ai-live-metric"><span class="ai-live-metric-label">Avg delay</span><span class="ai-live-metric-value">+${meta.avg_delay_days || 0}d</span></div>`;
       renderSelectedModelResults(defaultSelection);
+      renderAIDrawerComparisonGraph('f1');
+    }
+
+    let currentAIGraphMetric = 'f1';
+
+    function switchAIGraphMetric(metricKey) {
+      currentAIGraphMetric = metricKey;
+      ['f1', 'auc', 'mean', 'mcc'].forEach(m => {
+        const btn = document.getElementById(`tab-metric-${m}`);
+        if (btn) btn.classList.toggle('active', m === metricKey);
+      });
+      renderAIDrawerComparisonGraph(metricKey);
+    }
+
+    function renderAIDrawerComparisonGraph(metricKey = currentAIGraphMetric) {
+      const container = document.getElementById('ai-drawer-graph-bars');
+      if (!container) return;
+      const meta = APP_DATA.meta || {};
+      const models = meta.cv_accuracy || {};
+      if (!Object.keys(models).length) {
+        container.innerHTML = '<div style="font-size:10px; color:#64748b; padding:4px;">No model data synced</div>';
+        return;
+      }
+      const champ = resolveChampionModel(models, meta.champion || '');
+      const sorted = Object.entries(models).sort((a, b) => (Number(b[1][metricKey] ?? 0) - Number(a[1][metricKey] ?? 0)));
+
+      container.innerHTML = sorted.map(([name, m]) => {
+        const val = Number(m[metricKey] ?? 0);
+        const pct = Math.min(Math.max(Math.round((val / 100) * 100), 4), 100);
+        const isChamp = name === champ;
+        const valDisplay = metricKey === 'mcc' ? val.toFixed(1) : `${val.toFixed(1)}%`;
+        return `
+          <div class="ai-graph-bar-row">
+            <div class="ai-graph-bar-name" title="${escapeAIText(name)}">
+              <span>${escapeAIText(name)}</span>
+              ${isChamp ? '<span class="champ-badge">★</span>' : ''}
+            </div>
+            <div class="ai-graph-bar-track">
+              <div class="ai-graph-bar-fill${isChamp ? ' champion' : ''}" style="width: ${pct}%;"></div>
+            </div>
+            <div class="ai-graph-bar-val">${valDisplay}</div>
+          </div>`;
+      }).join('');
     }
 
     function renderSelectedModelResults(selection) {
@@ -6178,6 +6249,7 @@
           <div class="ai-model-result-values">F1 ${model.f1 ?? '-'}% | AUC ${model.auc ?? '-'}% | ACC ${model.mean ?? '-'}% | PREC ${model.precision ?? '-'}% | REC ${model.recall ?? '-'}% | MCC ${model.mcc ?? '-'}</div>
         </div>`;
       }).join('') : '<div class="ai-model-result"><div class="ai-model-result-name">Select one or more models</div></div>';
+      renderAIDrawerComparisonGraph(currentAIGraphMetric);
     }
 
     function generateSelectionNarrative(selectedModels, meta, models) {
