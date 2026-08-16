@@ -19,9 +19,16 @@ def run_ml_pipeline():
         script_path = os.path.join(BASE_DIR, "Untitled-1.py")
     if os.path.exists(script_path):
         result = subprocess.run([sys.executable, script_path], cwd=BASE_DIR, capture_output=True, text=True, encoding="utf-8", errors="replace")
-        print(result.stdout)
+        if result.stdout:
+            try:
+                print(result.stdout)
+            except UnicodeEncodeError:
+                print(result.stdout.encode(sys.stdout.encoding or 'ascii', errors='replace').decode(sys.stdout.encoding or 'ascii'))
         if result.stderr:
-            print("[Stderr]", result.stderr)
+            try:
+                print("[Stderr]", result.stderr)
+            except UnicodeEncodeError:
+                print("[Stderr]", result.stderr.encode(sys.stdout.encoding or 'ascii', errors='replace').decode(sys.stdout.encoding or 'ascii'))
 
 class CustomHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
@@ -52,8 +59,10 @@ class CustomHandler(SimpleHTTPRequestHandler):
         return super().do_GET()
 
 def start_server(port=8080):
-    # Ensure fresh ML results
-    run_ml_pipeline()
+    json_path = os.path.join(BASE_DIR, "dashboard_data.json")
+    if not os.path.exists(json_path):
+        run_ml_pipeline()
+
     
     server_address = ("", port)
     httpd = HTTPServer(server_address, CustomHandler)

@@ -1,6589 +1,1622 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <meta name="description" content="InterTech Task Prediction & Delay Intelligence Platform for project delay forecasting and mitigation planning.">
-
-  <meta name="canonical" content="https://intertechtaskprediction.vercel.app">
-
-  <meta property="og:url" content="https://intertechtaskprediction.vercel.app">
-
-  <meta property="og:title" content="InterTech™ | Task Prediction & Delay Intelligence Platform">
-
-  <meta property="og:description" content="AI-powered delay risk monitoring for project execution and mitigation planning.">
-
+  <meta name="description" content="InterTech PRJ001 Task Prediction & Delay Intelligence Platform - Project delay forecasting, risk scoring, and automated mitigation planning.">
   <title>InterTech | Task Prediction & Delay Intelligence Platform</title>
 
-  
-
   <!-- Modern Fonts -->
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
-
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-
-
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-
-  :root {
-
-  /* Light Blue & White Combination Gradient Palette */
-
-  --bg-gradient: linear-gradient(150deg, #edf6ff 0%, #f8fcff 35%, #ffffff 60%, #eaf4fd 100%);
-
-  --bg-canvas: #f4f8fd;
-
-  --bg-surface: #ffffff;
-
-  --bg-surface-translucent: rgba(255, 255, 255, 0.96);
-
-  --bg-card: #ffffff;
-
-  --bg-card-hover: #f5faff;
-
-  --bg-subtle: #f0f7fc;
-
-  --bg-subtle-2: #ddf0fb;
-
-  --bg-gradient-banner: linear-gradient(135deg, #ddf0fb 0%, #ffffff 55%, #eef6ff 100%);
-
-  
-
-  --border-subtle: #e2ecf5;
-
-  --border-medium: #c8d8e8;
-
-  --border-strong: #8fafc8;
-
-  
-
-  --text-primary: #0d1926;
-
-  --text-secondary: #3d5166;
-
-  --text-muted: #607080;
-
-  
-
-  --brand-primary: #0284c7;
-
-  --brand-primary-hover: #0369a1;
-
-  --brand-accent: #0ea5e9;
-
-  --brand-glow: rgba(14, 165, 233, 0.15);
-
-  --brand-light-bg: #ddf0fb;
-
-
-
-  /* Strict Priority & Status Colors */
-
-  /* RED - High Priority / Delayed / High Risk */
-
-  --red-primary: #e53e3e;
-
-  --red-bg: #fff5f5;
-
-  --red-border: #feb2b2;
-
-  --red-text: #c53030;
-
-
-
-  /* YELLOW - Medium Priority / At Risk */
-
-  --yellow-primary: #d97706;
-
-  --yellow-bg: #fffbeb;
-
-  --yellow-border: #fcd34d;
-
-  --yellow-text: #92400e;
-
-
-
-  /* GREEN - Low Priority / On-Time / Low Risk */
-
-  --green-primary: #059669;
-
-  --green-bg: #ecfdf5;
-
-  --green-border: #6ee7b7;
-
-  --green-text: #065f46;
-
-
-
-  /* BLUE - Open / In-Progress */
-
-  --blue-primary: #2563eb;
-
-  --blue-bg: #eff6ff;
-
-  --blue-border: #93c5fd;
-
-  --blue-text: #1e40af;
-
-
-
-  --radius-sm: 5px;
-
-  --radius-md: 9px;
-
-  --radius-lg: 13px;
-
-  --radius-full: 9999px;
-
-  
-
-  --shadow-sm: 0 1px 2px rgba(10, 30, 50, 0.05), 0 1px 6px rgba(14, 165, 233, 0.04);
-
-  --shadow-md: 0 4px 16px rgba(14, 165, 233, 0.10);
-
-  --shadow-lg: 0 12px 30px rgba(10, 30, 50, 0.09);
-
-  }
-
-
-
-  * {
-
-  box-sizing: border-box;
-
-  margin: 0;
-
-  padding: 0;
-
-  }
-
-
-
-  body {
-
-  background: var(--bg-gradient);
-
-  background-attachment: fixed;
-
-  color: var(--text-primary);
-
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-
-  font-size: 13.5px;
-
-  line-height: 1.5;
-
-  min-height: 100vh;
-
-  -webkit-font-smoothing: antialiased;
-
-  }
-
-
-
-  /* MINIMAL TOP BAR */
-
-  .navbar {
-
-  background: var(--bg-surface-translucent);
-
-  backdrop-filter: blur(16px);
-
-  border-bottom: 1px solid var(--border-subtle);
-
-  position: sticky;
-
-  top: 0;
-
-  z-index: 1000;
-
-  padding: 0 32px;
-
-  height: 64px;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: space-between;
-
-  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.03);
-
-  }
-
-
-
-  .nav-left {
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 16px;
-
-  }
-
-
-
-  .brand-logo {
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 10px;
-
-  text-decoration: none;
-
-  }
-
-
-
-  .brand-icon {
-
-  width: 30px;
-
-  height: 30px;
-
-  background: linear-gradient(145deg, #0369a1, #0ea5e9);
-
-  border-radius: var(--radius-sm);
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  color: #fff;
-
-  font-weight: 800;
-
-  font-family: 'Plus Jakarta Sans', sans-serif;
-
-  font-size: 13px;
-
-  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.28);
-
-  flex-shrink: 0;
-
-  }
-
-
-
-  .brand-title {
-
-  font-family: 'Plus Jakarta Sans', sans-serif;
-
-  font-weight: 700;
-
-  font-size: 14.5px;
-
-  color: var(--text-primary);
-
-  letter-spacing: -0.025em;
-
-  line-height: 1.15;
-
-  }
-
-
-
-  .brand-subtitle {
-
-  display: block;
-
-  font-family: 'JetBrains Mono', monospace;
-
-  font-size: 10px;
-
-  font-weight: 500;
-
-  color: var(--brand-primary);
-
-  letter-spacing: 0.01em;
-
-  opacity: 0.8;
-
-  }
-
-
-
-  .brand-title span {
-
-  color: var(--brand-primary);
-
-  }
-
-
-
-  /* URL Chip - Vercel domain display */
-
-  .domain-chip {
-
-  display: inline-flex;
-
-  align-items: center;
-
-  gap: 5px;
-
-  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
-
-  border: 1px solid #7dd3fc;
-
-  padding: 3px 10px 3px 8px;
-
-  border-radius: var(--radius-full);
-
-  font-family: 'JetBrains Mono', monospace;
-
-  font-size: 10.5px;
-
-  font-weight: 600;
-
-  color: var(--brand-primary);
-
-  text-decoration: none;
-
-  box-shadow: 0 1px 3px rgba(14, 165, 233, 0.12);
-
-  transition: all 0.15s ease;
-
-  white-space: nowrap;
-
-  }
-
-
-
-  .domain-chip:hover {
-
-  background: linear-gradient(135deg, #e0f2fe, #bae6fd);
-
-  border-color: #38bdf8;
-
-  color: #0369a1;
-
-  transform: translateY(-1px);
-
-  box-shadow: 0 3px 8px rgba(14, 165, 233, 0.18);
-
-  }
-
-
-
-  .domain-chip-dot {
-
-  width: 5px;
-
-  height: 5px;
-
-  border-radius: 50%;
-
-  background: var(--green-primary);
-
-  flex-shrink: 0;
-
-  box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.2);
-
-  animation: pulseAnim 2.5s infinite ease-in-out;
-
-  }
-
-
-
-  .domain-chip-icon {
-
-  font-size: 9px;
-
-  opacity: 0.7;
-
-  }
-
-
-
-  .project-pill {
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 6px;
-
-  background: #ffffff;
-
-  border: 1px solid var(--border-subtle);
-
-  padding: 3px 11px;
-
-  border-radius: var(--radius-full);
-
-  font-size: 11.5px;
-
-  font-weight: 500;
-
-  color: var(--text-secondary);
-
-  box-shadow: var(--shadow-sm);
-
-  }
-
-
-
-  .project-pill strong {
-
-  color: var(--brand-primary);
-
-  font-family: 'JetBrains Mono', monospace;
-
-  font-weight: 600;
-
-  }
-
-
-
-  .live-status-badge {
-
-  display: inline-flex;
-
-  align-items: center;
-
-  gap: 6px;
-
-  font-size: 11px;
-
-  font-family: 'JetBrains Mono', monospace;
-
-  color: var(--green-text);
-
-  background: var(--green-bg);
-
-  border: 1px solid var(--green-border);
-
-  padding: 3px 10px;
-
-  border-radius: var(--radius-full);
-
-  font-weight: 600;
-
-  }
-
-
-
-  .live-pulse {
-
-  width: 6px;
-
-  height: 6px;
-
-  border-radius: 50%;
-
-  background: var(--green-primary);
-
-  animation: pulseAnim 2s infinite ease-in-out;
-
-  }
-
-
-
-  @keyframes pulseAnim {
-
-  0%, 100% { opacity: 1; transform: scale(1); }
-
-  50% { opacity: 0.35; transform: scale(0.85); }
-
-  }
-
-
-
-  .nav-right {
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 10px;
-
-  }
-
-
-
-  /* Buttons */
-
-  .btn {
-
-  display: inline-flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  gap: 6px;
-
-  padding: 7px 14px;
-
-  border-radius: var(--radius-sm);
-
-  font-size: 12.5px;
-
-  font-weight: 600;
-
-  cursor: pointer;
-
-  transition: all 0.16s ease;
-
-  border: 1px solid transparent;
-
-  outline: none;
-
-  text-decoration: none;
-
-  font-family: 'Inter', sans-serif;
-
-  }
-
-
-
-  .btn-secondary {
-
-  background: #ffffff;
-
-  border-color: var(--border-medium);
-
-  color: var(--text-primary);
-
-  box-shadow: var(--shadow-sm);
-
-  }
-
-
-
-  .btn-secondary:hover {
-
-  background: var(--bg-subtle);
-
-  border-color: var(--border-strong);
-
-  }
-
-
-
-  .btn-primary {
-
-  background: linear-gradient(135deg, #0284c7, #0ea5e9);
-
-  color: #fff;
-
-  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
-
-  }
-
-
-
-  .btn-primary:hover {
-
-  background: linear-gradient(135deg, #0369a1, #0284c7);
-
-  transform: translateY(-1px);
-
-  }
-
-
-
-  .btn-sm {
-
-  padding: 5px 11px;
-
-  font-size: 11.5px;
-
-  }
-
-
-
-  /* SUB-NAV / TABS */
-
-  .subnav {
-
-  background: #ffffff;
-
-  border-bottom: 1px solid var(--border-subtle);
-
-  padding: 0 32px;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: space-between;
-
-  height: 48px;
-
-  overflow: hidden;
-
-  }
-
-
-
-  .nav-tabs {
-
-  display: flex;
-
-  gap: 4px;
-
-  height: 100%;
-
-  min-width: 0;
-
-  overflow-x: auto;
-
-  scrollbar-width: none;
-
-  }
-
-
-
-  .nav-tab {
-
-  display: inline-flex;
-
-  align-items: center;
-
-  gap: 8px;
-
-  padding: 0 16px;
-
-  font-size: 12.5px;
-
-  font-weight: 500;
-
-  color: var(--text-secondary);
-
-  cursor: pointer;
-
-  border-bottom: 2px solid transparent;
-
-  transition: all 0.15s;
-
-  background: none;
-
-  border-top: none;
-
-  border-left: none;
-
-  border-right: none;
-
-  flex: 0 0 auto;
-
-  white-space: nowrap;
-
-  }
-
-
-
-  .nav-tab:hover {
-
-  color: var(--brand-primary);
-
-  }
-
-
-
-  .nav-tab.active {
-
-  color: var(--brand-primary);
-
-  border-bottom-color: var(--brand-primary);
-
-  font-weight: 600;
-
-  }
-
-
-
-  .tab-badge {
-
-  font-size: 10.5px;
-
-  padding: 1px 7px;
-
-  border-radius: var(--radius-full);
-
-  background: var(--bg-subtle);
-
-  font-family: 'JetBrains Mono', monospace;
-
-  color: var(--text-muted);
-
-  border: 1px solid var(--border-subtle);
-
-  }
-
-
-
-  .nav-tab.active .tab-badge {
-
-  background: var(--brand-light-bg);
-
-  color: var(--brand-primary);
-
-  border-color: #bae6fd;
-
-  }
-
-
-
-  /* MAIN LAYOUT */
-
-  .app-container {
-
-  max-width: 1440px;
-
-  margin: 0 auto;
-
-  padding: 24px 32px 60px;
-
-  }
-
-
-
-  .tab-view {
-
-  display: none;
-
-  animation: fadeIn 0.18s ease-in-out;
-
-  }
-
-
-
-  .tab-view.active {
-
-  display: block;
-
-  }
-
-
-
-  @keyframes fadeIn {
-
-  from { opacity: 0; transform: translateY(3px); }
-
-  to { opacity: 1; transform: translateY(0); }
-
-  }
-
-
-
-  /* EXECUTIVE BANNER */
-
-  .spec-banner {
-
-  background: var(--bg-gradient-banner);
-
-  border: 1px solid #bae6fd;
-
-  border-left: 4px solid var(--brand-primary);
-
-  border-radius: var(--radius-md);
-
-  padding: 14px 18px;
-
-  margin-bottom: 20px;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: space-between;
-
-  gap: 16px;
-
-  box-shadow: var(--shadow-sm);
-
-  }
-
-
-
-  .spec-info {
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 12px;
-
-  }
-
-
-
-  .spec-badge {
-
-  background: var(--brand-light-bg);
-
-  color: var(--brand-primary);
-
-  border: 1px solid #7dd3fc;
-
-  padding: 3px 8px;
-
-  border-radius: var(--radius-sm);
-
-  font-size: 11px;
-
-  font-weight: 700;
-
-  font-family: 'JetBrains Mono', monospace;
-
-  white-space: nowrap;
-
-  }
-
-
-
-  .spec-text {
-
-  font-size: 12.5px;
-
-  color: var(--text-secondary);
-
-  line-height: 1.45;
-
-  }
-
-
-
-  .spec-text strong {
-
-  color: var(--text-primary);
-
-  }
-
-
-
-  /* KPI EXECUTIVE GRID */
-
-  .kpi-row {
-
-  display: grid;
-
-  grid-template-columns: repeat(5, 1fr);
-
-  gap: 14px;
-
-  margin-bottom: 20px;
-
-  }
-
-
-
-  .kpi-card {
-
-  background: var(--bg-card);
-
-  border: 1px solid var(--border-subtle);
-
-  border-radius: var(--radius-md);
-
-  padding: 18px 20px;
-
-  position: relative;
-
-  overflow: hidden;
-
-  box-shadow: var(--shadow-sm);
-
-  transition: transform 0.16s, border-color 0.16s, box-shadow 0.16s;
-
-  }
-
-
-
-  .kpi-card:hover {
-
-  border-color: #7dd3fc;
-
-  transform: translateY(-2px);
-
-  box-shadow: var(--shadow-md);
-
-  }
-
-
-
-  .kpi-card::before {
-
-  content: '';
-
-  position: absolute;
-
-  top: 0;
-
-  left: 0;
-
-  right: 0;
-
-  height: 3px;
-
-  }
-
-
-
-  .kpi-card.kpi-delayed::before { background: var(--red-primary); }
-
-  .kpi-card.kpi-ontime::before { background: var(--green-primary); }
-
-  .kpi-card.kpi-accent::before { background: var(--brand-primary); }
-
-  .kpi-card.kpi-warn::before { background: var(--yellow-primary); }
-
-  .kpi-card.kpi-neutral::before { background: var(--blue-primary); }
-
-
-
-  .kpi-header {
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: space-between;
-
-  margin-bottom: 8px;
-
-  }
-
-
-
-  .kpi-title {
-
-  font-size: 12px;
-
-  font-weight: 600;
-
-  color: var(--text-secondary);
-
-  text-transform: uppercase;
-
-  letter-spacing: 0.02em;
-
-  }
-
-
-
-  .kpi-metric {
-
-  font-family: 'JetBrains Mono', monospace;
-
-  font-size: 27px;
-
-  font-weight: 700;
-
-  letter-spacing: -0.03em;
-
-  line-height: 1;
-
-  margin-bottom: 6px;
-
-  }
-
-
-
-  .kpi-metric.delayed { color: var(--red-primary); }
-
-  .kpi-metric.ontime { color: var(--green-primary); }
-
-  .kpi-metric.accent { color: var(--brand-primary); }
-
-  .kpi-metric.warn { color: var(--yellow-primary); }
-
-
-
-  .kpi-footer {
-
-  font-size: 11px;
-
-  color: var(--text-muted);
-
-  font-family: 'JetBrains Mono', monospace;
-
-  }
-
-
-
-  /* PANELS & CHARTS */
-
-  .grid-2-1 {
-
-  display: grid;
-
-  grid-template-columns: 1.2fr 1fr 1fr;
-
-  gap: 16px;
-
-  margin-bottom: 20px;
-
-  }
-
-
-
-  .panel-card {
-
-  background: var(--bg-card);
-
-  border: 1px solid var(--border-subtle);
-
-  border-radius: var(--radius-md);
-
-  padding: 18px 20px;
-
-  box-shadow: var(--shadow-sm);
-
-  display: flex;
-
-  flex-direction: column;
-
-  }
-
-
-
-  .panel-header {
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: space-between;
-
-  margin-bottom: 14px;
-
-  padding-bottom: 10px;
-
-  border-bottom: 1px solid var(--border-subtle);
-
-  }
-
-
-
-  .panel-title {
-
-  font-size: 13.5px;
-
-  font-weight: 600;
-
-  color: var(--text-primary);
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 8px;
-
-  }
-
-
-
-  .panel-tag {
-
-  font-size: 10.5px;
-
-  font-family: 'JetBrains Mono', monospace;
-
-  color: var(--text-muted);
-
-  background: var(--bg-subtle);
-
-  padding: 2px 7px;
-
-  border-radius: var(--radius-sm);
-
-  border: 1px solid var(--border-subtle);
-
-  }
-
-
-
-  /* Discipline Bar List */
-
-  .disc-list {
-
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 11px;
-
-  flex: 1;
-
-  justify-content: center;
-
-  }
-
-
-
-  .disc-item {
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 10px;
-
-  }
-
-
-
-  .disc-name-badge {
-
-  width: 76px;
-
-  font-family: 'JetBrains Mono', monospace;
-
-  font-size: 11px;
-
-  font-weight: 600;
-
-  color: var(--text-secondary);
-
-  flex-shrink: 0;
-
-  }
-
-
-
-  .disc-track {
-
-  flex: 1;
-
-  height: 18px;
-
-  background: var(--bg-subtle);
-
-  border-radius: 4px;
-
-  overflow: hidden;
-
-  display: flex;
-
-  border: 1px solid #f1f5f9;
-
-  }
-
-
-
-  .disc-fill {
-
-  height: 100%;
-
-  border-radius: 3px;
-
-  transition: width 0.6s ease;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: flex-end;
-
-  padding-right: 6px;
-
-  }
-
-
-
-  .disc-fill-val {
-
-  font-family: 'JetBrains Mono', monospace;
-
-  font-size: 10px;
-
-  font-weight: 700;
-
-  color: #fff;
-
-  }
-
-
-
-  .disc-meta {
-
-  width: 58px;
-
-  text-align: right;
-
-  font-family: 'JetBrains Mono', monospace;
-
-  font-size: 11px;
-
-  color: var(--text-muted);
-
-  flex-shrink: 0;
-
-  }
-
-
-
-  /* Root Cause List */
-
-  .cause-stack {
-
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 10px;
-
-  flex: 1;
-
-  justify-content: center;
-
-  }
-
-
-
-  .cause-row {
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 10px;
-
-  }
-
-
-
-  .cause-label {
-
-  flex: 1;
-
-  font-size: 12px;
-
-  color: var(--text-secondary);
-
-  white-space: nowrap;
-
-  overflow: hidden;
-
-  text-overflow: ellipsis;
-
-  }
-
-
-
-  .cause-bar-bg {
-
-  width: 80px;
-
-  height: 6px;
-
-  background: var(--bg-subtle);
-
-  border-radius: 3px;
-
-  overflow: hidden;
-
-  }
-
-
-
-  .cause-bar-fill {
-
-  height: 100%;
-
-  background: linear-gradient(90deg, #f59e0b, #ef4444);
-
-  border-radius: 3px;
-
-  }
-
-
-
-  .cause-count-badge {
-
-  font-family: 'JetBrains Mono', monospace;
-
-  font-size: 11px;
-
-  font-weight: 700;
-
-  color: var(--text-primary);
-
-  width: 20px;
-
-  text-align: right;
-
-  }
-
-
-
-  /* Feature Importance */
-
-  .feat-stack {
-
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 9px;
-
-  flex: 1;
-
-  justify-content: center;
-
-  }
-
-
-
-  .feat-row {
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 10px;
-
-  }
-
-
-
-  .feat-title {
-
-  width: 120px;
-
-  font-size: 11.5px;
-
-  color: var(--text-secondary);
-
-  flex-shrink: 0;
-
-  white-space: nowrap;
-
-  overflow: hidden;
-
-  text-overflow: ellipsis;
-
-  }
-
-
-
-  .feat-bar-bg {
-
-  flex: 1;
-
-  height: 6px;
-
-  background: var(--bg-subtle);
-
-  border-radius: 3px;
-
-  overflow: hidden;
-
-  }
-
-
-
-  .feat-bar-fill {
-
-  height: 100%;
-
-  background: linear-gradient(90deg, #0284c7, #38bdf8);
-
-  border-radius: 3px;
-
-  }
-
-
-
-  .feat-val {
-
-  width: 44px;
-
-  text-align: right;
-
-  font-family: 'JetBrains Mono', monospace;
-
-  font-size: 11px;
-
-  color: var(--brand-primary);
-
-  font-weight: 700;
-
-  flex-shrink: 0;
-
-  }
-
-
-
-  /* ML MODELS BENCHMARK STRIP */
-
-  .models-strip {
-
-  display: grid;
-
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-
-  gap: 14px;
-
-  margin-bottom: 20px;
-
-  }
-
-
-
-  .model-box {
-
-  background: var(--bg-card);
-
-  border: 1px solid var(--border-subtle);
-
-  border-radius: var(--radius-md);
-
-  padding: 16px 18px;
-
-  box-shadow: var(--shadow-sm);
-
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 10px;
-
-  transition: box-shadow 0.2s ease, transform 0.15s ease;
-
-  }
-
-  .model-box:hover {
-
-  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
-
-  transform: translateY(-1px);
-
-  }
-
-
-
-  .model-box.champion {
-
-  border-color: #7dd3fc;
-
-  background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);
-
-  box-shadow: 0 0 0 2px rgba(125,211,252,0.35), var(--shadow-sm);
-
-  }
-
-
-
-  .model-box-header {
-
-  display: flex;
-
-  align-items: flex-start;
-
-  justify-content: space-between;
-
-  gap: 8px;
-
-  }
-
-
-
-  .model-box-header h4 {
-
-  font-size: 13px;
-
-  font-weight: 600;
-
-  color: var(--text-primary);
-
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 4px;
-
-  flex: 1;
-
-  }
-
-
-
-  .champion-tag {
-
-  font-size: 9px;
-
-  font-family: 'JetBrains Mono', monospace;
-
-  background: var(--brand-light-bg);
-
-  border: 1px solid #7dd3fc;
-
-  color: var(--brand-primary);
-
-  padding: 2px 7px;
-
-  border-radius: var(--radius-sm);
-
-  text-transform: uppercase;
-
-  font-weight: 700;
-
-  white-space: nowrap;
-
-  align-self: flex-start;
-
-  }
-
-
-
-  .model-metrics-grid {
-
-  display: grid;
-
-  grid-template-columns: repeat(3, 1fr);
-
-  gap: 6px 10px;
-
-  }
-
-
-
-  .model-metric-cell {
-
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: center;
-
-  background: var(--bg-page);
-
-  border-radius: 6px;
-
-  padding: 6px 4px 4px;
-
-  gap: 2px;
-
-  }
-
-
-
-  .model-metric-val {
-
-  font-family: 'JetBrains Mono', monospace;
-
-  font-size: 14px;
-
-  font-weight: 700;
-
-  line-height: 1;
-
-  }
-
-
-
-  .model-metric-label {
-
-  font-size: 9.5px;
-
-  color: var(--text-muted);
-
-  font-family: 'JetBrains Mono', monospace;
-
-  text-transform: uppercase;
-
-  letter-spacing: 0.03em;
-
-  }
-
-
-
-  .model-cv-note {
-
-  font-size: 10px;
-
-  color: var(--text-muted);
-
-  font-family: 'JetBrains Mono', monospace;
-
-  }
-
-
-
-  .model-acc-score {
-
-  font-family: 'JetBrains Mono', monospace;
-
-  font-size: 22px;
-
-  font-weight: 700;
-
-  color: var(--green-primary);
-
-  }
-
-
-
-  .model-acc-sub {
-
-  font-size: 10.5px;
-
-  color: var(--text-muted);
-
-  font-family: 'JetBrains Mono', monospace;
-
-  }
-
-
-
-  /* FILTER TOOLBAR */
-
-  .filter-toolbar {
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: space-between;
-
-  background: #ffffff;
-
-  border: 1px solid var(--border-subtle);
-
-  border-radius: var(--radius-md);
-
-  padding: 12px 18px;
-
-  margin-bottom: 16px;
-
-  gap: 14px;
-
-  flex-wrap: wrap;
-
-  box-shadow: var(--shadow-sm);
-
-  }
-
-
-
-  .filter-group-left {
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 12px;
-
-  flex-wrap: wrap;
-
-  flex: 1;
-
-  }
-
-
-
-  .search-box {
-
-  position: relative;
-
-  min-width: 240px;
-
-  flex: 1;
-
-  max-width: 380px;
-
-  }
-
-
-
-  .search-input {
-
-  width: 100%;
-
-  background: var(--bg-subtle);
-
-  border: 1px solid var(--border-medium);
-
-  border-radius: var(--radius-sm);
-
-  padding: 7px 12px 7px 32px;
-
-  font-size: 12.5px;
-
-  color: var(--text-primary);
-
-  font-family: 'Inter', sans-serif;
-
-  outline: none;
-
-  transition: border-color 0.15s;
-
-  }
-
-
-
-  .search-input:focus {
-
-  border-color: var(--brand-primary);
-
-  background: #ffffff;
-
-  }
-
-
-
-  .search-icon {
-
-  position: absolute;
-
-  left: 10px;
-
-  top: 50%;
-
-  transform: translateY(-50%);
-
-  color: var(--text-muted);
-
-  font-size: 13px;
-
-  pointer-events: none;
-
-  }
-
-
-
-  .select-dropdown {
-
-  background: var(--bg-subtle);
-
-  border: 1px solid var(--border-medium);
-
-  border-radius: var(--radius-sm);
-
-  padding: 7px 12px;
-
-  font-size: 12px;
-
-  color: var(--text-primary);
-
-  font-family: 'Inter', sans-serif;
-
-  outline: none;
-
-  cursor: pointer;
-
-  }
-
-
-
-  .filter-chips {
-
-  display: flex;
-
-  gap: 6px;
-
-  }
-
-
-
-  .filter-chip {
-
-  padding: 4px 10px;
-
-  border-radius: var(--radius-sm);
-
-  font-size: 11.5px;
-
-  font-weight: 500;
-
-  background: var(--bg-subtle);
-
-  color: var(--text-secondary);
-
-  border: 1px solid var(--border-subtle);
-
-  cursor: pointer;
-
-  transition: all 0.15s;
-
-  }
-
-
-
-  .filter-chip:hover {
-
-  color: var(--brand-primary);
-
-  border-color: #93c5fd;
-
-  }
-
-
-
-  .filter-chip.active {
-
-  background: var(--brand-light-bg);
-
-  border-color: #7dd3fc;
-
-  color: var(--brand-primary);
-
-  font-weight: 600;
-
-  }
-
-
-
-  /* MINIMAL DATA TABLE */
-
-  .table-card {
-
-  background: #ffffff;
-
-  border: 1px solid var(--border-subtle);
-
-  border-radius: var(--radius-md);
-
-  overflow: hidden;
-
-  box-shadow: var(--shadow-sm);
-
-  margin-bottom: 24px;
-
-  }
-
-
-
-  .table-wrap {
-
-  width: 100%;
-
-  overflow-x: auto;
-
-  }
-
-
-
-  .data-table {
-
-  width: 100%;
-
-  border-collapse: collapse;
-
-  font-size: 12.5px;
-
-  text-align: left;
-
-  }
-
-
-
-  .data-table thead tr {
-
-  background: #f8fafc;
-
-  border-bottom: 1px solid var(--border-medium);
-
-  }
-
-
-
-  .data-table th {
-
-  padding: 11px 14px;
-
-  font-family: 'JetBrains Mono', monospace;
-
-  font-size: 10.5px;
-
-  font-weight: 700;
-
-  letter-spacing: 0.05em;
-
-  text-transform: uppercase;
-
-  color: var(--text-muted);
-
-  white-space: nowrap;
-
-  cursor: pointer;
-
-  user-select: none;
-
-  }
-
-
-
-  .data-table th:hover {
-
-  color: var(--brand-primary);
-
-  }
-
-
-
-  .data-table tbody tr {
-
-  border-bottom: 1px solid #f1f5f9;
-
-  transition: background-color 0.12s;
-
-  cursor: pointer;
-
-  }
-
-
-
-  .data-table tbody tr:hover {
-
-  background-color: #f8fbff;
-
-  }
-
-
-
-  .data-table td {
-
-  padding: 11px 14px;
-
-  color: var(--text-secondary);
-
-  vertical-align: middle;
-
-  white-space: nowrap;
-
-  }
-
-
-
-  .task-id-cell {
-
-  font-family: 'JetBrains Mono', monospace;
-
-  font-weight: 700;
-
-  color: var(--brand-primary);
-
-  }
-
-
-
-  .task-desc-cell {
-
-  font-weight: 600;
-
-  color: var(--text-primary);
-
-  max-width: 220px;
-
-  overflow: hidden;
-
-  text-overflow: ellipsis;
-
-  }
-
-
-
-  .disc-tag {
-
-  font-family: 'JetBrains Mono', monospace;
-
-  font-size: 11px;
-
-  padding: 2px 7px;
-
-  border-radius: var(--radius-sm);
-
-  background: #f1f5f9;
-
-  color: #334155;
-
-  border: 1px solid var(--border-subtle);
-
-  }
-
-
-
-  /* STRICT PRIORITY & STATUS PILLS */
-
-  .pill {
-
-  display: inline-flex;
-
-  align-items: center;
-
-  gap: 4px;
-
-  padding: 2px 8px;
-
-  border-radius: var(--radius-full);
-
-  font-size: 11px;
-
-  font-weight: 700;
-
-  font-family: 'JetBrains Mono', monospace;
-
-  letter-spacing: 0.02em;
-
-  }
-
-
-
-  /* Priority Pills */
-
-  .pri-high {
-
-  background: var(--red-bg);
-
-  color: var(--red-text);
-
-  border: 1px solid var(--red-border);
-
-  }
-
-
-
-  .pri-medium {
-
-  background: var(--yellow-bg);
-
-  color: var(--yellow-text);
-
-  border: 1px solid var(--yellow-border);
-
-  }
-
-
-
-  .pri-low {
-
-  background: var(--green-bg);
-
-  color: var(--green-text);
-
-  border: 1px solid var(--green-border);
-
-  }
-
-
-
-  /* Status Pills */
-
-  .status-delayed-pill {
-
-  background: var(--red-bg);
-
-  color: var(--red-text);
-
-  border: 1px solid var(--red-border);
-
-  }
-
-
-
-  .status-ontime-pill {
-
-  background: var(--green-bg);
-
-  color: var(--green-text);
-
-  border: 1px solid var(--green-border);
-
-  }
-
-
-
-  .status-open-pill {
-
-  background: var(--blue-bg);
-
-  color: var(--blue-text);
-
-  border: 1px solid var(--blue-border);
-
-  }
-
-
-
-  /* Score gauge mini */
-
-  .score-cell {
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 8px;
-
-  }
-
-
-
-  .score-track {
-
-  width: 60px;
-
-  height: 6px;
-
-  background: #e2e8f0;
-
-  border-radius: 3px;
-
-  overflow: hidden;
-
-  }
-
-
-
-  .score-fill {
-
-  height: 100%;
-
-  border-radius: 3px;
-
-  }
-
-
-
-  .score-num {
-
-  font-family: 'JetBrains Mono', monospace;
-
-  font-size: 11.5px;
-
-  font-weight: 700;
-
-  width: 38px;
-
-  }
-
-
-
-  .btn-action-table {
-
-  font-size: 11px;
-
-  padding: 4px 10px;
-
-  border-radius: var(--radius-sm);
-
-  background: #f8fafc;
-
-  border: 1px solid var(--border-medium);
-
-  color: var(--text-primary);
-
-  cursor: pointer;
-
-  font-family: 'JetBrains Mono', monospace;
-
-  font-weight: 600;
-
-  transition: all 0.15s;
-
-  }
-
-
-
-  .btn-action-table:hover {
-
-  background: var(--brand-primary);
-
-  border-color: var(--brand-primary);
-
-  color: #fff;
-
-  }
-
-
-
-  /* MITIGATION VIEW */
-
-  .mitigation-grid {
-
-  display: grid;
-
-  grid-template-columns: repeat(3, 1fr);
-
-  gap: 16px;
-
-  margin-bottom: 24px;
-
-  }
-
-
-
-  .mit-column-card {
-
-  background: #ffffff;
-
-  border: 1px solid var(--border-subtle);
-
-  border-radius: var(--radius-md);
-
-  padding: 20px;
-
-  box-shadow: var(--shadow-sm);
-
-  display: flex;
-
-  flex-direction: column;
-
-  }
-
-
-
-  .mit-col-header {
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: space-between;
-
-  margin-bottom: 12px;
-
-  padding-bottom: 10px;
-
-  border-bottom: 1px solid var(--border-subtle);
-
-  }
-
-
-
-  .mit-col-title {
-
-  font-size: 13.5px;
-
-  font-weight: 700;
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 8px;
-
-  }
-
-
-
-  .mit-col-title.high { color: var(--red-text); }
-
-  .mit-col-title.med { color: var(--yellow-text); }
-
-  .mit-col-title.low { color: var(--green-text); }
-
-
-
-  .mit-rule-box {
-
-  background: var(--bg-subtle);
-
-  border-radius: var(--radius-sm);
-
-  padding: 10px 12px;
-
-  margin-bottom: 16px;
-
-  font-size: 12px;
-
-  line-height: 1.45;
-
-  color: var(--text-secondary);
-
-  border-left: 3px solid transparent;
-
-  }
-
-
-
-  .mit-rule-box.high { border-left-color: var(--red-primary); background: var(--red-bg); color: var(--red-text); }
-
-  .mit-rule-box.med { border-left-color: var(--yellow-primary); background: var(--yellow-bg); color: var(--yellow-text); }
-
-  .mit-rule-box.low { border-left-color: var(--green-primary); background: var(--green-bg); color: var(--green-text); }
-
-
-
-  .mit-task-list {
-
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 10px;
-
-  flex: 1;
-
-  }
-
-
-
-  .mit-task-card {
-
-  background: #ffffff;
-
-  border: 1px solid var(--border-subtle);
-
-  border-radius: var(--radius-sm);
-
-  padding: 12px 14px;
-
-  box-shadow: var(--shadow-sm);
-
-  transition: all 0.15s;
-
-  }
-
-
-
-  .mit-task-card:hover {
-
-  border-color: var(--brand-primary);
-
-  box-shadow: var(--shadow-md);
-
-  transform: translateY(-1px);
-
-  }
-
-
-
-  .mit-task-top {
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: space-between;
-
-  margin-bottom: 6px;
-
-  }
-
-
-
-  .mit-task-desc {
-
-  font-weight: 600;
-
-  color: var(--text-primary);
-
-  font-size: 12.5px;
-
-  margin-bottom: 4px;
-
-  }
-
-
-
-  .mit-task-meta {
-
-  font-size: 11px;
-
-  color: var(--text-muted);
-
-  font-family: 'JetBrains Mono', monospace;
-
-  margin-bottom: 10px;
-
-  }
-
-
-
-  .mit-action-btn {
-
-  width: 100%;
-
-  padding: 6px;
-
-  font-size: 11.5px;
-
-  font-weight: 700;
-
-  border-radius: var(--radius-sm);
-
-  cursor: pointer;
-
-  text-align: center;
-
-  border: 1px solid transparent;
-
-  font-family: 'Inter', sans-serif;
-
-  }
-
-
-
-  .btn-notify-reallocate {
-
-  background: var(--red-bg);
-
-  border-color: var(--red-border);
-
-  color: var(--red-text);
-
-  }
-
-
-
-  .btn-notify-reallocate:hover {
-
-  background: var(--red-primary);
-
-  color: #fff;
-
-  }
-
-
-
-  .btn-schedule-meet {
-
-  background: var(--yellow-bg);
-
-  border-color: var(--yellow-border);
-
-  color: var(--yellow-text);
-
-  }
-
-
-
-  .btn-schedule-meet:hover {
-
-  background: var(--yellow-primary);
-
-  color: #fff;
-
-  }
-
-
-
-  .btn-monitor-log {
-
-  background: var(--green-bg);
-
-  border-color: var(--green-border);
-
-  color: var(--green-text);
-
-  }
-
-
-
-  .btn-monitor-log:hover {
-
-  background: var(--green-primary);
-
-  color: #fff;
-
-  }
-
-
-
-  /* SIMULATOR */
-
-  .simulator-container {
-
-  display: grid;
-
-  grid-template-columns: 1.1fr 1fr;
-
-  gap: 20px;
-
-  background: #ffffff;
-
-  border: 1px solid var(--border-subtle);
-
-  border-radius: var(--radius-lg);
-
-  padding: 26px;
-
-  box-shadow: var(--shadow-sm);
-
-  margin-bottom: 24px;
-
-  }
-
-
-
-  .sim-form-grid {
-
-  display: grid;
-
-  grid-template-columns: 1fr 1fr;
-
-  gap: 16px;
-
-  margin-top: 16px;
-
-  }
-
-
-
-  .form-group {
-
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 6px;
-
-  }
-
-
-
-  .form-label {
-
-  font-size: 11.5px;
-
-  font-weight: 700;
-
-  color: var(--text-secondary);
-
-  text-transform: uppercase;
-
-  letter-spacing: 0.04em;
-
-  }
-
-
-
-  .form-control {
-
-  background: var(--bg-subtle);
-
-  border: 1px solid var(--border-medium);
-
-  border-radius: var(--radius-sm);
-
-  padding: 8px 12px;
-
-  font-size: 13px;
-
-  color: var(--text-primary);
-
-  font-family: 'Inter', sans-serif;
-
-  outline: none;
-
-  }
-
-
-
-  .form-control:focus {
-
-  border-color: var(--brand-primary);
-
-  background: #ffffff;
-
-  }
-
-
-
-  .sim-result-card {
-
-  background: linear-gradient(135deg, #f0f7ff, #ffffff);
-
-  border: 1px solid #bae6fd;
-
-  border-radius: var(--radius-md);
-
-  padding: 24px;
-
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: center;
-
-  justify-content: center;
-
-  text-align: center;
-
-  position: relative;
-
-  }
-
-
-
-  .sim-gauge-circle {
-
-  width: 130px;
-
-  height: 130px;
-
-  border-radius: 50%;
-
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: center;
-
-  justify-content: center;
-
-  margin-bottom: 16px;
-
-  border: 6px solid var(--border-medium);
-
-  background: #ffffff;
-
-  box-shadow: var(--shadow-sm);
-
-  transition: all 0.3s;
-
-  }
-
-
-
-  .sim-score-big {
-
-  font-family: 'JetBrains Mono', monospace;
-
-  font-size: 34px;
-
-  font-weight: 800;
-
-  line-height: 1;
-
-  }
-
-
-
-  .sim-tier-badge {
-
-  padding: 4px 14px;
-
-  border-radius: var(--radius-full);
-
-  font-family: 'JetBrains Mono', monospace;
-
-  font-size: 12px;
-
-  font-weight: 700;
-
-  margin-bottom: 12px;
-
-  }
-
-
-
-  .sim-strategy-box {
-
-  background: #ffffff;
-
-  border: 1px solid var(--border-subtle);
-
-  border-radius: var(--radius-sm);
-
-  padding: 12px 16px;
-
-  width: 100%;
-
-  text-align: left;
-
-  font-size: 12px;
-
-  box-shadow: var(--shadow-sm);
-
-  }
-
-
-
-  /* SLIDE-OVER DRAWER */
-
-  .drawer-overlay {
-
-  position: fixed;
-
-  top: 0;
-
-  left: 0;
-
-  right: 0;
-
-  bottom: 0;
-
-  background: rgba(15, 23, 42, 0.4);
-
-  backdrop-filter: blur(4px);
-
-  z-index: 2000;
-
-  display: none;
-
-  align-items: center;
-
-  justify-content: flex-end;
-
-  }
-
-
-
-  .drawer-overlay.open {
-
-  display: flex;
-
-  }
-
-
-
-  .drawer-panel {
-
-  width: 480px;
-
-  max-width: 90vw;
-
-  height: 100vh;
-
-  background: #ffffff;
-
-  border-left: 1px solid var(--border-medium);
-
-  display: flex;
-
-  flex-direction: column;
-
-  box-shadow: var(--shadow-lg);
-
-  animation: slideLeft 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-
-  }
-
-
-
-  @keyframes slideLeft {
-
-  from { transform: translateX(100%); }
-
-  to { transform: translateX(0); }
-
-  }
-
-
-
-  .drawer-header {
-
-  padding: 20px 24px;
-
-  border-bottom: 1px solid var(--border-subtle);
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: space-between;
-
-  background: #f8fafc;
-
-  }
-
-
-
-  .drawer-body {
-
-  padding: 24px;
-
-  flex: 1;
-
-  overflow-y: auto;
-
-  }
-
-
-
-  .drawer-footer {
-
-  padding: 16px 24px;
-
-  border-top: 1px solid var(--border-subtle);
-
-  display: flex;
-
-  gap: 12px;
-
-  background: #f8fafc;
-
-  }
-
-
-
-  .drawer-close {
-
-  background: none;
-
-  border: none;
-
-  color: var(--text-muted);
-
-  font-size: 20px;
-
-  cursor: pointer;
-
-  }
-
-
-
-  .drawer-close:hover {
-
-  color: var(--text-primary);
-
-  }
-
-
-
-  .detail-grid {
-
-  display: grid;
-
-  grid-template-columns: 1fr 1fr;
-
-  gap: 12px;
-
-  margin-bottom: 18px;
-
-  }
-
-
-
-  .detail-item {
-
-  background: var(--bg-subtle);
-
-  border: 1px solid var(--border-subtle);
-
-  border-radius: var(--radius-sm);
-
-  padding: 10px 12px;
-
-  }
-
-
-
-  .detail-label {
-
-  font-size: 10.5px;
-
-  color: var(--text-muted);
-
-  font-family: 'JetBrains Mono', monospace;
-
-  font-weight: 700;
-
-  margin-bottom: 4px;
-
-  text-transform: uppercase;
-
-  }
-
-
-
-  .detail-val {
-
-  font-size: 13px;
-
-  font-weight: 600;
-
-  color: var(--text-primary);
-
-  }
-
-
-
-  .toast-msg {
-
-  position: fixed;
-
-  bottom: 24px;
-
-  right: 24px;
-
-  background: #ffffff;
-
-  border: 1px solid var(--brand-primary);
-
-  box-shadow: var(--shadow-lg);
-
-  border-radius: var(--radius-md);
-
-  padding: 14px 20px;
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 12px;
-
-  z-index: 3000;
-
-  transform: translateY(100px);
-
-  opacity: 0;
-
-  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-
-  }
-
-
-
-  .toast-msg.show {
-
-  transform: translateY(0);
-
-  opacity: 1;
-
-  }
-
-
-
-  @media (max-width: 1024px) {
-
-  .kpi-row { grid-template-columns: repeat(2, 1fr); }
-
-  .grid-2-1 { grid-template-columns: 1fr; }
-
-  .models-strip { grid-template-columns: 1fr; }
-
-  .model-metrics-grid { grid-template-columns: repeat(3, 1fr); }
-
-  .mitigation-grid { grid-template-columns: 1fr; }
-  }
-
-  .nav-tabs::-webkit-scrollbar { display: none; }
-
-  @media (max-width: 760px) {
-    .subnav { padding: 0 14px; }
-    .nav-tab { padding: 0 12px; font-size: 12px; }
-    #last-sync-time { display: none; }
-    .app-container { padding: 16px 14px 48px; }
-  }
-
-    /* ── AI ASSISTANT WIDGET — PROFESSIONAL REDESIGN ── */
-    @keyframes pulsering {
-      0%   { transform: scale(1);   opacity: 0.7; }
-      70%  { transform: scale(2.2); opacity: 0; }
-      100% { transform: scale(2.2); opacity: 0; }
-    }
-    @keyframes dotbounce {
-      0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
-      40%            { transform: translateY(-6px); opacity: 1; }
-    }
-    @keyframes msgSlideIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
+    :root {
+      /* Color System */
+      --bg-main: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --bg-hover: #e2e8f0;
+      
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-subtle: #64748b;
+      
+      --border-light: #e2e8f0;
+      --border-medium: #cbd5e1;
+      
+      --brand-primary: #2563eb;
+      --brand-primary-hover: #1d4ed8;
+      --brand-accent: #0284c7;
+      --brand-light: #eff6ff;
+
+      /* Risk Status Tokens */
+      --high-bg: #fef2f2;
+      --high-border: #fecaca;
+      --high-text: #dc2626;
+      
+      --med-bg: #fffbeb;
+      --med-border: #fde68a;
+      --med-text: #d97706;
+      
+      --low-bg: #f0fdf4;
+      --low-border: #bbf7d0;
+      --low-text: #16a34a;
+
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
     }
 
-    .ai-assistant-fab {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      z-index: 1200;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.5;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* HEADER & NAVBAR */
+    .app-header {
+      background-color: #0f172a;
       color: #ffffff;
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 30px;
-      padding: 10px 18px 10px 10px;
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 10px 30px rgba(15,23,42,0.3), 0 0 0 1px rgba(255,255,255,0.05);
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .ai-assistant-fab:hover {
-      transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 16px 40px rgba(15,23,42,0.4);
-      border-color: rgba(255,255,255,0.3);
-    }
-    .ai-fab-icon-wrap {
-      position: relative;
-      width: 30px;
-      height: 30px;
-      flex-shrink: 0;
-    }
-    .ai-fab-pulse {
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      background: #38bdf8;
-      animation: pulsering 2s ease-out infinite;
-    }
-    .ai-fab-icon-circle {
-      position: relative;
-      z-index: 1;
-      width: 30px;
-      height: 30px;
-      background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 8px rgba(56,189,248,0.45);
-    }
-
-    .ai-assistant-drawer {
-      position: fixed;
-      bottom: 84px;
-      right: 24px;
-      width: 420px;
-      max-width: calc(100vw - 32px);
-      height: 580px;
-      max-height: calc(100vh - 110px);
-      background: #ffffff;
-      border: 1px solid var(--border-subtle);
-      border-radius: 22px;
-      box-shadow: 0 24px 60px rgba(15,23,42,0.2), 0 0 0 1px rgba(15,23,42,0.04);
-      z-index: 1200;
-      display: none;
-      flex-direction: column;
-      overflow: hidden;
-      animation: slideUpFade 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .ai-assistant-drawer.open { display: flex; }
-
-    .ai-drawer-header {
-      background: linear-gradient(135deg, #0a1628 0%, #0f2044 50%, #1a2d5a 100%);
-      color: #ffffff;
-      padding: 14px 18px 12px;
+      padding: 0 24px;
+      height: 64px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+      border-bottom: 1px solid #1e293b;
+      position: sticky;
+      top: 0;
+      z-index: 50;
     }
-    .ai-drawer-title {
-      font-size: 13px;
-      font-weight: 700;
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-logo {
       display: flex;
       align-items: center;
       gap: 10px;
-      letter-spacing: -0.01em;
+      text-decoration: none;
+      color: #ffffff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: -0.02em;
     }
-    .ai-drawer-avatar {
-      width: 34px;
-      height: 34px;
-      background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
-      border-radius: 10px;
+
+    .brand-badge-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #2563eb, #0284c7);
+      color: #ffffff;
+      border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 2px 8px rgba(56,189,248,0.35);
-      flex-shrink: 0;
-    }
-    .ai-drawer-meta { display: flex; flex-direction: column; gap: 3px; }
-    .ai-drawer-name { font-size: 13.5px; font-weight: 700; color: #f1f5f9; line-height: 1; }
-    .ai-drawer-sub  { display: flex; align-items: center; gap: 6px; }
-    .ai-status-pill {
-      font-size: 9px;
-      font-family: 'JetBrains Mono', monospace;
-      background: rgba(16,185,129,0.18);
-      border: 1px solid rgba(16,185,129,0.35);
-      color: #34d399;
-      padding: 2px 7px;
-      border-radius: 10px;
-      text-transform: uppercase;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-    }
-    .ai-gemini-badge {
-      display: flex;
-      align-items: center;
-      gap: 3px;
-      font-size: 9.5px;
-      color: rgba(148,163,184,0.8);
-      font-family: 'JetBrains Mono', monospace;
-    }
-    .ai-drawer-actions { display: flex; align-items: center; gap: 6px; }
-    .ai-action-btn {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.1);
-      color: #94a3b8;
+      font-weight: 800;
       font-size: 14px;
-      cursor: pointer;
-      width: 30px;
-      height: 30px;
-      border-radius: 8px;
+    }
+
+    .project-pill {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 9999px;
+      padding: 4px 12px;
+      font-size: 12px;
+      color: #94a3b8;
       display: flex;
       align-items: center;
+      gap: 6px;
+    }
+
+    .project-pill strong {
+      color: #f8fafc;
+    }
+
+    .live-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.1);
+      padding: 4px 10px;
+      border-radius: 9999px;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+    }
+
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      background-color: #38bdf8;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #38bdf8;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.4; }
+      50% { opacity: 1; }
+      100% { opacity: 0.4; }
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
       justify-content: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background-color: var(--brand-primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--brand-primary-hover);
+    }
+
+    .btn-secondary {
+      background-color: rgba(255, 255, 255, 0.08);
+      color: #e2e8f0;
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-secondary:hover {
+      background-color: rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+    }
+
+    .btn-outline {
+      background-color: var(--bg-surface);
+      color: var(--text-main);
+      border-color: var(--border-medium);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--bg-subtle);
+    }
+
+    /* SUB-NAV / TAB BAR */
+    .nav-bar {
+      background-color: #1e293b;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #334155;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 4px;
+    }
+
+    .nav-tab {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      padding: 12px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 2px solid transparent;
       transition: all 0.15s ease;
     }
-    .ai-action-btn:hover { background: rgba(255,255,255,0.18); color: #ffffff; border-color: rgba(255,255,255,0.25); }
 
-    .ai-messages-container {
-      flex: 1;
-      padding: 16px;
-      overflow-y: auto;
+    .nav-tab:hover {
+      color: #f1f5f9;
+    }
+
+    .nav-tab.active {
+      color: #ffffff;
+      font-weight: 600;
+      border-bottom-color: var(--brand-primary);
+    }
+
+    .tab-badge {
+      background-color: rgba(255, 255, 255, 0.12);
+      color: #cbd5e1;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .nav-tab.active .tab-badge {
+      background-color: var(--brand-primary);
+      color: #ffffff;
+    }
+
+    /* MAIN CONTAINER */
+    .app-main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .tab-view {
+      display: none;
+    }
+
+    .tab-view.active {
+      display: block;
+    }
+
+    /* SECTION HEADER */
+    .section-title-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .section-heading {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.01em;
+    }
+
+    .section-subtext {
+      font-size: 13px;
+      color: var(--text-subtle);
+      margin-top: 2px;
+    }
+
+    /* KPI GRID */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .kpi-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+
+    .kpi-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-subtle);
+      margin-bottom: 8px;
+    }
+
+    .kpi-value {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.1;
+    }
+
+    .kpi-value.danger { color: var(--high-text); }
+    .kpi-value.warning { color: var(--med-text); }
+    .kpi-value.success { color: var(--low-text); }
+    .kpi-value.brand { color: var(--brand-primary); }
+
+    .kpi-footer {
+      font-size: 12px;
+      color: var(--text-subtle);
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* CONTENT GRID */
+    .grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 1024px) {
+      .grid-2col { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .card-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    /* BARS & PROGRESS */
+    .stat-list {
       display: flex;
       flex-direction: column;
       gap: 12px;
-      background: #f1f5f9;
-      scroll-behavior: smooth;
     }
-    .ai-messages-container::-webkit-scrollbar { width: 4px; }
-    .ai-messages-container::-webkit-scrollbar-track { background: transparent; }
-    .ai-messages-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
 
-    .ai-msg-wrap {
+    .stat-row {
       display: flex;
       flex-direction: column;
-      animation: msgSlideIn 0.22s ease both;
-    }
-    .ai-msg-wrap.user { align-items: flex-end; }
-    .ai-msg-wrap.bot  { align-items: flex-start; }
-
-    .ai-msg-bubble {
-      max-width: 88%;
-      padding: 11px 15px;
-      border-radius: 16px;
-      font-size: 13px;
-      line-height: 1.6;
-      word-break: break-word;
-    }
-    .ai-msg-wrap.user .ai-msg-bubble {
-      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-      color: #ffffff;
-      border-bottom-right-radius: 4px;
-      box-shadow: 0 4px 14px rgba(2,132,199,0.25);
-    }
-    .ai-msg-wrap.bot .ai-msg-bubble {
-      background: #ffffff;
-      color: var(--text-primary);
-      border: 1px solid #e2e8f0;
-      border-bottom-left-radius: 4px;
-      box-shadow: 0 2px 8px rgba(15,23,42,0.05);
-    }
-    .ai-msg-wrap.bot .ai-msg-bubble p { margin: 0 0 7px; }
-    .ai-msg-wrap.bot .ai-msg-bubble p:last-child { margin-bottom: 0; }
-    .ai-msg-wrap.bot .ai-msg-bubble ul { padding-left: 18px; margin: 6px 0; }
-    .ai-msg-wrap.bot .ai-msg-bubble li { margin-bottom: 5px; }
-    .ai-msg-wrap.bot .ai-msg-bubble strong { color: #0f172a; font-weight: 700; }
-    .ai-msg-wrap.bot .ai-msg-bubble code {
-      font-family: 'JetBrains Mono', monospace;
-      background: #f1f5f9;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 11.5px;
-      color: #0284c7;
-    }
-    .ai-msg-timestamp {
-      font-size: 10px;
-      color: #94a3b8;
-      margin-top: 4px;
-      padding: 0 4px;
-      font-family: 'JetBrains Mono', monospace;
+      gap: 4px;
     }
 
-    /* Typing dots indicator */
-    .ai-typing-dots {
+    .stat-meta {
       display: flex;
       align-items: center;
-      gap: 5px;
-      padding: 12px 16px;
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 16px;
-      border-bottom-left-radius: 4px;
-      width: fit-content;
-      box-shadow: 0 2px 8px rgba(15,23,42,0.05);
+      justify-content: space-between;
+      font-size: 13px;
     }
-    .ai-typing-dots span {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #94a3b8;
-      animation: dotbounce 1.2s ease infinite;
-    }
-    .ai-typing-dots span:nth-child(2) { animation-delay: 0.15s; }
-    .ai-typing-dots span:nth-child(3) { animation-delay: 0.3s; }
 
-    .ai-quick-prompts {
-      display: flex;
-      gap: 7px;
-      padding: 10px 14px;
-      background: #ffffff;
-      border-top: 1px solid var(--border-subtle);
-      overflow-x: auto;
-      scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
+    .stat-name {
+      font-weight: 600;
+      color: var(--text-main);
     }
-    .ai-quick-prompts::-webkit-scrollbar { display: none; }
 
-    .ai-prompt-chip {
-      font-size: 11.5px;
-      background: #f8fafc;
-      color: var(--text-secondary);
-      border: 1px solid #e2e8f0;
-      border-radius: 20px;
-      padding: 6px 13px;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s ease;
+    .stat-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text-subtle);
+    }
+
+    .bar-bg {
+      height: 8px;
+      background-color: var(--bg-subtle);
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 9999px;
+      background-color: var(--brand-primary);
+      transition: width 0.3s ease;
+    }
+
+    .bar-fill.danger { background-color: var(--high-text); }
+    .bar-fill.warning { background-color: var(--med-text); }
+
+    /* STATUS PILLS */
+    .pill {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      font-weight: 500;
-    }
-    .ai-prompt-chip:hover {
-      background: #eff6ff;
-      color: var(--brand-primary);
-      border-color: #bfdbfe;
-      transform: translateY(-1px);
-      box-shadow: 0 2px 8px rgba(2,132,199,0.12);
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
     }
 
-    .ai-input-bar {
-      display: flex;
-      padding: 10px 12px;
-      background: #ffffff;
-      border-top: 1px solid var(--border-subtle);
-      gap: 8px;
-      align-items: center;
+    .pill-high {
+      background-color: var(--high-bg);
+      border: 1px solid var(--high-border);
+      color: var(--high-text);
     }
-    .ai-input {
+
+    .pill-med {
+      background-color: var(--med-bg);
+      border: 1px solid var(--med-border);
+      color: var(--med-text);
+    }
+
+    .pill-low {
+      background-color: var(--low-bg);
+      border: 1px solid var(--low-border);
+      color: var(--low-text);
+    }
+
+    .pill-closed {
+      background-color: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: #475569;
+    }
+
+    /* TASK MATRIX TABLE */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .search-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
       flex: 1;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 24px;
-      padding: 10px 16px;
+      min-width: 280px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-sm);
       font-size: 13px;
       outline: none;
-      font-family: 'Inter', sans-serif;
-      background: #f8fafc;
-      color: var(--text-primary);
-      transition: all 0.2s ease;
-    }
-    .ai-input::placeholder { color: #94a3b8; }
-    .ai-input:focus {
-      background: #ffffff;
-      border-color: #0284c7;
-      box-shadow: 0 0 0 3px rgba(2,132,199,0.1);
-    }
-    .ai-send-btn {
-      width: 38px;
-      height: 38px;
-      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-      color: #ffffff;
-      border: none;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 12px rgba(2,132,199,0.35);
-      flex-shrink: 0;
-    }
-    .ai-send-btn:hover {
-      transform: scale(1.08);
-      box-shadow: 0 6px 18px rgba(2,132,199,0.45);
-    }
-    .ai-send-btn:active { transform: scale(0.95); }
-    .ai-powered-bar {
-      padding: 6px 14px;
-      background: #f8fafc;
-      border-top: 1px solid var(--border-subtle);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      font-size: 10.5px;
-      color: #94a3b8;
-      font-family: 'Inter', sans-serif;
+      transition: border-color 0.15s ease;
     }
 
-    .ai-live-panel { padding: 12px 14px; background: #ffffff; border-bottom: 1px solid var(--border-subtle); }
-    .ai-live-panel-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 9px; }
-    .ai-live-label { display: flex; align-items: center; gap: 6px; color: #0f172a; font: 700 10px 'JetBrains Mono', monospace; letter-spacing: .06em; text-transform: uppercase; }
-    .ai-live-dot { width: 6px; height: 6px; background: #10b981; border-radius: 50%; box-shadow: 0 0 0 3px #d1fae5; }
-    .ai-model-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
-    .ai-model-select { min-width: 0; height: 34px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 9px; background: #f8fafc; color: #334155; font: 600 11.5px 'Inter', sans-serif; outline: none; }
-    .ai-model-select:focus { border-color: var(--brand-primary); box-shadow: 0 0 0 3px rgba(2,132,199,.1); }
-    .ai-model-show-btn { border: 0; border-radius: 6px; padding: 0 11px; background: #0f172a; color: #ffffff; cursor: pointer; font: 700 11px 'Inter', sans-serif; }
-    .ai-model-show-btn:hover { background: #1e293b; }
-    .ai-live-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 10px; }
-    .ai-live-metric { min-width: 0; border: 1px solid #e2e8f0; border-radius: 6px; padding: 7px; background: #f8fafc; }
-    .ai-live-metric-label { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #64748b; font-size: 9px; font-weight: 600; }
-    .ai-live-metric-value { display: block; margin-top: 2px; color: #0f172a; font-size: 15px; font-weight: 700; }
-    .ai-selected-results { display: grid; gap: 7px; margin-top: 10px; }
-    .ai-model-result { border-left: 3px solid #38bdf8; padding: 7px 9px; background: #f8fafc; border-radius: 0 5px 5px 0; }
-    .ai-model-result.champion { border-left-color: #10b981; background: #f0fdf4; }
-    .ai-model-result-name { display: flex; justify-content: space-between; gap: 8px; color: #0f172a; font-size: 11px; font-weight: 700; }
-    .ai-model-result-values { margin-top: 3px; color: #64748b; font: 10px 'JetBrains Mono', monospace; }
-    
-    /* LLM Popup Comparison Graph */
-    .ai-drawer-graph-card { margin-top: 10px; padding: 10px 11px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-    .ai-graph-header { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 9px; }
-    .ai-graph-title { font: 700 10.5px 'Plus Jakarta Sans', sans-serif; color: #0f172a; display: flex; align-items: center; gap: 5px; }
-    .ai-graph-tabs { display: flex; gap: 3px; background: #f1f5f9; padding: 2px; border-radius: 5px; border: 1px solid #e2e8f0; }
-    .ai-graph-tab { border: 0; background: transparent; color: #64748b; font: 700 9px 'JetBrains Mono', monospace; padding: 2px 6px; border-radius: 4px; cursor: pointer; transition: all 0.15s ease; }
-    .ai-graph-tab.active { background: #0284c7; color: #ffffff; box-shadow: 0 1px 2px rgba(2,132,199,0.25); }
-    .ai-graph-bars { display: grid; gap: 6px; }
-    .ai-graph-bar-row { display: grid; grid-template-columns: minmax(105px, 1.2fr) minmax(0, 2fr) 42px; align-items: center; gap: 8px; font-size: 10.5px; }
-    .ai-graph-bar-name { color: #334155; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 4px; font-size: 10.5px; }
-    .ai-graph-bar-name .champ-badge { background: #dcfce7; color: #15803d; font-size: 8px; padding: 1px 4px; border-radius: 3px; font-weight: 700; border: 1px solid #bbf7d0; }
-    .ai-graph-bar-track { height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden; border: 1px solid #e2e8f0; }
-    .ai-graph-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, #0284c7, #38bdf8); transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-    .ai-graph-bar-fill.champion { background: linear-gradient(90deg, #10b981, #34d399); }
-    .ai-graph-bar-val { color: #0f172a; font: 700 10.5px 'JetBrains Mono', monospace; text-align: right; }
-    .ai-insights-modal { position: fixed; inset: 0; z-index: 2200; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(15, 23, 42, .55); backdrop-filter: blur(5px); }
-    .ai-insights-modal.open { display: flex; }
-    .ai-insights-dialog { width: min(1040px, 100%); max-height: min(760px, calc(100vh - 48px)); overflow: auto; background: #f8fafc; border: 1px solid rgba(255,255,255,.65); border-radius: 8px; box-shadow: 0 28px 80px rgba(15,23,42,.35); }
-    .ai-insights-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; padding: 20px 24px; background: #0f172a; color: #fff; }
-    .ai-insights-eyebrow { color: #7dd3fc; font: 700 10px 'JetBrains Mono', monospace; letter-spacing: .08em; text-transform: uppercase; }
-    .ai-insights-title { margin-top: 4px; font: 700 20px 'Plus Jakarta Sans', sans-serif; }
-    .ai-insights-subtitle { margin-top: 4px; color: #cbd5e1; font-size: 12px; }
-    .ai-insights-close { width: 32px; height: 32px; border: 1px solid rgba(255,255,255,.2); border-radius: 5px; background: transparent; color: #fff; cursor: pointer; font-size: 20px; line-height: 1; }
-    .ai-insights-content { padding: 20px 24px 24px; }
-    .ai-insights-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-    .ai-insights-kpi-card { padding: 13px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; }
-    .ai-insights-kpi-label { display: block; color: #64748b; font-size: 10px; font-weight: 700; text-transform: uppercase; }
-    .ai-insights-kpi-value { display: block; margin-top: 5px; color: #0f172a; font-size: 20px; font-weight: 700; }
-    .ai-insights-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(240px, .8fr); gap: 14px; margin-top: 14px; }
-    .ai-insights-section { padding: 16px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; }
-    .ai-insights-section-title { color: #0f172a; font-size: 12px; font-weight: 700; }
-    .ai-insights-section-note { margin-top: 3px; color: #64748b; font-size: 10.5px; }
-    .ai-model-matrix { margin-top: 14px; display: grid; gap: 12px; }
-    .ai-model-empty { padding: 18px; text-align: center; color: #64748b; font-size: 12px; border: 1px dashed #cbd5e1; border-radius: 6px; background: #f8fafc; }
-    .ai-model-matrix-grid { display: grid; grid-template-columns: minmax(120px, 1.5fr) repeat(6, minmax(45px, 1fr)); gap: 8px; align-items: center; }
-    .ai-model-matrix-head { color: #64748b; font: 700 10px 'JetBrains Mono', monospace; letter-spacing: .04em; text-transform: uppercase; padding-bottom: 6px; border-bottom: 1px solid #e2e8f0; }
-    .ai-model-matrix-row-name { color: #0f172a; font-size: 11px; font-weight: 700; padding: 6px 0; }
-    .ai-model-matrix-row-value { color: #0f172a; font: 600 11px 'JetBrains Mono', monospace; text-align: center; }
-    .ai-insights-detail-list { margin-top: 12px; display: grid; gap: 10px; }
-    .ai-insights-detail-item { padding: 10px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; }
-    .ai-insights-detail-label { display: block; color: #64748b; font-size: 10px; font-weight: 700; text-transform: uppercase; }
-    .ai-insights-detail-text { display: block; margin-top: 5px; color: #0f172a; font-size: 12px; line-height: 1.5; }
-    @media (max-width: 600px) {
-      .ai-assistant-drawer { right: 12px; bottom: 76px; max-width: calc(100vw - 24px); height: min(680px, calc(100vh - 94px)); }
-      .ai-assistant-fab { right: 12px; bottom: 14px; }
-      .ai-insights-modal { padding: 10px; }
-      .ai-insights-dialog { max-height: calc(100vh - 20px); }
-      .ai-insights-header, .ai-insights-content { padding: 16px; }
-      .ai-insights-kpis { grid-template-columns: repeat(2, 1fr); }
-      .ai-insights-grid { grid-template-columns: 1fr; }
+    .search-input:focus {
+      border-color: var(--brand-primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .filter-dropdowns {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .select-dropdown {
+      padding: 8px 12px;
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      background-color: var(--bg-surface);
+      color: var(--text-main);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .table-container {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    .data-table th {
+      background-color: var(--bg-subtle);
+      padding: 12px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-subtle);
+      border-bottom: 1px solid var(--border-light);
+      white-space: nowrap;
+    }
+
+    .data-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border-light);
+      vertical-align: middle;
+    }
+
+    .data-table tbody tr {
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+
+    .data-table tbody tr:hover {
+      background-color: var(--brand-light);
+    }
+
+    .task-id-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      color: var(--brand-primary);
+    }
+
+    /* MITIGATION CARDS */
+    .mit-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .mit-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--brand-primary);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .mit-card.high { border-left-color: var(--high-text); }
+    .mit-card.med { border-left-color: var(--med-text); }
+    .mit-card.low { border-left-color: var(--low-text); }
+
+    .mit-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .mit-card-title {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--text-main);
+    }
+
+    .mit-action-box {
+      background-color: var(--bg-subtle);
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin: 10px 0;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* SIMULATOR STYLES */
+    .sim-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .sim-layout { grid-template-columns: 1fr; }
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      outline: none;
+    }
+
+    .gauge-display {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      background: var(--bg-subtle);
+      border-radius: var(--radius-md);
+      text-align: center;
+    }
+
+    .gauge-number {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 64px;
+      font-weight: 800;
+      line-height: 1;
+      margin: 12px 0;
+    }
+
+    /* SLIDE-OVER DRAWER */
+    .drawer-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(2px);
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .drawer-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .drawer-content {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 480px;
+      max-width: 90vw;
+      height: 100vh;
+      background: var(--bg-surface);
+      box-shadow: var(--shadow-lg);
+      z-index: 101;
+      transform: translateX(100%);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .drawer-overlay.open .drawer-content {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .drawer-body {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .drawer-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--text-subtle);
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+      background: var(--bg-subtle);
+      padding: 14px;
+      border-radius: var(--radius-sm);
+    }
+
+    .detail-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .detail-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+      font-weight: 600;
+    }
+
+    .detail-val {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    /* PRINT STYLES */
+    @media print {
+      .app-header, .nav-bar, .filter-bar, .header-actions { display: none !important; }
+      .app-main { max-width: 100% !important; padding: 0 !important; }
+      .tab-view { display: block !important; }
+      .card { page-break-inside: avoid; border: 1px solid #ccc !important; }
     }
   </style>
-
 </head>
 
 <body>
 
-
-
   <!-- TOP APP BAR -->
-
-  <nav class="navbar">
-
-  <div class="nav-left">
-
-  <a href="https://intertechtaskprediction.vercel.app" target="_blank" rel="noopener" class="brand-logo">
-
-  <div class="brand-icon">IT</div>
-
-  <div class="brand-title">
-
-  InterTech <span>Task Prediction</span>
-
-  <span class="brand-subtitle">intertechtaskprediction.vercel.app</span>
-
-  </div>
-
-  </a>
-
-  <div style="width:1px; height:18px; background: var(--border-medium);"></div>
-
-  <a href="https://intertechtaskprediction.vercel.app" target="_blank" rel="noopener" class="domain-chip">
-
-  <span class="domain-chip-dot"></span>
-
-  intertechtaskprediction.vercel.app
-
-  <span class="domain-chip-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5L8.5 3.5M8.5 3.5H4.5M8.5 3.5V7.5"/></svg></span>
-
-  </a>
-
-  <div class="project-pill">
-
-  <span>Project:</span>
-
-  <strong id="header-project-id">PRJ001  |  HQ Tower</strong>
-
-  </div>
-
-  <div class="live-status-badge">
-
-  <div class="live-pulse"></div>
-
-  <span>ML Active  |  5-Fold CV</span>
-
-  </div>
-
-  </div>
-
-  
-
-  <div class="nav-right">
-
-  <button class="btn btn-secondary btn-sm" onclick="exportDataCSV()">
-
-  <span>CSV</span>
-
-  </button>
-
-  <button class="btn btn-secondary btn-sm" onclick="window.print()">
-
-  <span>PDF</span>
-
-  </button>
-
-  <button class="btn btn-primary btn-sm" id="btn-sync-ml" onclick="triggerMLRetrain()">
-
-  <span id="sync-spinner"></span>
-
-  <span>Re-train</span>
-
-  </button>
-
-  </div>
-
-  </nav>
-
-
-
-  <!-- SUB-NAV / TABS -->
-
-  <div class="subnav">
-
-  <div class="nav-tabs">
-
-  <button class="nav-tab active" onclick="switchView('overview', this)">
-
-  <span>Executive Overview</span>
-
-  </button>
-
-  <button class="nav-tab" onclick="switchView('tasks', this)">
-
-  <span>Task Prediction Matrix</span>
-
-  <span class="tab-badge" id="badge-total-tasks">1000</span>
-
-  </button>
-
-  <button class="nav-tab" onclick="switchView('mitigation', this)">
-
-  <span>Action & Mitigation Planner</span>
-
-  <span class="tab-badge" id="badge-open-tasks">260</span>
-
-  </button>
-
-  <button class="nav-tab" onclick="switchView('simulator', this)">
-
-  <span>What-If Simulator</span>
-
-  </button>
-
-  <button class="nav-tab" onclick="switchView('explainability', this)">
-
-  <span>Model Diagnostics</span>
-
-  </button>
-
-  </div>
-
-  <div style="font-size:11.5px; color:var(--text-muted); font-family:'JetBrains Mono', monospace;" id="last-sync-time">
-
-  Live Model Online
-
-  </div>
-
-  </div>
-
-
-
-  <!-- MAIN CONTAINER -->
-
-  <main class="app-container">
-
-
-
-  <!-- COMPLIANCE BANNER -->
-
-  <div class="spec-banner">
-
-  <div class="spec-info">
-
-  <span class="spec-badge">DELAY MITIGATION RADAR</span>
-
-  <div class="spec-text">
-
-  <strong>Project Delay Prediction System:</strong> Trained on historical engineering data (Target: <code>Delay &gt; 0</code>). Recommends targeted PM alerts, multi-tier sync meetings, and resource reallocation from completed or low-risk tasks.
-
-  </div>
-
-  </div>
-
-  <button class="btn btn-secondary btn-sm" onclick="switchView('mitigation', document.querySelectorAll('.nav-tab')[2])">
-
-  Review Active Alerts &gt;
-
-  </button>
-
-  </div>
-
-
-
-  <!-- 
-
-  VIEW 1: EXECUTIVE OVERVIEW
-
- -->
-
-  <div id="view-overview" class="tab-view active">
-
-  
-
-  <!-- KPI CARDS -->
-
-  <div class="kpi-row">
-
-  <div class="kpi-card kpi-neutral">
-
-  <div class="kpi-header">
-
-  <span class="kpi-title">Total Project Tasks</span>
-
-  <span style="font-size:15px;"></span>
-
-  </div>
-
-  <div class="kpi-metric" id="kpi-total-tasks">1000</div>
-
-  <div class="kpi-footer" id="kpi-total-footer">282 Closed  |  718 Open</div>
-
-  </div>
-
-
-
-  <div class="kpi-card kpi-delayed">
-
-  <div class="kpi-header">
-
-  <span class="kpi-title">Historical Delay Rate</span>
-
-  <span style="font-size:15px; color:var(--red-primary);"></span>
-
-  </div>
-
-  <div class="kpi-metric delayed" id="kpi-delay-rate">43.6%</div>
-
-  <div class="kpi-footer" id="kpi-delay-footer">123 Delayed of 282 Completed</div>
-
-  </div>
-
-
-
-  <div class="kpi-card kpi-warn">
-
-  <div class="kpi-header">
-
-  <span class="kpi-title">Average Delay Duration</span>
-
-  <span style="font-size:15px; color:var(--yellow-primary);"></span>
-
-  </div>
-
-  <div class="kpi-metric warn" id="kpi-avg-delay">+3.5d</div>
-
-  <div class="kpi-footer" id="kpi-avg-footer">Max Delay: +12 Days</div>
-
-  </div>
-
-
-
-  <div class="kpi-card kpi-accent">
-
-  <div class="kpi-header">
-
-  <span class="kpi-title">Open Tasks at Risk</span>
-
-  <span style="font-size:15px; color:var(--brand-primary);"></span>
-
-  </div>
-
-  <div class="kpi-metric accent" id="kpi-open-risk">260</div>
-
-  <div class="kpi-footer" id="kpi-risk-footer">High &amp; Medium Risk Open Tasks</div>
-
-  </div>
-
-
-
-  <div class="kpi-card kpi-ontime">
-
-  <div class="kpi-header">
-
-  <span class="kpi-title">Champion Model F1</span>
-
-  <span style="font-size:15px; color:var(--green-primary);"></span>
-
-  </div>
-
-  <div class="kpi-metric ontime" id="kpi-cv-acc">69.5%</div>
-
-  <div class="kpi-footer" id="kpi-model-footer">Random Forest (5-Fold CV)</div>
-
-  </div>
-
-  </div>
-
-
-
-  <!-- ANALYTICS PANELS ROW -->
-
-  <div class="grid-2-1">
-
-  
-
-  <!-- Discipline Delay Distribution -->
-
-  <div class="panel-card">
-
-  <div class="panel-header">
-
-  <div class="panel-title">
-
-  <span>Discipline Delay Rate</span>
-
-  </div>
-
-  <span class="panel-tag">% Closed Delayed</span>
-
-  </div>
-
-  <div class="disc-list" id="disc-bar-container">
-
-  <!-- Rendered by JS -->
-
-  </div>
-
-  </div>
-
-
-
-  <!-- Pareto Root Causes -->
-
-  <div class="panel-card">
-
-  <div class="panel-header">
-
-  <div class="panel-title">
-
-  <span>Root Cause Distribution</span>
-
-  </div>
-
-  <span class="panel-tag">Failure Frequency</span>
-
-  </div>
-
-  <div class="cause-stack" id="cause-list-container">
-
-  <!-- Rendered by JS -->
-
-  </div>
-
-  </div>
-
-
-
-  <!-- Key ML Risk Drivers -->
-
-  <div class="panel-card">
-
-  <div class="panel-header">
-
-  <div class="panel-title">
-
-  <span>Key Feature Importance</span>
-
-  </div>
-
-  <span class="panel-tag">RF Weight</span>
-
-  </div>
-
-  <div class="feat-stack" id="feat-list-container">
-
-  <!-- Rendered by JS -->
-
-  </div>
-
-  </div>
-
-
-
-  </div>
-
-
-
-  <!-- ML BENCHMARK STRIP (rendered by JS from API data) -->
-
-  <div class="models-strip" id="models-strip-container">
-
-  <div style="color:var(--text-muted);font-size:12px;padding:12px;">Loading model metrics...</div>
-
-  </div>
-
-  <div style="font-size:10.5px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;padding:4px 2px 0;">
-
-  Evaluation: LOO-CV for n&thinsp;&le;&thinsp;50 closed tasks &mdash; 5-Fold Stratified CV for larger datasets &mdash; Champion selected by F1-Score
-
-  </div>
-
-
-
-  </div>
-
-
-
-  <!-- 
-
-  VIEW 2: TASK PREDICTION MATRIX
-
- -->
-
-  <div id="view-tasks" class="tab-view">
-
-  
-
-  <!-- Filter Toolbar -->
-
-  <div class="filter-toolbar">
-
-  <div class="filter-group-left">
-
-  <div class="search-box">
-
-  <span class="search-icon"></span>
-
-  <input type="text" id="task-search-input" class="search-input" placeholder="Search tasks by ID, title, location, root cause..." oninput="filterTasks()">
-
-  </div>
-
-
-
-  <select id="filter-discipline" class="select-dropdown" onchange="filterTasks()">
-
-  <option value="ALL">All Disciplines</option>
-
-  <option value="PRJ-SITE">PRJ-SITE (Civil/Site)</option>
-
-  <option value="PRJ-ARC">PRJ-ARC (Architectural)</option>
-
-  <option value="PRJ-STR">PRJ-STR (Structural)</option>
-
-  <option value="PRJ-INT">PRJ-INT (Interior)</option>
-
-  <option value="PRJ-MEP">PRJ-MEP (Mechanical/Elec)</option>
-
-  </select>
-
-
-
-  <div class="filter-chips">
-
-  <button class="filter-chip active" data-status="ALL" onclick="setChipFilter('status', 'ALL', this)">All (0)</button>
-
-  <button class="filter-chip" data-status="Open" onclick="setChipFilter('status', 'Open', this)">Open (0)</button>
-
-  <button class="filter-chip" data-status="Closed" onclick="setChipFilter('status', 'Closed', this)">Closed (0)</button>
-
-  <button class="filter-chip" data-status="Delayed" onclick="setChipFilter('status', 'Delayed', this)">Delayed (0)</button>
-
-  </div>
-
-  </div>
-
-
-
-  <div>
-
-  <button class="btn btn-secondary btn-sm" onclick="resetFilters()">Reset Filters</button>
-
-  </div>
-
-  </div>
-
-
-
-  <!-- Table Card -->
-
-  <div class="table-card">
-
-  <div class="table-wrap">
-
-  <table class="data-table">
-
-  <thead>
-
-  <tr>
-
-  <th onclick="sortTable('id')">Task ID</th>
-
-  <th onclick="sortTable('desc')">Description</th>
-
-  <th onclick="sortTable('disc')">Discipline</th>
-
-  <th onclick="sortTable('status')">Status</th>
-
-  <th onclick="sortTable('priority')">Priority</th>
-
-  <th onclick="sortTable('hours')">Hours</th>
-
-  <th onclick="sortTable('score')">Delay Probability</th>
-
-  <th onclick="sortTable('cat')">Risk Tier</th>
-
-  <th onclick="sortTable('actual')">Outcome / Delay</th>
-
-  <th style="text-align:right;">Actions</th>
-
-  </tr>
-
-  </thead>
-
-  <tbody id="task-table-body">
-
-  <!-- Rendered by JS -->
-
-  </tbody>
-
-  </table>
-
-  </div>
-
-  </div>
-
-
-
-  </div>
-
-
-
-  <!-- 
-
-  VIEW 3: MITIGATION & ACTION PLANNER
-
- -->
-
-  <div id="view-mitigation" class="tab-view">
-
-  
-
-  <div class="mitigation-grid">
-
-  
-
-  <!-- High Risk Column (RED) -->
-
-  <div class="mit-column-card">
-
-  <div class="mit-col-header">
-
-  <div class="mit-col-title high">
-
-  <span>Critical Risk Tier (>=70%)</span>
-
-  </div>
-
-  <span class="pill pri-high" id="badge-high-count">0 Open</span>
-
-  </div>
-
-  <div class="mit-rule-box high">
-
-  <strong>Action Protocol:</strong> <code>NOTIFY_PM + REALLOCATE_RESOURCE</code><br>
-
-  Dispatch urgent alert to Project Manager and assign assistance from completed on-time tasks or low-risk units.
-
-  </div>
-
-  <div class="mit-task-list" id="mit-list-high">
-
-  <!-- Rendered by JS -->
-
-  </div>
-
-  </div>
-
-
-
-  <!-- Medium Risk Column (YELLOW) -->
-
-  <div class="mit-column-card">
-
-  <div class="mit-col-header">
-
-  <div class="mit-col-title med">
-
-  <span>Medium Risk Tier (40% - 69%)</span>
-
-  </div>
-
-  <span class="pill pri-medium" id="badge-med-count">0 Open</span>
-
-  </div>
-
-  <div class="mit-rule-box med">
-
-  <strong>Action Protocol:</strong> <code>SCHEDULE_STATUS_MEETING</code><br>
-
-  Conduct coordination review meeting with field leads to prevent compounding schedule slip.
-
-  </div>
-
-  <div class="mit-task-list" id="mit-list-med">
-
-  <!-- Rendered by JS -->
-
-  </div>
-
-  </div>
-
-
-
-  <!-- Low Risk Column (GREEN) -->
-
-  <div class="mit-column-card">
-
-  <div class="mit-col-header">
-
-  <div class="mit-col-title low">
-
-  <span>Low Risk Tier (&lt;40%)</span>
-
-  </div>
-
-  <span class="pill pri-low" id="badge-low-count">8 Open</span>
-
-  </div>
-
-  <div class="mit-rule-box low">
-
-  <strong>Action Protocol:</strong> <code>MONITOR_WEEKLY</code><br>
-
-  Track during standard weekly engineering milestone checks.
-
-  </div>
-
-  <div class="mit-task-list" id="mit-list-low">
-
-  <!-- Rendered by JS -->
-
-  </div>
-
-  </div>
-
-
-
-  </div>
-
-
-
-  </div>
-
-
-
-  <!-- 
-
-  VIEW 4: WHAT-IF DELAY SIMULATOR
-
- -->
-
-  <div id="view-simulator" class="tab-view">
-
-  <div class="simulator-container">
-
-  
-
-  <div>
-
-  <div class="panel-title" style="font-size:16px; margin-bottom:6px;">
-
-  <span>What-If Delay Risk Calculator</span>
-
-  </div>
-
-  <p style="font-size:12.5px; color:var(--text-secondary); margin-bottom:18px;">
-
-  Simulate a work package in real-time to compute expected delay probability and recommended mitigation action from the trained ML engine.
-
-  </p>
-
-
-
-  <div class="sim-form-grid">
-
-  <div class="form-group">
-
-  <label class="form-label">Project Discipline</label>
-
-  <select id="sim-disc" class="form-control" onchange="runSimulation()">
-
-  <option value="PRJ-SITE">PRJ-SITE (Site / Utilities)</option>
-
-  <option value="PRJ-ARC" selected>PRJ-ARC (Architectural)</option>
-
-  <option value="PRJ-STR">PRJ-STR (Structural)</option>
-
-  <option value="PRJ-INT">PRJ-INT (Interiors)</option>
-
-  <option value="PRJ-MEP">PRJ-MEP (Mechanical/Elec)</option>
-
-  </select>
-
-  </div>
-
-
-
-  <div class="form-group">
-
-  <label class="form-label">Priority Level</label>
-
-  <select id="sim-priority" class="form-control" onchange="runSimulation()">
-
-  <option value="High" selected>High (Red)</option>
-
-  <option value="Medium">Medium (Yellow)</option>
-
-  <option value="Low">Low (Green)</option>
-
-  </select>
-
-  </div>
-
-
-
-  <div class="form-group">
-
-  <label class="form-label">Stated Risk Level</label>
-
-  <select id="sim-risk" class="form-control" onchange="runSimulation()">
-
-  <option value="High" selected>High Risk</option>
-
-  <option value="Medium">Medium Risk</option>
-
-  <option value="Low">Low Risk</option>
-
-  </select>
-
-  </div>
-
-
-
-  <div class="form-group">
-
-  <label class="form-label">Known Root Cause / Blocker?</label>
-
-  <select id="sim-rootcause" class="form-control" onchange="runSimulation()">
-
-  <option value="1">Yes (Issue / Blocker Logged)</option>
-
-  <option value="0" selected>No (Normal Operation)</option>
-
-  </select>
-
-  </div>
-
-
-
-  <div class="form-group">
-
-  <label class="form-label">Estimated Man-Hours</label>
-
-  <input type="number" id="sim-hours" class="form-control" value="85" min="5" max="300" oninput="runSimulation()">
-
-  </div>
-
-
-
-  <div class="form-group">
-
-  <label class="form-label">Planned Duration (Days)</label>
-
-  <input type="number" id="sim-duration" class="form-control" value="14" min="1" max="180" oninput="runSimulation()">
-
-  </div>
-
-  </div>
-
-  </div>
-
-
-
-  <div class="sim-result-card">
-
-  <div class="sim-gauge-circle" id="sim-gauge">
-
-  <span class="sim-score-big" id="sim-score-val">28%</span>
-
-  <span style="font-size:10px; color:var(--text-muted); font-family:'JetBrains Mono', monospace;">PROBABILITY</span>
-
-  </div>
-
-
-
-  <div class="sim-tier-badge pri-low" id="sim-tier-badge">LOW RISK TIER</div>
-
-
-
-  <div class="sim-strategy-box">
-
-  <div style="font-size:10.5px; font-weight:700; color:var(--text-muted); font-family:'JetBrains Mono', monospace; margin-bottom:4px;">
-
-  RECOMMENDED DIRECTIVE
-
-  </div>
-
-  <div id="sim-action-text" style="font-weight:700; color:var(--text-primary);">
-
-  MONITOR_WEEKLY
-
-  </div>
-
-  <div id="sim-detail-text" style="font-size:11.5px; color:var(--text-secondary); margin-top:4px;">
-
-  Standard weekly milestone check. Probability of delay is below 40%.
-
-  </div>
-
-  </div>
-
-  </div>
-
-
-
-  </div>
-
-  </div>
-
-
-
-  <!-- 
-
-  VIEW 5: MODEL EXPLAINABILITY
-
- -->
-
-  <div id="view-explainability" class="tab-view">
-
-  
-
-  <div class="grid-2-1" style="grid-template-columns:1fr 1fr; margin-bottom:20px;">
-
-  <div class="panel-card">
-
-  <div class="panel-header">
-
-  <div class="panel-title"><span>Validation Methodology</span></div>
-
-  </div>
-
-  <div style="font-size:12.5px; color:var(--text-secondary); line-height:1.6;">
-
-  <p style="margin-bottom:10px;">
-
-  <strong>Cross-Validation Framework:</strong> Stratified 5-Fold CV ensures balanced class evaluation across 27 closed tasks (18 delayed, 9 on-time).
-
-  </p>
-
-  <p style="margin-bottom:10px;">
-
-  <strong>Target Formulation:</strong> Defined as <code>Delay &gt; 0</code> for closed work packages. Tasks completed on schedule (<code>Delay &le; 0</code>) are marked as on-time.
-
-  </p>
-
-  <p>
-
-  <strong>Feature Encoding:</strong> One-hot discipline vectors, ordinal priority/risk weighting, root cause flags, and planned duration metrics.
-
-  </p>
-
-  </div>
-
-  </div>
-
-
-
-  <div class="panel-card">
-
-  <div class="panel-header">
-
-  <div class="panel-title"><span>Mitigation Protocol Architecture</span></div>
-
-  </div>
-
-  <div style="font-size:12.5px; color:var(--text-secondary); line-height:1.6;">
-
-  <div style="padding:8px 12px; background:var(--red-bg); border-radius:6px; margin-bottom:8px; border-left:3px solid var(--red-primary);">
-
-  <strong style="color:var(--red-text);">High Risk (>= 70%):</strong> PM alert + employee reallocation from completed tasks (<code>T-1017</code>, <code>T-1020</code>, <code>T-1109</code>).
-
-  </div>
-
-  <div style="padding:8px 12px; background:var(--yellow-bg); border-radius:6px; margin-bottom:8px; border-left:3px solid var(--yellow-primary);">
-
-  <strong style="color:var(--yellow-text);">Medium Risk (40% - 69%):</strong> Conduct status sync meeting & supplier re-confirmation.
-
-  </div>
-
-  <div style="padding:8px 12px; background:var(--green-bg); border-radius:6px; border-left:3px solid var(--green-primary);">
-
-  <strong style="color:var(--green-text);">Low Risk (&lt; 40%):</strong> Passive tracking via automated weekly project ledger.
-
-  </div>
-
-  </div>
-
-  </div>
-
-  </div>
-
-
-
-  </div>
-
-
-
-  </main>
-
-
-
-  <!-- TASK DETAIL SLIDE-OVER DRAWER -->
-
-  <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer(event)">
-
-  <div class="drawer-panel" onclick="event.stopPropagation()">
-
-  <div class="drawer-header">
-
-  <div>
-
-  <span class="pill" id="drawer-cat-badge">HIGH RISK</span>
-
-  <h3 id="drawer-task-id" style="font-size:16px; font-weight:700; margin-top:4px; font-family:'JetBrains Mono', monospace;">T-1015</h3>
-
-  </div>
-
-  <button class="drawer-close" onclick="closeDrawer()">X</button>
-
-  </div>
-
-
-
-  <div class="drawer-body">
-
-  <h4 id="drawer-task-desc" style="font-size:15px; font-weight:600; margin-bottom:16px; color:var(--text-primary);">Column Installation</h4>
-
-
-
-  <div class="detail-grid">
-
-  <div class="detail-item">
-
-  <div class="detail-label">DISCIPLINE</div>
-
-  <div class="detail-val" id="drawer-disc">PRJ-STR</div>
-
-  </div>
-
-  <div class="detail-item">
-
-  <div class="detail-label">LOCATION</div>
-
-  <div class="detail-val" id="drawer-location">Grid A5</div>
-
-  </div>
-
-  <div class="detail-item">
-
-  <div class="detail-label">STATUS</div>
-
-  <div class="detail-val" id="drawer-status">Closed</div>
-
-  </div>
-
-  <div class="detail-item">
-
-  <div class="detail-label">PRIORITY / RISK</div>
-
-  <div class="detail-val" id="drawer-priority-risk">High / High</div>
-
-  </div>
-
-  <div class="detail-item">
-
-  <div class="detail-label">LOGGED HOURS</div>
-
-  <div class="detail-val" id="drawer-hours">56.0 hrs</div>
-
-  </div>
-
-  <div class="detail-item">
-
-  <div class="detail-label">PLANNED DAYS</div>
-
-  <div class="detail-val" id="drawer-days">4 days</div>
-
-  </div>
-
-  <div class="detail-item">
-
-  <div class="detail-label">HISTORICAL DELAY</div>
-
-  <div class="detail-val" id="drawer-delay">+2 days</div>
-
-  </div>
-
-  <div class="detail-item">
-
-  <div class="detail-label">ML DELAY SCORE</div>
-
-  <div class="detail-val" id="drawer-score" style="color:var(--brand-primary);">97.0%</div>
-
-  </div>
-
-  </div>
-
-
-
-  <div style="margin-bottom:16px;">
-
-  <div class="detail-label">IDENTIFIED ROOT CAUSE</div>
-
-  <div style="padding:8px 12px; background:var(--bg-subtle); border-radius:6px; font-size:12.5px; color:var(--text-primary); font-weight:600;" id="drawer-root-cause">
-
-  Crane Breakdown
-
-  </div>
-
-  </div>
-
-
-
-  <div style="margin-bottom:16px;">
-
-  <div class="detail-label">ENGINEERING COMMENTS</div>
-
-  <div style="padding:10px 12px; background:var(--bg-subtle); border-radius:6px; font-size:12px; color:var(--text-secondary); line-height:1.5;" id="drawer-comments">
-
-  Repaired after 1 day
-
-  </div>
-
-  </div>
-
-
-
-  <div style="padding:12px; background:var(--brand-light-bg); border-radius:8px; border:1px solid #bae6fd; margin-bottom:14px;">
-
-  <div class="detail-label" style="color:var(--brand-primary);">MITIGATION DIRECTIVE</div>
-
-  <div style="font-size:12.5px; font-weight:700; color:var(--text-primary);" id="drawer-mit-action">
-
-  NOTIFY_PM + REALLOCATE_RESOURCE
-
-  </div>
-
-  </div>
-
-
-
-  <div id="shap-drivers-section" style="display:none;">
-
-  <div class="detail-label" style="margin-bottom:8px;">ML RISK DRIVERS (SHAP)</div>
-
-  <div id="shap-drivers-list" style="display:flex;flex-direction:column;gap:6px;"></div>
-
-  </div>
-
-  </div>
-
-
-
-  <div class="drawer-footer">
-
-  <button class="btn btn-secondary" style="flex:1;" onclick="closeDrawer()">Close</button>
-
-  <button class="btn btn-primary" style="flex:1;" id="drawer-execute-btn" onclick="executeMitigationAction()">Dispatch Protocol</button>
-
-  </div>
-
-  </div>
-
-  </div>
-
-
-
-  <!-- AI ASSISTANT FLOATING BUTTON & CHAT DRAWER — PROFESSIONAL UI -->
-  <button class="ai-assistant-fab" onclick="toggleAIAssistant()" title="Open AI Delay Intelligence Assistant">
-    <div class="ai-fab-icon-wrap">
-      <div class="ai-fab-pulse"></div>
-      <div class="ai-fab-icon-circle">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+  <header class="app-header">
+    <div class="brand-group">
+      <a href="#" class="brand-logo">
+        <div class="brand-badge-icon">IT</div>
+        <span>InterTech</span>
+      </a>
+      <div class="project-pill">
+        <span>Project:</span>
+        <strong id="header-project-id">PRJ001 | HQ Tower</strong>
       </div>
-    </div>
-    <span>Delay Intelligence</span>
-  </button>
-
-  <div class="ai-assistant-drawer" id="ai-assistant-drawer">
-    <div class="ai-drawer-header">
-      <div class="ai-drawer-title">
-        <div class="ai-drawer-avatar">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
-        </div>
-        <div class="ai-drawer-meta">
-          <div class="ai-drawer-name">PRJ001 Delay Intelligence</div>
-          <div class="ai-drawer-sub">
-            <span class="ai-status-pill">● ONLINE</span>
-            <div class="ai-gemini-badge">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="#60a5fa"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-              Gemini AI
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="ai-drawer-actions">
-        <button class="ai-action-btn" onclick="clearAIChat()" title="Clear Chat">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
-        </button>
-        <button class="ai-action-btn" onclick="toggleAIAssistant()" title="Close">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
+      <div class="live-status">
+        <div class="pulse-dot"></div>
+        <span>AI Prediction Active</span>
       </div>
     </div>
 
-    <div class="ai-live-panel" aria-label="Live model dashboard">
-      <div class="ai-live-panel-top">
-        <span class="ai-live-label"><span class="ai-live-dot"></span>Live model workspace</span>
-        <span class="ai-status-pill" id="ai-data-status">Synced</span>
-      </div>
-      <div class="ai-model-controls">
-        <select id="ai-model-select" class="ai-model-select" multiple aria-label="Select models to compare"></select>
-        <button class="ai-model-show-btn" type="button" onclick="showSelectedModelResults()">Dashboard</button>
-      </div>
-      <div class="ai-live-metrics" id="ai-live-metrics"></div>
-      <div class="ai-selected-results" id="ai-selected-results"></div>
-      
-      <div class="ai-drawer-graph-card" id="ai-drawer-graph-card">
-        <div class="ai-graph-header">
-          <div class="ai-graph-title">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-            <span>Model Performance Comparison</span>
-          </div>
-          <div class="ai-graph-tabs">
-            <button class="ai-graph-tab active" id="tab-metric-f1" onclick="switchAIGraphMetric('f1')">F1</button>
-            <button class="ai-graph-tab" id="tab-metric-auc" onclick="switchAIGraphMetric('auc')">AUC</button>
-            <button class="ai-graph-tab" id="tab-metric-mean" onclick="switchAIGraphMetric('mean')">ACC</button>
-            <button class="ai-graph-tab" id="tab-metric-mcc" onclick="switchAIGraphMetric('mcc')">MCC</button>
-          </div>
-        </div>
-        <div class="ai-graph-bars" id="ai-drawer-graph-bars"></div>
-      </div>
-    </div>
-
-    <div class="ai-messages-container" id="ai-messages-container">
-      <div class="ai-msg-wrap bot">
-        <div class="ai-msg-bubble">
-          <p>Welcome to <strong>PRJ001 Delay Intelligence AI</strong>.</p>
-          <p>I analyze your 1,000-task dataset, ML risk tiers, and delay patterns in real time. Ask me anything or pick a quick prompt below.</p>
-        </div>
-        <div class="ai-msg-timestamp" id="ai-welcome-ts"></div>
-      </div>
-    </div>
-
-    <div class="ai-quick-prompts">
-      <button class="ai-prompt-chip" onclick="quickAskAI('Which open tasks are at highest risk?')">High Risk Tasks</button>
-      <button class="ai-prompt-chip" onclick="quickAskAI('Compare algorithm metrics')">Compare Models</button>
-      <button class="ai-prompt-chip" onclick="quickAskAI('What is the delay rate by discipline?')">By Discipline</button>
-      <button class="ai-prompt-chip" onclick="quickAskAI('Suggest resource reallocation strategy')">Mitigation</button>
-    </div>
-
-    <div class="ai-input-bar">
-      <input type="text" id="ai-input-field" class="ai-input" placeholder="Ask about risk, delays, ML models..." onkeypress="handleAIInputKey(event)" autocomplete="off">
-      <button class="ai-send-btn" id="ai-send-btn" onclick="sendAIMessage()" title="Send">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    <div class="header-actions">
+      <button class="btn btn-secondary" onclick="exportDataCSV()">
+        <span>Export CSV</span>
+      </button>
+      <button class="btn btn-secondary" onclick="window.print()">
+        <span>Print Report</span>
+      </button>
+      <button class="btn btn-primary" id="btn-sync-ml" onclick="triggerMLRetrain()">
+        <span id="sync-spinner"></span>
+        <span>Re-Train ML Model</span>
       </button>
     </div>
-    <div class="ai-powered-bar">
-      <svg width="11" height="11" viewBox="0 0 24 24" fill="#60a5fa"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-      Powered by Gemini AI &nbsp;·&nbsp; PRJ001 Dataset · 1,000 Tasks
-    </div>
-  </div>
+  </header>
 
-  <div class="ai-insights-modal" id="ai-insights-modal" role="dialog" aria-modal="true" aria-labelledby="ai-insights-title" onclick="closeAIInsightsOnBackdrop(event)">
-    <section class="ai-insights-dialog">
-      <header class="ai-insights-header">
+  <!-- NAVIGATION TABS -->
+  <nav class="nav-bar">
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="switchView('overview', this)">
+        <span>Executive Overview</span>
+      </button>
+      <button class="nav-tab" onclick="switchView('tasks', this)">
+        <span>Task Risk Matrix</span>
+        <span class="tab-badge" id="badge-total-tasks">1000</span>
+      </button>
+      <button class="nav-tab" onclick="switchView('mitigation', this)">
+        <span>Mitigation Planner</span>
+        <span class="tab-badge" id="badge-open-tasks">260</span>
+      </button>
+      <button class="nav-tab" onclick="switchView('simulator', this)">
+        <span>What-If Simulator</span>
+      </button>
+      <button class="nav-tab" onclick="switchView('explainability', this)">
+        <span>AI Diagnostics</span>
+      </button>
+    </div>
+    <div style="font-size:12px; color:#94a3b8; font-family:'JetBrains Mono', monospace;" id="last-sync-time">
+      Model Status: Live (5-Fold CV)
+    </div>
+  </nav>
+
+  <!-- MAIN APP CONTAINER -->
+  <main class="app-main">
+
+    <!-- VIEW 1: EXECUTIVE OVERVIEW -->
+    <section id="view-overview" class="tab-view active">
+      <div class="section-title-bar">
         <div>
-          <div class="ai-insights-eyebrow">Live LLM analysis</div>
-          <h2 class="ai-insights-title" id="ai-insights-title">Model Performance Dashboard</h2>
-          <p class="ai-insights-subtitle" id="ai-insights-subtitle">Selected prediction models</p>
+          <h1 class="section-heading">Project Intelligence & Executive Risk Radar</h1>
+          <p class="section-subtext">Real-time ML delay forecasting, key performance metrics, and discipline analysis</p>
         </div>
-        <button class="ai-insights-close" type="button" onclick="closeAIInsightsDashboard()" aria-label="Close model performance dashboard">&times;</button>
-      </header>
-      <div class="ai-insights-content">
-        <div class="ai-insights-kpis" id="ai-insights-kpis"></div>
-        <div class="ai-insights-grid">
-          <section class="ai-insights-section">
-            <h3 class="ai-insights-section-title">Selected Model Comparison</h3>
-            <p class="ai-insights-section-note">Validation metrics refresh from the active prediction payload.</p>
-            <div class="ai-model-matrix" id="ai-model-matrix"></div>
-          </section>
-          <section class="ai-insights-section">
-            <h3 class="ai-insights-section-title">Prediction Context</h3>
-            <p class="ai-insights-section-note">Operational and validation details.</p>
-            <div class="ai-insights-detail-list" id="ai-insights-details"></div>
-          </section>
+      </div>
+
+      <!-- KPI METRIC CARDS -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Total Monitored Tasks</div>
+          <div class="kpi-value brand" id="kpi-total-tasks">1000</div>
+          <div class="kpi-footer" id="kpi-total-footer">282 Closed • 718 Open</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Historical Delay Rate</div>
+          <div class="kpi-value danger" id="kpi-delay-rate">43.6%</div>
+          <div class="kpi-footer" id="kpi-delay-footer">123 Delayed of 282 Completed</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Average Delay Impact</div>
+          <div class="kpi-value warning" id="kpi-avg-delay">+3.5d</div>
+          <div class="kpi-footer" id="kpi-avg-footer">Max Recorded Delay: +12 Days</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Active Open Risk</div>
+          <div class="kpi-value brand" id="kpi-open-risk">260</div>
+          <div class="kpi-footer" id="kpi-risk-footer">High & Medium Risk Open Tasks</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">AI Champion Accuracy</div>
+          <div class="kpi-value success" id="kpi-cv-acc">72.0%</div>
+          <div class="kpi-footer" id="kpi-model-footer">Calibrated Random Forest</div>
+        </div>
+      </div>
+
+      <!-- 2-COLUMN BREAKDOWN -->
+      <div class="grid-2col">
+        <!-- DISCIPLINE PERFORMANCE -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Discipline Delay Risk Breakdown</h2>
+            <span class="stat-val">Completed Tasks</span>
+          </div>
+          <div class="stat-list" id="disc-bar-container">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- TOP ROOT CAUSES -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Primary Historical Delay Causes</h2>
+            <span class="stat-val">Incident Count</span>
+          </div>
+          <div class="stat-list" id="cause-list-container">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- HIGH RISK ALERTS CARD -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Immediate High-Risk Task Alerts</h2>
+          <button class="btn btn-outline" style="padding:4px 10px; font-size:12px;" onclick="switchView('mitigation', document.querySelectorAll('.nav-tab')[2])">
+            View All Mitigations &rarr;
+          </button>
+        </div>
+        <div class="mit-grid" id="high-risk-alerts-container">
+          <!-- Rendered by JS -->
         </div>
       </div>
     </section>
+
+    <!-- VIEW 2: TASK RISK MATRIX -->
+    <section id="view-tasks" class="tab-view">
+      <div class="section-title-bar">
+        <div>
+          <h1 class="section-heading">Task Risk Matrix</h1>
+          <p class="section-subtext">Search, filter, and inspect AI delay risk scores for all 1,000 project tasks</p>
+        </div>
+      </div>
+
+      <!-- FILTER BAR -->
+      <div class="filter-bar">
+        <div class="search-group">
+          <input type="text" id="task-search-input" class="search-input" placeholder="Search tasks by ID, title, location, root cause..." oninput="filterTasks()">
+        </div>
+        <div class="filter-dropdowns">
+          <select id="filter-discipline" class="select-dropdown" onchange="filterTasks()">
+            <option value="ALL">All Disciplines</option>
+            <option value="PRJ-ARC">PRJ-ARC (Architectural)</option>
+            <option value="PRJ-INT">PRJ-INT (Interior)</option>
+            <option value="PRJ-MEP">PRJ-MEP (Mechanical/Plumbing)</option>
+            <option value="PRJ-SITE">PRJ-SITE (Site Work)</option>
+            <option value="PRJ-STR">PRJ-STR (Structural)</option>
+          </select>
+          <select id="filter-risk" class="select-dropdown" onchange="filterTasks()">
+            <option value="ALL">All Risk Tiers</option>
+            <option value="HIGH">High Risk Tier</option>
+            <option value="MEDIUM">Medium Risk Tier</option>
+            <option value="LOW">Low Risk Tier</option>
+          </select>
+          <select id="filter-status" class="select-dropdown" onchange="filterTasks()">
+            <option value="ALL">All Statuses</option>
+            <option value="Open">Open Tasks</option>
+            <option value="Closed">Closed Tasks</option>
+            <option value="Delayed">Historical Delayed</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Task ID</th>
+              <th>Description</th>
+              <th>Discipline</th>
+              <th>Location</th>
+              <th>Status</th>
+              <th>Priority</th>
+              <th>Hours</th>
+              <th>Delay Risk Score</th>
+              <th>Primary Driver</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="task-table-body">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:12px; display:flex; justify-content:space-between; align-items:center; font-size:13px; color:var(--text-subtle);">
+        <span id="table-summary-count">Showing 0 of 1000 tasks</span>
+        <button class="btn btn-outline" id="btn-load-more" style="display:none;" onclick="loadMoreTasks()">Load More Tasks</button>
+      </div>
+    </section>
+
+    <!-- VIEW 3: MITIGATION PLANNER -->
+    <section id="view-mitigation" class="tab-view">
+      <div class="section-title-bar">
+        <div>
+          <h1 class="section-heading">Action & Mitigation Planner</h1>
+          <p class="section-subtext">Actionable PM playbooks and resource reallocation plans for active open tasks</p>
+        </div>
+      </div>
+
+      <div class="grid-2col" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">High Priority Resolution Playbook</h2>
+            <span class="pill pill-high">High Urgency</span>
+          </div>
+          <p style="font-size:13px; color:var(--text-subtle); margin-bottom:14px;">
+            Immediate action required: Issue PM alerts, initiate daily standups, and reallocate labor from completed low-risk tasks.
+          </p>
+          <div class="mit-grid" id="mit-list-high">
+            <!-- JS -->
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Medium Priority Sync Playbook</h2>
+            <span class="pill pill-med">Medium Urgency</span>
+          </div>
+          <p style="font-size:13px; color:var(--text-subtle); margin-bottom:14px;">
+            Weekly monitoring & status meetings: Address sub-contractor bottlenecks and verify material delivery schedules.
+          </p>
+          <div class="mit-grid" id="mit-list-med">
+            <!-- JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 4: WHAT-IF SIMULATOR -->
+    <section id="view-simulator" class="tab-view">
+      <div class="section-title-bar">
+        <div>
+          <h1 class="section-heading">What-If Risk Simulator</h1>
+          <p class="section-subtext">Simulate changes to task parameters to forecast delay probability and recommended mitigation</p>
+        </div>
+      </div>
+
+      <div class="sim-layout">
+        <!-- CONTROLS FORM -->
+        <div class="card">
+          <h2 class="card-title" style="margin-bottom:16px;">Simulation Controls</h2>
+          <div class="form-group">
+            <label class="form-label">Engineering Discipline</label>
+            <select id="sim-disc" class="form-control" onchange="runSimulation()">
+              <option value="PRJ-MEP">PRJ-MEP (Mechanical / Electrical / Plumbing)</option>
+              <option value="PRJ-STR">PRJ-STR (Structural)</option>
+              <option value="PRJ-SITE">PRJ-SITE (Site / Civil Work)</option>
+              <option value="PRJ-ARC">PRJ-ARC (Architectural)</option>
+              <option value="PRJ-INT">PRJ-INT (Interior)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Task Priority Tier</label>
+            <select id="sim-priority" class="form-control" onchange="runSimulation()">
+              <option value="High">High Priority</option>
+              <option value="Medium">Medium Priority</option>
+              <option value="Low">Low Priority</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Site Risk Tier</label>
+            <select id="sim-risk" class="form-control" onchange="runSimulation()">
+              <option value="High">High Risk Environment</option>
+              <option value="Medium">Medium Risk Environment</option>
+              <option value="Low">Low Risk Environment</option>
+            </select>
+          </div>
+
+          <div class="grid-2col" style="gap:12px; margin-bottom:0;">
+            <div class="form-group">
+              <label class="form-label">Estimated Work Hours</label>
+              <input type="number" id="sim-hours" class="form-control" value="85" min="5" max="300" oninput="runSimulation()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Planned Duration (Days)</label>
+              <input type="number" id="sim-duration" class="form-control" value="14" min="1" max="180" oninput="runSimulation()">
+            </div>
+          </div>
+        </div>
+
+        <!-- SIMULATION OUTPUT -->
+        <div class="card" style="display:flex; flex-direction:column; justify-content:center;">
+          <h2 class="card-title" style="margin-bottom:16px;">Forecasted Risk Score</h2>
+          <div class="gauge-display">
+            <div class="pill pill-low" id="sim-tier-badge">LOW RISK TIER</div>
+            <div class="gauge-number" id="sim-score-val" style="color:var(--brand-primary);">28%</div>
+            <div style="font-weight:700; color:var(--text-main); font-size:15px;" id="sim-action-text">Standard Weekly Monitoring</div>
+            <div style="font-size:13px; color:var(--text-subtle); margin-top:6px;" id="sim-detail-text">Calculated Workload Intensity: 6.07 hrs/day</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 5: MODEL DIAGNOSTICS -->
+    <section id="view-explainability" class="tab-view">
+      <div class="section-title-bar">
+        <div>
+          <h1 class="section-heading">Machine Learning Model Diagnostics & Validation</h1>
+          <p class="section-subtext">Performance metrics across 5-Fold Stratified Cross-Validation and SHAP feature importance</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:24px;">
+        <h2 class="card-title" style="margin-bottom:16px;">Model Comparison Leaderboard</h2>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Model Architecture</th>
+                <th>Accuracy (Mean)</th>
+                <th>Precision</th>
+                <th>Recall</th>
+                <th>F1 Score</th>
+                <th>ROC-AUC</th>
+                <th>MCC</th>
+              </tr>
+            </thead>
+            <tbody id="models-table-body">
+              <!-- JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title" style="margin-bottom:16px;">SHAP Global Feature Importance</h2>
+        <div class="stat-list" id="feat-list-container">
+          <!-- JS -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- SLIDE-OVER TASK DRAWER -->
+  <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer(event)">
+    <div class="drawer-content" onclick="event.stopPropagation()">
+      <div class="drawer-header">
+        <div>
+          <span class="pill pill-high" id="drawer-cat-badge">HIGH RISK</span>
+          <div style="font-family:'JetBrains Mono', monospace; font-size:16px; font-weight:700; color:var(--brand-primary); margin-top:4px;" id="drawer-task-id">T-1000</div>
+        </div>
+        <button class="drawer-close" onclick="closeDrawer()">&times;</button>
+      </div>
+
+      <div class="drawer-body">
+        <h3 id="drawer-task-desc" style="font-size:16px; font-weight:700; margin-bottom:16px; color:var(--text-main);">Task Description</h3>
+        
+        <div class="detail-grid">
+          <div class="detail-item">
+            <span class="detail-label">Discipline</span>
+            <span class="detail-val" id="drawer-disc">-</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Location</span>
+            <span class="detail-val" id="drawer-loc">-</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Status</span>
+            <span class="detail-val" id="drawer-status">-</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Priority / Risk</span>
+            <span class="detail-val" id="drawer-pri-risk">-</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Planned Hours</span>
+            <span class="detail-val" id="drawer-hours">-</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Target Date</span>
+            <span class="detail-val" id="drawer-target">-</span>
+          </div>
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <div class="detail-label" style="margin-bottom:6px;">Delay Risk Score</div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="bar-bg" style="flex:1; height:12px;">
+              <div class="bar-fill danger" id="drawer-bar-fill" style="width:75%;"></div>
+            </div>
+            <span style="font-family:'Plus Jakarta Sans', sans-serif; font-size:20px; font-weight:800; color:var(--text-main);" id="drawer-score-num">75%</span>
+          </div>
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <h4 style="font-size:14px; font-weight:700; margin-bottom:8px;">SHAP Primary Delay Drivers</h4>
+          <div class="stat-list" id="drawer-shap-list">
+            <!-- JS -->
+          </div>
+        </div>
+
+        <div>
+          <h4 style="font-size:14px; font-weight:700; margin-bottom:8px;">Recommended PM Action</h4>
+          <div class="mit-action-box" id="drawer-action-text">
+            NOTIFY_PM + REALLOCATE_RESOURCE
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- TOAST -->
-
-  <div class="toast-msg" id="toast-msg">
-
-  <span style="font-size:18px;"></span>
-
-  <span id="toast-text">Action dispatched successfully</span>
-
-  </div>
-
-
-
-  <!-- JAVASCRIPT -->
-
+  <!-- APPLICATION LOGIC JS -->
   <script>
-
-  let APP_DATA = {
-
-  meta: {
-
-  project_id: "PRJ001",
-
-  total_tasks: 1000,
-
-  delayed_tasks: 123,
-
-  open_tasks: 260,
-
-  avg_delay_days: 3.5,
-
-  max_delay_days: 12,
-
-  model: "Random Forest (Calibrated: True)",
-
-  champion: "Random Forest",
-
-  calibrated: true,
-
-  cv_method: "5-Fold Stratified CV",
-
-  cv_accuracy: {
-
-  "Logistic Regression": { mean: 72.3, std: 0.0, f1: 68.8, auc: 80.5, mcc: 44.0, precision: 67.7, recall: 69.9 },
-
-  "Random Forest": { mean: 72.0, std: 0.0, f1: 69.3, auc: 77.8, mcc: 43.7, precision: 66.4, recall: 72.4 },
-
-  "Gradient Boosting": { mean: 70.2, std: 0.0, f1: 66.1, auc: 74.6, mcc: 39.6, precision: 65.6, recall: 66.7 },
-
-  "XGBoost": { mean: 69.5, std: 0.0, f1: 66.4, auc: 75.7, mcc: 38.7, precision: 63.9, recall: 69.1 },
-
-  "Stacking Ensemble": { mean: 70.6, std: 0.0, f1: 67.5, auc: 78.8, mcc: 40.7, precision: 65.2, recall: 69.9 }
-
-  },
-
-  champion_metrics: {
-    acc: 72.0,
-    f1: 69.3,
-    precision: 66.4,
-    recall: 72.4,
-    mcc: 43.7,
-    auc_roc: 77.8
-  }
-
-  },
-
-  disc_stats: {
-
-  "PRJ-SITE": { delayed: 6, total: 7, rate: 85.7 },
-
-  "PRJ-INT":  { delayed: 3, total: 4, rate: 75.0 },
-
-  "PRJ-ARC":  { delayed: 5, total: 7, rate: 71.4 },
-
-  "PRJ-STR":  { delayed: 3, total: 5, rate: 60.0 },
-
-  "PRJ-MEP":  { delayed: 1, total: 4, rate: 25.0 }
-
-  },
-
-  root_causes: {
-
-  "Weather Delay": 3,
-
-  "Crane Breakdown": 2,
-
-  "Design Revision": 2,
-
-  "Material Defect": 2,
-
-  "Asphalt Shortage": 2,
-
-  "Vendor Delay": 1,
-
-  "Design Change": 1,
-
-  "Crew Shortage": 1,
-
-  "Glass Breakage": 1,
-
-  "Utility Conflict": 1,
-
-  "Equipment Failure": 1,
-
-  "Supplier Delay": 1
-
-  },
-
-  feat_importance: {
-
-  "has_root_cause": 58.7,
-
-  "Hours": 13.5,
-
-  "planned_duration": 8.9,
-
-  "risk_enc": 7.3,
-
-  "disc_PRJ-MEP": 4.8,
-
-  "disc_PRJ-STR": 1.8,
-
-  "priority_enc": 1.5,
-
-  "disc_PRJ-INT": 1.2,
-
-  "disc_PRJ-SITE": 1.1,
-
-  "disc_PRJ-ARC": 1.1
-
-  },
-
-  tasks: [
-
-  {id:"T-1015",desc:"Column Installation",disc:"PRJ-STR",location:"Grid A5",status:"Closed",priority:"High",risk:"High",hours:56,planned_days:4,delay:2,score:97,cat:"HIGH",actual:"Delayed",root_cause:"Crane Breakdown",comments:"Repaired after 1 day"},
-
-  {id:"T-1016",desc:"Paint Finishes",disc:"PRJ-INT",location:"Lobby",status:"Open",priority:"Medium",risk:"Medium",hours:38,planned_days:10,delay:null,score:30,cat:"LOW",actual:"Unknown",root_cause:null,comments:"Awaiting color approval"},
-
-  {id:"T-1017",desc:"HVAC Ductwork",disc:"PRJ-MEP",location:"Mechanical",status:"Closed",priority:"Medium",risk:"Low",hours:72,planned_days:7,delay:-4,score:3,cat:"LOW",actual:"On-time",root_cause:null,comments:"Ahead of schedule"},
-
-  {id:"T-1018",desc:"Curtain Wall Install",disc:"PRJ-ARC",location:"South Facade",status:"Closed",priority:"High",risk:"High",hours:120,planned_days:14,delay:5,score:100,cat:"HIGH",actual:"Delayed",root_cause:"Design Revision",comments:"Required engineering sign-off"},
-
-  {id:"T-1019",desc:"Underground Utilities",disc:"PRJ-SITE",location:"West Yard",status:"Closed",priority:"High",risk:"Medium",hours:90,planned_days:15,delay:11,score:100,cat:"HIGH",actual:"Delayed",root_cause:"Weather Delay",comments:"Heavy rains for 1 week"},
-
-  {id:"T-1020",desc:"Deck Pour",disc:"PRJ-STR",location:"Level 3",status:"Closed",priority:"High",risk:"High",hours:64,planned_days:3,delay:0,score:9,cat:"LOW",actual:"On-time",root_cause:null,comments:"Perfect weather conditions"},
-
-  {id:"T-1021",desc:"Floor Tile",disc:"PRJ-INT",location:"Restrooms",status:"Closed",priority:"Medium",risk:"Medium",hours:45,planned_days:2,delay:3,score:99,cat:"HIGH",actual:"Delayed",root_cause:"Material Defect",comments:"Initial batch rejected"},
-
-  {id:"T-1022",desc:"Fire Alarm Wiring",disc:"PRJ-MEP",location:"Level 2",status:"Open",priority:"Medium",risk:"Medium",hours:28,planned_days:9,delay:null,score:15,cat:"LOW",actual:"Unknown",root_cause:null,comments:"Coordinating with electrician"},
-
-  {id:"T-1023",desc:"Roof Membrane",disc:"PRJ-ARC",location:"Penthouse",status:"Closed",priority:"High",risk:"High",hours:80,planned_days:5,delay:-1,score:8,cat:"LOW",actual:"On-time",root_cause:null,comments:"Completed before deadline"},
-
-  {id:"T-1024",desc:"Parking Lot Paving",disc:"PRJ-SITE",location:"North Lot",status:"Closed",priority:"Medium",risk:"Medium",hours:60,planned_days:5,delay:2,score:100,cat:"HIGH",actual:"Delayed",root_cause:"Asphalt Shortage",comments:"Truck delivery delay"},
-
-  {id:"T-1105",desc:"Post-Tensioning",disc:"PRJ-STR",location:"Slab Area B2",status:"Closed",priority:"High",risk:"High",hours:105,planned_days:4,delay:-2,score:10,cat:"LOW",actual:"On-time",root_cause:null,comments:"Optimal curing conditions"},
-
-  {id:"T-1106",desc:"Elevator Interior",disc:"PRJ-INT",location:"Shaft 2",status:"Closed",priority:"Medium",risk:"Medium",hours:55,planned_days:7,delay:3,score:100,cat:"HIGH",actual:"Delayed",root_cause:"Vendor Delay",comments:"Custom panels arrived late"},
-
-  {id:"T-1107",desc:"Fire Sprinklers",disc:"PRJ-MEP",location:"Level 7",status:"Open",priority:"High",risk:"High",hours:78,planned_days:12,delay:null,score:21,cat:"LOW",actual:"Unknown",root_cause:null,comments:"Coordinating with steel deck"},
-
-  {id:"T-1108",desc:"Stone Cladding",disc:"PRJ-ARC",location:"Entrance",status:"Closed",priority:"High",risk:"High",hours:115,planned_days:10,delay:8,score:100,cat:"HIGH",actual:"Delayed",root_cause:"Design Change",comments:"Revised architectural details"},
-
-  {id:"T-1109",desc:"Fencing Installation",disc:"PRJ-SITE",location:"Security Zone",status:"Closed",priority:"Low",risk:"Low",hours:42,planned_days:7,delay:-3,score:9,cat:"LOW",actual:"On-time",root_cause:null,comments:"Early completion"},
-
-  {id:"T-1110",desc:"Metal Decking",disc:"PRJ-STR",location:"Level 8",status:"Closed",priority:"High",risk:"High",hours:88,planned_days:5,delay:5,score:91,cat:"HIGH",actual:"Delayed",root_cause:"Crew Shortage",comments:"Subcontractor staffing issue"},
-
-  {id:"T-1111",desc:"Millwork Installation",disc:"PRJ-INT",location:"Executive Suite",status:"Open",priority:"Medium",risk:"Medium",hours:65,planned_days:10,delay:null,score:33,cat:"LOW",actual:"Unknown",root_cause:null,comments:"Custom fabrication in progress"},
-
-  {id:"T-1112",desc:"Electrical Terminations",disc:"PRJ-MEP",location:"Control Room",status:"Closed",priority:"Medium",risk:"Medium",hours:48,planned_days:5,delay:-3,score:15,cat:"LOW",actual:"On-time",root_cause:null,comments:"Completed ahead of schedule"},
-
-  {id:"T-1113",desc:"Skylight Assembly",disc:"PRJ-ARC",location:"Atrium",status:"Closed",priority:"High",risk:"High",hours:92,planned_days:7,delay:6,score:97,cat:"HIGH",actual:"Delayed",root_cause:"Glass Breakage",comments:"Replacement unit required"},
-
-  {id:"T-1114",desc:"Irrigation System",disc:"PRJ-SITE",location:"Landscape Area",status:"Closed",priority:"Low",risk:"Medium",hours:50,planned_days:9,delay:5,score:97,cat:"HIGH",actual:"Delayed",root_cause:"Utility Conflict",comments:"Required water line relocation"},
-
-  {id:"T-1001",desc:"Foundation Pour",disc:"PRJ-ARC",location:"North Wing",status:"Closed",priority:"High",risk:"Medium",hours:120,planned_days:15,delay:2,score:100,cat:"HIGH",actual:"Delayed",root_cause:"Weather Delay",comments:"Concrete test passed"},
-
-  {id:"T-1002",desc:"Steel Erection",disc:"PRJ-STR",location:"East Tower",status:"Open",priority:"High",risk:"High",hours:85,planned_days:34,delay:null,score:29,cat:"LOW",actual:"Unknown",root_cause:null,comments:"Waiting for inspection"},
-
-  {id:"T-1003",desc:"Electrical Rough-in",disc:"PRJ-MEP",location:"Level 5",status:"Closed",priority:"Medium",risk:"Medium",hours:65,planned_days:17,delay:4,score:91,cat:"HIGH",actual:"Delayed",root_cause:"Supplier Delay",comments:"Completed with 3 RFIs"},
-
-  {id:"T-1004",desc:"Drywall Installation",disc:"PRJ-INT",location:"Suite 401",status:"Closed",priority:"Low",risk:"Low",hours:42,planned_days:9,delay:-2,score:11,cat:"LOW",actual:"On-time",root_cause:null,comments:"Early completion"},
-
-  {id:"T-1005",desc:"Excavation",disc:"PRJ-SITE",location:"West Lot",status:"Closed",priority:"High",risk:"High",hours:150,planned_days:15,delay:5,score:99,cat:"HIGH",actual:"Delayed",root_cause:"Equipment Failure",comments:"Rock encounter required blasting"},
-
-  {id:"T-1006",desc:"Column Installation",disc:"PRJ-STR",location:"Grid A5",status:"Closed",priority:"High",risk:"High",hours:56,planned_days:4,delay:2,score:97,cat:"HIGH",actual:"Delayed",root_cause:"Crane Breakdown",comments:"Repaired after 1 day"},
-
-  {id:"T-1007",desc:"Paint Finishes",disc:"PRJ-INT",location:"Lobby",status:"Open",priority:"Medium",risk:"Medium",hours:38,planned_days:10,delay:null,score:30,cat:"LOW",actual:"Unknown",root_cause:null,comments:"Awaiting color approval"},
-
-  {id:"T-1008",desc:"HVAC Ductwork",disc:"PRJ-MEP",location:"Mechanical",status:"Closed",priority:"Medium",risk:"Low",hours:72,planned_days:7,delay:-4,score:3,cat:"LOW",actual:"On-time",root_cause:null,comments:"Ahead of schedule"},
-
-  {id:"T-1009",desc:"Curtain Wall Install",disc:"PRJ-ARC",location:"South Facade",status:"Closed",priority:"High",risk:"High",hours:120,planned_days:14,delay:5,score:100,cat:"HIGH",actual:"Delayed",root_cause:"Design Revision",comments:"Required engineering sign-off"},
-
-  {id:"T-1010",desc:"Underground Utilities",disc:"PRJ-SITE",location:"West Yard",status:"Closed",priority:"High",risk:"Medium",hours:90,planned_days:15,delay:11,score:100,cat:"HIGH",actual:"Delayed",root_cause:"Weather Delay",comments:"Heavy rains for 1 week"},
-
-  {id:"T-1196",desc:"Floor Tile",disc:"PRJ-INT",location:"Restrooms",status:"Closed",priority:"Medium",risk:"Medium",hours:45,planned_days:2,delay:3,score:99,cat:"HIGH",actual:"Delayed",root_cause:"Material Defect",comments:"Initial batch rejected"},
-
-  {id:"T-1197",desc:"Fire Alarm Wiring",disc:"PRJ-MEP",location:"Level 2",status:"Open",priority:"Medium",risk:"Medium",hours:28,planned_days:9,delay:null,score:15,cat:"LOW",actual:"Unknown",root_cause:null,comments:"Coordinating with electrician"},
-
-  {id:"T-1198",desc:"Roof Membrane",disc:"PRJ-ARC",location:"Penthouse",status:"Closed",priority:"High",risk:"High",hours:80,planned_days:5,delay:-1,score:8,cat:"LOW",actual:"On-time",root_cause:null,comments:"Completed before deadline"},
-
-  {id:"T-1199",desc:"Parking Lot Paving",disc:"PRJ-SITE",location:"North Lot",status:"Closed",priority:"Medium",risk:"Medium",hours:60,planned_days:5,delay:2,score:100,cat:"HIGH",actual:"Delayed",root_cause:"Asphalt Shortage",comments:"Truck delivery delay"},
-
-  {id:"T-1200",desc:"Glass Curtain Wall",disc:"PRJ-ARC",location:"North Elevation",status:"Open",priority:"High",risk:"High",hours:95,planned_days:14,delay:null,score:39,cat:"LOW",actual:"Unknown",root_cause:null,comments:"Sequencing with steel work"}
-
-  ]
-
-  };
-
-
-
-  let currentFilterStatus = 'ALL';
-
-  let currentFilterDiscipline = 'ALL';
-
-  let currentSearchTerm = '';
-
-  let sortColumn = 'score';
-
-  let sortAsc = false;
-
-  let selectedTask = null;
-
-  let renderQueued = false;
-
-  function scheduleDashboardRender() {
-    if (renderQueued) return;
-    renderQueued = true;
-    requestAnimationFrame(() => {
-      renderQueued = false;
-      renderDashboard();
+    let globalData = null;
+    let filteredTasks = [];
+    let displayedTaskCount = 50;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      fetchData();
     });
-  }
 
-
-
-  document.addEventListener('DOMContentLoaded', () => {
-
-  loadData();
-
-  runSimulation();
-
-  });
-
-
-
-  function loadData() {
-
-  if (window.location.protocol.startsWith('http')) {
-
-  const candidates = ['/api/data', './dashboard_data.json', './public/dashboard_data.json'];
-
-  const loadDataset = async (index = 0) => {
-    if (index >= candidates.length) {
-      console.warn('No live dataset found; using embedded sample only.');
-      scheduleDashboardRender();
-      return;
-    }
-
-    try {
-      const res = await fetch(candidates[index]);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      if (data && data.tasks) {
-        const cvData = data.meta?.cv_accuracy || {};
-        const computedChampion = resolveChampionModel(cvData, data.meta?.champion || '');
-        data.meta = data.meta || {};
-        data.meta.champion = computedChampion || data.meta.champion || '';
-        data.meta.champion_metrics = cvData[data.meta.champion] || data.meta.champion_metrics || {};
-        APP_DATA = data;
-        const syncEl = document.getElementById('last-sync-time');
-        if (syncEl) syncEl.innerText = `Synced: ${new Date().toLocaleTimeString()}  |  Live`;
-      }
-      scheduleDashboardRender();
-    } catch (err) {
-      console.warn(`Dataset fetch failed for ${candidates[index]}, trying next source:`, err);
-      loadDataset(index + 1);
-    }
-  };
-
-  loadDataset();
-
-  } else {
-
-  scheduleDashboardRender();
-
-  }
-
-  }
-
-
-
-  function resolveChampionModel(cvData = {}, fallback = '') {
-    const entries = Object.entries(cvData || {});
-    if (!entries.length) return fallback || '';
-
-    return entries.reduce((best, current) => {
-      const [bestName, bestMeta] = best;
-      const [currentName, currentMeta] = current;
-
-      const bestScore = Number(bestMeta?.f1 ?? bestMeta?.mean ?? bestMeta?.acc ?? bestMeta?.auc ?? bestMeta?.auc_roc ?? 0);
-      const currentScore = Number(currentMeta?.f1 ?? currentMeta?.mean ?? currentMeta?.acc ?? currentMeta?.auc ?? currentMeta?.auc_roc ?? 0);
-
-      if (currentScore > bestScore) return current;
-      if (currentScore === bestScore) {
-        const bestAuc = Number(bestMeta?.auc ?? bestMeta?.auc_roc ?? 0);
-        const currentAuc = Number(currentMeta?.auc ?? currentMeta?.auc_roc ?? 0);
-        return currentAuc > bestAuc ? current : best;
-      }
-      return best;
-    }, entries[0])[0];
-  }
-
-
-
-  function renderDashboard() {
-
-  renderOverviewKPIs();
-
-  renderDisciplineBars();
-
-  renderRootCauses();
-
-  renderFeatureWeights();
-
-  renderModelStrip();
-
-  renderAILiveWorkspace();
-
-  renderTasksTable();
-
-  renderMitigationPlanner();
-
-  }
-
-
-
-  function renderOverviewKPIs() {
-
-  const meta = APP_DATA.meta || {};
-
-  const cvData = meta.cv_accuracy || {};
-  meta.champion = resolveChampionModel(cvData, meta.champion || 'Random Forest');
-  meta.champion_metrics = cvData[meta.champion] || meta.champion_metrics || {};
-
-  const tasks = APP_DATA.tasks || [];
-
-  
-
-  const closedTasks = tasks.filter(t => t.status === 'Closed');
-
-  const openTasks = tasks.filter(t => t.status === 'Open');
-
-  const delayedClosed = closedTasks.filter(t => t.actual === 'Delayed' || (t.delay != null && t.delay > 0));
-
-  
-
-  const totalCount = meta.total_tasks || tasks.length;
-
-  const openCount = meta.open_tasks != null ? meta.open_tasks : openTasks.length;
-
-  const closedCount = totalCount - openCount;
-
-  const delayedCount = meta.delayed_tasks != null ? meta.delayed_tasks : delayedClosed.length;
-
-  
-
-  // Use total tasks as denominator for a true project-wide delay rate
-
-  const delayRate = totalCount > 0 ? ((delayedCount / totalCount) * 100).toFixed(1) : '0.0';
-
-  const openRiskCount = openTasks.filter(t => t.cat === 'HIGH' || t.cat === 'MEDIUM').length || openCount;
-
-  
-
-  const champion = meta.champion || 'Random Forest';
-
-  const champMetrics = cvData[champion] || meta.champion_metrics || {};
-
-  const champF1 = champMetrics.f1 != null ? champMetrics.f1 : 69.5;
-
-  const cvMethod = meta.cv_method || '5-Fold CV';
-
-
-
-  // Update Main Metrics
-
-  const elTotal = document.getElementById('kpi-total-tasks');
-
-  if (elTotal) elTotal.innerText = totalCount;
-
-
-
-  const elRate = document.getElementById('kpi-delay-rate');
-
-  if (elRate) elRate.innerText = `${delayRate}%`;
-
-
-
-  const elAvg = document.getElementById('kpi-avg-delay');
-
-  if (elAvg) elAvg.innerText = `+${meta.avg_delay_days || 3.5}d`;
-
-
-
-  const elRisk = document.getElementById('kpi-open-risk');
-
-  if (elRisk) elRisk.innerText = openRiskCount;
-
-
-
-  const elCv = document.getElementById('kpi-cv-acc');
-
-  if (elCv) elCv.innerText = `${champF1}%`;
-
-
-
-  // Update Footers
-
-  const elTotalFoot = document.getElementById('kpi-total-footer');
-
-  if (elTotalFoot) elTotalFoot.innerText = `${closedCount} Closed  |  ${openCount} Open`;
-
-
-
-  const elDelayFoot = document.getElementById('kpi-delay-footer');
-
-  if (elDelayFoot) elDelayFoot.innerText = `${delayedCount} Delayed of ${closedCount} Completed`;
-
-
-
-  const elAvgFoot = document.getElementById('kpi-avg-footer');
-
-  if (elAvgFoot) elAvgFoot.innerText = `Max Delay: +${meta.max_delay_days || 12} Days`;
-
-
-
-  const elRiskFoot = document.getElementById('kpi-risk-footer');
-
-  if (elRiskFoot) elRiskFoot.innerText = `High & Medium Risk Open Tasks`;
-
-
-
-  const elModelFoot = document.getElementById('kpi-model-footer');
-
-  if (elModelFoot) elModelFoot.innerText = `${champion} (${cvMethod})`;
-
-
-
-  // Update Tab Navigation Badges
-
-  const bTotal = document.getElementById('badge-total-tasks');
-
-  if (bTotal) bTotal.innerText = totalCount;
-
-
-
-  const bOpen = document.getElementById('badge-open-tasks');
-
-  if (bOpen) bOpen.innerText = openCount;
-
-  }
-
-
-
-  function renderDisciplineBars() {
-
-  const container = document.getElementById('disc-bar-container');
-
-  const stats = APP_DATA.disc_stats || {};
-
-  
-
-  const colors = {
-
-  'PRJ-SITE': '#ef4444',
-
-  'PRJ-INT': '#f59e0b',
-
-  'PRJ-ARC': '#f97316',
-
-  'PRJ-STR': '#0284c7',
-
-  'PRJ-MEP': '#10b981'
-
-  };
-
-
-
-  let html = '';
-
-  for (const [disc, info] of Object.entries(stats)) {
-
-  const rate = info.rate;
-
-  const color = colors[disc] || '#0284c7';
-
-  html += `
-
-  <div class="disc-item">
-
-  <span class="disc-name-badge">${disc}</span>
-
-  <div class="disc-track">
-
-  <div class="disc-fill" style="width:${Math.max(rate, 6)}%; background:${color};">
-
-  <span class="disc-fill-val">${rate}%</span>
-
-  </div>
-
-  </div>
-
-  <span class="disc-meta">${info.delayed}/${info.total} dly</span>
-
-  </div>
-
-  `;
-
-  }
-
-  container.innerHTML = html;
-
-  }
-
-
-
-  function renderRootCauses() {
-
-  const container = document.getElementById('cause-list-container');
-
-  const causes = APP_DATA.root_causes || {};
-
-  const entries = Object.entries(causes).slice(0, 6);
-
-  const maxCount = Math.max(...Object.values(causes), 1);
-
-
-
-  let html = '';
-
-  for (const [cause, count] of entries) {
-
-  const pct = Math.round((count / maxCount) * 100);
-
-  html += `
-
-  <div class="cause-row">
-
-  <span class="cause-label" title="${cause}">${cause}</span>
-
-  <div class="cause-bar-bg">
-
-  <div class="cause-bar-fill" style="width:${pct}%;"></div>
-
-  </div>
-
-  <span class="cause-count-badge">${count}</span>
-
-  </div>
-
-  `;
-
-  }
-
-  container.innerHTML = html;
-
-  }
-
-
-
-  function renderFeatureWeights() {
-
-  const container = document.getElementById('feat-list-container');
-
-  const feats = APP_DATA.feat_importance || {};
-
-  const friendlyNames = {
-
-  'has_root_cause': 'Known Root Cause',
-
-  'Hours': 'Man-Hours Logged',
-
-  'planned_duration': 'Schedule Duration',
-
-  'risk_enc': 'Stated Risk Level',
-
-  'disc_PRJ-MEP': 'MEP Discipline',
-
-  'disc_PRJ-STR': 'STR Discipline',
-
-  'priority_enc': 'Task Priority'
-
-  };
-
-
-
-  let html = '';
-
-  for (const [feat, val] of Object.entries(feats).slice(0, 6)) {
-
-  const title = friendlyNames[feat] || feat;
-
-  html += `
-
-  <div class="feat-row">
-
-  <span class="feat-title" title="${title}">${title}</span>
-
-  <div class="feat-bar-bg">
-
-  <div class="feat-bar-fill" style="width:${Math.min(val * 1.5, 100)}%;"></div>
-
-  </div>
-
-  <span class="feat-val">${val}%</span>
-
-  </div>
-
-  `;
-
-  }
-
-  container.innerHTML = html;
-
-  }
-
-
-
-  function renderModelStrip() {
-
-  const container = document.getElementById('models-strip-container');
-
-  if (!container) return;
-
-  const cvData = (APP_DATA.meta || {}).cv_accuracy || {};
-
-  const meta = APP_DATA.meta || {};
-  const champion = resolveChampionModel(meta.cv_accuracy || {}, meta.champion || '');
-  meta.champion = champion || meta.champion || '';
-
-  const calibrated = meta.calibrated;
-
-  const cvMethod = (APP_DATA.meta || {}).cv_method || 'CV';
-
-
-
-  if (!Object.keys(cvData).length) return;
-
-
-
-  // Sort by F1 descending
-
-  const sorted = Object.entries(cvData).sort((a, b) => (b[1].f1 || 0) - (a[1].f1 || 0));
-
-
-
-  function metricColor(v) {
-
-  if (v == null) return 'var(--text-muted)';
-
-  return v >= 90 ? '#16a34a' : v >= 80 ? 'var(--green-primary)' : v >= 70 ? '#d97706' : 'var(--red-primary)';
-
-  }
-
-  function mccColor(v) {
-
-  return v >= 80 ? '#16a34a' : v >= 60 ? 'var(--green-primary)' : v >= 40 ? '#d97706' : 'var(--red-primary)';
-
-  }
-
-
-
-  let html = '';
-
-  for (const [name, m] of sorted) {
-
-  const isChamp = name === champion;
-
-  html += `
-
-  <div class="model-box${isChamp ? ' champion' : ''}">
-
-  <div class="model-box-header">
-
-  <h4>
-
-  <span>${name}</span>
-
-  ${isChamp ? `<span class="champion-tag">&#x2605; Champion${calibrated ? '  |  Calibrated' : ''}</span>` : ''}
-
-  </h4>
-
-  </div>
-
-  <div class="model-metrics-grid">
-
-  <div class="model-metric-cell">
-
-  <span class="model-metric-val" style="color:${metricColor(m.f1)}">${m.f1 ?? '-'}%</span>
-
-  <span class="model-metric-label">F1</span>
-
-  </div>
-
-  <div class="model-metric-cell">
-
-  <span class="model-metric-val" style="color:${metricColor(m.auc)}">${m.auc ?? '-'}%</span>
-
-  <span class="model-metric-label">AUC</span>
-
-  </div>
-
-  <div class="model-metric-cell">
-
-  <span class="model-metric-val" style="color:${metricColor(m.mean)}">${m.mean ?? '-'}%</span>
-
-  <span class="model-metric-label">Acc</span>
-
-  </div>
-
-  <div class="model-metric-cell">
-
-  <span class="model-metric-val" style="color:${metricColor(m.precision)}">${m.precision ?? '-'}%</span>
-
-  <span class="model-metric-label">Prec</span>
-
-  </div>
-
-  <div class="model-metric-cell">
-
-  <span class="model-metric-val" style="color:${metricColor(m.recall)}">${m.recall ?? '-'}%</span>
-
-  <span class="model-metric-label">Recall</span>
-
-  </div>
-
-  <div class="model-metric-cell">
-
-  <span class="model-metric-val" style="color:${mccColor(m.mcc)}">${m.mcc ?? '-'}</span>
-
-  <span class="model-metric-label">MCC</span>
-
-  </div>
-
-  </div>
-
-  <div class="model-cv-note">${cvMethod}</div>
-
-  </div>
-
-  `;
-
-  }
-
-  container.innerHTML = html;
-
-  }
-
-
-
-  function syncTaskFilterCounts() {
-  const tasks = APP_DATA.tasks || [];
-  const openCount = tasks.filter(t => t.status === 'Open').length;
-  const closedCount = tasks.filter(t => t.status === 'Closed').length;
-  const delayedCount = tasks.filter(t => t.actual === 'Delayed' || (t.delay != null && t.delay > 0)).length;
-
-  const chipMap = {
-    ALL: () => tasks.length,
-    Open: () => openCount,
-    Closed: () => closedCount,
-    Delayed: () => delayedCount
-  };
-
-  document.querySelectorAll('.filter-chip').forEach(chip => {
-    const key = chip.dataset.status;
-    const count = chipMap[key] ? chipMap[key]() : 0;
-    chip.textContent = `${chip.textContent.split('(')[0].trim()} (${count})`;
-  });
-  }
-
-  function renderTasksTable() {
-
-  const tbody = document.getElementById('task-table-body');
-
-  let tasks = [...APP_DATA.tasks];
-
-  syncTaskFilterCounts();
-
-
-
-  // Filtering
-
-  if (currentFilterStatus !== 'ALL') {
-
-  if (currentFilterStatus === 'Delayed') {
-
-  tasks = tasks.filter(t => t.actual === 'Delayed' || t.cat === 'HIGH');
-
-  } else {
-
-  tasks = tasks.filter(t => t.status === currentFilterStatus);
-
-  }
-
-  }
-
-
-
-  if (currentFilterDiscipline !== 'ALL') {
-
-  tasks = tasks.filter(t => t.disc === currentFilterDiscipline);
-
-  }
-
-
-
-  if (currentSearchTerm) {
-
-  const q = currentSearchTerm.toLowerCase();
-
-  tasks = tasks.filter(t => 
-
-  t.id.toLowerCase().includes(q) ||
-
-  t.desc.toLowerCase().includes(q) ||
-
-  (t.location && t.location.toLowerCase().includes(q)) ||
-
-  (t.root_cause && t.root_cause.toLowerCase().includes(q)) ||
-
-  (t.comments && t.comments.toLowerCase().includes(q))
-
-  );
-
-  }
-
-
-
-  // Sorting
-
-  tasks.sort((a, b) => {
-
-  let valA = a[sortColumn];
-
-  let valB = b[sortColumn];
-
-  if (valA == null) valA = '';
-
-  if (valB == null) valB = '';
-
-  if (typeof valA === 'string') {
-
-  return sortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
-
-  }
-
-  return sortAsc ? valA - valB : valB - valA;
-
-  });
-
-
-
-  if (tasks.length === 0) {
-
-  tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:32px; color:var(--text-muted);">No tasks matching current filter criteria.</td></tr>`;
-
-  return;
-
-  }
-
-
-
-  let html = '';
-
-  for (const t of tasks) {
-
-  const score = Math.round(t.score || 0);
-
-  
-
-  // Priority Pill: High = Red, Medium = Yellow, Low = Green
-
-  const priClass = t.priority === 'High' ? 'pri-high' : (t.priority === 'Medium' ? 'pri-medium' : 'pri-low');
-
-
-
-  // Status Pill: Closed = neutral/blue, Open = blue
-
-  const statusClass = t.status === 'Open' ? 'status-open-pill' : 'disc-tag';
-
-
-
-  // Risk Tier Pill: HIGH = Red, MEDIUM = Yellow, LOW = Green
-
-  const riskClass = t.cat === 'HIGH' ? 'pri-high' : (t.cat === 'MEDIUM' ? 'pri-medium' : 'pri-low');
-
-  const scoreColor = t.cat === 'HIGH' ? 'var(--red-primary)' : (t.cat === 'MEDIUM' ? 'var(--yellow-primary)' : 'var(--green-primary)');
-
-
-
-  // Actual Delay Outcome: Delayed = Red, On-time = Green, Pending = Blue/Neutral
-
-  let delayBadge = '<span class="status-open-pill">Pending</span>';
-
-  if (t.actual === 'Delayed') {
-
-  delayBadge = `<span class="pill status-delayed-pill">+${t.delay}d Late</span>`;
-
-  } else if (t.actual === 'On-time') {
-
-  const delayText = t.delay != null && t.delay < 0 ? `${t.delay}d Early` : 'On-time';
-
-  delayBadge = `<span class="pill status-ontime-pill">${delayText}</span>`;
-
-  }
-
-
-
-  html += `
-
-  <tr onclick="openTaskDrawer('${t.id}')">
-
-  <td class="task-id-cell">${t.id}</td>
-
-  <td class="task-desc-cell" title="${t.desc}">${t.desc}</td>
-
-  <td><span class="disc-tag">${t.disc}</span></td>
-
-  <td><span class="pill ${statusClass}">${t.status}</span></td>
-
-  <td><span class="pill ${priClass}">${t.priority}</span></td>
-
-  <td style="font-family:'JetBrains Mono', monospace; font-size:11.5px;">${t.hours || '-'} hrs</td>
-
-  <td>
-
-  <div class="score-cell">
-
-  <div class="score-track">
-
-  <div class="score-fill" style="width:${Math.max(score, 4)}%; background:${scoreColor};"></div>
-
-  </div>
-
-  <span class="score-num" style="color:${scoreColor};">${score}%</span>
-
-  </div>
-
-  </td>
-
-  <td><span class="pill ${riskClass}">${t.cat}</span></td>
-
-  <td>${delayBadge}</td>
-
-  <td style="text-align:right;" onclick="event.stopPropagation()">
-
-  <button class="btn-action-table" onclick="openTaskDrawer('${t.id}')">Drilldown</button>
-
-  </td>
-
-  </tr>
-
-  `;
-
-  }
-
-  tbody.innerHTML = html;
-
-  }
-
-
-
-  function renderMitigationPlanner() {
-
-  const openTasks = APP_DATA.tasks.filter(t => t.status === 'Open');
-
-  
-
-  const highList = document.getElementById('mit-list-high');
-
-  const medList  = document.getElementById('mit-list-med');
-
-  const lowList  = document.getElementById('mit-list-low');
-
-
-
-  let highHtml = '', medHtml = '', lowHtml = '';
-
-  let countHigh = 0, countMed = 0, countLow = 0;
-
-
-
-  for (const t of openTasks) {
-
-  if (t.cat === 'HIGH') {
-
-  countHigh++;
-
-  highHtml += `
-
-  <div class="mit-task-card">
-
-  <div class="mit-task-top">
-
-  <span class="task-id-cell">${t.id}</span>
-
-  <span class="pill pri-high">${t.score}% DLY</span>
-
-  </div>
-
-  <div class="mit-task-desc">${t.desc}</div>
-
-  <div class="mit-task-meta">${t.disc}  |  ${t.location || 'Site'}  |  ${t.hours} hrs</div>
-
-  <button class="mit-action-btn btn-notify-reallocate" onclick="dispatchDirectAction('${t.id}', 'PM Alert + Resource Reallocated')">
-
-  Dispatch Reallocation
-
-  </button>
-
-  </div>
-
-  `;
-
-  } else if (t.cat === 'MEDIUM') {
-
-  countMed++;
-
-  medHtml += `
-
-  <div class="mit-task-card">
-
-  <div class="mit-task-top">
-
-  <span class="task-id-cell">${t.id}</span>
-
-  <span class="pill pri-medium">${t.score}% DLY</span>
-
-  </div>
-
-  <div class="mit-task-desc">${t.desc}</div>
-
-  <div class="mit-task-meta">${t.disc}  |  ${t.location || 'Site'}  |  ${t.hours} hrs</div>
-
-  <button class="mit-action-btn btn-schedule-meet" onclick="dispatchDirectAction('${t.id}', 'Coordination Meeting Scheduled')">
-
-  Schedule Sync Meeting
-
-  </button>
-
-  </div>
-
-  `;
-
-  } else {
-
-  countLow++;
-
-  lowHtml += `
-
-  <div class="mit-task-card">
-
-  <div class="mit-task-top">
-
-  <span class="task-id-cell">${t.id}</span>
-
-  <span class="pill pri-low">${t.score}% DLY</span>
-
-  </div>
-
-  <div class="mit-task-desc">${t.desc}</div>
-
-  <div class="mit-task-meta">${t.disc}  |  ${t.location || 'Site'}  |  ${t.hours} hrs</div>
-
-  <button class="mit-action-btn btn-monitor-log" onclick="dispatchDirectAction('${t.id}', 'Weekly Health Check Logged')">
-
-  Log Weekly Check
-
-  </button>
-
-  </div>
-
-  `;
-
-  }
-
-  }
-
-
-
-  highList.innerHTML = highHtml || `<div style="font-size:12px; color:var(--text-muted); padding:16px 0; text-align:center;">No open tasks in High Risk tier.</div>`;
-
-  medList.innerHTML  = medHtml  || `<div style="font-size:12px; color:var(--text-muted); padding:16px 0; text-align:center;">No open tasks in Medium Risk tier.</div>`;
-
-  lowList.innerHTML  = lowHtml  || `<div style="font-size:12px; color:var(--text-muted); padding:16px 0; text-align:center;">No open tasks in Low Risk tier.</div>`;
-
-
-
-  document.getElementById('badge-high-count').innerText = `${countHigh} Open`;
-
-  document.getElementById('badge-med-count').innerText  = `${countMed} Open`;
-
-  document.getElementById('badge-low-count').innerText  = `${countLow} Open`;
-
-  }
-
-
-
-  function runSimulation() {
-
-  const disc = document.getElementById('sim-disc').value;
-
-  const priority = document.getElementById('sim-priority').value;
-
-  const risk = document.getElementById('sim-risk').value;
-
-  const rootCause = parseInt(document.getElementById('sim-rootcause').value) || 0;
-
-  const hours = parseFloat(document.getElementById('sim-hours').value) || 50;
-
-
-
-  let baseScore = 12.0;
-
-
-
-  if (rootCause === 1) baseScore += 56.0;
-
-  if (hours > 100) baseScore += 18.0;
-
-  else if (hours > 60) baseScore += 10.0;
-
-
-
-  if (risk === 'High') baseScore += 12.0;
-
-  else if (risk === 'Medium') baseScore += 6.0;
-
-
-
-  if (priority === 'High') baseScore += 8.0;
-
-
-
-  if (disc === 'PRJ-SITE') baseScore += 12.0;
-
-  else if (disc === 'PRJ-ARC') baseScore += 9.0;
-
-  else if (disc === 'PRJ-STR') baseScore += 7.0;
-
-  else if (disc === 'PRJ-INT') baseScore += 5.0;
-
-  else if (disc === 'PRJ-MEP') baseScore -= 4.0;
-
-
-
-  let score = Math.max(3, Math.min(99, Math.round(baseScore)));
-
-
-
-  const scoreEl = document.getElementById('sim-score-val');
-
-  const gaugeEl = document.getElementById('sim-gauge');
-
-  const badgeEl = document.getElementById('sim-tier-badge');
-
-  const actionEl = document.getElementById('sim-action-text');
-
-  const detailEl = document.getElementById('sim-detail-text');
-
-
-
-  scoreEl.innerText = `${score}%`;
-
-
-
-  if (score >= 70) {
-
-  gaugeEl.style.borderColor = 'var(--red-primary)';
-
-  scoreEl.style.color = 'var(--red-primary)';
-
-  badgeEl.className = 'sim-tier-badge pri-high';
-
-  badgeEl.innerText = 'HIGH RISK TIER (>=70%)';
-
-  actionEl.innerText = 'NOTIFY_PM + REALLOCATE_RESOURCE';
-
-  actionEl.style.color = 'var(--red-text)';
-
-  detailEl.innerText = 'Notify Project Manager immediately and reallocate personnel from closed on-time tasks.';
-
-  } else if (score >= 40) {
-
-  gaugeEl.style.borderColor = 'var(--yellow-primary)';
-
-  scoreEl.style.color = 'var(--yellow-primary)';
-
-  badgeEl.className = 'sim-tier-badge pri-medium';
-
-  badgeEl.innerText = 'MEDIUM RISK TIER (40% - 69%)';
-
-  actionEl.innerText = 'SCHEDULE_STATUS_MEETING';
-
-  actionEl.style.color = 'var(--yellow-text)';
-
-  detailEl.innerText = 'Schedule coordination sync meeting with discipline leads to resolve open blockers.';
-
-  } else {
-
-  gaugeEl.style.borderColor = 'var(--green-primary)';
-
-  scoreEl.style.color = 'var(--green-primary)';
-
-  badgeEl.className = 'sim-tier-badge pri-low';
-
-  badgeEl.innerText = 'LOW RISK TIER (<40%)';
-
-  actionEl.innerText = 'MONITOR_WEEKLY';
-
-  actionEl.style.color = 'var(--green-text)';
-
-  detailEl.innerText = 'Standard weekly milestone tracking. Probability of delay is within safe tolerances.';
-
-  }
-
-  }
-
-
-
-  function switchView(viewName, btnEl) {
-
-  const target = document.getElementById(`view-${viewName}`);
-
-  if (!target) return;
-
-  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
-
-  document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active'));
-
-  target.classList.add('active');
-
-  if (btnEl) {
-    btnEl.classList.add('active');
-    btnEl.scrollIntoView({ block: 'nearest', inline: 'center' });
-  }
-
-  if (viewName === 'simulator') runSimulation();
-
-  if (viewName === 'tasks') renderTasksTable();
-
-  }
-
-
-
-  function openTaskDrawer(taskId) {
-
-  const task = APP_DATA.tasks.find(t => t.id === taskId);
-
-  if (!task) return;
-
-
-
-  selectedTask = task;
-
-  document.getElementById('drawer-task-id').innerText = task.id;
-
-  document.getElementById('drawer-task-desc').innerText = task.desc;
-
-  document.getElementById('drawer-disc').innerText = task.disc;
-
-  document.getElementById('drawer-location').innerText = task.location || 'Site Grid';
-
-  document.getElementById('drawer-status').innerText = task.status;
-
-  document.getElementById('drawer-priority-risk').innerText = `${task.priority} / ${task.risk}`;
-
-  document.getElementById('drawer-hours').innerText = `${task.hours || 0} hrs`;
-
-  document.getElementById('drawer-days').innerText = `${task.planned_days || '-'} days`;
-
-  document.getElementById('drawer-delay').innerText = task.delay != null ? `${task.delay > 0 ? '+' : ''}${task.delay} days` : 'In-Progress';
-
-  document.getElementById('drawer-score').innerText = `${task.score}%`;
-
-  document.getElementById('drawer-root-cause').innerText = task.root_cause || 'None logged (Smooth execution)';
-
-  document.getElementById('drawer-comments').innerText = task.comments || 'No specific field comments.';
-
-
-
-  const catBadge = document.getElementById('drawer-cat-badge');
-
-  const badgeClass = task.cat === 'HIGH' ? 'pri-high' : (task.cat === 'MEDIUM' ? 'pri-medium' : 'pri-low');
-
-  catBadge.className = `pill ${badgeClass}`;
-
-  catBadge.innerText = `${task.cat} RISK`;
-
-
-
-  const mitAction = task.cat === 'HIGH' ? 'NOTIFY_PM + REALLOCATE_RESOURCE' : (task.cat === 'MEDIUM' ? 'SCHEDULE_STATUS_MEETING' : 'MONITOR_WEEKLY');
-
-  document.getElementById('drawer-mit-action').innerText = mitAction;
-
-
-
-  // SHAP risk drivers
-
-  const shapSection = document.getElementById('shap-drivers-section');
-
-  const shapList = document.getElementById('shap-drivers-list');
-
-  const drivers = task.shap_drivers || [];
-
-  if (drivers.length > 0) {
-
-  const maxImpact = Math.max(...drivers.map(d => d.impact), 0.001);
-
-  shapList.innerHTML = drivers.map(d => {
-
-  const pct = Math.round((d.impact / maxImpact) * 100);
-
-  const isRisk = d.direction === 'increases';
-
-  const barColor = isRisk ? 'var(--red-primary)' : 'var(--green-primary)';
-
-  const label = isRisk ? 'Risk factor' : 'Protective';
-
-  return `
-
-  <div style="background:var(--bg-subtle);border-radius:6px;padding:8px 10px;">
-
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-
-  <span style="font-size:11.5px;font-weight:600;color:var(--text-primary);">${d.feature}</span>
-
-  <span style="font-size:10px;font-weight:700;color:${barColor};font-family:'JetBrains Mono',monospace;">${label}</span>
-
-  </div>
-
-  <div style="height:4px;background:var(--border-subtle);border-radius:2px;overflow:hidden;">
-
-  <div style="height:100%;width:${pct}%;background:${barColor};border-radius:2px;transition:width 0.4s;"></div>
-
-  </div>
-
-  </div>
-
-  `;
-
-  }).join('');
-
-  shapSection.style.display = 'block';
-
-  } else {
-
-  shapSection.style.display = 'none';
-
-  }
-
-
-
-  document.getElementById('drawer-overlay').classList.add('open');
-
-  }
-
-
-
-  function closeDrawer(e) {
-
-  if (e && e.target !== document.getElementById('drawer-overlay') && e.type !== 'click') return;
-
-  document.getElementById('drawer-overlay').classList.remove('open');
-
-  }
-
-
-
-  function executeMitigationAction() {
-
-  if (!selectedTask) return;
-
-  showToast(`Directive dispatched for ${selectedTask.id}: ${selectedTask.cat === 'HIGH' ? 'PM Notification + Resource Assigned' : 'Status Action Logged'}`);
-
-  closeDrawer();
-
-  }
-
-
-
-  function dispatchDirectAction(taskId, actionText) {
-
-  showToast(`${taskId}: ${actionText}`);
-
-  }
-
-
-
-  function showToast(msg) {
-
-  const toast = document.getElementById('toast-msg');
-
-  document.getElementById('toast-text').innerText = msg;
-
-  toast.classList.add('show');
-
-  setTimeout(() => toast.classList.remove('show'), 3500);
-
-  }
-
-
-
-  function filterTasks() {
-
-  currentSearchTerm = document.getElementById('task-search-input').value;
-
-  currentFilterDiscipline = document.getElementById('filter-discipline').value;
-
-  renderTasksTable();
-
-  }
-
-
-
-  function setChipFilter(type, val, el) {
-
-  currentFilterStatus = val;
-
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-
-  el.classList.add('active');
-
-  renderTasksTable();
-
-  }
-
-
-
-  function resetFilters() {
-
-  currentFilterStatus = 'ALL';
-
-  currentFilterDiscipline = 'ALL';
-
-  currentSearchTerm = '';
-
-  document.getElementById('task-search-input').value = '';
-
-  document.getElementById('filter-discipline').value = 'ALL';
-
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-
-  document.querySelector('.filter-chip[data-status="ALL"]').classList.add('active');
-
-  renderTasksTable();
-
-  }
-
-
-
-  function sortTable(col) {
-
-  if (sortColumn === col) {
-
-  sortAsc = !sortAsc;
-
-  } else {
-
-  sortColumn = col;
-
-  sortAsc = true;
-
-  }
-
-  renderTasksTable();
-
-  }
-
-
-
-  function triggerMLRetrain() {
-
-  const spinner = document.getElementById('sync-spinner');
-
-  spinner.style.display = 'inline-block';
-
-  spinner.style.animation = 'pulseAnim 0.5s infinite';
-
-
-
-  fetch('/api/run')
-
-  .then(r => r.json())
-
-  .then(data => {
-
-  spinner.style.animation = 'none';
-
-  if (data && data.tasks) {
-
-  APP_DATA = data;
-
-  renderDashboard();
-
-  showToast('ML Pipeline Retrained (5-Fold CV: 100.0%)');
-
-  }
-
-  })
-
-  .catch(e => {
-
-  spinner.style.animation = 'none';
-
-  showToast('Retrained local dataset successfully');
-
-  });
-
-  }
-
-
-
-  function exportDataCSV() {
-
-  let csv = 'TaskID,Description,Discipline,Location,Status,Priority,Risk,Hours,PlannedDays,DelayProbability,RiskTier,ActualDelay,RootCause,Comments\n';
-
-  for (const t of APP_DATA.tasks) {
-
-  const row = [
-
-  t.id,
-
-  `"${t.desc}"`,
-
-  t.disc,
-
-  `"${t.location || ''}"`,
-
-  t.status,
-
-  t.priority,
-
-  t.risk,
-
-  t.hours || '',
-
-  t.planned_days || '',
-
-  t.score || '',
-
-  t.cat || '',
-
-  t.delay != null ? t.delay : '',
-
-  `"${t.root_cause || ''}"`,
-
-  `"${t.comments || ''}"`
-
-  ];
-
-  csv += row.join(',') + '\n';
-
-  }
-
-
-
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement('a');
-
-  a.href = url;
-
-  a.download = `InterTech_PRJ001_Delay_Predictions_${new Date().toISOString().slice(0,10)}.csv`;
-
-  a.click();
-  URL.revokeObjectURL(url);
-  }
-
-    /* ── AI ASSISTANT CLIENT — PROFESSIONAL REDESIGN ── */
-
-    // Set welcome timestamp
-    document.addEventListener('DOMContentLoaded', () => {
-      const ts = document.getElementById('ai-welcome-ts');
-      if (ts) ts.textContent = formatAITime();
-
-      const modelSelect = document.getElementById('ai-model-select');
-      if (modelSelect) {
-        modelSelect.addEventListener('change', () => {
-          const selection = Array.from(modelSelect.selectedOptions).map(option => option.value);
-          if (selection.length) {
-            renderSelectedModelResults(selection);
-            renderAIInsightsDashboard(selection);
-            showToast(`Mitigation review ready: ${selection.length} model(s) selected`);
+    async function fetchData() {
+      const endpoints = ['/api/data', './dashboard_data.json', './public/dashboard_data.json'];
+      let data = null;
+
+      for (let url of endpoints) {
+        try {
+          const resp = await fetch(url);
+          if (resp.ok) {
+            data = await resp.json();
+            break;
           }
+        } catch (e) {
+          console.warn("Fetch failed for " + url, e);
+        }
+      }
+
+      if (data) {
+        globalData = data;
+        renderDashboard(data);
+      } else {
+        console.error("Could not load dashboard_data.json");
+      }
+    }
+
+    function renderDashboard(d) {
+      // 1. KPI Render
+      if (d.meta) {
+        document.getElementById("kpi-total-tasks").innerText = d.meta.total_tasks || 1000;
+        document.getElementById("kpi-delay-rate").innerText = ((d.meta.delayed_tasks / (d.meta.total_tasks - d.meta.open_tasks)) * 100).toFixed(1) + "%";
+        document.getElementById("kpi-avg-delay").innerText = "+" + (d.meta.avg_delay_days || 3.5) + "d";
+        document.getElementById("kpi-open-risk").innerText = d.meta.open_tasks || 260;
+        if (d.meta.champion_metrics) {
+          document.getElementById("kpi-cv-acc").innerText = d.meta.champion_metrics.acc.toFixed(1) + "%";
+        }
+      }
+
+      // 2. Discipline Bar Breakdown
+      const discContainer = document.getElementById("disc-bar-container");
+      if (d.disc_stats && discContainer) {
+        discContainer.innerHTML = "";
+        Object.entries(d.disc_stats).forEach(([disc, stats]) => {
+          const row = document.createElement("div");
+          row.className = "stat-row";
+          row.innerHTML = `
+            <div class="stat-meta">
+              <span class="stat-name">${disc}</span>
+              <span class="stat-val">${stats.delayed} / ${stats.total} Delayed (${stats.rate.toFixed(1)}%)</span>
+            </div>
+            <div class="bar-bg">
+              <div class="bar-fill ${stats.rate > 40 ? 'danger' : 'warning'}" style="width: ${Math.min(stats.rate, 100)}%;"></div>
+            </div>
+          `;
+          discContainer.appendChild(row);
         });
       }
-    });
 
-    function formatAITime() {
-      return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    }
-
-    function escapeAIText(value) {
-      return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }
-
-    function renderAILiveWorkspace() {
-      const select = document.getElementById('ai-model-select');
-      const metricPanel = document.getElementById('ai-live-metrics');
-      const resultPanel = document.getElementById('ai-selected-results');
-      if (!select || !metricPanel || !resultPanel) return;
-
-      const meta = APP_DATA.meta || {};
-      const tasks = APP_DATA.tasks || [];
-      const models = meta.cv_accuracy || {};
-      meta.champion = resolveChampionModel(models, meta.champion || '');
-      const priorSelection = Array.from(select.selectedOptions).map(option => option.value);
-      const modelNames = Object.keys(models);
-      const defaultSelection = priorSelection.length ? priorSelection : [meta.champion || modelNames[0]].filter(Boolean);
-
-      select.innerHTML = modelNames.map(name => `<option value="${escapeAIText(name)}"${defaultSelection.includes(name) ? ' selected' : ''}>${escapeAIText(name)}</option>`).join('');
-      const openTasks = tasks.filter(task => task.status === 'Open');
-      const highRisk = openTasks.filter(task => task.cat === 'HIGH');
-      renderSelectedModelResults(defaultSelection);
-      renderAIDrawerComparisonGraph('f1');
-    }
-
-    let currentAIGraphMetric = 'f1';
-
-    function switchAIGraphMetric(metricKey) {
-      currentAIGraphMetric = metricKey;
-      ['f1', 'auc', 'mean', 'mcc'].forEach(m => {
-        const btn = document.getElementById(`tab-metric-${m}`);
-        if (btn) btn.classList.toggle('active', m === metricKey);
-      });
-      renderAIDrawerComparisonGraph(metricKey);
-    }
-
-    function renderAIDrawerComparisonGraph(metricKey = currentAIGraphMetric) {
-      const container = document.getElementById('ai-drawer-graph-bars');
-      if (!container) return;
-      const meta = APP_DATA.meta || {};
-      const models = meta.cv_accuracy || {};
-      if (!Object.keys(models).length) {
-        container.innerHTML = '<div style="font-size:10px; color:#64748b; padding:4px;">No model data synced</div>';
-        return;
-      }
-      const champ = resolveChampionModel(models, meta.champion || '');
-      const sorted = Object.entries(models).sort((a, b) => (Number(b[1][metricKey] ?? 0) - Number(a[1][metricKey] ?? 0)));
-
-      container.innerHTML = sorted.map(([name, m]) => {
-        const val = Number(m[metricKey] ?? 0);
-        const pct = Math.min(Math.max(Math.round((val / 100) * 100), 4), 100);
-        const isChamp = name === champ;
-        const valDisplay = metricKey === 'mcc' ? val.toFixed(1) : `${val.toFixed(1)}%`;
-        return `
-          <div class="ai-graph-bar-row">
-            <div class="ai-graph-bar-name" title="${escapeAIText(name)}">
-              <span>${escapeAIText(name)}</span>
-              ${isChamp ? '<span class="champ-badge">★</span>' : ''}
+      // 3. Root Causes
+      const causeContainer = document.getElementById("cause-list-container");
+      if (d.root_causes && causeContainer) {
+        causeContainer.innerHTML = "";
+        const maxVal = Math.max(...Object.values(d.root_causes));
+        Object.entries(d.root_causes).forEach(([cause, count]) => {
+          const pct = ((count / maxVal) * 100).toFixed(0);
+          const row = document.createElement("div");
+          row.className = "stat-row";
+          row.innerHTML = `
+            <div class="stat-meta">
+              <span class="stat-name">${cause}</span>
+              <span class="stat-val">${count} Incident(s)</span>
             </div>
-            <div class="ai-graph-bar-track">
-              <div class="ai-graph-bar-fill${isChamp ? ' champion' : ''}" style="width: ${pct}%;"></div>
+            <div class="bar-bg">
+              <div class="bar-fill" style="width: ${pct}%;"></div>
             </div>
-            <div class="ai-graph-bar-val">${valDisplay}</div>
-          </div>`;
-      }).join('');
-    }
-
-    function renderSelectedModelResults(selection) {
-      const resultPanel = document.getElementById('ai-selected-results');
-      const meta = APP_DATA.meta || {};
-      const models = meta.cv_accuracy || {};
-      meta.champion = resolveChampionModel(models, meta.champion || '');
-      if (!resultPanel) return;
-      const selected = selection.filter(name => models[name]);
-      resultPanel.innerHTML = selected.length ? selected.map(name => {
-        const model = models[name];
-        const champion = name === meta.champion;
-        return `<div class="ai-model-result${champion ? ' champion' : ''}">
-          <div class="ai-model-result-name"><span>${escapeAIText(name)}</span><span>${champion ? 'Champion' : 'Selected'}</span></div>
-          <div class="ai-model-result-values">F1 ${model.f1 ?? '-'}% | AUC ${model.auc ?? '-'}% | ACC ${model.mean ?? '-'}% | PREC ${model.precision ?? '-'}% | REC ${model.recall ?? '-'}% | MCC ${model.mcc ?? '-'}</div>
-        </div>`;
-      }).join('') : '<div class="ai-model-result"><div class="ai-model-result-name">Select one or more models</div></div>';
-      renderAIDrawerComparisonGraph(currentAIGraphMetric);
-    }
-
-    function generateSelectionNarrative(selectedModels, meta, models) {
-      if (!selectedModels.length) return 'No model has been selected for dashboarding yet.';
-
-      const entries = selectedModels.map(name => ({ name, metrics: models[name] || {} }));
-      const bestModel = entries.reduce((best, current) => {
-        const currentF1 = Number(current.metrics.f1 ?? 0);
-        const bestF1 = Number(best.metrics.f1 ?? 0);
-        return currentF1 > bestF1 ? current : best;
-      }, entries[0]);
-
-      const avgF1 = entries.reduce((sum, item) => sum + Number(item.metrics.f1 ?? 0), 0) / entries.length;
-      const avgAUC = entries.reduce((sum, item) => sum + Number(item.metrics.auc ?? 0), 0) / entries.length;
-      const totalOpen = (APP_DATA.tasks || []).filter(task => task.status === 'Open').length;
-      const highRiskOpen = (APP_DATA.tasks || []).filter(task => task.status === 'Open' && task.cat === 'HIGH').length;
-
-      const championText = meta.champion ? `The current champion is ${meta.champion}.` : 'No champion is assigned yet.';
-      const selectedText = selectedModels.length > 1 ? `${selectedModels.join(', ')} are being compared.` : `${selectedModels[0]} is being evaluated.`;
-      const summary = `${selectedText} ${championText} Average selected F1 is ${avgF1.toFixed(1)}% and average AUC is ${avgAUC.toFixed(1)}%.`;
-      const action = bestModel && Number(bestModel.metrics.f1 ?? 0) >= 70
-        ? ` ${bestModel.name} is the strongest performer for operational rollout, with the best F1 score in this selection.`
-        : ' The current selection suggests mixed performance, so monitor calibration and operational conditions before committing to a final model.';
-
-      return `${summary}${action} There are ${totalOpen} open tasks in the portfolio, including ${highRiskOpen} high-risk items that should be prioritized for mitigation.`;
-    }
-
-    function renderAIInsightsDashboard(selection) {
-      const modal = document.getElementById('ai-insights-modal');
-      const title = document.getElementById('ai-insights-title');
-      const subtitle = document.getElementById('ai-insights-subtitle');
-      const kpiContainer = document.getElementById('ai-insights-kpis');
-      const matrixContainer = document.getElementById('ai-model-matrix');
-      const detailContainer = document.getElementById('ai-insights-details');
-      if (!modal || !title || !subtitle || !kpiContainer || !matrixContainer || !detailContainer) return;
-
-      const meta = APP_DATA.meta || {};
-      const models = meta.cv_accuracy || {};
-      meta.champion = resolveChampionModel(models, meta.champion || '');
-      const selected = (selection || []).filter(name => models[name]);
-
-      if (!selected.length) {
-        title.textContent = 'Model Performance Dashboard';
-        subtitle.textContent = 'No model selected';
-        kpiContainer.innerHTML = '';
-        matrixContainer.innerHTML = '<div class="ai-model-empty">Choose one or more models to compare.</div>';
-        detailContainer.innerHTML = '<div class="ai-insights-detail-item"><strong>AI assessment:</strong> No dashboard is active yet.</div>';
-        modal.classList.add('open');
-        return;
+          `;
+          causeContainer.appendChild(row);
+        });
       }
 
-      const bestModel = selected.reduce((best, name) => {
-        const currentF1 = Number(models[name]?.f1 ?? 0);
-        const bestF1 = Number(models[best]?.f1 ?? 0);
-        return currentF1 > bestF1 ? name : best;
-      }, selected[0]);
+      // 4. Tasks Setup
+      if (d.tasks) {
+        filteredTasks = d.tasks;
+        renderTasksTable();
+        renderHighRiskAlerts();
+        renderMitigationHub();
+      }
 
-      const avgF1 = selected.reduce((sum, name) => sum + Number(models[name]?.f1 ?? 0), 0) / selected.length;
-      const avgAUC = selected.reduce((sum, name) => sum + Number(models[name]?.auc ?? 0), 0) / selected.length;
-      const avgAccuracy = selected.reduce((sum, name) => sum + Number(models[name]?.mean ?? 0), 0) / selected.length;
-      const allOpenTasks = (APP_DATA.tasks || []).filter(task => task.status === 'Open');
-      const highRiskOpen = allOpenTasks.filter(task => task.cat === 'HIGH').length;
-      const mitigationList = allOpenTasks.map(task => {
-        const action = task.cat === 'HIGH'
-          ? 'PM alert + resource reallocation'
-          : task.cat === 'MEDIUM'
-            ? 'Status sync meeting'
-            : 'Weekly monitor';
-        return `<li>${escapeAIText(task.id)} — ${escapeAIText(task.desc)} (${escapeAIText(task.disc)}) • ${escapeAIText(action)}</li>`;
-      }).join('');
+      // 5. Diagnostics Leaderboard
+      if (d.meta && d.meta.cv_accuracy) {
+        renderModelsTable(d.meta.cv_accuracy);
+      }
 
-      title.textContent = selected.length > 1 ? `${selected.length}-Model Performance Dashboard` : `${selected[0]} Performance Dashboard`;
-      subtitle.textContent = `${selected.join(', ')} selected via AI analysis`;
-
-      kpiContainer.innerHTML = `
-        <div class="ai-insights-kpi-card">
-          <span class="ai-insights-kpi-label">Avg F1</span>
-          <strong class="ai-insights-kpi-value">${avgF1.toFixed(1)}%</strong>
-        </div>
-        <div class="ai-insights-kpi-card">
-          <span class="ai-insights-kpi-label">Avg AUC</span>
-          <strong class="ai-insights-kpi-value">${avgAUC.toFixed(1)}%</strong>
-        </div>
-        <div class="ai-insights-kpi-card">
-          <span class="ai-insights-kpi-label">Avg Acc</span>
-          <strong class="ai-insights-kpi-value">${avgAccuracy.toFixed(1)}%</strong>
-        </div>
-        <div class="ai-insights-kpi-card">
-          <span class="ai-insights-kpi-label">High-risk open</span>
-          <strong class="ai-insights-kpi-value">${highRiskOpen}</strong>
-        </div>
-      `;
-
-      matrixContainer.innerHTML = `
-        <div class="ai-model-matrix-grid">
-          <div class="ai-model-matrix-head">Model</div>
-          <div class="ai-model-matrix-head">F1</div>
-          <div class="ai-model-matrix-head">AUC</div>
-          <div class="ai-model-matrix-head">ACC</div>
-          <div class="ai-model-matrix-head">PREC</div>
-          <div class="ai-model-matrix-head">REC</div>
-          <div class="ai-model-matrix-head">MCC</div>
-          ${selected.map(name => `
-            <div class="ai-model-matrix-row-name">${escapeAIText(name)}${name === meta.champion ? ' ★' : ''}</div>
-            <div class="ai-model-matrix-row-value">${models[name]?.f1 ?? '-'}%</div>
-            <div class="ai-model-matrix-row-value">${models[name]?.auc ?? '-'}%</div>
-            <div class="ai-model-matrix-row-value">${models[name]?.mean ?? '-'}%</div>
-            <div class="ai-model-matrix-row-value">${models[name]?.precision ?? '-'}%</div>
-            <div class="ai-model-matrix-row-value">${models[name]?.recall ?? '-'}%</div>
-            <div class="ai-model-matrix-row-value">${models[name]?.mcc ?? '-'}</div>
-          `).join('')}
-        </div>
-      `;
-
-      const narrative = generateSelectionNarrative(selected, meta, models);
-      detailContainer.innerHTML = `
-        <div class="ai-insights-detail-item">
-          <div class="ai-insights-detail-label">AI recommendation</div>
-          <div class="ai-insights-detail-text">${escapeAIText(narrative)}</div>
-        </div>
-        <div class="ai-insights-detail-item">
-          <div class="ai-insights-detail-label">Selected models</div>
-          <div class="ai-insights-detail-text">${selected.map(name => `${escapeAIText(name)} (${models[name]?.f1 ?? '-'}% F1)`).join(' • ')}</div>
-        </div>
-        <div class="ai-insights-detail-item">
-          <div class="ai-insights-detail-label">Decision cue</div>
-          <div class="ai-insights-detail-text">Best current performer: ${escapeAIText(bestModel)} with ${models[bestModel]?.f1 ?? '-'}% F1 and ${models[bestModel]?.auc ?? '-'}% AUC.</div>
-        </div>
-        <div class="ai-insights-detail-item">
-          <div class="ai-insights-detail-label">Mitigation notification</div>
-          <div class="ai-insights-detail-text">
-            <div style="font-weight:700; margin-bottom:6px; color:#0f172a;">${allOpenTasks.length} open tasks queued for action</div>
-            <ul style="margin:0; padding-left:18px; line-height:1.6;">${mitigationList}</ul>
-          </div>
-        </div>
-      `;
-
-      modal.classList.add('open');
-    }
-
-    function closeAIInsightsOnBackdrop(event) {
-      const modal = document.getElementById('ai-insights-modal');
-      if (!modal) return;
-      if (event.target === modal) closeAIInsightsDashboard();
-    }
-
-    function closeAIInsightsDashboard() {
-      const modal = document.getElementById('ai-insights-modal');
-      if (modal) modal.classList.remove('open');
-    }
-
-    function showSelectedModelResults() {
-      const select = document.getElementById('ai-model-select');
-      if (!select) return;
-      const selection = Array.from(select.selectedOptions).map(option => option.value);
-      renderSelectedModelResults(selection);
-      renderAIInsightsDashboard(selection);
-      const status = document.getElementById('ai-data-status');
-      if (status) status.textContent = `Updated ${formatAITime()}`;
-    }
-
-    function toggleAIAssistant() {
-      const drawer = document.getElementById('ai-assistant-drawer');
-      if (!drawer) return;
-      drawer.classList.toggle('open');
-      if (drawer.classList.contains('open')) {
-        setTimeout(() => document.getElementById('ai-input-field').focus(), 100);
+      // 6. Feature Importance
+      if (d.feat_importance) {
+        renderFeatureImportance(d.feat_importance);
       }
     }
 
-    function clearAIChat() {
-      const container = document.getElementById('ai-messages-container');
-      if (!container) return;
-      container.innerHTML = `
-        <div class="ai-msg-wrap bot">
-          <div class="ai-msg-bubble">
-            <p>Chat cleared. How can I help you with <strong>PRJ001</strong>?</p>
-          </div>
-          <div class="ai-msg-timestamp">${formatAITime()}</div>
-        </div>`;
-    }
+    function renderTasksTable() {
+      const tbody = document.getElementById("task-table-body");
+      if (!tbody) return;
+      tbody.innerHTML = "";
 
-    function handleAIInputKey(e) {
-      if (e.key === 'Enter') sendAIMessage();
-    }
+      const toDisplay = filteredTasks.slice(0, displayedTaskCount);
+      toDisplay.forEach(t => {
+        const tr = document.createElement("tr");
+        tr.onclick = () => openDrawer(t);
 
-    function quickAskAI(promptText) {
-      const input = document.getElementById('ai-input-field');
-      if (input) { input.value = promptText; }
-      sendAIMessage();
-    }
+        const riskPill = t.cat === 'HIGH' ? 'pill-high' : (t.cat === 'MEDIUM' ? 'pill-med' : 'pill-low');
+        const scoreColor = t.score > 60 ? 'danger' : (t.score > 35 ? 'warning' : '');
 
-    function renderAIMarkdown(text) {
-      // Escape HTML first
-      let html = text
-        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-      // Bold, italic, code
-      html = html
-        .replace(/`([^`]+)`/g, '<code>$1</code>')
-        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\*(.+?)\*/g, '<em>$1</em>');
-      // Convert list items to proper <ul>
-      html = html.replace(/((?:^|\n)- .+)+/gm, (block) => {
-        const items = block.trim().split('\n').filter(l => l.startsWith('- '));
-        return '<ul>' + items.map(l => `<li>${l.slice(2)}</li>`).join('') + '</ul>';
+        tr.innerHTML = `
+          <td><span class="task-id-code">${t.id}</span></td>
+          <td style="font-weight:600;">${t.desc}</td>
+          <td>${t.disc}</td>
+          <td>${t.location || 'Site'}</td>
+          <td><span class="pill ${t.status === 'Closed' ? 'pill-closed' : riskPill}">${t.status}</span></td>
+          <td>${t.priority}</td>
+          <td>${t.hours ? t.hours.toFixed(0) : '-'}h</td>
+          <td>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div class="bar-bg" style="width:60px;">
+                <div class="bar-fill ${scoreColor}" style="width:${Math.min(t.score, 100)}%;"></div>
+              </div>
+              <span style="font-family:'JetBrains Mono', monospace; font-weight:600;">${t.score ? t.score.toFixed(0) : 0}%</span>
+            </div>
+          </td>
+          <td style="color:var(--text-subtle);">${t.root_cause || 'Pre-execution'}</td>
+          <td><button class="btn btn-outline" style="padding:2px 8px; font-size:11px;">Inspect</button></td>
+        `;
+        tbody.appendChild(tr);
       });
-      // Remaining newlines -> paragraphs
-      const paras = html.split(/\n\n+/).filter(p => p.trim());
-      if (paras.length > 1) {
-        html = paras.map(p => p.startsWith('<ul>') ? p : `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+
+      document.getElementById("table-summary-count").innerText = `Showing ${toDisplay.length} of ${filteredTasks.length} tasks`;
+      const btnMore = document.getElementById("btn-load-more");
+      if (displayedTaskCount < filteredTasks.length) {
+        btnMore.style.display = "inline-flex";
       } else {
-        html = html.replace(/\n/g, '<br>');
+        btnMore.style.display = "none";
       }
-      return html;
     }
 
-    function appendAIMessage(text, role) {
-      const container = document.getElementById('ai-messages-container');
-      const wrap = document.createElement('div');
-      wrap.className = `ai-msg-wrap ${role}`;
-
-      const bubble = document.createElement('div');
-      bubble.className = 'ai-msg-bubble';
-      bubble.innerHTML = role === 'user'
-        ? text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-        : renderAIMarkdown(text);
-
-      const ts = document.createElement('div');
-      ts.className = 'ai-msg-timestamp';
-      ts.textContent = formatAITime();
-
-      wrap.appendChild(bubble);
-      wrap.appendChild(ts);
-      container.appendChild(wrap);
-      container.scrollTop = container.scrollHeight;
+    function loadMoreTasks() {
+      displayedTaskCount += 50;
+      renderTasksTable();
     }
 
-    function showTypingIndicator() {
-      const container = document.getElementById('ai-messages-container');
-      const wrap = document.createElement('div');
-      wrap.className = 'ai-msg-wrap bot';
-      wrap.id = 'ai-typing-wrap';
-      wrap.innerHTML = `<div class="ai-typing-dots"><span></span><span></span><span></span></div>`;
-      container.appendChild(wrap);
-      container.scrollTop = container.scrollHeight;
+    function filterTasks() {
+      if (!globalData || !globalData.tasks) return;
+      const search = document.getElementById("task-search-input").value.toLowerCase();
+      const disc = document.getElementById("filter-discipline").value;
+      const risk = document.getElementById("filter-risk").value;
+      const status = document.getElementById("filter-status").value;
+
+      filteredTasks = globalData.tasks.filter(t => {
+        const matchesSearch = !search || t.id.toLowerCase().includes(search) || t.desc.toLowerCase().includes(search) || (t.location && t.location.toLowerCase().includes(search));
+        const matchesDisc = disc === 'ALL' || t.disc === disc;
+        const matchesRisk = risk === 'ALL' || t.cat === risk;
+        const matchesStatus = status === 'ALL' || (status === 'Delayed' ? t.actual === 'Delayed' : t.status === status);
+        return matchesSearch && matchesDisc && matchesRisk && matchesStatus;
+      });
+
+      displayedTaskCount = 50;
+      renderTasksTable();
     }
 
-    function removeTypingIndicator() {
-      const el = document.getElementById('ai-typing-wrap');
-      if (el) el.remove();
+    function renderHighRiskAlerts() {
+      const container = document.getElementById("high-risk-alerts-container");
+      if (!container || !globalData) return;
+      container.innerHTML = "";
+
+      const highRiskTasks = globalData.tasks.filter(t => t.cat === 'HIGH' && t.status === 'Open').slice(0, 3);
+      highRiskTasks.forEach(t => {
+        const card = document.createElement("div");
+        card.className = "mit-card high";
+        card.innerHTML = `
+          <div class="mit-card-header">
+            <div>
+              <span class="pill pill-high">${t.disc}</span>
+              <div class="mit-card-title" style="margin-top:4px;">${t.id}: ${t.desc}</div>
+            </div>
+            <span style="font-family:'Plus Jakarta Sans', sans-serif; font-size:18px; font-weight:800; color:var(--high-text);">${t.score.toFixed(0)}%</span>
+          </div>
+          <div class="mit-action-box">
+            ACTION: NOTIFY_PM + REALLOCATE_RESOURCE
+          </div>
+          <button class="btn btn-outline" style="width:100%; justify-content:center;" onclick='openDrawer(${JSON.stringify(t)})'>Inspect Task & Plan &rarr;</button>
+        `;
+        container.appendChild(card);
+      });
     }
 
-    async function sendAIMessage() {
-      const inputEl = document.getElementById('ai-input-field');
-      const sendBtn = document.getElementById('ai-send-btn');
-      const query = inputEl.value.trim();
-      if (!query) return;
+    function renderMitigationHub() {
+      const highList = document.getElementById("mit-list-high");
+      const medList = document.getElementById("mit-list-med");
+      if (!highList || !medList || !globalData) return;
 
-      appendAIMessage(query, 'user');
-      inputEl.value = '';
-      if (sendBtn) sendBtn.disabled = true;
+      highList.innerHTML = "";
+      medList.innerHTML = "";
 
-      showTypingIndicator();
+      const openTasks = globalData.tasks.filter(t => t.status === 'Open');
+      
+      openTasks.filter(t => t.cat === 'HIGH').slice(0, 6).forEach(t => {
+        const div = document.createElement("div");
+        div.className = "mit-card high";
+        div.style.marginBottom = "10px";
+        div.innerHTML = `
+          <div class="mit-card-header">
+            <div>
+              <span class="task-id-code">${t.id}</span> — <strong>${t.desc}</strong>
+            </div>
+            <span class="pill pill-high">${t.score.toFixed(0)}% Risk</span>
+          </div>
+          <div class="mit-action-box">PM Alert Issued • Reallocate Senior Technicians</div>
+        `;
+        highList.appendChild(div);
+      });
+
+      openTasks.filter(t => t.cat === 'MEDIUM').slice(0, 6).forEach(t => {
+        const div = document.createElement("div");
+        div.className = "mit-card med";
+        div.style.marginBottom = "10px";
+        div.innerHTML = `
+          <div class="mit-card-header">
+            <div>
+              <span class="task-id-code">${t.id}</span> — <strong>${t.desc}</strong>
+            </div>
+            <span class="pill pill-med">${t.score.toFixed(0)}% Risk</span>
+          </div>
+          <div class="mit-action-box">Weekly Sync • Verify Sub-contractor Deliverables</div>
+        `;
+        medList.appendChild(div);
+      });
+    }
+
+    function renderModelsTable(accData) {
+      const tbody = document.getElementById("models-table-body");
+      if (!tbody) return;
+      tbody.innerHTML = "";
+
+      Object.entries(accData).forEach(([modelName, m]) => {
+        const tr = document.createElement("tr");
+        const isChamp = modelName.includes("Random Forest");
+        tr.innerHTML = `
+          <td><strong>${modelName}</strong> ${isChamp ? '<span class="pill pill-low" style="margin-left:6px;">CHAMPION</span>' : ''}</td>
+          <td>${m.mean ? m.mean.toFixed(1) : 72.0}%</td>
+          <td>${m.precision ? m.precision.toFixed(1) : 66.4}%</td>
+          <td>${m.recall ? m.recall.toFixed(1) : 72.4}%</td>
+          <td>${m.f1 ? m.f1.toFixed(1) : 69.3}%</td>
+          <td>${m.auc ? m.auc.toFixed(1) : 77.8}%</td>
+          <td>${m.mcc ? m.mcc.toFixed(1) : 43.7}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderFeatureImportance(featMap) {
+      const container = document.getElementById("feat-list-container");
+      if (!container) return;
+      container.innerHTML = "";
+
+      const sorted = Object.entries(featMap).sort((a,b) => b[1] - a[1]);
+      const maxVal = sorted[0][1] || 1;
+
+      sorted.forEach(([feat, val]) => {
+        if (val <= 0) return;
+        const pct = ((val / maxVal) * 100).toFixed(0);
+        const row = document.createElement("div");
+        row.className = "stat-row";
+        row.innerHTML = `
+          <div class="stat-meta">
+            <span class="stat-name">${feat}</span>
+            <span class="stat-val">${val.toFixed(2)}% Impact</span>
+          </div>
+          <div class="bar-bg">
+            <div class="bar-fill" style="width: ${pct}%;"></div>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    /* VIEW SWITCHER */
+    function switchView(viewId, btn) {
+      document.querySelectorAll(".tab-view").forEach(el => el.classList.remove("active"));
+      document.querySelectorAll(".nav-tab").forEach(el => el.classList.remove("active"));
+
+      const target = document.getElementById("view-" + viewId);
+      if (target) target.classList.add("active");
+      if (btn) btn.classList.add("active");
+    }
+
+    /* DRAWER CONTROLS */
+    function openDrawer(t) {
+      document.getElementById("drawer-task-id").innerText = t.id;
+      document.getElementById("drawer-task-desc").innerText = t.desc;
+      document.getElementById("drawer-disc").innerText = t.disc;
+      document.getElementById("drawer-loc").innerText = t.location || 'Site';
+      document.getElementById("drawer-status").innerText = t.status;
+      document.getElementById("drawer-pri-risk").innerText = `${t.priority} Pri / ${t.risk} Risk`;
+      document.getElementById("drawer-hours").innerText = `${t.hours ? t.hours.toFixed(0) : '-'} hrs`;
+      document.getElementById("drawer-target").innerText = t.target || '-';
+      document.getElementById("drawer-score-num").innerText = (t.score ? t.score.toFixed(0) : 0) + "%";
+
+      const fill = document.getElementById("drawer-bar-fill");
+      fill.style.width = Math.min(t.score || 0, 100) + "%";
+      fill.className = "bar-fill " + (t.score > 60 ? 'danger' : (t.score > 35 ? 'warning' : ''));
+
+      const catBadge = document.getElementById("drawer-cat-badge");
+      catBadge.innerText = (t.cat || 'LOW') + " RISK";
+      catBadge.className = "pill " + (t.cat === 'HIGH' ? 'pill-high' : (t.cat === 'MEDIUM' ? 'pill-med' : 'pill-low'));
+
+      const shapContainer = document.getElementById("drawer-shap-list");
+      shapContainer.innerHTML = "";
+      if (t.shap_drivers && t.shap_drivers.length) {
+        t.shap_drivers.forEach(d => {
+          const row = document.createElement("div");
+          row.style.display = "flex";
+          row.style.justifyContent = "space-between";
+          row.style.fontSize = "12.5px";
+          row.style.padding = "4px 0";
+          row.innerHTML = `
+            <span>${d.feature}</span>
+            <strong style="color:${d.direction === 'increases' ? 'var(--high-text)' : 'var(--low-text)'}">
+              ${d.direction === 'increases' ? '+' : '-'}${(d.impact * 100).toFixed(1)}% risk
+            </strong>
+          `;
+          shapContainer.appendChild(row);
+        });
+      } else {
+        shapContainer.innerHTML = `<span style="font-size:12px; color:var(--text-subtle);">Pre-execution features balanced</span>`;
+      }
+
+      document.getElementById("drawer-overlay").classList.add("open");
+    }
+
+    function closeDrawer(e) {
+      document.getElementById("drawer-overlay").classList.remove("open");
+    }
+
+    /* SIMULATOR LOGIC */
+    function runSimulation() {
+      const disc = document.getElementById("sim-disc").value;
+      const priority = document.getElementById("sim-priority").value;
+      const risk = document.getElementById("sim-risk").value;
+      const hours = parseFloat(document.getElementById("sim-hours").value) || 50;
+      const duration = parseFloat(document.getElementById("sim-duration").value) || 10;
+
+      const intensity = hours / Math.max(duration, 1);
+      
+      let baseScore = 20;
+      if (priority === 'High') baseScore += 25;
+      if (priority === 'Medium') baseScore += 10;
+      if (risk === 'High') baseScore += 25;
+      if (risk === 'Medium') baseScore += 10;
+      if (intensity > 8) baseScore += 20;
+
+      baseScore = Math.min(Math.max(baseScore, 5), 95);
+
+      const scoreVal = document.getElementById("sim-score-val");
+      const badge = document.getElementById("sim-tier-badge");
+      const action = document.getElementById("sim-action-text");
+      const detail = document.getElementById("sim-detail-text");
+
+      scoreVal.innerText = baseScore + "%";
+      detail.innerText = `Calculated Workload Intensity: ${intensity.toFixed(2)} hrs/day`;
+
+      if (baseScore > 65) {
+        scoreVal.style.color = "var(--high-text)";
+        badge.innerText = "HIGH RISK TIER";
+        badge.className = "pill pill-high";
+        action.innerText = "Reallocate Labor & Issue Daily PM Alert";
+      } else if (baseScore > 35) {
+        scoreVal.style.color = "var(--med-text)";
+        badge.innerText = "MEDIUM RISK TIER";
+        badge.className = "pill pill-med";
+        action.innerText = "Schedule Weekly Sub-Contractor Sync";
+      } else {
+        scoreVal.style.color = "var(--brand-primary)";
+        badge.innerText = "LOW RISK TIER";
+        badge.className = "pill pill-low";
+        action.innerText = "Standard Execution & Weekly Monitoring";
+      }
+    }
+
+    /* ACTIONS */
+    function exportDataCSV() {
+      if (!globalData || !globalData.tasks) return;
+      let csv = "TaskID,Description,Discipline,Location,Status,Priority,Risk,Hours,DelayRiskScore,RootCause\n";
+      globalData.tasks.forEach(t => {
+        csv += `"${t.id}","${t.desc}","${t.disc}","${t.location || ''}","${t.status}","${t.priority}","${t.risk}",${t.hours || 0},${t.score || 0},"${t.root_cause || ''}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "InterTech_PRJ001_Task_Predictions.csv";
+      a.click();
+    }
+
+    async function triggerMLRetrain() {
+      const spinner = document.getElementById("sync-spinner");
+      const btn = document.getElementById("btn-sync-ml");
+      btn.disabled = true;
+      spinner.innerText = "⏳ ";
 
       try {
-        const res = await fetch('/api/assistant', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: query })
-        });
-        removeTypingIndicator();
-        if (sendBtn) sendBtn.disabled = false;
-
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        if (data && data.reply) {
-          appendAIMessage(data.reply, 'bot');
-          return;
+        const resp = await fetch("/api/run");
+        if (resp.ok) {
+          const data = await resp.json();
+          globalData = data;
+          renderDashboard(data);
+          alert("ML Prediction Model successfully re-trained!");
+        } else {
+          alert("Re-train triggered. Refreshing data...");
+          fetchData();
         }
-        throw new Error('Empty reply');
-      } catch (err) {
-        removeTypingIndicator();
-        if (sendBtn) sendBtn.disabled = false;
-        console.warn('API unavailable, using local engine:', err);
+      } catch (e) {
+        console.log("Triggered retrain, refreshing local data.");
+        fetchData();
+      } finally {
+        btn.disabled = false;
+        spinner.innerText = "";
       }
-
-      // ── Local fallback engine ──
-      const tasks = APP_DATA.tasks || [];
-      const meta  = APP_DATA.meta  || {};
-      const lower = query.toLowerCase();
-      let response = '';
-
-      const openHighRisk = tasks.filter(t => t.status === 'Open' && t.cat === 'HIGH');
-      const openTasks    = tasks.filter(t => t.status === 'Open');
-      const closedTasks  = tasks.filter(t => t.status === 'Closed');
-
-      if (lower.includes('high risk') || lower.includes('open task') || lower.includes('at risk')) {
-        response = `**High Risk Open Tasks Summary:**\n\nThere are **${openHighRisk.length} open tasks** in the **HIGH Risk Tier** (Probability ≥ 70%).\n\nTop Priority Actions:\n` +
-          openHighRisk.slice(0, 5).map(t => `- **${t.id} — ${t.desc}** (${t.disc}): Risk Score **${t.score}%** — *Notify PM & reallocate subcontractors*`).join('\n');
-      } else if (lower.includes('model') || lower.includes('xgboost') || lower.includes('random forest') || lower.includes('algorithm') || lower.includes('compare')) {
-        const champ  = meta.champion || 'Random Forest';
-        const cvData = meta.cv_accuracy || {};
-        response = `**ML Model Comparison (${meta.cv_method || '5-Fold CV'}):**\n\n` +
-          `- **${champ} ✦ Champion**: F1 ${cvData[champ]?.f1 || 69.5}%, AUC ${cvData[champ]?.auc || 77.9}%, MCC ${cvData[champ]?.mcc || 44.4}%\n` +
-          `- **Logistic Regression**: F1 ${cvData['Logistic Regression']?.f1 || 68.8}%, AUC ${cvData['Logistic Regression']?.auc || 80.4}%\n` +
-          `- **Stacking Ensemble**: F1 ${cvData['Stacking Ensemble']?.f1 || 68.2}%, AUC ${cvData['Stacking Ensemble']?.auc || 79.2}%\n` +
-          `- **XGBoost**: F1 ${cvData['XGBoost']?.f1 || 66.4}%, AUC ${cvData['XGBoost']?.auc || 75.5}%\n\n` +
-          `*Post-hoc leakage features removed. Calibrated with Platt Scaling.*`;
-      } else if (lower.includes('delay rate') || lower.includes('discipline') || lower.includes('site') || lower.includes('mep') || lower.includes('str') || lower.includes('arc') || lower.includes('int')) {
-        response = `**Delay Rate by Discipline (completed tasks only):**\n\n` +
-          Object.entries(APP_DATA.disc_stats || {}).sort((a,b) => b[1].rate - a[1].rate)
-            .map(([disc, info]) => `- **${disc}**: ${info.rate}% delay rate — ${info.delayed} of ${info.total} tasks delayed`).join('\n');
-      } else if (lower.includes('mitigation') || lower.includes('reallocation') || lower.includes('strategy') || lower.includes('recommend')) {
-        response = `**Recommended Mitigation Strategy:**\n\n` +
-          `- **Crane & Equipment**: Pre-book backup crane for HIGH-risk structural tasks — 25 crane breakdown incidents recorded\n` +
-          `- **Approval Delays**: Assign dedicated RFI coordinator; target <48h turnaround (17 incidents)\n` +
-          `- **Labor Shortage**: Activate secondary subcontractor roster 2 weeks before critical-path tasks\n` +
-          `- **PRJ-SITE Focus**: Highest delay rate at ${APP_DATA.disc_stats?.['PRJ-SITE']?.rate || 47.7}% — prioritize site logistics and weather contingency\n\n` +
-          `*Based on root cause analysis of ${closedTasks.length} completed tasks.*`;
-      } else {
-        response = `**Project PRJ001 — Live Status:**\n\n` +
-          `- **Total Tasks**: ${meta.total_tasks || tasks.length} (${openTasks.length} Open · ${closedTasks.length} Closed)\n` +
-          `- **Delayed Tasks**: ${meta.delayed_tasks || 123} (${((( meta.delayed_tasks || 123) / (meta.total_tasks || 1000))*100).toFixed(1)}% rate)\n` +
-          `- **Average Delay**: +${meta.avg_delay_days || 3.5} days (max +${meta.max_delay_days || 12} days)\n` +
-          `- **Champion Model**: ${meta.champion || 'Random Forest'} — F1 ${meta.champion_metrics?.f1 || 69.5}%, AUC ${meta.champion_metrics?.auc_roc || 77.9}%\n\n` +
-          `Try asking:\n- *"Which open tasks are at highest risk?"*\n- *"Compare algorithm metrics"*\n- *"What is the delay rate by discipline?"*\n- *"Suggest mitigation strategy"*`;
-      }
-
-      appendAIMessage(response, 'bot');
     }
-
   </script>
-
 </body>
-
 </html>
-
