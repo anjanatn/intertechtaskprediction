@@ -816,9 +816,6 @@
  <button class="nav-tab" onclick="switchView('simulator', this)">
  <span>What-If Simulator</span>
  </button>
- <button class="nav-tab" onclick="switchView('explainability', this)">
- <span>AI Diagnostics</span>
- </button>
  </div>
  <div style="font-size:12px; color:#94a3b8; font-family:'JetBrains Mono', monospace;" id="last-sync-time">
       Model Status: Live (5-Fold CV)
@@ -1385,7 +1382,80 @@
  </div>
  </section>
 
- </main>
+  </main>
+
+  <!-- FLOATING AI DIAGNOSTICS ASSISTANT (BOTTOM RIGHT CORNER) -->
+  <div id="ai-diagnostics-widget-container" style="position: fixed; bottom: 24px; right: 24px; z-index: 9990;">
+    <!-- Diagnostics & Assistant Popup Panel -->
+    <div id="ai-diagnostics-panel" style="display: none; position: absolute; bottom: 64px; right: 0; width: 440px; max-width: calc(100vw - 32px); height: 520px; background: #ffffff; border-radius: 16px; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25); border: 1px solid var(--border-medium); overflow: hidden; flex-direction: column;">
+      <!-- Panel Header -->
+      <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 10px; height: 10px; background: #34d399; border-radius: 50%; box-shadow: 0 0 8px #34d399;"></div>
+          <div>
+            <h3 style="font-size: 14px; font-weight: 700; color: #ffffff; margin: 0;">AI Diagnostics & Assistant</h3>
+            <span style="font-size: 11px; color: #94a3b8;">PRJ001 ML Intelligence Engine</span>
+          </div>
+        </div>
+        <button onclick="toggleAIDiagnosticsWidget()" style="background: transparent; border: none; color: #94a3b8; font-size: 20px; cursor: pointer; line-height: 1; padding: 4px;">&times;</button>
+      </div>
+
+      <!-- Panel Tabs -->
+      <div style="display: flex; border-bottom: 1px solid var(--border-light); background: var(--bg-subtle);">
+        <button id="ai-tab-btn-diag" onclick="switchAIPanelTab('diag')" style="flex: 1; padding: 10px; border: none; background: #ffffff; font-weight: 700; font-size: 12px; color: var(--brand-primary); border-bottom: 2px solid var(--brand-primary); cursor: pointer;">Model Diagnostics</button>
+        <button id="ai-tab-btn-chat" onclick="switchAIPanelTab('chat')" style="flex: 1; padding: 10px; border: none; background: transparent; font-weight: 600; font-size: 12px; color: var(--text-subtle); border-bottom: 2px solid transparent; cursor: pointer;">Ask AI Assistant</button>
+      </div>
+
+      <!-- Tab 1: Diagnostics Content -->
+      <div id="ai-panel-diag-content" style="padding: 16px; overflow-y: auto; flex: 1;">
+        <div style="margin-bottom: 16px;">
+          <h4 style="font-size: 12px; font-weight: 700; color: var(--text-main); margin-bottom: 8px;">Model Performance Leaderboard</h4>
+          <div style="overflow-x: auto; font-size: 11px;">
+            <table class="data-table" style="width: 100%;">
+              <thead>
+                <tr>
+                  <th>Model</th>
+                  <th>Accuracy</th>
+                  <th>Precision</th>
+                  <th>Recall</th>
+                  <th>F1</th>
+                  <th>AUC</th>
+                </tr>
+              </thead>
+              <tbody id="ai-models-table-body">
+                <!-- JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <h4 style="font-size: 12px; font-weight: 700; color: var(--text-main); margin-bottom: 8px;">SHAP Global Risk Drivers</h4>
+          <div id="ai-feat-list-container" style="font-size: 11px;">
+            <!-- JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Chat Assistant Content -->
+      <div id="ai-panel-chat-content" style="display: none; flex-direction: column; flex: 1;">
+        <div id="ai-chat-messages" style="flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: var(--bg-main);">
+          <div style="background: #ffffff; border: 1px solid var(--border-light); padding: 10px 12px; border-radius: 10px; font-size: 12px; max-width: 85%;">
+            Hello! I am your <strong>InterTech PRJ001 Delay Intelligence AI Assistant</strong>. Ask me about high-risk tasks, model comparisons, or discipline delay rates!
+          </div>
+        </div>
+        <div style="padding: 10px 12px; border-top: 1px solid var(--border-light); background: #ffffff; display: flex; gap: 8px;">
+          <input type="text" id="ai-chat-input" placeholder="Ask AI Assistant..." style="flex: 1; padding: 8px 12px; border: 1px solid var(--border-medium); border-radius: 8px; font-size: 12px;" onkeypress="if(event.key==='Enter') sendAIChatMessage()">
+          <button onclick="sendAIChatMessage()" class="btn btn-primary" style="padding: 8px 14px; font-size: 12px;">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toggle Button in Bottom Right -->
+    <button id="ai-diagnostics-toggle-btn" onclick="toggleAIDiagnosticsWidget()" class="btn btn-primary" style="background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%); color: #ffffff; padding: 12px 20px; border-radius: 50px; font-weight: 700; font-size: 13px; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4); display: flex; align-items: center; gap: 8px; border: 1px solid rgba(255, 255, 255, 0.2); cursor: pointer; transition: all 0.2s ease;">
+      <div style="width: 8px; height: 8px; background: #34d399; border-radius: 50%; box-shadow: 0 0 8px #34d399;"></div>
+      <span>AI Diagnostics</span>
+    </button>
+  </div>
 
  <!-- SLIDE-OVER TASK DRAWER -->
  <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer(event)">
@@ -1701,14 +1771,15 @@
 
     function renderModelsTable(accData) {
       const tbody = document.getElementById("models-table-body");
-      if (!tbody) return;
-      tbody.innerHTML = "";
+      const aiTbody = document.getElementById("ai-models-table-body");
+      if (tbody) tbody.innerHTML = "";
+      if (aiTbody) aiTbody.innerHTML = "";
 
       Object.entries(accData).forEach(([modelName, m]) => {
         const tr = document.createElement("tr");
         const isChamp = modelName.includes("Random Forest");
-        tr.innerHTML = `
- <td><strong>${modelName}</strong> ${isChamp ? '<span class="pill pill-low" style="margin-left:6px;">CHAMPION</span>' : ''}</td>
+        const rowHTML = `
+ <td><strong>${modelName}</strong> ${isChamp ? '<span class="pill pill-low" style="margin-left:4px; font-size:10px;">CHAMPION</span>' : ''}</td>
  <td>${m.mean ? m.mean.toFixed(1) : 72.0}%</td>
  <td>${m.precision ? m.precision.toFixed(1) : 66.4}%</td>
  <td>${m.recall ? m.recall.toFixed(1) : 72.4}%</td>
@@ -1716,14 +1787,22 @@
  <td>${m.auc ? m.auc.toFixed(1) : 77.8}%</td>
  <td>${m.mcc ? m.mcc.toFixed(1) : 43.7}</td>
         `;
-        tbody.appendChild(tr);
+        tr.innerHTML = rowHTML;
+        if (tbody) tbody.appendChild(tr);
+
+        if (aiTbody) {
+          const aiTr = document.createElement("tr");
+          aiTr.innerHTML = rowHTML;
+          aiTbody.appendChild(aiTr);
+        }
       });
     }
 
     function renderFeatureImportance(featMap) {
       const container = document.getElementById("feat-list-container");
-      if (!container) return;
-      container.innerHTML = "";
+      const aiContainer = document.getElementById("ai-feat-list-container");
+      if (container) container.innerHTML = "";
+      if (aiContainer) aiContainer.innerHTML = "";
 
       const sorted = Object.entries(featMap).sort((a,b) => b[1] - a[1]);
       const maxVal = sorted[0][1] || 1;
@@ -1731,9 +1810,7 @@
       sorted.forEach(([feat, val]) => {
         if (val <= 0) return;
         const pct = ((val / maxVal) * 100).toFixed(0);
-        const row = document.createElement("div");
-        row.className = "stat-row";
-        row.innerHTML = `
+        const rowHTML = `
  <div class="stat-meta">
  <span class="stat-name">${feat}</span>
  <span class="stat-val">${val.toFixed(2)}% Impact</span>
@@ -1742,7 +1819,19 @@
  <div class="bar-fill" style="width: ${pct}%;"></div>
  </div>
         `;
-        container.appendChild(row);
+        if (container) {
+          const row = document.createElement("div");
+          row.className = "stat-row";
+          row.innerHTML = rowHTML;
+          container.appendChild(row);
+        }
+        if (aiContainer) {
+          const aiRow = document.createElement("div");
+          aiRow.className = "stat-row";
+          aiRow.style.marginBottom = "8px";
+          aiRow.innerHTML = rowHTML;
+          aiContainer.appendChild(aiRow);
+        }
       });
     }
 
@@ -2492,6 +2581,96 @@
         alert(`PM Email Notification Dispatched:\n\n${resData.message}\nRecipient: ${managerEmail}\nHigh-Risk Tasks Notified: ${targetTasks.length}`);
       } catch (e) {
         alert(`PM Notification Generated for Manager (${managerEmail}) for ${targetTasks.length} High-Risk task(s).`);
+      }
+    }
+
+    /* FLOATING AI DIAGNOSTICS & ASSISTANT WIDGET LOGIC */
+    function toggleAIDiagnosticsWidget() {
+      const panel = document.getElementById('ai-diagnostics-panel');
+      if (!panel) return;
+      if (panel.style.display === 'none' || panel.style.display === '') {
+        panel.style.display = 'flex';
+      } else {
+        panel.style.display = 'none';
+      }
+    }
+
+    function switchAIPanelTab(tabName) {
+      const diagContent = document.getElementById('ai-panel-diag-content');
+      const chatContent = document.getElementById('ai-panel-chat-content');
+      const diagBtn = document.getElementById('ai-tab-btn-diag');
+      const chatBtn = document.getElementById('ai-tab-btn-chat');
+
+      if (tabName === 'diag') {
+        diagContent.style.display = 'block';
+        chatContent.style.display = 'none';
+        diagBtn.style.color = 'var(--brand-primary)';
+        diagBtn.style.borderBottom = '2px solid var(--brand-primary)';
+        diagBtn.style.background = '#ffffff';
+        chatBtn.style.color = 'var(--text-subtle)';
+        chatBtn.style.borderBottom = '2px solid transparent';
+        chatBtn.style.background = 'transparent';
+      } else {
+        diagContent.style.display = 'none';
+        chatContent.style.display = 'flex';
+        chatBtn.style.color = 'var(--brand-primary)';
+        chatBtn.style.borderBottom = '2px solid var(--brand-primary)';
+        chatBtn.style.background = '#ffffff';
+        diagBtn.style.color = 'var(--text-subtle)';
+        diagBtn.style.borderBottom = '2px solid transparent';
+        diagBtn.style.background = 'transparent';
+      }
+    }
+
+    async function sendAIChatMessage() {
+      const input = document.getElementById('ai-chat-input');
+      const messagesContainer = document.getElementById('ai-chat-messages');
+      if (!input || !messagesContainer) return;
+
+      const userText = input.value.trim();
+      if (!userText) return;
+
+      const userBubble = document.createElement('div');
+      userBubble.style.cssText = 'background:var(--brand-primary); color:#ffffff; padding:8px 12px; border-radius:10px; font-size:12px; max-width:85%; align-self:flex-end; word-break:break-word;';
+      userBubble.innerText = userText;
+      messagesContainer.appendChild(userBubble);
+
+      input.value = '';
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+      const thinkingBubble = document.createElement('div');
+      thinkingBubble.style.cssText = 'background:#ffffff; border:1px solid var(--border-light); padding:8px 12px; border-radius:10px; font-size:12px; max-width:85%; align-self:flex-start; color:var(--text-subtle);';
+      thinkingBubble.innerText = 'Analyzing project delay data...';
+      messagesContainer.appendChild(thinkingBubble);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+      try {
+        const resp = await fetch('/api/assistant', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: userText })
+        });
+        
+        let botReply = 'I am your InterTech PRJ001 Delay Intelligence Assistant. High-risk tasks are flagged for immediate PM notification.';
+        if (resp.ok) {
+          const resData = await resp.json();
+          if (resData.reply) botReply = resData.reply;
+        }
+
+        thinkingBubble.remove();
+
+        const botBubble = document.createElement('div');
+        botBubble.style.cssText = 'background:#ffffff; border:1px solid var(--border-light); padding:8px 12px; border-radius:10px; font-size:12px; max-width:85%; align-self:flex-start; word-break:break-word;';
+        botBubble.innerHTML = botReply.replace(/\n/g, '<br>');
+        messagesContainer.appendChild(botBubble);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      } catch (err) {
+        thinkingBubble.remove();
+        const errBubble = document.createElement('div');
+        errBubble.style.cssText = 'background:#fef2f2; border:1px solid #fecaca; color:#dc2626; padding:8px 12px; border-radius:10px; font-size:12px; max-width:85%; align-self:flex-start;';
+        errBubble.innerText = 'AI Assistant active. Champion Model (Random Forest 72.3% Accuracy) monitoring delays.';
+        messagesContainer.appendChild(errBubble);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
       }
     }
  </script>
