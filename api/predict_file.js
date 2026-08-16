@@ -113,7 +113,7 @@ export default async function handler(req, res) {
       tasksOut.push(taskObj);
 
       if (cat === 'HIGH' || cat === 'MEDIUM') {
-        mitigations.append ? mitigations.push({
+        mitigations.push({
           task_id: taskId,
           desc: desc,
           discipline: disc,
@@ -121,7 +121,7 @@ export default async function handler(req, res) {
           risk_cat: cat,
           score: score,
           action: action
-        }) : null;
+        });
       }
     });
 
