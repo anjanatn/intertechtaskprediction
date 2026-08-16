@@ -35,7 +35,7 @@ export default async function handler(req, res) {
     <body style="font-family: Arial, sans-serif; color: #0f172a; line-height: 1.6;">
         <div style="max-width: 650px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
             <div style="background: #dc2626; color: #ffffff; padding: 20px; text-align: center;">
-                <h2 style="margin: 0;">🚨 CRITICAL PM ALERT: High-Risk Task Delay Predicted</h2>
+                <h2 style="margin: 0;">CRITICAL PM ALERT: High-Risk Task Delay Predicted</h2>
                 <p style="margin: 5px 0 0 0; font-size: 14px;">InterTech Delay Intelligence Platform — Project PRJ001</p>
             </div>
             <div style="padding: 24px;">

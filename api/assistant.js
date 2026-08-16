@@ -74,7 +74,7 @@ Answer concisely with actionable recommendations.`;
         graphHtml += `
           <div style="margin-bottom:8px;">
             <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; margin-bottom:3px; color:#334155; font-weight:600;">
-              <span>${name}${isChamp ? ' <span style="background:#dcfce7; color:#15803d; font-size:9px; padding:1px 5px; border-radius:4px; font-weight:700; border:1px solid #bbf7d0;">★ Champion</span>' : ''}</span>
+              <span>${name}${isChamp ? ' <span style="background:#dcfce7; color:#15803d; font-size:9px; padding:1px 5px; border-radius:4px; font-weight:700; border:1px solid #bbf7d0;">Champion</span>' : ''}</span>
               <span style="font-family:\'JetBrains Mono\', monospace; font-weight:700; color:#0f172a;">${val.toFixed(1)}%</span>
             </div>
             <div style="height:7px; background:#e2e8f0; border-radius:4px; overflow:hidden;">
