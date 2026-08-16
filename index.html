@@ -1440,9 +1440,18 @@
       <div id="ai-panel-chat-content" style="display: none; flex-direction: column; flex: 1;">
         <div id="ai-chat-messages" style="flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: var(--bg-main);">
           <div style="background: #ffffff; border: 1px solid var(--border-light); padding: 10px 12px; border-radius: 10px; font-size: 12px; max-width: 85%;">
-            Hello! I am your <strong>InterTech PRJ001 Delay Intelligence AI Assistant</strong>. Ask me about high-risk tasks, model comparisons, or discipline delay rates!
+            Hello! I am your <strong>InterTech PRJ001 Delay Intelligence AI Assistant</strong>. Ask me a question or click any of the options below:
           </div>
         </div>
+
+        <!-- Quick Question Option Chips -->
+        <div style="padding: 8px 12px; background: #ffffff; border-top: 1px solid var(--border-light); display: flex; flex-wrap: wrap; gap: 6px; max-height: 105px; overflow-y: auto;">
+          <button onclick="askAIQuickPrompt('Which open tasks are at highest risk?')" style="background: var(--bg-subtle); border: 1px solid var(--border-medium); border-radius: 20px; padding: 4px 10px; font-size: 11px; font-weight: 600; color: var(--brand-primary); cursor: pointer; transition: all 0.15s ease;">Which open tasks are at highest risk?</button>
+          <button onclick="askAIQuickPrompt('Compare model metrics')" style="background: var(--bg-subtle); border: 1px solid var(--border-medium); border-radius: 20px; padding: 4px 10px; font-size: 11px; font-weight: 600; color: var(--brand-primary); cursor: pointer; transition: all 0.15s ease;">Compare model metrics</button>
+          <button onclick="askAIQuickPrompt('What is the delay rate by discipline?')" style="background: var(--bg-subtle); border: 1px solid var(--border-medium); border-radius: 20px; padding: 4px 10px; font-size: 11px; font-weight: 600; color: var(--brand-primary); cursor: pointer; transition: all 0.15s ease;">What is the delay rate by discipline?</button>
+          <button onclick="askAIQuickPrompt('What mitigation action is required for high risk tasks?')" style="background: var(--bg-subtle); border: 1px solid var(--border-medium); border-radius: 20px; padding: 4px 10px; font-size: 11px; font-weight: 600; color: var(--brand-primary); cursor: pointer; transition: all 0.15s ease;">Mitigation actions for high risk tasks</button>
+        </div>
+
         <div style="padding: 10px 12px; border-top: 1px solid var(--border-light); background: #ffffff; display: flex; gap: 8px;">
           <input type="text" id="ai-chat-input" placeholder="Ask AI Assistant..." style="flex: 1; padding: 8px 12px; border: 1px solid var(--border-medium); border-radius: 8px; font-size: 12px;" onkeypress="if(event.key==='Enter') sendAIChatMessage()">
           <button onclick="sendAIChatMessage()" class="btn btn-primary" style="padding: 8px 14px; font-size: 12px;">Send</button>
@@ -2619,6 +2628,14 @@
         diagBtn.style.color = 'var(--text-subtle)';
         diagBtn.style.borderBottom = '2px solid transparent';
         diagBtn.style.background = 'transparent';
+      }
+    }
+
+    function askAIQuickPrompt(promptText) {
+      const input = document.getElementById('ai-chat-input');
+      if (input) {
+        input.value = promptText;
+        sendAIChatMessage();
       }
     }
 
