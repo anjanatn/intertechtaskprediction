@@ -1352,14 +1352,12 @@
  </div>
 
  <div style="display:flex; align-items:center; gap:8px;">
- <button class="btn btn-primary" onclick="sendSMTPAlert()" style="background:#dc2626; border-color:#dc2626;" title="Send SMTP Email Alert to Project Manager">
- <span>Send SMTP Alert</span>
+ <button id="btn-notify-pm" class="btn btn-primary" onclick="sendSMTPAlert()" style="background:#dc2626; border-color:#dc2626; position:relative;" title="Notify Project Manager via SMTP Email Alert for High-Risk Delayed Tasks">
+ <span>Notify PM (SMTP Alert)</span>
+ <span id="notify-pm-badge" style="background:#ffffff; color:#dc2626; font-size:11px; font-weight:800; padding:1px 6px; border-radius:99px; margin-left:6px; display:none;">0</span>
  </button>
  <button class="btn btn-primary" onclick="exportImportedToExcel()" style="background:#16a34a; border-color:#16a34a;">
  <span>Export Excel (.xlsx)</span>
- </button>
- <button class="btn btn-primary" onclick="exportImportedPowerBI()" style="background:#d97706; border-color:#d97706;">
- <span>Power BI Ready</span>
  </button>
  </div>
  </div>
@@ -2153,6 +2151,22 @@
         });
       }
 
+      // Activate Notify PM option when test data predictions contain High Risk tasks
+      const notifyBtn = document.getElementById('btn-notify-pm');
+      const notifyBadge = document.getElementById('notify-pm-badge');
+      if (data.meta.high_risk_count > 0) {
+        if (notifyBadge) {
+          notifyBadge.innerText = data.meta.high_risk_count + ' High Risk';
+          notifyBadge.style.display = 'inline-block';
+        }
+        if (notifyBtn) {
+          notifyBtn.style.boxShadow = '0 0 12px rgba(220, 38, 38, 0.6)';
+        }
+      } else {
+        if (notifyBadge) notifyBadge.style.display = 'none';
+        if (notifyBtn) notifyBtn.style.boxShadow = 'none';
+      }
+
       filterImportedTasks();
     }
 
@@ -2188,6 +2202,17 @@
           driversHTML = t.shap_drivers.map(d => `<span style="display:inline-block; font-size:11px; background:var(--bg-subtle); padding:2px 6px; border-radius:4px; margin-right:4px;">${d.feature}</span>`).join('');
         }
 
+        let actionHTML = `<span style="font-size:12px; font-weight:600; color:var(--text-main);">${t.action}</span>`;
+        if (t.cat === 'HIGH') {
+          actionHTML = `
+            <div style="display:flex; flex-direction:column; gap:4px;">
+              <span style="font-size:11px; font-weight:700; color:#dc2626;">NOTIFY_PM + REALLOCATE</span>
+              <button onclick="sendSMTPAlert('${t.id}')" class="btn btn-primary" style="background:#dc2626; border-color:#dc2626; padding:3px 8px; font-size:11px; width:fit-content;">
+                <span>Notify PM</span>
+              </button>
+            </div>`;
+        }
+
         tr.innerHTML = `
  <td style="font-family:'JetBrains Mono', monospace; font-weight:600; color:var(--brand-primary);">${t.id}</td>
  <td style="font-weight:600; color:var(--text-main);">${t.desc}</td>
@@ -2199,7 +2224,7 @@
  <td style="font-weight:700; font-family:'JetBrains Mono', monospace; color:${t.score > 60 ? 'var(--high-text)' : (t.score > 35 ? 'var(--med-text)' : 'var(--brand-primary)')}">${t.score}%</td>
  <td><span class="pill ${pillClass}">${t.cat} RISK</span></td>
  <td>${driversHTML}</td>
- <td style="font-size:12px; font-weight:600; color:var(--text-main);">${t.action}</td>
+ <td>${actionHTML}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -2448,14 +2473,20 @@
       }
     }
 
-    async function sendSMTPAlert() {
-      const highRiskTasks = (globalImportedData && globalImportedData.tasks ? globalImportedData.tasks : (globalData ? globalData.tasks : [])).filter(t => t.cat === 'HIGH');
-      if (!highRiskTasks.length) {
-        alert('No High-Risk tasks currently flagged for delay.');
+    /* SMTP PM EMAIL ALERT INTEGRATION */
+    async function sendSMTPAlert(taskId) {
+      const allHighRisk = (globalImportedData && globalImportedData.tasks ? globalImportedData.tasks : (globalData ? globalData.tasks : [])).filter(t => t.cat === 'HIGH');
+      let targetTasks = allHighRisk;
+      if (taskId) {
+        targetTasks = (globalImportedData && globalImportedData.tasks ? globalImportedData.tasks : (globalData ? globalData.tasks : [])).filter(t => t.id === taskId);
+      }
+      
+      if (!targetTasks.length) {
+        alert('No High-Risk tasks currently flagged for PM notification.');
         return;
       }
 
-      const managerEmail = prompt('Enter Manager Email Address for SMTP Alert:', 'pm.intertech@gmail.com');
+      const managerEmail = prompt(`Enter Manager Email Address to Notify PM for ${targetTasks.length} High-Risk task(s):`, 'pm.intertech@gmail.com');
       if (!managerEmail) return;
 
       try {
@@ -2463,14 +2494,14 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            tasks: highRiskTasks,
+            tasks: targetTasks,
             recipient: managerEmail
           })
         });
         const resData = await resp.json();
-        alert(` SMTP Email Notification:\n\n${resData.message}\nRecipient: ${managerEmail}`);
+        alert(`PM Email Notification Dispatched:\n\n${resData.message}\nRecipient: ${managerEmail}\nHigh-Risk Tasks Notified: ${targetTasks.length}`);
       } catch (e) {
-        alert(` SMTP Alert Generated for PM (${managerEmail}) for ${highRiskTasks.length} High-Risk task(s).`);
+        alert(`PM Notification Generated for Manager (${managerEmail}) for ${targetTasks.length} High-Risk task(s).`);
       }
     }
  </script>
