@@ -1,0 +1,83 @@
+{
+  "name": "InterTech PRJ001 — High Risk Project Delay & PM SMTP Alert Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "high-risk-delay-alert",
+        "options": {}
+      },
+      "name": "Webhook Trigger (High Risk Delay)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "manager_email",
+              "value": "pm.intertech@gmail.com"
+            },
+            {
+              "name": "subject",
+              "value": "🚨 URGENT: High-Risk Project Delay Alert from InterTech Platform"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set PM Notification Meta",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "alerts@intertech.com",
+        "toEmail": "={{ $json.manager_email }}",
+        "subject": "={{ $json.subject }}",
+        "html": "<h2>🚨 CRITICAL PM ALERT: High-Risk Task Delay Predicted</h2><p>The InterTech ML Engine has flagged high-risk task completion delays.</p><p><strong>Mitigation Strategy:</strong> NOTIFY_PM + REALLOCATE_RESOURCE (Reallocate senior employee from closed or medium risk project immediately).</p>",
+        "options": {}
+      },
+      "name": "SMTP Email Node (Send PM Alert)",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        680,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger (High Risk Delay)": {
+      "main": [
+        [
+          {
+            "node": "Set PM Notification Meta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set PM Notification Meta": {
+      "main": [
+        [
+          {
+            "node": "SMTP Email Node (Send PM Alert)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

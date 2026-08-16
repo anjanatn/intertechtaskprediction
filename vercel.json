@@ -5,6 +5,9 @@
   "rewrites": [
     { "source": "/api/data", "destination": "/api/data.js" },
     { "source": "/api/run", "destination": "/api/run.js" },
+    { "source": "/api/predict_file", "destination": "/api/predict_file.js" },
+    { "source": "/api/send_email", "destination": "/api/send_email.js" },
+    { "source": "/api/n8n_webhook", "destination": "/api/n8n_webhook.js" },
     { "source": "/api/assistant", "destination": "/api/assistant.js" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],

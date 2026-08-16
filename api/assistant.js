@@ -59,10 +59,34 @@ Answer concisely with actionable recommendations.`;
     } else if (lower.includes("model") || lower.includes("xgboost") || lower.includes("random forest") || lower.includes("algorithm") || lower.includes("compare")) {
       const champ = meta.champion || 'Random Forest';
       const cvData = meta.cv_accuracy || {};
-      reply = `**ML Model Comparison (${meta.cv_method || '5-Fold CV'}):**\n` +
-        Object.entries(cvData).sort((a, b) => (b[1].f1 || 0) - (a[1].f1 || 0))
-          .map(([name, metrics]) => `- **${name}${name === champ ? ' (Champion)' : ''}**: F1 ${metrics.f1 ?? '-'}%, AUC ${metrics.auc ?? '-'}%, Accuracy ${metrics.mean ?? '-'}%, Precision ${metrics.precision ?? '-'}%, Recall ${metrics.recall ?? '-'}%, MCC ${metrics.mcc ?? '-'}`)
-          .join('\n') + `\n\n*All available models are shown. Champion is selected by F1 score.*`;
+      const sorted = Object.entries(cvData).sort((a, b) => (Number(b[1]?.f1 || 0) - Number(a[1]?.f1 || 0)));
+
+      let graphHtml = `<div class="ai-inline-graph" style="margin-top:12px; padding:12px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+        <div style="font-weight:700; font-size:11.5px; margin-bottom:10px; color:#0f172a; display:flex; justify-content:space-between; align-items:center;">
+          <span>Model F1 Score Comparison</span>
+          <span style="font-size:10px; color:#0284c7; font-weight:600;">5-Fold Stratified CV</span>
+        </div>`;
+
+      sorted.forEach(([name, m]) => {
+        const val = Number(m.f1 || 0);
+        const pct = Math.min(Math.max(Math.round(val), 6), 100);
+        const isChamp = name === champ;
+        graphHtml += `
+          <div style="margin-bottom:8px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; margin-bottom:3px; color:#334155; font-weight:600;">
+              <span>${name}${isChamp ? ' <span style="background:#dcfce7; color:#15803d; font-size:9px; padding:1px 5px; border-radius:4px; font-weight:700; border:1px solid #bbf7d0;">★ Champion</span>' : ''}</span>
+              <span style="font-family:\'JetBrains Mono\', monospace; font-weight:700; color:#0f172a;">${val.toFixed(1)}%</span>
+            </div>
+            <div style="height:7px; background:#e2e8f0; border-radius:4px; overflow:hidden;">
+              <div style="height:100%; width:${pct}%; background:${isChamp ? 'linear-gradient(90deg, #10b981, #34d399)' : 'linear-gradient(90deg, #0284c7, #38bdf8)'}; border-radius:4px;"></div>
+            </div>
+          </div>`;
+      });
+      graphHtml += `</div>`;
+
+      reply = `**ML Model Comparison (${meta.cv_method || '5-Fold Stratified CV'}):**\n\n` +
+        sorted.map(([name, metrics]) => `- **${name}${name === champ ? ' (Champion)' : ''}**: F1 **${metrics.f1 ?? '-'}%**, AUC **${metrics.auc ?? '-'}%**, Accuracy **${metrics.mean ?? '-'}%**, Precision **${metrics.precision ?? '-'}%**, Recall **${metrics.recall ?? '-'}%**, MCC **${metrics.mcc ?? '-'}**`).join('\n') +
+        `\n\n` + graphHtml + `\n\n*All available models are shown. Champion is selected by F1 score.*`;
     } else if (lower.includes("delay rate") || lower.includes("discipline") || lower.includes("site") || lower.includes("mep")) {
       reply = `**Discipline Delay Rate Breakdown:**\n` +
         Object.entries(dashboardData.disc_stats || {}).map(([disc, info]) => `- **${disc}**: ${info.rate}% historical delay rate (${info.delayed}/${info.total} completed tasks delayed)`).join("\n");

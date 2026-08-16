@@ -1,0 +1,2 @@
+﻿Line 6221: U+2605 [Γÿà] => ${isChamp ? '<span class="champ-badge">Γÿà</span>' : ''}
+Line 6350: U+2605 [Γÿà] => <div class="ai-model-matrix-row-name">${escapeAIText(name)}${name === meta.champion ? ' Γÿà' : ''}</di

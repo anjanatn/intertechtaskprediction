@@ -1,0 +1,44 @@
+﻿Line 9: <meta property="og:title" content="InterTechΓäó | Task Prediction & Delay Intelligence Platform">
+Line 11: <title>InterTechΓäó | Task Prediction & Delay Intelligence Platform</title>
+Line 46: /* RED ΓÇö High Priority / Delayed / High Risk */
+Line 52: /* YELLOW ΓÇö Medium Priority / At Risk */
+Line 58: /* GREEN ΓÇö Low Priority / On-Time / Low Risk */
+Line 64: /* BLUE ΓÇö Open / In-Progress */
+Line 97: /* ΓöÇΓöÇ MINIMAL TOP BAR ΓöÇΓöÇ */
+Line 165: /* URL Chip ΓÇö Vercel domain display */
+Line 306: /* ΓöÇΓöÇ SUB-NAV / TABS ΓöÇΓöÇ */
+Line 366: /* ΓöÇΓöÇ MAIN LAYOUT ΓöÇΓöÇ */
+Line 387: /* ΓöÇΓöÇ EXECUTIVE BANNER ΓöÇΓöÇ */
+Line 430: /* ΓöÇΓöÇ KPI EXECUTIVE GRID ΓöÇΓöÇ */
+Line 505: /* ΓöÇΓöÇ PANELS & CHARTS ΓöÇΓöÇ */
+Line 707: /* ΓöÇΓöÇ ML MODELS BENCHMARK STRIP ΓöÇΓöÇ */
+Line 775: /* ΓöÇΓöÇ FILTER TOOLBAR ΓöÇΓöÇ */
+Line 874: /* ΓöÇΓöÇ MINIMAL DATA TABLE ΓöÇΓöÇ */
+Line 959: /* ΓöÇΓöÇ STRICT PRIORITY & STATUS PILLS ΓöÇΓöÇ */
+Line 1056: /* ΓöÇΓöÇ MITIGATION VIEW ΓöÇΓöÇ */
+Line 1198: /* ΓöÇΓöÇ SIMULATOR ΓöÇΓöÇ */
+Line 1303: /* ΓöÇΓöÇ SLIDE-OVER DRAWER ΓöÇΓöÇ */
+Line 1455: <strong id="header-project-id">PRJ001 ┬╖ HQ Tower</strong>
+Line 1459: <span>ML Active ┬╖ 5-Fold CV</span>
+Line 1519: <!-- ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+Line 1521: ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ -->
+Line 1532: <div class="kpi-footer">27 Closed ┬╖ 8 Active Open</div>
+Line 1626: <!-- ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+Line 1628: ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ -->
+Line 1688: <!-- ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+Line 1690: ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ -->
+Line 1699: <span>Critical Risk Tier (ΓëÑ70%)</span>
+Line 1750: <!-- ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+Line 1752: ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ -->
+Line 1838: <!-- ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+Line 1840: ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ -->
+Line 1867: <strong style="color:var(--red-text);">High Risk (ΓëÑ 70%):</strong> PM alert + employee reallocation from completed tasks
+Line 1883: <!-- ΓöÇΓöÇ TASK DETAIL SLIDE-OVER DRAWER ΓöÇΓöÇ -->
+Line 2116: if (syncEl) syncEl.innerText = `Synced: ${new Date().toLocaleTimeString()} ┬╖ Live`;
+Line 2261: ${isChamp ? `<span class="champion-tag">Champion${calibrated ? ' ┬╖ Calibrated' : ''}</span>` : ''}
+Line 2360: <td style="font-family:'JetBrains Mono', monospace; font-size:11.5px;">${t.hours || 'ΓÇö'} hrs</td>
+Line 2400: <div class="mit-task-meta">${t.disc} ┬╖ ${t.location || 'Site'} ┬╖ ${t.hours} hrs</div>
+Line 2415: <div class="mit-task-meta">${t.disc} ┬╖ ${t.location || 'Site'} ┬╖ ${t.hours} hrs</div>
+Line 2430: <div class="mit-task-meta">${t.disc} ┬╖ ${t.location || 'Site'} ┬╖ ${t.hours} hrs</div>
+Line 2486: badgeEl.innerText = 'HIGH RISK TIER (ΓëÑ70%)';
+Line 2530: document.getElementById('drawer-days').innerText = `${task.planned_days || 'ΓÇö'} days`;

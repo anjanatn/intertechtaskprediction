@@ -1,0 +1,9 @@
+TaskID,Description,ProjectDiscipline,Priority,Risk,Hours,Created,Target,Status,Location
+PRJ-TASK-001,HVAC Ductwork & Chiller Unit Installation,HVAC,High,High,120,2026-08-01,2026-08-15,Open,Building A - Level 3
+PRJ-TASK-002,Main Electrical Panel Wiring & Transformer Load Test,Electrical,High,Medium,85,2026-08-03,2026-08-12,Open,Substation 2
+PRJ-TASK-003,Structural Steel Column Reinforcement & Welding,Structural,Medium,High,160,2026-08-02,2026-08-20,Open,Podium Deck
+PRJ-TASK-004,Plumbing Main Riser Hydrostatic Pressure Testing,Plumbing,Medium,Low,32,2026-08-05,2026-08-10,Open,Core Shaft West
+PRJ-TASK-005,Architectural Drywall Partition Framing & Inspection,Architecture,Low,Low,45,2026-08-04,2026-08-14,Open,Level 1 Executive Lounge
+PRJ-TASK-006,Foundation Concrete Pouring & Curing Audit,Civil,High,High,200,2026-08-01,2026-08-18,Open,Basement B2
+PRJ-TASK-007,Fire Suppression Sprinkler Valve Calibration,Mechanical,Medium,Medium,50,2026-08-06,2026-08-13,Open,Mechanical Room 4
+PRJ-TASK-008,BEMS Automation Controller Commissioning,Electrical,Low,Medium,64,2026-08-05,2026-08-16,Open,Control Center
