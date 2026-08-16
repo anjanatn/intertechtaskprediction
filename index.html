@@ -768,42 +768,32 @@
 
 <body>
 
- <!-- TOP APP BAR -->
- <header class="app-header">
- <div class="brand-group">
- <a href="#" class="brand-logo">
- <div class="brand-badge-icon">IT</div>
- <span>InterTech</span>
- </a>
- <div class="project-pill">
- <span>Project:</span>
- <strong id="header-project-id">PRJ001 | HQ Tower</strong>
- </div>
- <div class="live-status">
- <div class="pulse-dot"></div>
- <span>AI Prediction Active</span>
- </div>
- </div>
+  <!-- TOP APP APP BAR -->
+  <header class="app-header">
+    <div class="brand-group">
+      <a href="#" class="brand-logo">
+        <div class="brand-badge-icon">IT</div>
+        <span>InterTech</span>
+      </a>
+      <div class="live-status">
+        <div class="pulse-dot"></div>
+        <span>AI Prediction Active</span>
+      </div>
+    </div>
 
- <div class="header-actions">
- <a href="/public/InterTech_Project_Delay_Prediction_Solution.pbix.xlsx" download="InterTech_Project_Delay_Prediction_Solution.pbix.xlsx" class="btn btn-primary" style="background: linear-gradient(135deg, #d97706, #b45309); border-color: #d97706;">
- <span>Power BI Solution (.pbix)</span>
- </a>
- <button class="btn btn-primary" style="background: linear-gradient(135deg, #0284c7, #0369a1); border-color: #0284c7;" onclick="switchView('import', document.getElementById('tab-nav-import'))">
- <span>Import File & Predict</span>
- </button>
- <button class="btn btn-secondary" onclick="exportDataCSV()">
- <span>Export CSV</span>
- </button>
- <button class="btn btn-secondary" onclick="window.print()">
- <span>Print Report</span>
- </button>
- <button class="btn btn-primary" id="btn-sync-ml" onclick="triggerMLRetrain()">
- <span id="sync-spinner"></span>
- <span>Re-Train ML Model</span>
- </button>
- </div>
- </header>
+    <div class="header-actions">
+      <button class="btn btn-secondary" onclick="exportDataCSV()">
+        <span>Export</span>
+      </button>
+      <button class="btn btn-secondary" onclick="window.print()">
+        <span>Print</span>
+      </button>
+      <button class="btn btn-primary" id="btn-sync-ml" onclick="triggerMLRetrain()">
+        <span id="sync-spinner"></span>
+        <span>Retrain</span>
+      </button>
+    </div>
+  </header>
 
  <!-- NAVIGATION TABS -->
  <nav class="nav-bar">
