@@ -6016,6 +6016,9 @@ function calculateWhatIfRisk(params) {
   return { score, tier, drivers, warnings, mitigation, mitigationColor, hrsPerDay, followUps };
 }
 
+// --- Pending scenario slot (avoids unsafe inline JSON in onclick attributes) ---
+let _pendingSimSlot = null;
+
 // --- Render simulator result as a rich chat bubble (returns DOM element) ---
 function renderWhatIfBubble(params, result, scenarioNum) {
   const { disc, priority, risk, hours, days } = params;
@@ -6026,6 +6029,9 @@ function renderWhatIfBubble(params, result, scenarioNum) {
   const hpdSafe = 8.5;
   const hpdPct = Math.min((hrsPerDay / 17) * 100, 100);
   const thresholdPct = (hpdSafe / 17) * 100;
+
+  // Store params + result in the pending slot so Save button can retrieve them safely
+  _pendingSimSlot = { params, result: { score, tier, hrsPerDay } };
 
   const bubble = document.createElement('div');
   bubble.style.cssText = 'background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:14px; font-size:12px; max-width:96%; align-self:flex-start; overflow:hidden; word-break:break-word; line-height:1.6; margin-bottom:4px;';
@@ -6100,7 +6106,7 @@ function renderWhatIfBubble(params, result, scenarioNum) {
 
     <!-- Export + Save buttons -->
     <div style="padding:8px 14px; background:#f8fafc; display:flex; gap:6px; flex-wrap:wrap; border-bottom:1px solid #e2e8f0;">
-      <button onclick="saveSimScenario(${JSON.stringify(params).replace(/"/g,'&quot;')}, ${JSON.stringify({score,tier,hrsPerDay}).replace(/"/g,'&quot;')})" style="background:#2563eb; border:none; color:#fff; font-size:10.5px; font-weight:700; padding:5px 10px; border-radius:6px; cursor:pointer;">💾 Save Scenario</button>
+      <button id="btn-save-sim-scenario" style="background:#2563eb; border:none; color:#fff; font-size:10.5px; font-weight:700; padding:5px 10px; border-radius:6px; cursor:pointer;">💾 Save Scenario</button>
       <button onclick="exportScenariosToExcel()" style="background:#16a34a; border:none; color:#fff; font-size:10.5px; font-weight:700; padding:5px 10px; border-radius:6px; cursor:pointer;">📊 Export Excel</button>
       <button onclick="exportScenariosToPDF()" style="background:#7c3aed; border:none; color:#fff; font-size:10.5px; font-weight:700; padding:5px 10px; border-radius:6px; cursor:pointer;">📄 Export PDF</button>
     </div>
@@ -6114,6 +6120,16 @@ function renderWhatIfBubble(params, result, scenarioNum) {
       </div>
     </div>
   `;
+
+  // Safely wire Save button via addEventListener (avoids broken inline JSON in onclick)
+  requestAnimationFrame(() => {
+    const saveBtn = bubble.querySelector('#btn-save-sim-scenario');
+    if (saveBtn && _pendingSimSlot) {
+      const snapshot = _pendingSimSlot;
+      saveBtn.addEventListener('click', () => saveSimScenario(snapshot.params, snapshot.result));
+    }
+  });
+
   return bubble;
 }
 
@@ -6355,22 +6371,29 @@ async function sendAIChatMessage() {
     return;
   }
 
-  // --- Standard assistant path (API → fallback) ---
+  // --- Standard assistant path (API → fallback with 8s timeout) ---
   let botReply = '';
   const citation = activeAssistantDatasetMode === 'test' ? 'Imported Predictions (Test Data)' : 'Historical Project Dataset (Train Data)';
 
   try {
-    const resp = await fetch('/api/assistant', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: userText, dataset_mode: activeAssistantDatasetMode, tasks })
-    });
-    if (resp.ok) {
-      const data = await resp.json();
-      botReply = data.reply;
+    const controller = new AbortController();
+    const apiTimeout = setTimeout(() => controller.abort(), 8000);
+    try {
+      const resp = await fetch('/api/assistant', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userText, dataset_mode: activeAssistantDatasetMode, tasks }),
+        signal: controller.signal
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        botReply = data.reply;
+      }
+    } finally {
+      clearTimeout(apiTimeout);
     }
   } catch (err) {
-    console.warn("API assistant fetch warning, using local fallback", err);
+    console.warn('API assistant fetch warning, using local fallback', err);
   }
 
   if (!botReply) {
