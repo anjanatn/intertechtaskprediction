@@ -1305,8 +1305,8 @@
 
  </div>
 
- </div>
- </section>
+  </div>
+   </section>
 
  <!-- VIEW 1: EXECUTIVE OVERVIEW -->
  <section id="view-overview" class="tab-view active">
@@ -2723,8 +2723,33 @@
  <span class="pill pill-med">41% Risk</span>
  </div>
  <div class="mit-action-box">Weekly Sync • Verify Sub-contractor Deliverables</div>
-</div></div>
+ </div></div>
  </div>
+ </div>
+
+ <div class="card" style="margin-top:20px; overflow-x:auto;">
+   <div class="card-header">
+     <div>
+       <h2 class="card-title">Employee Assignment &amp; Reallocation Roster</h2>
+       <p style="font-size:12px; color:var(--text-subtle); margin-top:4px;">A visible simulation of each available employee moving from a completed assignment to a high-risk task.</p>
+     </div>
+     <span class="pill pill-med">SIMULATED STAFFING</span>
+   </div>
+   <table style="width:100%; min-width:760px; border-collapse:collapse; font-size:12px; margin-top:8px;">
+     <thead>
+       <tr style="background:#f8fafc; color:#475569; text-align:left;">
+         <th style="padding:10px; border-bottom:2px solid #e2e8f0;">Employee</th>
+         <th style="padding:10px; border-bottom:2px solid #e2e8f0;">Released from (closed)</th>
+         <th style="padding:10px; border-bottom:2px solid #e2e8f0;">Availability</th>
+         <th style="padding:10px; border-bottom:2px solid #e2e8f0;">Reassigned to (high risk)</th>
+         <th style="padding:10px; border-bottom:2px solid #e2e8f0;">Action</th>
+       </tr>
+     </thead>
+     <tbody id="employee-reallocation-roster">
+       <tr><td colspan="5" style="padding:14px; color:#64748b; text-align:center;">Loading baseline roster…</td></tr>
+     </tbody>
+   </table>
+   <p style="font-size:11px; color:#64748b; margin:10px 0 0;">Demonstration only: assignments are calculated from the bundled baseline dataset and do not change live staffing records.</p>
  </div>
  </section>
 
@@ -3748,33 +3773,56 @@
  let filteredTasks = [];
  let displayedTaskCount = 50;
 
- document.addEventListener("DOMContentLoaded", () => {
- if (window.INITIAL_DASHBOARD_DATA) {
- globalData = window.INITIAL_DASHBOARD_DATA;
- renderDashboard(globalData);
- }
- fetchData();
- });
+  document.addEventListener("DOMContentLoaded", () => {
+  if (window.INITIAL_DASHBOARD_DATA) {
+  globalData = window.INITIAL_DASHBOARD_DATA;
+  renderDashboard(globalData);
+  }
+  fetchData();
+  });
 
- async function fetchData() {
- const endpoints = ['/api/data', './dashboard_data.json', './public/dashboard_data.json'];
- let data = null;
+  const SIMULATED_EMPLOYEES = ['Asha Verma', 'Dev Kapoor', 'Lakshmi Iyer', 'Meena Pillai', 'Priya Nair', 'Rajan Mehta', 'Suresh Kumar', 'Vikram Shah'];
+
+  function hasUsableBaselineData(data) {
+  return Boolean(data && Array.isArray(data.tasks) && data.tasks.length >= 1000 && data.meta && Number(data.meta.total_tasks) >= 1000);
+  }
+
+  function ensureTaskAssignments(data) {
+  if (!data || !Array.isArray(data.tasks)) return;
+  data.tasks.forEach((task, index) => {
+  if (!task.assigned_to || task.assigned_to === 'Employee') {
+  task.assigned_to = SIMULATED_EMPLOYEES[index % SIMULATED_EMPLOYEES.length];
+  task.capacity_hours = task.capacity_hours || 40;
+  task.assignment_simulated = true;
+  }
+  });
+  }
+
+  async function fetchData() {
+  // Load the bundled baseline first so the public dashboard has populated metrics before any import.
+  const endpoints = ['/dashboard_data.json', '/api/data'];
+  let data = null;
 
  for (let url of endpoints) {
  try {
  const resp = await fetch(url);
- if (resp.ok) {
- data = await resp.json();
- break;
+  if (resp.ok) {
+  const candidate = await resp.json();
+  if (hasUsableBaselineData(candidate)) {
+  data = candidate;
+  break;
+  }
+  console.warn('Ignoring incomplete dashboard payload from ' + url);
  }
  } catch (e) {
  console.warn("Fetch failed for " + url, e);
  }
  }
 
- if (data) {
- globalData = data;
- renderDashboard(data);
+  if (data) {
+  ensureTaskAssignments(data);
+  globalData = data;
+  renderDashboard(data);
  } else if (!globalData && window.INITIAL_DASHBOARD_DATA) {
  globalData = window.INITIAL_DASHBOARD_DATA;
  renderDashboard(globalData);
@@ -3783,7 +3831,8 @@
  }
  }
 
- function renderDashboard(d) {
+  function renderDashboard(d) {
+  ensureTaskAssignments(d);
  // 1. KPI Render
  if (d.meta) {
  document.getElementById("kpi-total-tasks").innerText = d.meta.total_tasks || 1000;
@@ -3881,10 +3930,11 @@
  });
  d.employeeMap = empMap;
  }
- renderTasksTable();
- renderHighRiskAlerts();
- renderMitigationHub();
- }
+  renderTasksTable();
+  renderHighRiskAlerts();
+  renderMitigationHub();
+  renderEmployeeReallocationRoster();
+  }
 
  // 5. Diagnostics Leaderboard
  if (d.meta && d.meta.cv_accuracy) {
@@ -3912,7 +3962,7 @@
  return rootCauseNeedsSiteInspection(task) ? 'Not detected — site inspection required' : task.root_cause;
  }
 
- function siteInspectionMeetingAction(task, compact = false) {
+  function siteInspectionMeetingAction(task, compact = false) {
  const spacing = compact ? 'gap:3px;' : 'gap:6px;';
  const padding = compact ? '3px 8px' : '6px 10px';
  const fontSize = compact ? '11px' : '12px';
@@ -3922,10 +3972,65 @@
  <button type="button" class="btn" onclick="event.stopPropagation(); sendScheduleMeetingAlert('${task.id}')" style="background:#b45309; border:none; color:#fff; padding:${padding}; font-size:${fontSize}; font-weight:700; border-radius:6px; cursor:pointer;">
  Schedule Site Inspection Meeting
  </button>
- </div>`;
- }
+  </div>`;
+  }
 
- function renderTasksTable() {
+  function getReallocCandidates(targetTask, employeeMap) {
+  const activeData = (globalImportedData && globalImportedData.tasks) ? globalImportedData : globalData;
+  const tasks = activeData && Array.isArray(activeData.tasks) ? activeData.tasks : [];
+  const closedCandidates = tasks
+  .filter(task => String(task.status || '').toLowerCase() === 'closed' && task.cat !== 'HIGH')
+  .sort((a, b) => Number(a.score || 0) - Number(b.score || 0));
+  const matchingDiscipline = closedCandidates.filter(task => task.disc === targetTask.disc);
+  const sources = matchingDiscipline.length ? matchingDiscipline : closedCandidates;
+  const usedEmployees = new Set();
+  return sources.filter(source => {
+  const employee = source.assigned_to || 'Available employee';
+  if (usedEmployees.has(employee)) return false;
+  usedEmployees.add(employee);
+  return true;
+  }).slice(0, 5).map(source => ({
+  name: source.assigned_to || 'Available employee',
+  sourceTask: source,
+  availableHours: source.capacity_hours || (employeeMap && employeeMap[source.assigned_to] && employeeMap[source.assigned_to].capacity) || 40,
+  targetTask
+  }));
+  }
+
+  function buildReallocHTML(candidates, limit = 3) {
+  if (!candidates || !candidates.length) return '';
+  return `<div style="display:flex; flex-direction:column; gap:5px; margin-top:7px;">${candidates.slice(0, limit).map(candidate => `
+  <div style="padding:6px 8px; background:#fff7ed; border:1px solid #fed7aa; border-radius:6px; font-size:11px; color:#9a3412;">
+  <strong>${candidate.name}</strong> — reallocate from <span class="task-id-code" style="font-size:10px;">${candidate.sourceTask.id}</span> (${candidate.sourceTask.desc}, Closed) to <span class="task-id-code" style="font-size:10px;">${candidate.targetTask.id}</span> (High Risk)
+  </div>`).join('')}</div>`;
+  }
+
+  function renderEmployeeReallocationRoster() {
+  const roster = document.getElementById('employee-reallocation-roster');
+  const activeData = (globalImportedData && globalImportedData.tasks) ? globalImportedData : globalData;
+  if (!roster || !activeData || !Array.isArray(activeData.tasks)) return;
+  const targets = activeData.tasks.filter(task => ['open', 'in progress'].includes(String(task.status || '').toLowerCase()) && task.cat === 'HIGH');
+  const sources = activeData.tasks
+  .filter(task => String(task.status || '').toLowerCase() === 'closed' && task.cat !== 'HIGH')
+  .sort((a, b) => Number(a.score || 0) - Number(b.score || 0));
+  if (!targets.length || !sources.length) {
+  roster.innerHTML = '<tr><td colspan="5" style="padding:14px; color:#64748b; text-align:center;">No completed-to-high-risk reassignment is currently available.</td></tr>';
+  return;
+  }
+  roster.innerHTML = targets.slice(0, 6).map((target, index) => {
+  const source = sources[index % sources.length];
+  const employee = source.assigned_to || SIMULATED_EMPLOYEES[index % SIMULATED_EMPLOYEES.length];
+  return `<tr>
+  <td style="padding:10px; border-bottom:1px solid #e2e8f0; font-weight:700; color:#0f172a;">${employee}</td>
+  <td style="padding:10px; border-bottom:1px solid #e2e8f0;"><span class="task-id-code">${source.id}</span> — ${source.desc} <span class="pill pill-closed" style="font-size:10px; margin-left:4px;">CLOSED</span></td>
+  <td style="padding:10px; border-bottom:1px solid #e2e8f0; color:#166534; font-weight:700;">${source.capacity_hours || 40}h/week released</td>
+  <td style="padding:10px; border-bottom:1px solid #e2e8f0;"><span class="task-id-code">${target.id}</span> — ${target.desc} <span class="pill pill-high" style="font-size:10px; margin-left:4px;">${Math.round(target.score || 0)}% RISK</span></td>
+  <td style="padding:10px; border-bottom:1px solid #e2e8f0;"><button type="button" class="btn" onclick="openDrawerById('${target.id}')" style="padding:4px 8px; background:#dc2626; border:none; color:#fff; font-size:10px;">Reallocate ${employee}</button></td>
+  </tr>`;
+  }).join('');
+  }
+
+  function renderTasksTable() {
  const tbody = document.getElementById("task-table-body");
  if (!tbody) return;
  tbody.innerHTML = "";
