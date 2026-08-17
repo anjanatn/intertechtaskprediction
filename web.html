@@ -6813,5 +6813,298 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
 
  });
  </script>
+
+  /* =========================================================================
+       ANTIGRAVITY ENHANCEMENTS: SANDBOX, ROI, JIRA, MODEL REGISTRY, SITE VIEW
+       ========================================================================= */
+    let appMode = 'production'; // 'production' | 'sandbox'
+    let sandboxThreshold = 70;
+
+    function setAppMode(mode) {
+      appMode = mode;
+      const btnProd = document.getElementById("btn-mode-prod");
+      const btnSand = document.getElementById("btn-mode-sandbox");
+      const banner = document.getElementById("sandbox-banner");
+
+      if (mode === 'sandbox') {
+        if (btnProd) { btnProd.classList.remove("active"); btnProd.style.background = "transparent"; btnProd.style.color = "#94a3b8"; }
+        if (btnSand) { btnSand.classList.add("active"); btnSand.style.background = "#6366f1"; btnSand.style.color = "#ffffff"; }
+        if (banner) banner.style.display = "flex";
+      } else {
+        if (btnSand) { btnSand.classList.remove("active"); btnSand.style.background = "transparent"; btnSand.style.color = "#94a3b8"; }
+        if (btnProd) { btnProd.classList.add("active"); btnProd.style.background = "#2563eb"; btnProd.style.color = "#ffffff"; }
+        if (banner) banner.style.display = "none";
+        sandboxThreshold = 70;
+      }
+      reclassifyTasksAndRender();
+    }
+
+    function updateSandboxThreshold(val) {
+      sandboxThreshold = parseInt(val, 10);
+      const disp = document.getElementById("threshold-val-display");
+      if (disp) disp.innerText = val + "%";
+      reclassifyTasksAndRender();
+    }
+
+    function reclassifyTasksAndRender() {
+      if (!globalData || !globalData.tasks) return;
+      
+      const cutoff = appMode === 'sandbox' ? sandboxThreshold : 70;
+      let highCount = 0, medCount = 0, lowCount = 0;
+
+      globalData.tasks.forEach(t => {
+        if (t.score >= cutoff) {
+          t.cat = 'HIGH';
+          t.action = 'NOTIFY_PM + REALLOCATE_RESOURCE';
+          highCount++;
+        } else if (t.score >= 40) {
+          t.cat = 'MEDIUM';
+          t.action = 'SCHEDULE_STATUS_MEETING';
+          medCount++;
+        } else {
+          t.cat = 'LOW';
+          t.action = 'MONITOR_WEEKLY';
+          lowCount++;
+        }
+      });
+
+      if (document.getElementById("view-overview") && document.getElementById("view-overview").classList.contains("active")) renderDashboard(globalData);
+      if (document.getElementById("view-tasks") && document.getElementById("view-tasks").classList.contains("active")) renderTasksTable();
+      if (document.getElementById("view-mitigation") && document.getElementById("view-mitigation").classList.contains("active")) renderMitigationHub();
+      if (document.getElementById("view-siteview") && document.getElementById("view-siteview").classList.contains("active")) renderSiteView();
+      calculateROI();
+    }
+
+    function calculateROI() {
+      const costPerDay = parseFloat(document.getElementById("roi-cost-per-day")?.value || 5000);
+      const costPerIntervention = parseFloat(document.getElementById("roi-intervention-cost")?.value || 250);
+      const successRate = (parseFloat(document.getElementById("roi-mitigation-success")?.value || 80)) / 100;
+
+      const tasks = (globalImportedData && globalImportedData.tasks) ? globalImportedData.tasks : (globalData ? globalData.tasks : []);
+      if (!tasks || !tasks.length) return;
+
+      const highRiskTasks = tasks.filter(t => t.cat === 'HIGH');
+      const medRiskTasks  = tasks.filter(t => t.cat === 'MEDIUM');
+      const totalAlerts = highRiskTasks.length + medRiskTasks.length;
+
+      const avgDelayPerTask = (globalData && globalData.meta && globalData.meta.avg_delay_days) ? globalData.meta.avg_delay_days : 3.5;
+      const daysSaved = highRiskTasks.length * avgDelayPerTask * successRate;
+
+      const grossAvoided = daysSaved * costPerDay;
+      const totalInterventionCost = (highRiskTasks.length * costPerIntervention) + (medRiskTasks.length * 100);
+      const netBenefit = grossAvoided - totalInterventionCost;
+      const roiRatio = totalInterventionCost > 0 ? (grossAvoided / totalInterventionCost) : 0;
+
+      const grossElem = document.getElementById("roi-gross-avoided");
+      const costElem  = document.getElementById("roi-total-cost");
+      const netElem   = document.getElementById("roi-net-benefit");
+      const ratioElem = document.getElementById("roi-ratio-display");
+      const daysElem  = document.getElementById("roi-days-saved");
+      const alertsElem = document.getElementById("roi-alerts-acted");
+
+      if (grossElem) grossElem.innerText = "$" + Math.round(grossAvoided).toLocaleString();
+      if (costElem)  costElem.innerText  = "$" + Math.round(totalInterventionCost).toLocaleString();
+      if (netElem)   netElem.innerText   = "$" + Math.round(netBenefit).toLocaleString();
+      if (ratioElem) ratioElem.innerText = roiRatio.toFixed(1) + "x Return on Investment (" + Math.round((netBenefit / Math.max(totalInterventionCost, 1))*100).toLocaleString() + "% Net ROI)";
+      if (daysElem)  daysElem.innerText  = daysSaved.toFixed(1) + " days delay prevented";
+      if (alertsElem) alertsElem.innerText = totalAlerts + " risk alerts acted upon";
+    }
+
+    function renderSiteView() {
+      const container = document.getElementById("site-view-cards-container");
+      if (!container) return;
+
+      const tasks = (globalImportedData && globalImportedData.tasks) ? globalImportedData.tasks : (globalData ? globalData.tasks : []);
+      const highTasks = tasks.filter(t => t.cat === 'HIGH');
+      const medTasks  = tasks.filter(t => t.cat === 'MEDIUM');
+
+      const highCountElem = document.getElementById("site-high-count");
+      const medCountElem  = document.getElementById("site-med-count");
+      const actionsElem   = document.getElementById("site-actions-count");
+
+      if (highCountElem) highCountElem.innerText = highTasks.length;
+      if (medCountElem)  medCountElem.innerText  = medTasks.length;
+      if (actionsElem)   actionsElem.innerText   = highTasks.length + medTasks.length;
+
+      container.innerHTML = "";
+      const priorityTasks = [...highTasks, ...medTasks].slice(0, 15);
+
+      if (!priorityTasks.length) {
+        container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-subtle);">No High/Medium risk tasks flagged for job site action.</div>`;
+        return;
+      }
+
+      priorityTasks.forEach(t => {
+        const isHigh = t.cat === 'HIGH';
+        const card = document.createElement("div");
+        card.style.cssText = `background:${isHigh ? '#fef2f2' : '#fffbeb'}; border:1px solid ${isHigh ? '#fca5a5' : '#fcd34d'}; border-radius:10px; padding:14px; position:relative;`;
+        
+        const topDriver = t.shap_drivers && t.shap_drivers.length ? t.shap_drivers[0].feature : 'Workload / Priority';
+
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:6px;">
+            <span style="font-family:'JetBrains Mono',monospace; font-weight:800; font-size:12px; color:#2563eb;">${t.id}</span>
+            <span class="${isHigh ? 'pill-high' : 'pill-med'}" style="font-size:10px; font-weight:800; padding:2px 8px; border-radius:12px;">${isHigh ? 'HIGH RISK' : 'MEDIUM RISK'} (${t.score}%)</span>
+          </div>
+          <div style="font-weight:700; font-size:14px; color:var(--text-main); margin-bottom:4px;">${t.desc}</div>
+          <div style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">
+            <strong>Discipline:</strong> ${t.disc} &bull; <strong>Site:</strong> ${t.location || 'Site'} &bull; <strong>Hours:</strong> ${t.hours || 40}h
+          </div>
+          <div style="background:rgba(255,255,255,0.7); padding:8px; border-radius:6px; font-size:11px; color:var(--text-main); margin-bottom:10px;">
+            <strong>Top Risk Driver:</strong> ${topDriver}<br>
+            <strong>Action Proposal:</strong> ${t.action}
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-primary" onclick="openDrawerById('${t.id}')" style="font-size:11px; padding:6px 12px; flex:1;">Inspect Details</button>
+            <a href="mailto:pm.intertech@gmail.com?subject=URGENT SITE ALERT: Task ${t.id}&body=Priority Action required for task ${t.id}: ${t.desc}" class="btn btn-outline" style="font-size:11px; padding:6px 12px; text-decoration:none; background:#fff;">Notify PM</a>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    async function syncJiraTasks() {
+      const btn = document.getElementById("btn-sync-jira");
+      const statusDiv = document.getElementById("jira-sync-status");
+      const url = document.getElementById("jira-url-input").value;
+      const email = document.getElementById("jira-email-input").value;
+      const token = document.getElementById("jira-token-input").value;
+      const project = document.getElementById("jira-project-input").value || "PRJ001";
+
+      if (btn) btn.disabled = true;
+      if (statusDiv) { statusDiv.style.display = "block"; statusDiv.innerText = "Fetching issues from Jira Cloud REST API..."; statusDiv.style.color = "#2563eb"; }
+
+      try {
+        const resp = await fetch("/api/sync_integration", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tool: "jira",
+            config: { baseUrl: url, email, apiToken: token, project }
+          })
+        });
+
+        const data = await resp.json();
+        if (data.success && data.tasks) {
+          const predictedPayload = predictTasksClientSide(data.tasks, `Jira_${project}_Export.csv`);
+          renderImportedResults(predictedPayload);
+          if (statusDiv) {
+            statusDiv.style.color = "#16a34a";
+            statusDiv.innerText = `Successfully pulled & scored ${data.total_fetched} tasks from Jira project ${project}!`;
+          }
+        } else {
+          throw new Error(data.error || "Failed to fetch from Jira");
+        }
+      } catch (err) {
+        if (statusDiv) {
+          statusDiv.style.color = "#dc2626";
+          statusDiv.innerText = `Jira Sync Error: ${err.message}. Using sample dataset fallback.`;
+        }
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    async function loadModelRegistry() {
+      const container = document.getElementById("model-registry-list");
+      if (!container) return;
+
+      try {
+        const resp = await fetch("/api/model_registry");
+        const reg = await resp.json();
+
+        if (reg.vercel_mode) {
+          container.innerHTML = `<div style="padding:10px; background:#eff6ff; border-radius:6px; color:#1e40af;">${reg.info}</div>`;
+          return;
+        }
+
+        if (!Array.isArray(reg) || !reg.length) {
+          container.innerHTML = `<div>No model snapshots stored yet. Run retrain to record initial snapshot.</div>`;
+          return;
+        }
+
+        let html = `<table style="width:100%; border-collapse:collapse; font-size:11px; margin-top:8px;">
+          <thead>
+            <tr style="background:var(--bg-subtle); text-align:left;">
+              <th style="padding:6px;">Ver</th>
+              <th style="padding:6px;">Date</th>
+              <th style="padding:6px;">Champion</th>
+              <th style="padding:6px;">F1 Score</th>
+              <th style="padding:6px;">Recall</th>
+              <th style="padding:6px;">Status</th>
+              <th style="padding:6px;">Action</th>
+            </tr>
+          </thead>
+          <tbody>`;
+
+        reg.reverse().forEach(item => {
+          const isActive = item.active;
+          const dateStr = item.date ? item.date.replace("T", " ").substring(0, 16) : "-";
+          html += `
+            <tr style="border-bottom:1px solid var(--border-light); ${isActive ? 'background:#f0fdf4; font-weight:700;' : ''}">
+              <td style="padding:6px;">v${item.version}</td>
+              <td style="padding:6px;">${dateStr}</td>
+              <td style="padding:6px;">${item.champion}</td>
+              <td style="padding:6px;">${item.f1}%</td>
+              <td style="padding:6px;">${item.recall}%</td>
+              <td style="padding:6px;">${isActive ? '<span class="pill pill-low">ACTIVE</span>' : '<span style="color:#64748b;">Archived</span>'}</td>
+              <td style="padding:6px;">
+                ${isActive ? '—' : `<button class="btn btn-outline" style="padding:1px 6px; font-size:10px;" onclick="activateModelVersion(${item.version})">Rollback</button>`}
+              </td>
+            </tr>
+          `;
+        });
+
+        html += `</tbody></table>`;
+        container.innerHTML = html;
+      } catch (err) {
+        container.innerHTML = `<div style="color:#dc2626;">Error loading model registry: ${err.message}</div>`;
+      }
+    }
+
+    async function activateModelVersion(ver) {
+      if (!confirm(`Are you sure you want to rollback to Model Version v${ver}?`)) return;
+      try {
+        const resp = await fetch("/api/model_registry", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ activate_version: ver })
+        });
+        const res = await resp.json();
+        if (res.success) {
+          alert(`Successfully rolled back to Model Version v${ver}!`);
+          await fetchData();
+          loadModelRegistry();
+        } else {
+          alert(`Rollback failed: ${res.error}`);
+        }
+      } catch (e) {
+        alert(`Rollback error: ${e.message}`);
+      }
+    }
+
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+
+    const debouncedFilterTasks = debounce(filterTasks, 200);
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const searchInput = document.getElementById("task-search-input");
+      if (searchInput) {
+        searchInput.oninput = debouncedFilterTasks;
+      }
+      setTimeout(calculateROI, 1500);
+      setTimeout(renderSiteView, 1500);
+    });
+  </script>
 </body>
 </html>
