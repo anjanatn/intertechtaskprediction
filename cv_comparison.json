@@ -1,0 +1,109 @@
+{
+  "random_cv": {
+    "Logistic Regression": {
+      "acc": 72.3,
+      "f1": 68.8,
+      "prec": 67.7,
+      "rec": 69.9,
+      "mcc": 44.0,
+      "auc": 80.5
+    },
+    "Random Forest": {
+      "acc": 72.0,
+      "f1": 69.3,
+      "prec": 66.4,
+      "rec": 72.4,
+      "mcc": 43.7,
+      "auc": 77.8
+    },
+    "Gradient Boosting": {
+      "acc": 70.2,
+      "f1": 66.1,
+      "prec": 65.6,
+      "rec": 66.7,
+      "mcc": 39.6,
+      "auc": 74.6
+    },
+    "XGBoost": {
+      "acc": 69.5,
+      "f1": 66.4,
+      "prec": 63.9,
+      "rec": 69.1,
+      "mcc": 38.7,
+      "auc": 75.7
+    }
+  },
+  "timeseries_cv": {
+    "Logistic Regression": {
+      "acc": 69.1,
+      "f1": 62.0,
+      "prec": 67.0,
+      "rec": 57.7,
+      "mcc": 36.6,
+      "auc": 71.6
+    },
+    "Random Forest": {
+      "acc": 67.0,
+      "f1": 59.4,
+      "prec": 64.2,
+      "rec": 55.3,
+      "mcc": 32.1,
+      "auc": 69.9
+    },
+    "Gradient Boosting": {
+      "acc": 67.0,
+      "f1": 58.3,
+      "prec": 65.0,
+      "rec": 52.8,
+      "mcc": 32.0,
+      "auc": 67.5
+    },
+    "XGBoost": {
+      "acc": 65.6,
+      "f1": 57.3,
+      "prec": 62.5,
+      "rec": 52.8,
+      "mcc": 29.1,
+      "auc": 69.0
+    }
+  },
+  "dashboard_delayed_class": {
+    "Logistic Regression": {
+      "precision": 67.7,
+      "recall": 69.9,
+      "f1": 68.8,
+      "auc": 80.5
+    },
+    "Random Forest": {
+      "precision": 66.4,
+      "recall": 72.4,
+      "f1": 69.3,
+      "auc": 77.8
+    },
+    "Gradient Boosting": {
+      "precision": 65.6,
+      "recall": 66.7,
+      "f1": 66.1,
+      "auc": 74.6
+    },
+    "XGBoost": {
+      "precision": 63.9,
+      "recall": 69.1,
+      "f1": 66.4,
+      "auc": 75.7
+    },
+    "Stacking Ensemble": {
+      "precision": 65.2,
+      "recall": 69.9,
+      "f1": 67.5,
+      "auc": 78.8
+    }
+  },
+  "naive_baseline_acc": 56.4,
+  "champion": "Random Forest",
+  "champion_acc": 72.0,
+  "champion_f1": 69.3,
+  "champion_precision": 66.4,
+  "champion_recall": 72.4,
+  "champion_auc": 77.8
+}

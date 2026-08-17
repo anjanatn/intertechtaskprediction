@@ -33,19 +33,19 @@
       --brand-light: #eff6ff;
 
       /* Risk Status Tokens */
+      /* WCAG AA Compliant Color-Blind Safe Risk Status Tokens */
       --high-bg: #fef2f2;
-      --high-border: #fecaca;
-      --high-text: #dc2626;
+      --high-border: #fca5a5;
+      --high-text: #b91c1c;
       
       --med-bg: #fffbeb;
-      --med-border: #fde68a;
-      --med-text: #d97706;
+      --med-border: #fcd34d;
+      --med-text: #b45309;
       
       --low-bg: #f0fdf4;
-      --low-border: #bbf7d0;
-      --low-text: #16a34a;
-
-      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --low-border: #86efac;
+      --low-text: #15803d;
+--shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
       --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
       --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
       --radius-sm: 6px;
@@ -756,6 +756,31 @@
       color: var(--text-main);
     }
 
+    
+    /* ACCESSIBILITY & MOBILE RESPONSIVE SITE SUPERVISOR STYLES */
+    @media (prefers-contrast: more) {
+      .pill-high { background: #7f1d1d !important; color: #ffffff !important; font-weight: 800 !important; border: 2px solid #ffffff !important; }
+      .pill-med  { background: #78350f !important; color: #ffffff !important; font-weight: 800 !important; border: 2px solid #ffffff !important; }
+      .pill-low  { background: #14532d !important; color: #ffffff !important; font-weight: 800 !important; border: 2px solid #ffffff !important; }
+      .nav-tab.active { border-bottom-width: 4px !important; }
+    }
+
+    @media (max-width: 640px) {
+      .app-header { flex-direction: column; height: auto; padding: 12px 16px; gap: 10px; align-items: stretch; }
+      .brand-group { justify-content: space-between; width: 100%; }
+      .header-actions { justify-content: space-between; width: 100%; flex-wrap: wrap; }
+      .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; top: auto; z-index: 999; background: #0f172a; border-top: 1px solid #1e293b; padding: 6px 8px; box-shadow: 0 -4px 12px rgba(0,0,0,0.3); }
+      .nav-tabs { justify-content: space-around; width: 100%; overflow-x: auto; gap: 2px; }
+      .nav-tab { padding: 8px 6px; font-size: 11px; flex-direction: column; gap: 2px; text-align: center; border-bottom: none; border-top: 3px solid transparent; }
+      .nav-tab.active { border-bottom: none; border-top-color: var(--brand-primary); background: rgba(37, 99, 235, 0.15); border-radius: 6px; }
+      .app-main { padding: 12px 12px 80px 12px; }
+      .kpi-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .section-heading { font-size: 18px !important; }
+      .mobile-hide { display: none !important; }
+      .mobile-show { display: block !important; }
+      .btn { min-height: 44px; min-width: 44px; align-items: center; justify-content: center; } /* 44px touch target */
+    }
+
     /* PRINT STYLES */
     @media print {
       .app-header, .nav-bar, .filter-bar, .header-actions { display: none !important; }
@@ -791,6 +816,13 @@
     </div>
 
     <div class="header-actions">
+
+      <div id="mode-toggle-group" style="display:flex; align-items:center; gap:6px; background:#1e293b; padding:4px 8px; border-radius:20px; border:1px solid #334155;" role="region" aria-label="Environment Mode Switcher">
+        <span style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase;">Mode:</span>
+        <button id="btn-mode-prod" class="btn-mode active" onclick="setAppMode('production')" style="background:#2563eb; color:#ffffff; border:none; border-radius:12px; padding:3px 10px; font-size:11px; font-weight:700; cursor:pointer; transition:all 0.2s;" aria-label="Switch to Production Mode">PROD</button>
+        <button id="btn-mode-sandbox" class="btn-mode" onclick="setAppMode('sandbox')" style="background:transparent; color:#94a3b8; border:none; border-radius:12px; padding:3px 10px; font-size:11px; font-weight:700; cursor:pointer; transition:all 0.2s;" aria-label="Switch to Sandbox Mode">SANDBOX</button>
+      </div>
+
       <button class="btn btn-secondary" onclick="openModelCardModal()" style="background:rgba(56,189,248,0.15); border-color:rgba(56,189,248,0.3); color:#38bdf8; font-weight:700;">
         <span>Model Card & Methodology</span>
       </button>
@@ -807,39 +839,60 @@
     </div>
   </header>
 
- <!-- NAVIGATION TABS -->
- <nav class="nav-bar">
- <div class="nav-tabs">
- <button class="nav-tab active" onclick="switchView('overview', this)">
- <span>Executive Overview</span>
- </button>
- <button class="nav-tab" id="tab-nav-controltower" onclick="switchView('controltower', this)">
- <span>AI Control Tower & 3D Twin</span>
- <span class="pill pill-low" style="background:#0284c7; color:#ffffff; font-size:9px; padding:1px 5px; margin-left:4px; font-weight:700;">3D SITE</span>
- </button>
- <button class="nav-tab" id="tab-nav-import" onclick="switchView('import', this)">
- <span>Import & Predict</span>
- <span class="tab-badge" id="badge-imported-count" style="background:#0284c7; color:#ffffff; display:none;">0</span>
- </button>
- <button class="nav-tab" onclick="switchView('tasks', this)">
- <span>Task Risk Matrix</span>
- <span class="tab-badge" id="badge-total-tasks">1000</span>
- </button>
- <button class="nav-tab" onclick="switchView('mitigation', this)">
- <span>Mitigation Planner</span>
- <span class="tab-badge" id="badge-open-tasks">260</span>
- </button>
- <button class="nav-tab" onclick="switchView('simulator', this)">
- <span>What-If Simulator</span>
- </button>
- </div>
- <div style="font-size:12px; color:#94a3b8; font-family:'JetBrains Mono', monospace;" id="last-sync-time">
+ 
+  <!-- NAVIGATION TABS -->
+  <nav class="nav-bar" aria-label="Main Navigation">
+  <div class="nav-tabs" role="tablist">
+  <button class="nav-tab active" role="tab" aria-selected="true" aria-controls="view-overview" onclick="switchView('overview', this)">
+  <span>Executive Overview</span>
+  </button>
+  <button class="nav-tab" role="tab" aria-selected="false" aria-controls="view-controltower" id="tab-nav-controltower" onclick="switchView('controltower', this)">
+  <span>AI Control Tower & 3D Twin</span>
+  <span class="pill pill-low" style="background:#0284c7; color:#ffffff; font-size:9px; padding:1px 5px; margin-left:4px; font-weight:700;">3D SITE</span>
+  </button>
+  <button class="nav-tab" role="tab" aria-selected="false" aria-controls="view-siteview" onclick="switchView('siteview', this)">
+  <span>Site View 📍</span>
+  </button>
+  <button class="nav-tab" role="tab" aria-selected="false" aria-controls="view-import" id="tab-nav-import" onclick="switchView('import', this)">
+  <span>Import & Predict</span>
+  <span class="tab-badge" id="badge-imported-count" style="background:#0284c7; color:#ffffff; display:none;">0</span>
+  </button>
+  <button class="nav-tab" role="tab" aria-selected="false" aria-controls="view-tasks" onclick="switchView('tasks', this)">
+  <span>Task Risk Matrix</span>
+  <span class="tab-badge" id="badge-total-tasks" aria-live="polite">1000</span>
+  </button>
+  <button class="nav-tab" role="tab" aria-selected="false" aria-controls="view-mitigation" onclick="switchView('mitigation', this)">
+  <span>Mitigation Planner</span>
+  <span class="tab-badge" id="badge-open-tasks" aria-live="polite">260</span>
+  </button>
+  <button class="nav-tab" role="tab" aria-selected="false" aria-controls="view-simulator" onclick="switchView('simulator', this)">
+  <span>What-If Simulator</span>
+  </button>
+  </div>
+
+  <div style="font-size:12px; color:#94a3b8; font-family:'JetBrains Mono', monospace;" id="last-sync-time">
       Model Status: Live (5-Fold CV)
  </div>
  </nav>
 
  <!-- MAIN APP CONTAINER -->
  <main class="app-main">
+
+  <!-- SANDBOX / TEST MODE WARNING & THRESHOLD TUNING BANNER -->
+  <div id="sandbox-banner" style="display:none; background: linear-gradient(135deg, #1e1b4b 0%, #311b92 100%); color:#ffffff; padding:14px 20px; border-radius:12px; margin-bottom:20px; border:1px solid #6366f1; box-shadow:0 4px 14px rgba(99,102,241,0.25); align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <span style="font-size:20px; background:rgba(99,102,241,0.3); padding:6px 10px; border-radius:8px;">🧪</span>
+      <div>
+        <div style="font-weight:800; font-size:14px; color:#a5b4fc; letter-spacing:0.02em;">SANDBOX / TEST SIMULATOR MODE ACTIVE</div>
+        <div style="font-size:12px; color:#c7d2fe;">Adjust live prediction thresholds dynamically. Production baseline model remains untouched.</div>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:14px; background:rgba(15,23,42,0.6); padding:8px 14px; border-radius:10px; border:1px solid rgba(255,255,255,0.1);">
+      <label for="sandbox-threshold-slider" style="font-size:12px; font-weight:700; color:#e0e7ff;">Risk Cutoff Threshold: <span id="threshold-val-display" style="color:#818cf8; font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:800;">70%</span></label>
+      <input type="range" id="sandbox-threshold-slider" min="30" max="85" value="70" step="1" oninput="updateSandboxThreshold(this.value)" style="cursor:pointer; accent-color:#6366f1; width:120px;" aria-label="Risk Cutoff Threshold Slider">
+    </div>
+  </div>
+
 
   <!-- VIEW 0: AI DIGITAL CONTROL TOWER & 3D SITE TWIN VISUALIZER (WRENCH SOLUTIONS INSPIRED) -->
   <section id="view-controltower" class="tab-view">
@@ -1246,7 +1299,67 @@
   <button class="btn btn-outline" style="width:100%; justify-content:center;" onclick="openDrawerById('T-1024')">Inspect Task & Plan &rarr;</button>
 </div></div>
  </div>
- </section>
+ 
+  <!-- ROI & COST-AVOIDANCE IMPACT CALCULATOR PANEL -->
+  <div class="card" style="margin-top:24px; border:1px solid #cbd5e1; box-shadow:var(--shadow-md);">
+    <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:14px; margin-bottom:18px;">
+      <div>
+        <span style="background:#eff6ff; color:#2563eb; font-weight:700; font-size:10px; padding:2px 8px; border-radius:4px; text-transform:uppercase;">BUSINESS IMPACT MODEL</span>
+        <h2 style="font-family:'Plus Jakarta Sans',sans-serif; font-size:18px; font-weight:800; color:var(--text-main); margin-top:2px;">Proactive Delay Cost Avoidance & ROI Calculator</h2>
+        <p style="font-size:12px; color:var(--text-subtle);">Estimate monetary savings achieved by intervening on AI High-Risk task alerts before actual site delays occur</p>
+      </div>
+      <button class="btn btn-outline" onclick="calculateROI()" style="font-size:12px; font-weight:700;">🔄 Recalculate ROI</button>
+    </div>
+
+    <div style="display:grid; grid-template-columns: 1fr 2fr; gap:20px; align-items:start;">
+      <!-- INPUT PARAMETERS -->
+      <div style="background:var(--bg-subtle); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border-light);">
+        <div style="font-size:12px; font-weight:700; color:var(--text-main); margin-bottom:12px; text-transform:uppercase;">Financial Cost Inputs</div>
+        
+        <div class="form-group" style="margin-bottom:12px;">
+          <label class="form-label" style="font-size:11px;" for="roi-cost-per-day">Delay Cost per Day ($)</label>
+          <input type="number" id="roi-cost-per-day" value="5000" step="500" class="form-control" style="font-weight:700; font-family:'JetBrains Mono',monospace;" onchange="calculateROI()">
+          <span style="font-size:10px; color:var(--text-subtle);">Average liquidated damages + idle site labor/day</span>
+        </div>
+
+        <div class="form-group" style="margin-bottom:12px;">
+          <label class="form-label" style="font-size:11px;" for="roi-intervention-cost">Cost per PM Intervention ($)</label>
+          <input type="number" id="roi-intervention-cost" value="250" step="50" class="form-control" style="font-weight:700; font-family:'JetBrains Mono',monospace;" onchange="calculateROI()">
+          <span style="font-size:10px; color:var(--text-subtle);">Resource reallocation sync + admin overhead</span>
+        </div>
+
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label" style="font-size:11px;" for="roi-mitigation-success">Intervention Success Rate (%)</label>
+          <input type="number" id="roi-mitigation-success" value="80" min="10" max="100" class="form-control" style="font-weight:700; font-family:'JetBrains Mono',monospace;" onchange="calculateROI()">
+          <span style="font-size:10px; color:var(--text-subtle);">% of flagged tasks saved from full delay</span>
+        </div>
+      </div>
+
+      <!-- ROI METRICS DISPLAY -->
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap:14px;">
+        <div style="background:#f0fdf4; border:1px solid #bbf7d0; padding:16px; border-radius:var(--radius-md); text-align:center;">
+          <div style="font-size:11px; font-weight:700; color:#16a34a; text-transform:uppercase;">Gross Cost Avoided</div>
+          <div style="font-size:26px; font-weight:800; color:#15803d; font-family:'JetBrains Mono',monospace; margin:4px 0;" id="roi-gross-avoided">$430,500</div>
+          <div style="font-size:10px; color:#166534;" id="roi-days-saved">86.1 days delay prevented</div>
+        </div>
+
+        <div style="background:#fef2f2; border:1px solid #fecaca; padding:16px; border-radius:var(--radius-md); text-align:center;">
+          <div style="font-size:11px; font-weight:700; color:#dc2626; text-transform:uppercase;">Total Intervention Cost</div>
+          <div style="font-size:26px; font-weight:800; color:#b91c1c; font-family:'JetBrains Mono',monospace; margin:4px 0;" id="roi-total-cost">$18,250</div>
+          <div style="font-size:10px; color:#991b1b;" id="roi-alerts-acted">73 High-Risk actions</div>
+        </div>
+
+        <div style="background:#eff6ff; border:1px solid #bfdbfe; padding:16px; border-radius:var(--radius-md); text-align:center; grid-column: span 2;">
+          <div style="font-size:11px; font-weight:700; color:#2563eb; text-transform:uppercase;">Net Financial Benefit (ROI)</div>
+          <div style="font-size:32px; font-weight:800; color:#1d4ed8; font-family:'JetBrains Mono',monospace; margin:4px 0;" id="roi-net-benefit">$412,250</div>
+          <div style="font-size:12px; font-weight:700; color:#1e40af;" id="roi-ratio-display">23.6x Return on Investment (2,358% Net ROI)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  </section>
 
  <!-- VIEW 2: TASK RISK MATRIX -->
  <section id="view-tasks" class="tab-view">
@@ -2582,7 +2695,43 @@
  </section>
 
  <!-- VIEW 6: BATCH FILE IMPORT & PREDICT -->
- <section id="view-import" class="tab-view">
+ 
+  <!-- VIEW: SITE SUPERVISOR MOBILE VIEW (JOB SITE ACCESSIBLE) -->
+  <section id="view-siteview" class="tab-view" role="tabpanel" aria-labelledby="tab-siteview">
+    <div class="section-title-bar" style="background:linear-gradient(135deg, #0f172a, #1e293b); padding:16px 20px; border-radius:12px; margin-bottom:16px; color:#fff;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <span style="background:#2563eb; color:#fff; font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px;">SITE SUPERVISOR HUD</span>
+          <h1 class="section-heading" style="font-size:20px; font-weight:800; margin-top:2px; color:#fff;">Job Site High-Risk Priority Monitor</h1>
+          <p class="section-subtext" style="color:#94a3b8; font-size:12px;">Mobile-optimized view for field foremen & discipline leads</p>
+        </div>
+        <button class="btn btn-primary" onclick="renderSiteView()" style="font-size:12px; font-weight:700;">🔄 Refresh</button>
+      </div>
+    </div>
+
+    <!-- SITE QUICK STATS -->
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:16px;">
+      <div style="background:#fef2f2; border:1px solid #fca5a5; padding:12px; border-radius:8px; text-align:center;">
+        <div style="font-size:10px; font-weight:700; color:#b91c1c;">HIGH RISK TASKS</div>
+        <div style="font-size:22px; font-weight:800; color:#b91c1c; font-family:'JetBrains Mono',monospace;" id="site-high-count">0</div>
+      </div>
+      <div style="background:#fffbeb; border:1px solid #fcd34d; padding:12px; border-radius:8px; text-align:center;">
+        <div style="font-size:10px; font-weight:700; color:#b45309;">MED RISK TASKS</div>
+        <div style="font-size:22px; font-weight:800; color:#b45309; font-family:'JetBrains Mono',monospace;" id="site-med-count">0</div>
+      </div>
+      <div style="background:#eff6ff; border:1px solid #bfdbfe; padding:12px; border-radius:8px; text-align:center;">
+        <div style="font-size:10px; font-weight:700; color:#1d4ed8;">ACTIONS DUE</div>
+        <div style="font-size:22px; font-weight:800; color:#1d4ed8; font-family:'JetBrains Mono',monospace;" id="site-actions-count">0</div>
+      </div>
+    </div>
+
+    <!-- SITE CARDS CONTAINER -->
+    <div id="site-view-cards-container" style="display:flex; flex-direction:column; gap:12px;">
+      <!-- Populated dynamically via renderSiteView() -->
+    </div>
+  </section>
+
+  <section id="view-import" class="tab-view">
  <div class="section-title-bar">
  <div>
  <h1 class="section-heading">Test Data Import & ML Delay Risk Forecasting</h1>
@@ -2879,8 +3028,8 @@
           </div>
         </div>
         <div style="display: flex; align-items: center; gap: 6px;">
-          <button onclick="clearAIChat()" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); color: #ffffff; font-size: 11px; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-weight: 700;" title="Clear Chat Conversation History">Clear Chat</button>
-          <button onclick="toggleAIDiagnosticsWidget()" style="background: transparent; border: none; color: #94a3b8; font-size: 20px; cursor: pointer; line-height: 1; padding: 4px;">&times;</button>
+          <button onclick="clearAIChat()" style="background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.4); color: #ffffff; font-size: 11px; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-weight: 700; transition: all 0.2s ease;" title="Clear Chat Conversation History" onmouseover="this.style.background='rgba(255,255,255,0.35)'" onmouseout="this.style.background='rgba(255,255,255,0.25)'">Clear Chat</button>
+          <button onclick="toggleAIDiagnosticsWidget()" style="background: rgba(255,255,255,0.15); border: none; color: #ffffff; font-size: 20px; cursor: pointer; line-height: 1; padding: 4px; border-radius: 4px; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">&times;</button>
         </div>
       </div>
 
@@ -5193,6 +5342,293 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
 
     function clearAIChat() {
       initAIChat();
+
+    /* =========================================================================
+       ANTIGRAVITY ENHANCEMENTS: SANDBOX, ROI, JIRA, MODEL REGISTRY, SITE VIEW
+       ========================================================================= */
+    let appMode = 'production'; // 'production' | 'sandbox'
+    let sandboxThreshold = 70;
+
+    function setAppMode(mode) {
+      appMode = mode;
+      const btnProd = document.getElementById("btn-mode-prod");
+      const btnSand = document.getElementById("btn-mode-sandbox");
+      const banner = document.getElementById("sandbox-banner");
+
+      if (mode === 'sandbox') {
+        if (btnProd) { btnProd.classList.remove("active"); btnProd.style.background = "transparent"; btnProd.style.color = "#94a3b8"; }
+        if (btnSand) { btnSand.classList.add("active"); btnSand.style.background = "#6366f1"; btnSand.style.color = "#ffffff"; }
+        if (banner) banner.style.display = "flex";
+      } else {
+        if (btnSand) { btnSand.classList.remove("active"); btnSand.style.background = "transparent"; btnSand.style.color = "#94a3b8"; }
+        if (btnProd) { btnProd.classList.add("active"); btnProd.style.background = "#2563eb"; btnProd.style.color = "#ffffff"; }
+        if (banner) banner.style.display = "none";
+        sandboxThreshold = 70;
+      }
+      reclassifyTasksAndRender();
+    }
+
+    function updateSandboxThreshold(val) {
+      sandboxThreshold = parseInt(val, 10);
+      document.getElementById("threshold-val-display").innerText = val + "%";
+      reclassifyTasksAndRender();
+    }
+
+    function reclassifyTasksAndRender() {
+      if (!globalData || !globalData.tasks) return;
+      
+      const cutoff = appMode === 'sandbox' ? sandboxThreshold : 70;
+      let highCount = 0, medCount = 0, lowCount = 0;
+
+      globalData.tasks.forEach(t => {
+        if (t.score >= cutoff) {
+          t.cat = 'HIGH';
+          t.action = 'NOTIFY_PM + REALLOCATE_RESOURCE';
+          highCount++;
+        } else if (t.score >= 40) {
+          t.cat = 'MEDIUM';
+          t.action = 'SCHEDULE_STATUS_MEETING';
+          medCount++;
+        } else {
+          t.cat = 'LOW';
+          t.action = 'MONITOR_WEEKLY';
+          lowCount++;
+        }
+      });
+
+      if (document.getElementById("view-overview").classList.contains("active")) renderDashboard(globalData);
+      if (document.getElementById("view-tasks").classList.contains("active")) renderTasksTable();
+      if (document.getElementById("view-mitigation").classList.contains("active")) renderMitigationHub();
+      if (document.getElementById("view-siteview").classList.contains("active")) renderSiteView();
+      calculateROI();
+    }
+
+    function calculateROI() {
+      const costPerDay = parseFloat(document.getElementById("roi-cost-per-day")?.value || 5000);
+      const costPerIntervention = parseFloat(document.getElementById("roi-intervention-cost")?.value || 250);
+      const successRate = (parseFloat(document.getElementById("roi-mitigation-success")?.value || 80)) / 100;
+
+      const tasks = (globalImportedData && globalImportedData.tasks) ? globalImportedData.tasks : (globalData ? globalData.tasks : []);
+      if (!tasks || !tasks.length) return;
+
+      const highRiskTasks = tasks.filter(t => t.cat === 'HIGH');
+      const medRiskTasks  = tasks.filter(t => t.cat === 'MEDIUM');
+      const totalAlerts = highRiskTasks.length + medRiskTasks.length;
+
+      const avgDelayPerTask = (globalData && globalData.meta && globalData.meta.avg_delay_days) ? globalData.meta.avg_delay_days : 3.5;
+      const daysSaved = highRiskTasks.length * avgDelayPerTask * successRate;
+
+      const grossAvoided = daysSaved * costPerDay;
+      const totalInterventionCost = (highRiskTasks.length * costPerIntervention) + (medRiskTasks.length * 100);
+      const netBenefit = grossAvoided - totalInterventionCost;
+      const roiRatio = totalInterventionCost > 0 ? (grossAvoided / totalInterventionCost) : 0;
+
+      const grossElem = document.getElementById("roi-gross-avoided");
+      const costElem  = document.getElementById("roi-total-cost");
+      const netElem   = document.getElementById("roi-net-benefit");
+      const ratioElem = document.getElementById("roi-ratio-display");
+      const daysElem  = document.getElementById("roi-days-saved");
+      const alertsElem = document.getElementById("roi-alerts-acted");
+
+      if (grossElem) grossElem.innerText = "$" + Math.round(grossAvoided).toLocaleString();
+      if (costElem)  costElem.innerText  = "$" + Math.round(totalInterventionCost).toLocaleString();
+      if (netElem)   netElem.innerText   = "$" + Math.round(netBenefit).toLocaleString();
+      if (ratioElem) ratioElem.innerText = roiRatio.toFixed(1) + "x Return on Investment (" + Math.round((netBenefit / Math.max(totalInterventionCost, 1))*100).toLocaleString() + "% Net ROI)";
+      if (daysElem)  daysElem.innerText  = daysSaved.toFixed(1) + " days delay prevented";
+      if (alertsElem) alertsElem.innerText = totalAlerts + " risk alerts acted upon";
+    }
+
+    function renderSiteView() {
+      const container = document.getElementById("site-view-cards-container");
+      if (!container) return;
+
+      const tasks = (globalImportedData && globalImportedData.tasks) ? globalImportedData.tasks : (globalData ? globalData.tasks : []);
+      const highTasks = tasks.filter(t => t.cat === 'HIGH');
+      const medTasks  = tasks.filter(t => t.cat === 'MEDIUM');
+
+      document.getElementById("site-high-count").innerText = highTasks.length;
+      document.getElementById("site-med-count").innerText  = medTasks.length;
+      document.getElementById("site-actions-count").innerText = highTasks.length + medTasks.length;
+
+      container.innerHTML = "";
+      const priorityTasks = [...highTasks, ...medTasks].slice(0, 15);
+
+      if (!priorityTasks.length) {
+        container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-subtle);">No High/Medium risk tasks flagged for job site action.</div>`;
+        return;
+      }
+
+      priorityTasks.forEach(t => {
+        const isHigh = t.cat === 'HIGH';
+        const card = document.createElement("div");
+        card.style.cssText = `background:${isHigh ? '#fef2f2' : '#fffbeb'}; border:1px solid ${isHigh ? '#fca5a5' : '#fcd34d'}; border-radius:10px; padding:14px; position:relative;`;
+        
+        const topDriver = t.shap_drivers && t.shap_drivers.length ? t.shap_drivers[0].feature : 'Workload / Priority';
+
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:6px;">
+            <span style="font-family:'JetBrains Mono',monospace; font-weight:800; font-size:12px; color:#2563eb;">${t.id}</span>
+            <span class="${isHigh ? 'pill-high' : 'pill-med'}" style="font-size:10px; font-weight:800; padding:2px 8px; border-radius:12px;">${isHigh ? '◆ HIGH RISK' : '▲ MEDIUM RISK'} (${t.score}%)</span>
+          </div>
+          <div style="font-weight:700; font-size:14px; color:var(--text-main); margin-bottom:4px;">${t.desc}</div>
+          <div style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">
+            <strong>Discipline:</strong> ${t.disc} &bull; <strong>Site:</strong> ${t.location || 'Site'} &bull; <strong>Hours:</strong> ${t.hours || 40}h
+          </div>
+          <div style="background:rgba(255,255,255,0.7); padding:8px; border-radius:6px; font-size:11px; color:var(--text-main); margin-bottom:10px;">
+            <strong>Top Risk Driver:</strong> ${topDriver}<br>
+            <strong>Action Proposal:</strong> ${t.action}
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-primary" onclick="openDrawerById('${t.id}')" style="font-size:11px; padding:6px 12px; flex:1;">Inspect Details</button>
+            <a href="mailto:pm.intertech@gmail.com?subject=URGENT SITE ALERT: Task ${t.id}&body=Priority Action required for task ${t.id}: ${t.desc}" class="btn btn-outline" style="font-size:11px; padding:6px 12px; text-decoration:none; background:#fff;">📞 Notify PM</a>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    async function syncJiraTasks() {
+      const btn = document.getElementById("btn-sync-jira");
+      const statusDiv = document.getElementById("jira-sync-status");
+      const url = document.getElementById("jira-url-input").value;
+      const email = document.getElementById("jira-email-input").value;
+      const token = document.getElementById("jira-token-input").value;
+      const project = document.getElementById("jira-project-input").value || "PRJ001";
+
+      if (btn) btn.disabled = true;
+      if (statusDiv) { statusDiv.style.display = "block"; statusDiv.innerText = "⏳ Fetching issues from Jira Cloud REST API..."; statusDiv.style.color = "#2563eb"; }
+
+      try {
+        const resp = await fetch("/api/sync_integration", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tool: "jira",
+            config: { baseUrl: url, email, apiToken: token, project }
+          })
+        });
+
+        const data = await resp.json();
+        if (data.success && data.tasks) {
+          const predictedPayload = predictTasksClientSide(data.tasks, `Jira_${project}_Export.csv`);
+          renderImportedResults(predictedPayload);
+          if (statusDiv) {
+            statusDiv.style.color = "#16a34a";
+            statusDiv.innerText = `✅ Successfully pulled & scored ${data.total_fetched} tasks from Jira project ${project}!`;
+          }
+        } else {
+          throw new Error(data.error || "Failed to fetch from Jira");
+        }
+      } catch (err) {
+        if (statusDiv) {
+          statusDiv.style.color = "#dc2626";
+          statusDiv.innerText = `❌ Jira Sync Error: ${err.message}. Using sample dataset fallback.`;
+        }
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    async function loadModelRegistry() {
+      const container = document.getElementById("model-registry-list");
+      if (!container) return;
+
+      try {
+        const resp = await fetch("/api/model_registry");
+        const reg = await resp.json();
+
+        if (reg.vercel_mode) {
+          container.innerHTML = `<div style="padding:10px; background:#eff6ff; border-radius:6px; color:#1e40af;">${reg.info}</div>`;
+          return;
+        }
+
+        if (!Array.isArray(reg) || !reg.length) {
+          container.innerHTML = `<div>No model snapshots stored yet. Run retrain to record initial snapshot.</div>`;
+          return;
+        }
+
+        let html = `<table style="width:100%; border-collapse:collapse; font-size:11px; margin-top:8px;">
+          <thead>
+            <tr style="background:var(--bg-subtle); text-align:left;">
+              <th style="padding:6px;">Ver</th>
+              <th style="padding:6px;">Date</th>
+              <th style="padding:6px;">Champion</th>
+              <th style="padding:6px;">F1 Score</th>
+              <th style="padding:6px;">Recall</th>
+              <th style="padding:6px;">Status</th>
+              <th style="padding:6px;">Action</th>
+            </tr>
+          </thead>
+          <tbody>`;
+
+        reg.reverse().forEach(item => {
+          const isActive = item.active;
+          const dateStr = item.date ? item.date.replace("T", " ").substring(0, 16) : "-";
+          html += `
+            <tr style="border-bottom:1px solid var(--border-light); ${isActive ? 'background:#f0fdf4; font-weight:700;' : ''}">
+              <td style="padding:6px;">v${item.version}</td>
+              <td style="padding:6px;">${dateStr}</td>
+              <td style="padding:6px;">${item.champion}</td>
+              <td style="padding:6px;">${item.f1}%</td>
+              <td style="padding:6px;">${item.recall}%</td>
+              <td style="padding:6px;">${isActive ? '<span class="pill pill-low">ACTIVE</span>' : '<span style="color:#64748b;">Archived</span>'}</td>
+              <td style="padding:6px;">
+                ${isActive ? '—' : `<button class="btn btn-outline" style="padding:1px 6px; font-size:10px;" onclick="activateModelVersion(${item.version})">Rollback</button>`}
+              </td>
+            </tr>
+          `;
+        });
+
+        html += `</tbody></table>`;
+        container.innerHTML = html;
+      } catch (err) {
+        container.innerHTML = `<div style="color:#dc2626;">Error loading model registry: ${err.message}</div>`;
+      }
+    }
+
+    async function activateModelVersion(ver) {
+      if (!confirm(`Are you sure you want to rollback to Model Version v${ver}?`)) return;
+      try {
+        const resp = await fetch("/api/model_registry", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ activate_version: ver })
+        });
+        const res = await resp.json();
+        if (res.success) {
+          alert(`Successfully rolled back to Model Version v${ver}!`);
+          await fetchData();
+          loadModelRegistry();
+        } else {
+          alert(`Rollback failed: ${res.error}`);
+        }
+      } catch (e) {
+        alert(`Rollback error: ${e.message}`);
+      }
+    }
+
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+
+    const debouncedFilterTasks = debounce(filterTasks, 200);
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const searchInput = document.getElementById("task-search-input");
+      if (searchInput) {
+        searchInput.oninput = debouncedFilterTasks;
+      }
+      setTimeout(calculateROI, 1500);
+    });
+
     }
 
     function setAssistantDatasetMode(mode) {
@@ -5256,6 +5692,293 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
       if (panel.style.display === 'none' || panel.style.display === '') {
         panel.style.display = 'flex';
         initAIChat();
+
+    /* =========================================================================
+       ANTIGRAVITY ENHANCEMENTS: SANDBOX, ROI, JIRA, MODEL REGISTRY, SITE VIEW
+       ========================================================================= */
+    let appMode = 'production'; // 'production' | 'sandbox'
+    let sandboxThreshold = 70;
+
+    function setAppMode(mode) {
+      appMode = mode;
+      const btnProd = document.getElementById("btn-mode-prod");
+      const btnSand = document.getElementById("btn-mode-sandbox");
+      const banner = document.getElementById("sandbox-banner");
+
+      if (mode === 'sandbox') {
+        if (btnProd) { btnProd.classList.remove("active"); btnProd.style.background = "transparent"; btnProd.style.color = "#94a3b8"; }
+        if (btnSand) { btnSand.classList.add("active"); btnSand.style.background = "#6366f1"; btnSand.style.color = "#ffffff"; }
+        if (banner) banner.style.display = "flex";
+      } else {
+        if (btnSand) { btnSand.classList.remove("active"); btnSand.style.background = "transparent"; btnSand.style.color = "#94a3b8"; }
+        if (btnProd) { btnProd.classList.add("active"); btnProd.style.background = "#2563eb"; btnProd.style.color = "#ffffff"; }
+        if (banner) banner.style.display = "none";
+        sandboxThreshold = 70;
+      }
+      reclassifyTasksAndRender();
+    }
+
+    function updateSandboxThreshold(val) {
+      sandboxThreshold = parseInt(val, 10);
+      document.getElementById("threshold-val-display").innerText = val + "%";
+      reclassifyTasksAndRender();
+    }
+
+    function reclassifyTasksAndRender() {
+      if (!globalData || !globalData.tasks) return;
+      
+      const cutoff = appMode === 'sandbox' ? sandboxThreshold : 70;
+      let highCount = 0, medCount = 0, lowCount = 0;
+
+      globalData.tasks.forEach(t => {
+        if (t.score >= cutoff) {
+          t.cat = 'HIGH';
+          t.action = 'NOTIFY_PM + REALLOCATE_RESOURCE';
+          highCount++;
+        } else if (t.score >= 40) {
+          t.cat = 'MEDIUM';
+          t.action = 'SCHEDULE_STATUS_MEETING';
+          medCount++;
+        } else {
+          t.cat = 'LOW';
+          t.action = 'MONITOR_WEEKLY';
+          lowCount++;
+        }
+      });
+
+      if (document.getElementById("view-overview").classList.contains("active")) renderDashboard(globalData);
+      if (document.getElementById("view-tasks").classList.contains("active")) renderTasksTable();
+      if (document.getElementById("view-mitigation").classList.contains("active")) renderMitigationHub();
+      if (document.getElementById("view-siteview").classList.contains("active")) renderSiteView();
+      calculateROI();
+    }
+
+    function calculateROI() {
+      const costPerDay = parseFloat(document.getElementById("roi-cost-per-day")?.value || 5000);
+      const costPerIntervention = parseFloat(document.getElementById("roi-intervention-cost")?.value || 250);
+      const successRate = (parseFloat(document.getElementById("roi-mitigation-success")?.value || 80)) / 100;
+
+      const tasks = (globalImportedData && globalImportedData.tasks) ? globalImportedData.tasks : (globalData ? globalData.tasks : []);
+      if (!tasks || !tasks.length) return;
+
+      const highRiskTasks = tasks.filter(t => t.cat === 'HIGH');
+      const medRiskTasks  = tasks.filter(t => t.cat === 'MEDIUM');
+      const totalAlerts = highRiskTasks.length + medRiskTasks.length;
+
+      const avgDelayPerTask = (globalData && globalData.meta && globalData.meta.avg_delay_days) ? globalData.meta.avg_delay_days : 3.5;
+      const daysSaved = highRiskTasks.length * avgDelayPerTask * successRate;
+
+      const grossAvoided = daysSaved * costPerDay;
+      const totalInterventionCost = (highRiskTasks.length * costPerIntervention) + (medRiskTasks.length * 100);
+      const netBenefit = grossAvoided - totalInterventionCost;
+      const roiRatio = totalInterventionCost > 0 ? (grossAvoided / totalInterventionCost) : 0;
+
+      const grossElem = document.getElementById("roi-gross-avoided");
+      const costElem  = document.getElementById("roi-total-cost");
+      const netElem   = document.getElementById("roi-net-benefit");
+      const ratioElem = document.getElementById("roi-ratio-display");
+      const daysElem  = document.getElementById("roi-days-saved");
+      const alertsElem = document.getElementById("roi-alerts-acted");
+
+      if (grossElem) grossElem.innerText = "$" + Math.round(grossAvoided).toLocaleString();
+      if (costElem)  costElem.innerText  = "$" + Math.round(totalInterventionCost).toLocaleString();
+      if (netElem)   netElem.innerText   = "$" + Math.round(netBenefit).toLocaleString();
+      if (ratioElem) ratioElem.innerText = roiRatio.toFixed(1) + "x Return on Investment (" + Math.round((netBenefit / Math.max(totalInterventionCost, 1))*100).toLocaleString() + "% Net ROI)";
+      if (daysElem)  daysElem.innerText  = daysSaved.toFixed(1) + " days delay prevented";
+      if (alertsElem) alertsElem.innerText = totalAlerts + " risk alerts acted upon";
+    }
+
+    function renderSiteView() {
+      const container = document.getElementById("site-view-cards-container");
+      if (!container) return;
+
+      const tasks = (globalImportedData && globalImportedData.tasks) ? globalImportedData.tasks : (globalData ? globalData.tasks : []);
+      const highTasks = tasks.filter(t => t.cat === 'HIGH');
+      const medTasks  = tasks.filter(t => t.cat === 'MEDIUM');
+
+      document.getElementById("site-high-count").innerText = highTasks.length;
+      document.getElementById("site-med-count").innerText  = medTasks.length;
+      document.getElementById("site-actions-count").innerText = highTasks.length + medTasks.length;
+
+      container.innerHTML = "";
+      const priorityTasks = [...highTasks, ...medTasks].slice(0, 15);
+
+      if (!priorityTasks.length) {
+        container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-subtle);">No High/Medium risk tasks flagged for job site action.</div>`;
+        return;
+      }
+
+      priorityTasks.forEach(t => {
+        const isHigh = t.cat === 'HIGH';
+        const card = document.createElement("div");
+        card.style.cssText = `background:${isHigh ? '#fef2f2' : '#fffbeb'}; border:1px solid ${isHigh ? '#fca5a5' : '#fcd34d'}; border-radius:10px; padding:14px; position:relative;`;
+        
+        const topDriver = t.shap_drivers && t.shap_drivers.length ? t.shap_drivers[0].feature : 'Workload / Priority';
+
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:6px;">
+            <span style="font-family:'JetBrains Mono',monospace; font-weight:800; font-size:12px; color:#2563eb;">${t.id}</span>
+            <span class="${isHigh ? 'pill-high' : 'pill-med'}" style="font-size:10px; font-weight:800; padding:2px 8px; border-radius:12px;">${isHigh ? '◆ HIGH RISK' : '▲ MEDIUM RISK'} (${t.score}%)</span>
+          </div>
+          <div style="font-weight:700; font-size:14px; color:var(--text-main); margin-bottom:4px;">${t.desc}</div>
+          <div style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">
+            <strong>Discipline:</strong> ${t.disc} &bull; <strong>Site:</strong> ${t.location || 'Site'} &bull; <strong>Hours:</strong> ${t.hours || 40}h
+          </div>
+          <div style="background:rgba(255,255,255,0.7); padding:8px; border-radius:6px; font-size:11px; color:var(--text-main); margin-bottom:10px;">
+            <strong>Top Risk Driver:</strong> ${topDriver}<br>
+            <strong>Action Proposal:</strong> ${t.action}
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-primary" onclick="openDrawerById('${t.id}')" style="font-size:11px; padding:6px 12px; flex:1;">Inspect Details</button>
+            <a href="mailto:pm.intertech@gmail.com?subject=URGENT SITE ALERT: Task ${t.id}&body=Priority Action required for task ${t.id}: ${t.desc}" class="btn btn-outline" style="font-size:11px; padding:6px 12px; text-decoration:none; background:#fff;">📞 Notify PM</a>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    async function syncJiraTasks() {
+      const btn = document.getElementById("btn-sync-jira");
+      const statusDiv = document.getElementById("jira-sync-status");
+      const url = document.getElementById("jira-url-input").value;
+      const email = document.getElementById("jira-email-input").value;
+      const token = document.getElementById("jira-token-input").value;
+      const project = document.getElementById("jira-project-input").value || "PRJ001";
+
+      if (btn) btn.disabled = true;
+      if (statusDiv) { statusDiv.style.display = "block"; statusDiv.innerText = "⏳ Fetching issues from Jira Cloud REST API..."; statusDiv.style.color = "#2563eb"; }
+
+      try {
+        const resp = await fetch("/api/sync_integration", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tool: "jira",
+            config: { baseUrl: url, email, apiToken: token, project }
+          })
+        });
+
+        const data = await resp.json();
+        if (data.success && data.tasks) {
+          const predictedPayload = predictTasksClientSide(data.tasks, `Jira_${project}_Export.csv`);
+          renderImportedResults(predictedPayload);
+          if (statusDiv) {
+            statusDiv.style.color = "#16a34a";
+            statusDiv.innerText = `✅ Successfully pulled & scored ${data.total_fetched} tasks from Jira project ${project}!`;
+          }
+        } else {
+          throw new Error(data.error || "Failed to fetch from Jira");
+        }
+      } catch (err) {
+        if (statusDiv) {
+          statusDiv.style.color = "#dc2626";
+          statusDiv.innerText = `❌ Jira Sync Error: ${err.message}. Using sample dataset fallback.`;
+        }
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    async function loadModelRegistry() {
+      const container = document.getElementById("model-registry-list");
+      if (!container) return;
+
+      try {
+        const resp = await fetch("/api/model_registry");
+        const reg = await resp.json();
+
+        if (reg.vercel_mode) {
+          container.innerHTML = `<div style="padding:10px; background:#eff6ff; border-radius:6px; color:#1e40af;">${reg.info}</div>`;
+          return;
+        }
+
+        if (!Array.isArray(reg) || !reg.length) {
+          container.innerHTML = `<div>No model snapshots stored yet. Run retrain to record initial snapshot.</div>`;
+          return;
+        }
+
+        let html = `<table style="width:100%; border-collapse:collapse; font-size:11px; margin-top:8px;">
+          <thead>
+            <tr style="background:var(--bg-subtle); text-align:left;">
+              <th style="padding:6px;">Ver</th>
+              <th style="padding:6px;">Date</th>
+              <th style="padding:6px;">Champion</th>
+              <th style="padding:6px;">F1 Score</th>
+              <th style="padding:6px;">Recall</th>
+              <th style="padding:6px;">Status</th>
+              <th style="padding:6px;">Action</th>
+            </tr>
+          </thead>
+          <tbody>`;
+
+        reg.reverse().forEach(item => {
+          const isActive = item.active;
+          const dateStr = item.date ? item.date.replace("T", " ").substring(0, 16) : "-";
+          html += `
+            <tr style="border-bottom:1px solid var(--border-light); ${isActive ? 'background:#f0fdf4; font-weight:700;' : ''}">
+              <td style="padding:6px;">v${item.version}</td>
+              <td style="padding:6px;">${dateStr}</td>
+              <td style="padding:6px;">${item.champion}</td>
+              <td style="padding:6px;">${item.f1}%</td>
+              <td style="padding:6px;">${item.recall}%</td>
+              <td style="padding:6px;">${isActive ? '<span class="pill pill-low">ACTIVE</span>' : '<span style="color:#64748b;">Archived</span>'}</td>
+              <td style="padding:6px;">
+                ${isActive ? '—' : `<button class="btn btn-outline" style="padding:1px 6px; font-size:10px;" onclick="activateModelVersion(${item.version})">Rollback</button>`}
+              </td>
+            </tr>
+          `;
+        });
+
+        html += `</tbody></table>`;
+        container.innerHTML = html;
+      } catch (err) {
+        container.innerHTML = `<div style="color:#dc2626;">Error loading model registry: ${err.message}</div>`;
+      }
+    }
+
+    async function activateModelVersion(ver) {
+      if (!confirm(`Are you sure you want to rollback to Model Version v${ver}?`)) return;
+      try {
+        const resp = await fetch("/api/model_registry", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ activate_version: ver })
+        });
+        const res = await resp.json();
+        if (res.success) {
+          alert(`Successfully rolled back to Model Version v${ver}!`);
+          await fetchData();
+          loadModelRegistry();
+        } else {
+          alert(`Rollback failed: ${res.error}`);
+        }
+      } catch (e) {
+        alert(`Rollback error: ${e.message}`);
+      }
+    }
+
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+
+    const debouncedFilterTasks = debounce(filterTasks, 200);
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const searchInput = document.getElementById("task-search-input");
+      if (searchInput) {
+        searchInput.oninput = debouncedFilterTasks;
+      }
+      setTimeout(calculateROI, 1500);
+    });
+
       } else {
         panel.style.display = 'none';
       }
@@ -5332,6 +6055,293 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
 
       if (tabName === 'audit') renderAuditLog();
       if (tabName === 'chat' && !document.getElementById('chat-inline-options-block')) initAIChat();
+
+    /* =========================================================================
+       ANTIGRAVITY ENHANCEMENTS: SANDBOX, ROI, JIRA, MODEL REGISTRY, SITE VIEW
+       ========================================================================= */
+    let appMode = 'production'; // 'production' | 'sandbox'
+    let sandboxThreshold = 70;
+
+    function setAppMode(mode) {
+      appMode = mode;
+      const btnProd = document.getElementById("btn-mode-prod");
+      const btnSand = document.getElementById("btn-mode-sandbox");
+      const banner = document.getElementById("sandbox-banner");
+
+      if (mode === 'sandbox') {
+        if (btnProd) { btnProd.classList.remove("active"); btnProd.style.background = "transparent"; btnProd.style.color = "#94a3b8"; }
+        if (btnSand) { btnSand.classList.add("active"); btnSand.style.background = "#6366f1"; btnSand.style.color = "#ffffff"; }
+        if (banner) banner.style.display = "flex";
+      } else {
+        if (btnSand) { btnSand.classList.remove("active"); btnSand.style.background = "transparent"; btnSand.style.color = "#94a3b8"; }
+        if (btnProd) { btnProd.classList.add("active"); btnProd.style.background = "#2563eb"; btnProd.style.color = "#ffffff"; }
+        if (banner) banner.style.display = "none";
+        sandboxThreshold = 70;
+      }
+      reclassifyTasksAndRender();
+    }
+
+    function updateSandboxThreshold(val) {
+      sandboxThreshold = parseInt(val, 10);
+      document.getElementById("threshold-val-display").innerText = val + "%";
+      reclassifyTasksAndRender();
+    }
+
+    function reclassifyTasksAndRender() {
+      if (!globalData || !globalData.tasks) return;
+      
+      const cutoff = appMode === 'sandbox' ? sandboxThreshold : 70;
+      let highCount = 0, medCount = 0, lowCount = 0;
+
+      globalData.tasks.forEach(t => {
+        if (t.score >= cutoff) {
+          t.cat = 'HIGH';
+          t.action = 'NOTIFY_PM + REALLOCATE_RESOURCE';
+          highCount++;
+        } else if (t.score >= 40) {
+          t.cat = 'MEDIUM';
+          t.action = 'SCHEDULE_STATUS_MEETING';
+          medCount++;
+        } else {
+          t.cat = 'LOW';
+          t.action = 'MONITOR_WEEKLY';
+          lowCount++;
+        }
+      });
+
+      if (document.getElementById("view-overview").classList.contains("active")) renderDashboard(globalData);
+      if (document.getElementById("view-tasks").classList.contains("active")) renderTasksTable();
+      if (document.getElementById("view-mitigation").classList.contains("active")) renderMitigationHub();
+      if (document.getElementById("view-siteview").classList.contains("active")) renderSiteView();
+      calculateROI();
+    }
+
+    function calculateROI() {
+      const costPerDay = parseFloat(document.getElementById("roi-cost-per-day")?.value || 5000);
+      const costPerIntervention = parseFloat(document.getElementById("roi-intervention-cost")?.value || 250);
+      const successRate = (parseFloat(document.getElementById("roi-mitigation-success")?.value || 80)) / 100;
+
+      const tasks = (globalImportedData && globalImportedData.tasks) ? globalImportedData.tasks : (globalData ? globalData.tasks : []);
+      if (!tasks || !tasks.length) return;
+
+      const highRiskTasks = tasks.filter(t => t.cat === 'HIGH');
+      const medRiskTasks  = tasks.filter(t => t.cat === 'MEDIUM');
+      const totalAlerts = highRiskTasks.length + medRiskTasks.length;
+
+      const avgDelayPerTask = (globalData && globalData.meta && globalData.meta.avg_delay_days) ? globalData.meta.avg_delay_days : 3.5;
+      const daysSaved = highRiskTasks.length * avgDelayPerTask * successRate;
+
+      const grossAvoided = daysSaved * costPerDay;
+      const totalInterventionCost = (highRiskTasks.length * costPerIntervention) + (medRiskTasks.length * 100);
+      const netBenefit = grossAvoided - totalInterventionCost;
+      const roiRatio = totalInterventionCost > 0 ? (grossAvoided / totalInterventionCost) : 0;
+
+      const grossElem = document.getElementById("roi-gross-avoided");
+      const costElem  = document.getElementById("roi-total-cost");
+      const netElem   = document.getElementById("roi-net-benefit");
+      const ratioElem = document.getElementById("roi-ratio-display");
+      const daysElem  = document.getElementById("roi-days-saved");
+      const alertsElem = document.getElementById("roi-alerts-acted");
+
+      if (grossElem) grossElem.innerText = "$" + Math.round(grossAvoided).toLocaleString();
+      if (costElem)  costElem.innerText  = "$" + Math.round(totalInterventionCost).toLocaleString();
+      if (netElem)   netElem.innerText   = "$" + Math.round(netBenefit).toLocaleString();
+      if (ratioElem) ratioElem.innerText = roiRatio.toFixed(1) + "x Return on Investment (" + Math.round((netBenefit / Math.max(totalInterventionCost, 1))*100).toLocaleString() + "% Net ROI)";
+      if (daysElem)  daysElem.innerText  = daysSaved.toFixed(1) + " days delay prevented";
+      if (alertsElem) alertsElem.innerText = totalAlerts + " risk alerts acted upon";
+    }
+
+    function renderSiteView() {
+      const container = document.getElementById("site-view-cards-container");
+      if (!container) return;
+
+      const tasks = (globalImportedData && globalImportedData.tasks) ? globalImportedData.tasks : (globalData ? globalData.tasks : []);
+      const highTasks = tasks.filter(t => t.cat === 'HIGH');
+      const medTasks  = tasks.filter(t => t.cat === 'MEDIUM');
+
+      document.getElementById("site-high-count").innerText = highTasks.length;
+      document.getElementById("site-med-count").innerText  = medTasks.length;
+      document.getElementById("site-actions-count").innerText = highTasks.length + medTasks.length;
+
+      container.innerHTML = "";
+      const priorityTasks = [...highTasks, ...medTasks].slice(0, 15);
+
+      if (!priorityTasks.length) {
+        container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-subtle);">No High/Medium risk tasks flagged for job site action.</div>`;
+        return;
+      }
+
+      priorityTasks.forEach(t => {
+        const isHigh = t.cat === 'HIGH';
+        const card = document.createElement("div");
+        card.style.cssText = `background:${isHigh ? '#fef2f2' : '#fffbeb'}; border:1px solid ${isHigh ? '#fca5a5' : '#fcd34d'}; border-radius:10px; padding:14px; position:relative;`;
+        
+        const topDriver = t.shap_drivers && t.shap_drivers.length ? t.shap_drivers[0].feature : 'Workload / Priority';
+
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:6px;">
+            <span style="font-family:'JetBrains Mono',monospace; font-weight:800; font-size:12px; color:#2563eb;">${t.id}</span>
+            <span class="${isHigh ? 'pill-high' : 'pill-med'}" style="font-size:10px; font-weight:800; padding:2px 8px; border-radius:12px;">${isHigh ? '◆ HIGH RISK' : '▲ MEDIUM RISK'} (${t.score}%)</span>
+          </div>
+          <div style="font-weight:700; font-size:14px; color:var(--text-main); margin-bottom:4px;">${t.desc}</div>
+          <div style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">
+            <strong>Discipline:</strong> ${t.disc} &bull; <strong>Site:</strong> ${t.location || 'Site'} &bull; <strong>Hours:</strong> ${t.hours || 40}h
+          </div>
+          <div style="background:rgba(255,255,255,0.7); padding:8px; border-radius:6px; font-size:11px; color:var(--text-main); margin-bottom:10px;">
+            <strong>Top Risk Driver:</strong> ${topDriver}<br>
+            <strong>Action Proposal:</strong> ${t.action}
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-primary" onclick="openDrawerById('${t.id}')" style="font-size:11px; padding:6px 12px; flex:1;">Inspect Details</button>
+            <a href="mailto:pm.intertech@gmail.com?subject=URGENT SITE ALERT: Task ${t.id}&body=Priority Action required for task ${t.id}: ${t.desc}" class="btn btn-outline" style="font-size:11px; padding:6px 12px; text-decoration:none; background:#fff;">📞 Notify PM</a>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    async function syncJiraTasks() {
+      const btn = document.getElementById("btn-sync-jira");
+      const statusDiv = document.getElementById("jira-sync-status");
+      const url = document.getElementById("jira-url-input").value;
+      const email = document.getElementById("jira-email-input").value;
+      const token = document.getElementById("jira-token-input").value;
+      const project = document.getElementById("jira-project-input").value || "PRJ001";
+
+      if (btn) btn.disabled = true;
+      if (statusDiv) { statusDiv.style.display = "block"; statusDiv.innerText = "⏳ Fetching issues from Jira Cloud REST API..."; statusDiv.style.color = "#2563eb"; }
+
+      try {
+        const resp = await fetch("/api/sync_integration", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tool: "jira",
+            config: { baseUrl: url, email, apiToken: token, project }
+          })
+        });
+
+        const data = await resp.json();
+        if (data.success && data.tasks) {
+          const predictedPayload = predictTasksClientSide(data.tasks, `Jira_${project}_Export.csv`);
+          renderImportedResults(predictedPayload);
+          if (statusDiv) {
+            statusDiv.style.color = "#16a34a";
+            statusDiv.innerText = `✅ Successfully pulled & scored ${data.total_fetched} tasks from Jira project ${project}!`;
+          }
+        } else {
+          throw new Error(data.error || "Failed to fetch from Jira");
+        }
+      } catch (err) {
+        if (statusDiv) {
+          statusDiv.style.color = "#dc2626";
+          statusDiv.innerText = `❌ Jira Sync Error: ${err.message}. Using sample dataset fallback.`;
+        }
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    async function loadModelRegistry() {
+      const container = document.getElementById("model-registry-list");
+      if (!container) return;
+
+      try {
+        const resp = await fetch("/api/model_registry");
+        const reg = await resp.json();
+
+        if (reg.vercel_mode) {
+          container.innerHTML = `<div style="padding:10px; background:#eff6ff; border-radius:6px; color:#1e40af;">${reg.info}</div>`;
+          return;
+        }
+
+        if (!Array.isArray(reg) || !reg.length) {
+          container.innerHTML = `<div>No model snapshots stored yet. Run retrain to record initial snapshot.</div>`;
+          return;
+        }
+
+        let html = `<table style="width:100%; border-collapse:collapse; font-size:11px; margin-top:8px;">
+          <thead>
+            <tr style="background:var(--bg-subtle); text-align:left;">
+              <th style="padding:6px;">Ver</th>
+              <th style="padding:6px;">Date</th>
+              <th style="padding:6px;">Champion</th>
+              <th style="padding:6px;">F1 Score</th>
+              <th style="padding:6px;">Recall</th>
+              <th style="padding:6px;">Status</th>
+              <th style="padding:6px;">Action</th>
+            </tr>
+          </thead>
+          <tbody>`;
+
+        reg.reverse().forEach(item => {
+          const isActive = item.active;
+          const dateStr = item.date ? item.date.replace("T", " ").substring(0, 16) : "-";
+          html += `
+            <tr style="border-bottom:1px solid var(--border-light); ${isActive ? 'background:#f0fdf4; font-weight:700;' : ''}">
+              <td style="padding:6px;">v${item.version}</td>
+              <td style="padding:6px;">${dateStr}</td>
+              <td style="padding:6px;">${item.champion}</td>
+              <td style="padding:6px;">${item.f1}%</td>
+              <td style="padding:6px;">${item.recall}%</td>
+              <td style="padding:6px;">${isActive ? '<span class="pill pill-low">ACTIVE</span>' : '<span style="color:#64748b;">Archived</span>'}</td>
+              <td style="padding:6px;">
+                ${isActive ? '—' : `<button class="btn btn-outline" style="padding:1px 6px; font-size:10px;" onclick="activateModelVersion(${item.version})">Rollback</button>`}
+              </td>
+            </tr>
+          `;
+        });
+
+        html += `</tbody></table>`;
+        container.innerHTML = html;
+      } catch (err) {
+        container.innerHTML = `<div style="color:#dc2626;">Error loading model registry: ${err.message}</div>`;
+      }
+    }
+
+    async function activateModelVersion(ver) {
+      if (!confirm(`Are you sure you want to rollback to Model Version v${ver}?`)) return;
+      try {
+        const resp = await fetch("/api/model_registry", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ activate_version: ver })
+        });
+        const res = await resp.json();
+        if (res.success) {
+          alert(`Successfully rolled back to Model Version v${ver}!`);
+          await fetchData();
+          loadModelRegistry();
+        } else {
+          alert(`Rollback failed: ${res.error}`);
+        }
+      } catch (e) {
+        alert(`Rollback error: ${e.message}`);
+      }
+    }
+
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+
+    const debouncedFilterTasks = debounce(filterTasks, 200);
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const searchInput = document.getElementById("task-search-input");
+      if (searchInput) {
+        searchInput.oninput = debouncedFilterTasks;
+      }
+      setTimeout(calculateROI, 1500);
+    });
+
     }
 
     function askAIQuickPrompt(promptText) {
@@ -5343,7 +6353,6 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
       }
     }
 
-    async 
     function generateClientAIResponse(userText) {
       const lower = userText.toLowerCase();
       const dataset = (globalImportedData && globalImportedData.tasks) ? globalImportedData : (globalData || {});
@@ -5420,7 +6429,7 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
     }
 
 
-    function sendAIChatMessage() {
+    async function sendAIChatMessage() {
       if (isAIChatBusy) return;
       const input = document.getElementById('ai-chat-input');
       const sendBtn = document.getElementById('ai-chat-send-btn');
@@ -5515,6 +6524,293 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
 
     document.addEventListener('DOMContentLoaded', function() {
       initAIChat();
+
+    /* =========================================================================
+       ANTIGRAVITY ENHANCEMENTS: SANDBOX, ROI, JIRA, MODEL REGISTRY, SITE VIEW
+       ========================================================================= */
+    let appMode = 'production'; // 'production' | 'sandbox'
+    let sandboxThreshold = 70;
+
+    function setAppMode(mode) {
+      appMode = mode;
+      const btnProd = document.getElementById("btn-mode-prod");
+      const btnSand = document.getElementById("btn-mode-sandbox");
+      const banner = document.getElementById("sandbox-banner");
+
+      if (mode === 'sandbox') {
+        if (btnProd) { btnProd.classList.remove("active"); btnProd.style.background = "transparent"; btnProd.style.color = "#94a3b8"; }
+        if (btnSand) { btnSand.classList.add("active"); btnSand.style.background = "#6366f1"; btnSand.style.color = "#ffffff"; }
+        if (banner) banner.style.display = "flex";
+      } else {
+        if (btnSand) { btnSand.classList.remove("active"); btnSand.style.background = "transparent"; btnSand.style.color = "#94a3b8"; }
+        if (btnProd) { btnProd.classList.add("active"); btnProd.style.background = "#2563eb"; btnProd.style.color = "#ffffff"; }
+        if (banner) banner.style.display = "none";
+        sandboxThreshold = 70;
+      }
+      reclassifyTasksAndRender();
+    }
+
+    function updateSandboxThreshold(val) {
+      sandboxThreshold = parseInt(val, 10);
+      document.getElementById("threshold-val-display").innerText = val + "%";
+      reclassifyTasksAndRender();
+    }
+
+    function reclassifyTasksAndRender() {
+      if (!globalData || !globalData.tasks) return;
+      
+      const cutoff = appMode === 'sandbox' ? sandboxThreshold : 70;
+      let highCount = 0, medCount = 0, lowCount = 0;
+
+      globalData.tasks.forEach(t => {
+        if (t.score >= cutoff) {
+          t.cat = 'HIGH';
+          t.action = 'NOTIFY_PM + REALLOCATE_RESOURCE';
+          highCount++;
+        } else if (t.score >= 40) {
+          t.cat = 'MEDIUM';
+          t.action = 'SCHEDULE_STATUS_MEETING';
+          medCount++;
+        } else {
+          t.cat = 'LOW';
+          t.action = 'MONITOR_WEEKLY';
+          lowCount++;
+        }
+      });
+
+      if (document.getElementById("view-overview").classList.contains("active")) renderDashboard(globalData);
+      if (document.getElementById("view-tasks").classList.contains("active")) renderTasksTable();
+      if (document.getElementById("view-mitigation").classList.contains("active")) renderMitigationHub();
+      if (document.getElementById("view-siteview").classList.contains("active")) renderSiteView();
+      calculateROI();
+    }
+
+    function calculateROI() {
+      const costPerDay = parseFloat(document.getElementById("roi-cost-per-day")?.value || 5000);
+      const costPerIntervention = parseFloat(document.getElementById("roi-intervention-cost")?.value || 250);
+      const successRate = (parseFloat(document.getElementById("roi-mitigation-success")?.value || 80)) / 100;
+
+      const tasks = (globalImportedData && globalImportedData.tasks) ? globalImportedData.tasks : (globalData ? globalData.tasks : []);
+      if (!tasks || !tasks.length) return;
+
+      const highRiskTasks = tasks.filter(t => t.cat === 'HIGH');
+      const medRiskTasks  = tasks.filter(t => t.cat === 'MEDIUM');
+      const totalAlerts = highRiskTasks.length + medRiskTasks.length;
+
+      const avgDelayPerTask = (globalData && globalData.meta && globalData.meta.avg_delay_days) ? globalData.meta.avg_delay_days : 3.5;
+      const daysSaved = highRiskTasks.length * avgDelayPerTask * successRate;
+
+      const grossAvoided = daysSaved * costPerDay;
+      const totalInterventionCost = (highRiskTasks.length * costPerIntervention) + (medRiskTasks.length * 100);
+      const netBenefit = grossAvoided - totalInterventionCost;
+      const roiRatio = totalInterventionCost > 0 ? (grossAvoided / totalInterventionCost) : 0;
+
+      const grossElem = document.getElementById("roi-gross-avoided");
+      const costElem  = document.getElementById("roi-total-cost");
+      const netElem   = document.getElementById("roi-net-benefit");
+      const ratioElem = document.getElementById("roi-ratio-display");
+      const daysElem  = document.getElementById("roi-days-saved");
+      const alertsElem = document.getElementById("roi-alerts-acted");
+
+      if (grossElem) grossElem.innerText = "$" + Math.round(grossAvoided).toLocaleString();
+      if (costElem)  costElem.innerText  = "$" + Math.round(totalInterventionCost).toLocaleString();
+      if (netElem)   netElem.innerText   = "$" + Math.round(netBenefit).toLocaleString();
+      if (ratioElem) ratioElem.innerText = roiRatio.toFixed(1) + "x Return on Investment (" + Math.round((netBenefit / Math.max(totalInterventionCost, 1))*100).toLocaleString() + "% Net ROI)";
+      if (daysElem)  daysElem.innerText  = daysSaved.toFixed(1) + " days delay prevented";
+      if (alertsElem) alertsElem.innerText = totalAlerts + " risk alerts acted upon";
+    }
+
+    function renderSiteView() {
+      const container = document.getElementById("site-view-cards-container");
+      if (!container) return;
+
+      const tasks = (globalImportedData && globalImportedData.tasks) ? globalImportedData.tasks : (globalData ? globalData.tasks : []);
+      const highTasks = tasks.filter(t => t.cat === 'HIGH');
+      const medTasks  = tasks.filter(t => t.cat === 'MEDIUM');
+
+      document.getElementById("site-high-count").innerText = highTasks.length;
+      document.getElementById("site-med-count").innerText  = medTasks.length;
+      document.getElementById("site-actions-count").innerText = highTasks.length + medTasks.length;
+
+      container.innerHTML = "";
+      const priorityTasks = [...highTasks, ...medTasks].slice(0, 15);
+
+      if (!priorityTasks.length) {
+        container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-subtle);">No High/Medium risk tasks flagged for job site action.</div>`;
+        return;
+      }
+
+      priorityTasks.forEach(t => {
+        const isHigh = t.cat === 'HIGH';
+        const card = document.createElement("div");
+        card.style.cssText = `background:${isHigh ? '#fef2f2' : '#fffbeb'}; border:1px solid ${isHigh ? '#fca5a5' : '#fcd34d'}; border-radius:10px; padding:14px; position:relative;`;
+        
+        const topDriver = t.shap_drivers && t.shap_drivers.length ? t.shap_drivers[0].feature : 'Workload / Priority';
+
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:6px;">
+            <span style="font-family:'JetBrains Mono',monospace; font-weight:800; font-size:12px; color:#2563eb;">${t.id}</span>
+            <span class="${isHigh ? 'pill-high' : 'pill-med'}" style="font-size:10px; font-weight:800; padding:2px 8px; border-radius:12px;">${isHigh ? '◆ HIGH RISK' : '▲ MEDIUM RISK'} (${t.score}%)</span>
+          </div>
+          <div style="font-weight:700; font-size:14px; color:var(--text-main); margin-bottom:4px;">${t.desc}</div>
+          <div style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">
+            <strong>Discipline:</strong> ${t.disc} &bull; <strong>Site:</strong> ${t.location || 'Site'} &bull; <strong>Hours:</strong> ${t.hours || 40}h
+          </div>
+          <div style="background:rgba(255,255,255,0.7); padding:8px; border-radius:6px; font-size:11px; color:var(--text-main); margin-bottom:10px;">
+            <strong>Top Risk Driver:</strong> ${topDriver}<br>
+            <strong>Action Proposal:</strong> ${t.action}
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-primary" onclick="openDrawerById('${t.id}')" style="font-size:11px; padding:6px 12px; flex:1;">Inspect Details</button>
+            <a href="mailto:pm.intertech@gmail.com?subject=URGENT SITE ALERT: Task ${t.id}&body=Priority Action required for task ${t.id}: ${t.desc}" class="btn btn-outline" style="font-size:11px; padding:6px 12px; text-decoration:none; background:#fff;">📞 Notify PM</a>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    async function syncJiraTasks() {
+      const btn = document.getElementById("btn-sync-jira");
+      const statusDiv = document.getElementById("jira-sync-status");
+      const url = document.getElementById("jira-url-input").value;
+      const email = document.getElementById("jira-email-input").value;
+      const token = document.getElementById("jira-token-input").value;
+      const project = document.getElementById("jira-project-input").value || "PRJ001";
+
+      if (btn) btn.disabled = true;
+      if (statusDiv) { statusDiv.style.display = "block"; statusDiv.innerText = "⏳ Fetching issues from Jira Cloud REST API..."; statusDiv.style.color = "#2563eb"; }
+
+      try {
+        const resp = await fetch("/api/sync_integration", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tool: "jira",
+            config: { baseUrl: url, email, apiToken: token, project }
+          })
+        });
+
+        const data = await resp.json();
+        if (data.success && data.tasks) {
+          const predictedPayload = predictTasksClientSide(data.tasks, `Jira_${project}_Export.csv`);
+          renderImportedResults(predictedPayload);
+          if (statusDiv) {
+            statusDiv.style.color = "#16a34a";
+            statusDiv.innerText = `✅ Successfully pulled & scored ${data.total_fetched} tasks from Jira project ${project}!`;
+          }
+        } else {
+          throw new Error(data.error || "Failed to fetch from Jira");
+        }
+      } catch (err) {
+        if (statusDiv) {
+          statusDiv.style.color = "#dc2626";
+          statusDiv.innerText = `❌ Jira Sync Error: ${err.message}. Using sample dataset fallback.`;
+        }
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    async function loadModelRegistry() {
+      const container = document.getElementById("model-registry-list");
+      if (!container) return;
+
+      try {
+        const resp = await fetch("/api/model_registry");
+        const reg = await resp.json();
+
+        if (reg.vercel_mode) {
+          container.innerHTML = `<div style="padding:10px; background:#eff6ff; border-radius:6px; color:#1e40af;">${reg.info}</div>`;
+          return;
+        }
+
+        if (!Array.isArray(reg) || !reg.length) {
+          container.innerHTML = `<div>No model snapshots stored yet. Run retrain to record initial snapshot.</div>`;
+          return;
+        }
+
+        let html = `<table style="width:100%; border-collapse:collapse; font-size:11px; margin-top:8px;">
+          <thead>
+            <tr style="background:var(--bg-subtle); text-align:left;">
+              <th style="padding:6px;">Ver</th>
+              <th style="padding:6px;">Date</th>
+              <th style="padding:6px;">Champion</th>
+              <th style="padding:6px;">F1 Score</th>
+              <th style="padding:6px;">Recall</th>
+              <th style="padding:6px;">Status</th>
+              <th style="padding:6px;">Action</th>
+            </tr>
+          </thead>
+          <tbody>`;
+
+        reg.reverse().forEach(item => {
+          const isActive = item.active;
+          const dateStr = item.date ? item.date.replace("T", " ").substring(0, 16) : "-";
+          html += `
+            <tr style="border-bottom:1px solid var(--border-light); ${isActive ? 'background:#f0fdf4; font-weight:700;' : ''}">
+              <td style="padding:6px;">v${item.version}</td>
+              <td style="padding:6px;">${dateStr}</td>
+              <td style="padding:6px;">${item.champion}</td>
+              <td style="padding:6px;">${item.f1}%</td>
+              <td style="padding:6px;">${item.recall}%</td>
+              <td style="padding:6px;">${isActive ? '<span class="pill pill-low">ACTIVE</span>' : '<span style="color:#64748b;">Archived</span>'}</td>
+              <td style="padding:6px;">
+                ${isActive ? '—' : `<button class="btn btn-outline" style="padding:1px 6px; font-size:10px;" onclick="activateModelVersion(${item.version})">Rollback</button>`}
+              </td>
+            </tr>
+          `;
+        });
+
+        html += `</tbody></table>`;
+        container.innerHTML = html;
+      } catch (err) {
+        container.innerHTML = `<div style="color:#dc2626;">Error loading model registry: ${err.message}</div>`;
+      }
+    }
+
+    async function activateModelVersion(ver) {
+      if (!confirm(`Are you sure you want to rollback to Model Version v${ver}?`)) return;
+      try {
+        const resp = await fetch("/api/model_registry", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ activate_version: ver })
+        });
+        const res = await resp.json();
+        if (res.success) {
+          alert(`Successfully rolled back to Model Version v${ver}!`);
+          await fetchData();
+          loadModelRegistry();
+        } else {
+          alert(`Rollback failed: ${res.error}`);
+        }
+      } catch (e) {
+        alert(`Rollback error: ${e.message}`);
+      }
+    }
+
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+
+    const debouncedFilterTasks = debounce(filterTasks, 200);
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const searchInput = document.getElementById("task-search-input");
+      if (searchInput) {
+        searchInput.oninput = debouncedFilterTasks;
+      }
+      setTimeout(calculateROI, 1500);
+    });
+
     });
  </script>
 </body>

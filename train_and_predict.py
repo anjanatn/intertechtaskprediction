@@ -484,6 +484,39 @@ output_json = os.path.join(BASE_DIR, "dashboard_data.json")
 with open(output_json, "w") as f:
     json.dump(dashboard_payload, f, indent=2)
 
+# ---------------------------------------------------------------------------
+# 10. MODEL REGISTRY SNAPSHOT
+# ---------------------------------------------------------------------------
+import datetime as _dt, shutil as _shutil
+registry_dir = os.path.join(BASE_DIR, "model_registry")
+os.makedirs(registry_dir, exist_ok=True)
+reg_path = os.path.join(registry_dir, "registry.json")
+try:
+    with open(reg_path) as _rf:
+        _registry = json.load(_rf)
+except Exception:
+    _registry = []
+for _r in _registry:
+    _r["active"] = False
+_ts = _dt.datetime.now().strftime("%Y%m%d_%H%M")
+_version = len(_registry) + 1
+_snap_file = f"v{_version}_{_ts}.json"
+_shutil.copy(output_json, os.path.join(registry_dir, _snap_file))
+_registry.append({
+    "version": _version,
+    "date": _dt.datetime.now().isoformat(),
+    "champion": champion_name,
+    "f1": champion_metrics["f1"],
+    "recall": champion_metrics["recall"],
+    "auc": champion_metrics["auc_roc"],
+    "acc": champion_metrics["acc"],
+    "active": True,
+    "file": _snap_file
+})
+with open(reg_path, "w") as _rf:
+    json.dump(_registry, _rf, indent=2)
+print(f"[*] Model registry snapshot: {_snap_file} (v{_version})")
+
 public_dir = os.path.join(BASE_DIR, "public")
 os.makedirs(public_dir, exist_ok=True)
 public_json = os.path.join(public_dir, "dashboard_data.json")

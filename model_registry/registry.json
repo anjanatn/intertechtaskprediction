@@ -1,0 +1,13 @@
+[
+  {
+    "version": 1,
+    "date": "2026-08-17T14:24:59.290955",
+    "champion": "Random Forest",
+    "f1": 69.3,
+    "recall": 72.4,
+    "auc": 77.8,
+    "acc": 72.0,
+    "active": true,
+    "file": "v1_20260817_1424.json"
+  }
+]

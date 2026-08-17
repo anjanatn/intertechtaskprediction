@@ -6,11 +6,15 @@ Serves the web dashboard and REST API for project delay predictions.
 import os
 import sys
 import json
+import time
 import webbrowser
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 import subprocess
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# In-memory cache for /api/data (60-second TTL)
+_data_cache = {"data": None, "expires": 0}
 
 def run_ml_pipeline():
     print("[*] Running ML Delay Prediction Pipeline...")
@@ -44,19 +48,46 @@ class CustomHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/" or self.path == "/index.html":
             self.path = "/index.html"
+        elif self.path == "/api/model_registry":
+            reg_path = os.path.join(BASE_DIR, "model_registry", "registry.json")
+            if os.path.exists(reg_path):
+                with open(reg_path, "rb") as f:
+                    reg_data = f.read()
+            else:
+                reg_data = b"[]"
+            self.send_response(200)
+            self.send_header("Content-type", "application/json")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            self.wfile.write(reg_data)
+            return
         elif self.path == "/api/data" or self.path == "/api/run":
             if self.path == "/api/run":
                 run_ml_pipeline()
+                _data_cache["expires"] = 0  # invalidate cache
             json_path = os.path.join(BASE_DIR, "dashboard_data.json")
             if not os.path.exists(json_path):
                 run_ml_pipeline()
+            now = time.time()
+            if self.path != "/api/run" and _data_cache["data"] and now < _data_cache["expires"]:
+                self.send_response(200)
+                self.send_header("Content-type", "application/json")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.send_header("X-Cache", "HIT")
+                self.end_headers()
+                self.wfile.write(_data_cache["data"])
+                return
             if os.path.exists(json_path):
                 self.send_response(200)
                 self.send_header("Content-type", "application/json")
                 self.send_header("Access-Control-Allow-Origin", "*")
+                self.send_header("X-Cache", "MISS")
                 self.end_headers()
                 with open(json_path, "rb") as f:
-                    self.wfile.write(f.read())
+                    payload = f.read()
+                _data_cache["data"] = payload
+                _data_cache["expires"] = now + 60
+                self.wfile.write(payload)
             else:
                 self.send_response(500)
                 self.send_header("Content-type", "application/json")
@@ -129,6 +160,42 @@ class CustomHandler(SimpleHTTPRequestHandler):
                 self.end_headers()
                 err_res = {"success": False, "error": str(e)}
                 self.wfile.write(json.dumps(err_res).encode('utf-8'))
+            return
+        elif self.path == "/api/model_registry":
+            try:
+                content_length = int(self.headers.get('Content-Length', 0))
+                body = self.rfile.read(content_length)
+                payload = json.loads(body.decode('utf-8')) if body else {}
+                activate_version = payload.get("activate_version")
+                reg_path = os.path.join(BASE_DIR, "model_registry", "registry.json")
+                if not os.path.exists(reg_path):
+                    raise FileNotFoundError("registry.json not found")
+                with open(reg_path) as f:
+                    registry = json.load(f)
+                target = next((r for r in registry if r["version"] == activate_version), None)
+                if not target:
+                    raise ValueError(f"Version {activate_version} not found in registry")
+                snap_path = os.path.join(BASE_DIR, "model_registry", target["file"])
+                import shutil
+                shutil.copy(snap_path, os.path.join(BASE_DIR, "dashboard_data.json"))
+                shutil.copy(snap_path, os.path.join(BASE_DIR, "public", "dashboard_data.json"))
+                for r in registry:
+                    r["active"] = (r["version"] == activate_version)
+                with open(reg_path, "w") as f:
+                    json.dump(registry, f, indent=2)
+                _data_cache["expires"] = 0  # invalidate cache
+                result = {"success": True, "activated_version": activate_version, "file": target["file"]}
+                self.send_response(200)
+                self.send_header("Content-type", "application/json")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
+                self.wfile.write(json.dumps(result).encode('utf-8'))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header("Content-type", "application/json")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": False, "error": str(e)}).encode('utf-8'))
             return
         elif self.path == "/api/n8n_webhook":
             try:

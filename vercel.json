@@ -9,6 +9,8 @@
     { "source": "/api/send_email", "destination": "/api/send_email.js" },
     { "source": "/api/n8n_webhook", "destination": "/api/n8n_webhook.js" },
     { "source": "/api/assistant", "destination": "/api/assistant.js" },
+    { "source": "/api/model_registry", "destination": "/api/model_registry.js" },
+    { "source": "/api/sync_integration", "destination": "/api/sync_integration.js" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
