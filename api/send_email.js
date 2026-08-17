@@ -28,13 +28,14 @@ export default async function handler(req, res) {
 
     let taskRowsHTML = '';
     tasks.forEach(t => {
+      const facFlags = t._facilityFlags && t._facilityFlags.length ? `<div style="font-size:11px; color:#dc2626; margin-top:2px;"><strong>Needed Facilities:</strong> ${t._facilityFlags.join(', ')}</div>` : '';
       taskRowsHTML += `
         <tr>
           <td style="padding:10px; border-bottom:1px solid #e2e8f0; font-weight:bold; color:#2563eb;">${t.id || t.task_id}</td>
-          <td style="padding:10px; border-bottom:1px solid #e2e8f0;">${t.desc || t.description}</td>
+          <td style="padding:10px; border-bottom:1px solid #e2e8f0;">${t.desc || t.description}${facFlags}</td>
           <td style="padding:10px; border-bottom:1px solid #e2e8f0;">${t.disc || t.discipline}</td>
           <td style="padding:10px; border-bottom:1px solid #e2e8f0; font-weight:bold; color:#dc2626;">${t.score}%</td>
-          <td style="padding:10px; border-bottom:1px solid #e2e8f0; font-weight:bold; color:#d97706;">NOTIFY_PM + REALLOCATE_RESOURCE</td>
+          <td style="padding:10px; border-bottom:1px solid #e2e8f0; font-weight:bold; color:#d97706;">${t.action || 'NOTIFY_PM + REALLOCATE_RESOURCE'}</td>
         </tr>
       `;
     });
