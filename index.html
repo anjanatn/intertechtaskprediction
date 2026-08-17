@@ -3039,39 +3039,6 @@
  <canvas id="pbix-donut-chart" width="160" height="160" style="flex-shrink:0;"></canvas>
  <div id="pbix-legend" style="flex:1;"></div>
  <div>
- <span style="background:#2563eb; color:#fff; font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px;">SITE SUPERVISOR HUD</span>
- <h1 class="section-heading" style="font-size:20px; font-weight:800; margin-top:2px; color:#fff;">Job Site High-Risk Priority Monitor</h1>
- <p class="section-subtext" style="color:#94a3b8; font-size:12px;">Mobile-optimized view for field foremen & discipline leads</p>
- </div>
- <button class="btn btn-primary" onclick="renderSiteView()" style="font-size:12px; font-weight:700;"> Refresh</button>
- </div>
- </div>
-
- <!-- SITE QUICK STATS -->
- <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:16px;">
- <div style="background:#fef2f2; border:1px solid #fca5a5; padding:12px; border-radius:8px; text-align:center;">
- <div style="font-size:10px; font-weight:700; color:#b91c1c;">HIGH RISK TASKS</div>
- <div style="font-size:22px; font-weight:800; color:#b91c1c; font-family:'JetBrains Mono',monospace;" id="site-high-count">0</div>
- </div>
- <div style="background:#fffbeb; border:1px solid #fcd34d; padding:12px; border-radius:8px; text-align:center;">
- <div style="font-size:10px; font-weight:700; color:#b45309;">MED RISK TASKS</div>
- <div style="font-size:22px; font-weight:800; color:#b45309; font-family:'JetBrains Mono',monospace;" id="site-med-count">0</div>
- </div>
- <div style="background:#eff6ff; border:1px solid #bfdbfe; padding:12px; border-radius:8px; text-align:center;">
- <div style="font-size:10px; font-weight:700; color:#1d4ed8;">ACTIONS DUE</div>
- <div style="font-size:22px; font-weight:800; color:#1d4ed8; font-family:'JetBrains Mono',monospace;" id="site-actions-count">0</div>
- </div>
- </div>
-
- <!-- SITE CARDS CONTAINER -->
- <div id="site-view-cards-container" style="display:flex; flex-direction:column; gap:12px;">
- <!-- Populated dynamically via renderSiteView() -->
- </div>
- </section>
-
- <section id="view-import" class="tab-view">
- <div class="section-title-bar">
- <div>
  <h1 class="section-heading">Test Data Import & ML Delay Risk Forecasting</h1>
  <p class="section-subtext">Model trained on <strong>1,000 historical tasks</strong>. Upload test dataset (.csv, .xlsx, .xls) to predict delays, risk tiers, and mitigation actions.</p>
  </div>
