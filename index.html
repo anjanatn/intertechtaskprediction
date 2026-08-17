@@ -1091,10 +1091,17 @@
  <section id="view-overview" class="tab-view active">
  <div class="section-title-bar">
  <div>
- <h1 class="section-heading">Project Intelligence & Executive Risk Radar</h1>
- <p class="section-subtext">Real-time ML delay forecasting, key performance metrics, and discipline analysis</p>
+ <h1 class="section-heading">Project Delay Prediction System</h1>
+ <p class="section-subtext">A decision-support view for predicting delay, prioritising risk, and acting early.</p>
  </div>
  </div>
+
+ <div style="background:linear-gradient(135deg,#0f172a,#172554); border:1px solid #334155; border-radius:16px; padding:22px 24px; margin-bottom:20px; color:#fff; box-shadow:0 10px 26px rgba(15,23,42,.16);">
+  <div style="display:flex; justify-content:space-between; gap:14px; align-items:flex-start; flex-wrap:wrap;"><div><div style="font-size:11px; font-weight:800; letter-spacing:.08em; color:#7dd3fc;">LIVE DECISION SNAPSHOT</div><div style="font-size:22px; font-weight:800; margin-top:4px;">Model: <span id="decision-model">Calibrated Random Forest</span></div><div style="font-size:13px; color:#cbd5e1; margin-top:6px;">DATA SOURCE: SIMULATED PROJECT-MANAGEMENT DATA — demonstration only; not a forecast for a real project.</div></div><button class="btn btn-primary" onclick="switchView('import', document.getElementById('tab-nav-import'))" style="background:#0284c7; border-color:#0284c7;">Try Demo Dataset</button></div>
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(185px,1fr)); gap:12px; margin-top:18px;"><div style="background:rgba(255,255,255,.08); border-radius:10px; padding:13px;"><div style="font-size:11px; color:#94a3b8;">PREDICTION</div><strong id="decision-at-risk" style="font-size:20px;">123 / 1,000 at risk</strong></div><div style="background:rgba(255,255,255,.08); border-radius:10px; padding:13px;"><div style="font-size:11px; color:#94a3b8;">OVERALL RISK</div><strong id="decision-risk" style="font-size:20px; color:#fca5a5;">HIGH</strong></div><div style="background:rgba(255,255,255,.08); border-radius:10px; padding:13px;"><div style="font-size:11px; color:#94a3b8;">RECOMMENDED ACTION</div><strong style="font-size:15px;">Notify PM + reallocate resource</strong></div><div style="background:rgba(255,255,255,.08); border-radius:10px; padding:13px;"><div style="font-size:11px; color:#94a3b8;">TOP RISK SIGNALS</div><strong id="decision-drivers" style="font-size:15px;">Workload, site risk, duration</strong></div></div>
+ </div>
+
+ <div class="grid-2col" style="margin-bottom:20px;"><div class="card"><h2 class="card-title">Prediction → Action Pipeline</h2><p style="font-size:13px; color:var(--text-subtle); margin:10px 0; line-height:1.8;">Project data → preprocessing → calibrated Random Forest → delay probability → risk classification → mitigation recommendation</p><p style="font-size:12px; color:#0369a1; font-weight:700;">Probabilities are classified as Low: 0–39%, Medium: 40–69%, High: ≥70%.</p></div><div class="card"><h2 class="card-title">Risk → Action Policy</h2><div style="font-size:13px; line-height:1.9;"><div><span class="pill pill-low">LOW &lt;40%</span> Normal monitoring</div><div><span class="pill pill-med">MEDIUM 40–69%</span> Weekly status meeting</div><div><span class="pill pill-high">HIGH ≥70%</span> Notify PM + reallocate one available employee</div></div><p style="font-size:11px; color:var(--text-subtle); margin-top:10px;">Thresholds are configurable in Sandbox mode; the production baseline is preserved.</p></div></div>
 
  <!-- KPI METRIC CARDS -->
  <div class="kpi-grid">
@@ -2638,6 +2645,7 @@
 </tr></tbody>
  </table>
  </div>
+ <div style="margin-top:16px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:10px; padding:14px 16px; font-size:13px; color:#334155; line-height:1.55;"><strong style="color:#0f3b74;">Selected model: Calibrated Random Forest.</strong> Logistic Regression has a slightly higher accuracy and ROC-AUC in this evaluation. Random Forest is selected for the operational workflow because it has the strongest delayed-class recall (72.4%), supports the implemented TreeExplainer feature explanations, and captures non-linear feature interactions. Recall is prioritised because failing to flag a genuinely delayed task can prevent an early PM intervention.</div>
  </div>
 
  <div class="card">
@@ -3265,6 +3273,8 @@
  </div>
  </div>
 
+ <div style="margin-bottom:20px; background:#f8fafc; border:1px solid #e2e8f0; padding:12px; border-radius:10px;"><div style="display:flex; justify-content:space-between; gap:8px; align-items:center;"><div><div class="detail-label">Confidence / Review Guidance</div><strong id="drawer-confidence" style="font-size:13px; color:#0f172a;">High confidence</strong></div><span id="drawer-prediction" class="pill pill-high">PREDICTED DELAY</span></div><p id="drawer-explanation" style="font-size:12px; color:#475569; line-height:1.45; margin:10px 0 0;">Review the contributing factors below.</p></div>
+
  <div style="margin-bottom:20px;">
  <h4 style="font-size:14px; font-weight:700; margin-bottom:8px;">SHAP Primary Delay Drivers</h4>
  <div class="stat-list" id="drawer-shap-list">
@@ -3278,6 +3288,7 @@
  NOTIFY_PM + REALLOCATE_RESOURCE
  </div>
  </div>
+ <div id="drawer-simulation" style="margin-top:16px; display:none; background:#fffbeb; border:1px solid #fde68a; border-radius:10px; padding:12px;"></div>
  </div>
  </div>
  </div>
@@ -4154,6 +4165,11 @@
  document.getElementById("drawer-hours").innerText = `${t.hours ? t.hours.toFixed(0) : '-'} hrs`;
  document.getElementById("drawer-target").innerText = t.target || '-';
  document.getElementById("drawer-score-num").innerText = (t.score ? t.score.toFixed(0) : 0) + "%";
+ const score = Number(t.score || 0);
+ document.getElementById('drawer-confidence').innerText = score >= 70 || score < 40 ? 'High — clear action tier' : 'Moderate — review manually';
+ const prediction = document.getElementById('drawer-prediction');
+ prediction.innerText = score >= 40 ? 'PREDICTED DELAY' : 'PREDICTED ON TIME';
+ prediction.className = 'pill ' + (score >= 70 ? 'pill-high' : (score >= 40 ? 'pill-med' : 'pill-low'));
 
  const fill = document.getElementById("drawer-bar-fill");
  fill.style.width = Math.min(t.score || 0, 100) + "%";
@@ -4183,6 +4199,8 @@
  } else {
  shapContainer.innerHTML = `<span style="font-size:12px; color:var(--text-subtle);">Pre-execution features balanced</span>`;
  }
+ const positiveDrivers = (t.shap_drivers || []).filter(d => d.direction === 'increases').slice(0, 3).map(d => d.feature.replace(/: High/g, '')).join(', ');
+ document.getElementById('drawer-explanation').innerText = positiveDrivers ? `This task is classified as ${t.cat || 'LOW'} risk primarily because of ${positiveDrivers}.` : 'No dominant risk contributor was identified; continue normal monitoring.';
 
  // Reallocation panel in drawer (HIGH risk only)
  const drawerActionEl = document.getElementById("drawer-action-text");
@@ -4199,9 +4217,24 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
  } else {
  drawerActionEl.innerText = 'MONITOR WEEKLY';
  }
+
+ const simulationEl = document.getElementById('drawer-simulation');
+ if (t.cat === 'HIGH') {
+  simulationEl.style.display = 'block';
+  simulationEl.innerHTML = `<div style="font-size:11px; color:#92400e; font-weight:800;">SIMULATION / DEMONSTRATION</div><strong style="display:block; margin:4px 0;">Before: ${score.toFixed(0)}% HIGH → After adding 1 employee: <span id="mitigation-after-score">—</span></strong><p id="mitigation-note" style="font-size:11px; color:#78350f; margin:5px 0 9px;">Uses a transparent workload-relief scenario; it does not update live staffing records.</p><button class="btn btn-primary" onclick="simulateTaskMitigation(${score})" style="font-size:12px; padding:7px 10px; background:#b45309; border-color:#b45309;">Simulate Mitigation</button>`;
+ } else { simulationEl.style.display = 'none'; simulationEl.innerHTML = ''; }
  }
 
  document.getElementById("drawer-overlay").classList.add("open");
+ }
+
+ function simulateTaskMitigation(beforeScore) {
+  const after = Math.max(5, Math.round(beforeScore - 18));
+  const tier = after >= 70 ? 'HIGH' : (after >= 40 ? 'MEDIUM' : 'LOW');
+  const output = document.getElementById('mitigation-after-score');
+  if (output) output.innerHTML = `${after}% ${tier}`;
+  const note = document.getElementById('mitigation-note');
+  if (note) note.innerText = `Risk reduction: ${Math.round(beforeScore - after)} percentage points. Recommended: ${tier === 'HIGH' ? 'escalate and reassess capacity.' : 'proceed with the added resource and monitor.'}`;
  }
 
  function closeDrawer(e) {
@@ -4235,12 +4268,12 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
  scoreVal.innerText = baseScore + "%";
  detail.innerText = `Calculated Workload Intensity: ${intensity.toFixed(2)} hrs/day`;
 
- if (baseScore > 65) {
+ if (baseScore >= 70) {
  scoreVal.style.color = "var(--high-text)";
  badge.innerText = "HIGH RISK TIER";
  badge.className = "pill pill-high";
  action.innerText = "Reallocate Labor & Issue Daily PM Alert";
- } else if (baseScore > 35) {
+ } else if (baseScore >= 40) {
  scoreVal.style.color = "var(--med-text)";
  badge.innerText = "MEDIUM RISK TIER";
  badge.className = "pill pill-med";
