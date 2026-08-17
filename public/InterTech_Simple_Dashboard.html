@@ -101,6 +101,7 @@
                 <span>PRIMARY DEMO</span>
             </div>
             <div class="header-nav">
+                <button class="btn-adv" onclick="openModelCardModal()" style="background:rgba(56,189,248,0.15); color:#38bdf8; cursor:pointer;">Model Card</button>
                 <a href="index.html" class="btn-adv">Switch to Advanced Control Tower →</a>
             </div>
         </header>
@@ -109,9 +110,8 @@
         <div class="disclaimer-banner">
             <span style="font-size:18px;">⚠️</span>
             <div>
-                <strong>Simulated Data Notice & Baseline Validation:</strong>
-                This primary demo scores tasks using a calibrated ML model (Random Forest / XGBoost Champion, 72.0% Accuracy [95% CI: 68.5%–75.2%]).
-                It outperforms the naive baseline (predicting all High Risk) by <strong>+28.4 percentage points</strong>.
+                <strong>Simulated Data Notice & Operational Guidance:</strong>
+                This primary demo scores tasks using a predictive AI model to identify potential task delays early.
                 <em>Note: Model is trained on simulated project data; real-world field validation is required before operational deployment.</em>
             </div>
         </div>
@@ -134,9 +134,9 @@
                 <div class="kpi-subtext">Action: Weekly Status Meeting</div>
             </div>
             <div class="kpi-card">
-                <div class="kpi-label">ML Model Lift vs Baseline</div>
-                <div class="kpi-value" style="color:var(--primary);" id="kpi-lift">+28.4 pp</div>
-                <div class="kpi-subtext">72.0% Acc vs 43.6% Flag-All Baseline</div>
+                <div class="kpi-label">ML Prediction Status</div>
+                <div class="kpi-value" style="color:var(--primary);" id="kpi-lift">Active</div>
+                <div class="kpi-subtext">Predictive Risk Scoring Engine</div>
             </div>
         </div>
 
@@ -205,7 +205,7 @@
                     <tr>
                         <td><strong>Prediction Objective</strong></td>
                         <td>Predict task delay using pre-execution features</td>
-                        <td>Calibrated Champion ML Model (72.0% Accuracy, 77.8% AUC, 0.437 MCC)</td>
+                        <td>Predictive AI Model Output</td>
                     </tr>
                     <tr>
                         <td><strong>Target Variable</strong></td>
@@ -243,7 +243,7 @@
 
             <div style="background:#0f172a; border-radius:10px; padding:14px; margin-bottom:16px;">
                 <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:13px;">
-                    <span>Calibrated Delay Risk Score:</span>
+                    <span>Delay Risk Score:</span>
                     <strong id="m-score" class="score-box" style="font-size:16px;"></strong>
                 </div>
                 <div style="background:#334155; height:8px; border-radius:4px; overflow:hidden;">
@@ -388,7 +388,83 @@
             document.getElementById('modal-overlay').style.display = 'none';
         }
 
+        function openModelCardModal() {
+            const modal = document.getElementById('model-card-modal-overlay');
+            if (modal) modal.style.display = 'block';
+        }
+
+        function closeModelCardModal(e) {
+            if (e && e.target && e.target.id !== 'model-card-modal-overlay') return;
+            const modal = document.getElementById('model-card-modal-overlay');
+            if (modal) modal.style.display = 'none';
+        }
+
         window.onload = loadData;
     </script>
+
+    <!-- MODEL CARD & METHODOLOGY MODAL -->
+    <div id="model-card-modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.8); z-index:10000; overflow-y:auto; padding:24px;" onclick="closeModelCardModal(event)">
+      <div onclick="event.stopPropagation()" style="background:#ffffff; border-radius:16px; max-width:850px; margin:20px auto; box-shadow:0 25px 50px rgba(0,0,0,0.35); overflow:hidden; border:1px solid #e2e8f0; color:#334155;">
+        <div style="background:linear-gradient(135deg,#0f172a,#1e293b); padding:24px 28px; color:#ffffff; display:flex; align-items:center; justify-content:space-between;">
+          <div>
+            <div style="font-size:11px; font-weight:700; color:#38bdf8; letter-spacing:0.08em; text-transform:uppercase;">Model Governance & Methodology Transparency</div>
+            <h2 style="font-size:20px; font-weight:800; font-family:'Plus Jakarta Sans',sans-serif; margin-top:2px; color:#ffffff;">Model Card & Technical Validation Note</h2>
+            <div style="font-size:12px; color:#94a3b8; margin-top:2px;">Calibrated Random Forest · Validation and scope note</div>
+          </div>
+          <button onclick="closeModelCardModal()" style="background:rgba(255,255,255,0.15); border:none; color:#fff; width:36px; height:36px; border-radius:8px; font-size:20px; cursor:pointer;">&times;</button>
+        </div>
+        <div style="padding:28px; max-height:75vh; overflow-y:auto; font-size:13px; color:#334155; line-height:1.6;">
+          
+          <div style="margin-bottom:24px;">
+            <h3 style="font-size:15px; font-weight:700; color:#0f172a; border-bottom:2px solid #e2e8f0; padding-bottom:6px; margin-bottom:10px;">1. Model Overview & Architecture</h3>
+            <p>The champion delay prediction model is a <strong>Calibrated Random Forest Classifier</strong> trained on historical task records. Isotonic calibration via <code>CalibratedClassifierCV</code> is used to improve how closely predicted probabilities track observed delay likelihoods.</p>
+          </div>
+
+          <div style="margin-bottom:24px;">
+            <h3 style="font-size:15px; font-weight:700; color:#0f172a; border-bottom:2px solid #e2e8f0; padding-bottom:6px; margin-bottom:10px;">2. Validation Methodology (Chronological vs. 5-Fold CV)</h3>
+            <p>To eliminate temporal data leakage (where future task features leak into past predictions), the pipeline was validated using two independent evaluation schemes:</p>
+            <ul style="margin-left:20px; margin-top:6px;">
+              <li><strong>5-Fold Stratified Cross-Validation</strong>: 72.0% Accuracy, 77.8% ROC-AUC, 43.7 MCC.</li>
+              <li><strong>Chronological Time-Split Validation</strong>: The oldest 80% of dated closed tasks train the model; the newest 20% are held out. Discipline-history features are calculated using the older records only. Holdout metrics are generated and stored on each training run.</li>
+            </ul>
+          </div>
+
+          <div style="margin-bottom:24px;">
+            <h3 style="font-size:15px; font-weight:700; color:#0f172a; border-bottom:2px solid #e2e8f0; padding-bottom:6px; margin-bottom:10px;">3. Naive Baseline Comparison & Predictive Lift</h3>
+            <p>The training pipeline compares the chosen model with an explicit naive baseline: <strong>flag every task as high risk</strong>. It also records the always-on-time baseline for context. Both baselines and chronological-holdout metrics are saved in the dashboard data at training time, so any claimed predictive lift can be inspected rather than assumed.</p>
+          </div>
+
+          <div style="margin-bottom:24px;">
+            <h3 style="font-size:15px; font-weight:700; color:#0f172a; border-bottom:2px solid #e2e8f0; padding-bottom:6px; margin-bottom:10px;">4. Class Imbalance Handling & Minority Class Metrics</h3>
+            <p>Delayed tasks represent a minority class (~43.6%). To prevent class imbalance bias, model training incorporates <code>class_weight='balanced'</code> cost-sensitive reweighting. Performance metrics focused specifically on the minority delayed class (Target = 1):</p>
+            <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-top:10px; text-align:center;">
+              <div style="background:#f8fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0;">
+                <div style="font-size:11px; color:#64748b; font-weight:700;">DELAYED CLASS PRECISION</div>
+                <div style="font-size:20px; font-weight:800; color:#2563eb;">66.4%</div>
+              </div>
+              <div style="background:#f8fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0;">
+                <div style="font-size:11px; color:#64748b; font-weight:700;">DELAYED CLASS RECALL</div>
+                <div style="font-size:20px; font-weight:800; color:#16a34a;">72.4%</div>
+              </div>
+              <div style="background:#f8fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0;">
+                <div style="font-size:11px; color:#64748b; font-weight:700;">DELAYED CLASS F1-SCORE</div>
+                <div style="font-size:20px; font-weight:800; color:#d97706;">69.3%</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-bottom:12px;">
+            <h3 style="font-size:15px; font-weight:700; color:#0f172a; border-bottom:2px solid #e2e8f0; padding-bottom:6px; margin-bottom:10px;">5. Scope & Known Limitations</h3>
+            <ul style="margin-left:20px;">
+              <li><strong>Simulated data</strong>: The source dataset is synthetic and has not been validated against real project outcomes.</li>
+              <li><strong>Project scope</strong>: The predictive workflow is demonstrated on the baseline PRJ001-style dataset; filters for other project IDs are interface-level views, not separately validated models.</li>
+              <li><strong>Pre-Execution Boundary</strong>: Model predicts delay risks prior to task execution based on initial scope and workload intensity. Unpredictable black-swan events (weather disasters, vendor bankruptcy) require real-time site updates.</li>
+              <li><strong>Exploratory modules</strong>: The 3D site view is a risk visualisation only. It is not an input to the model and does not produce operational recommendations.</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
 </body>
 </html>
