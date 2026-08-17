@@ -295,10 +295,11 @@ if chron_cut >= 20 and len(chron_df) - chron_cut >= 10:
    "recall": round(recall_score(y_chron_test, chron_pred, zero_division=0) * 100, 1),
    "auc_roc": round(roc_auc_score(y_chron_test, chron_prob) * 100, 1),
    "mcc": round(matthews_corrcoef(y_chron_test, chron_pred) * 100, 1),
-   "baseline_accuracy": round(accuracy_score(y_chron_test, np.zeros_like(y_chron_test)) * 100, 1),
-   "baseline_name": "Always predict on-time",
+   "baseline_accuracy": round(accuracy_score(y_chron_test, np.ones_like(y_chron_test)) * 100, 1),
+   "baseline_name": "Flag every task as high risk",
+   "always_ontime_accuracy": round(accuracy_score(y_chron_test, np.zeros_like(y_chron_test)) * 100, 1),
   }
-  print(f"[TEMPORAL HOLDOUT] Newest {len(chron_test)} records | Accuracy {temporal_validation['accuracy']}% | F1 {temporal_validation['f1']}% | Baseline {temporal_validation['baseline_accuracy']}%")
+  print(f"[TEMPORAL HOLDOUT] Newest {len(chron_test)} records | Accuracy {temporal_validation['accuracy']}% | F1 {temporal_validation['f1']}% | Flag-all baseline {temporal_validation['baseline_accuracy']}%")
 else:
  print("[TEMPORAL HOLDOUT] Not available: insufficient dated closed records with both classes.")
 

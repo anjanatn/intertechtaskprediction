@@ -963,38 +963,38 @@
  </div>
  </div>
 
- <!-- CARD 3: AI BID & PROCUREMENT REVIEW -->
+ <!-- ROADMAP: Bid/contract integrations are not part of the delivered prediction workflow. -->
  <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 14px; padding: 18px; backdrop-filter: blur(10px);">
  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
- <span style="font-size: 13px; font-weight: 700; color: #38bdf8; font-family: 'Plus Jakarta Sans', sans-serif;">AI Bid Review</span>
- <span style="font-size: 11px; background: rgba(251, 191, 36, 0.15); color: #fbbf24; padding: 2px 6px; border-radius: 4px; font-weight: 700;">Optimal</span>
+ <span style="font-size: 13px; font-weight: 700; color: #38bdf8; font-family: 'Plus Jakarta Sans', sans-serif;">Bid Review Integration</span>
+ <span style="font-size: 11px; background: rgba(148,163,184,.15); color: #cbd5e1; padding: 2px 6px; border-radius: 4px; font-weight: 700;">ROADMAP</span>
  </div>
  <div style="font-size: 11px; color: #94a3b8; margin-bottom: 4px;">Potential Savings</div>
- <div style="font-size: 26px; font-weight: 800; color: #34d399; font-family: 'JetBrains Mono', monospace; margin-bottom: 8px;">$3.2M</div>
+ <div style="font-size: 13px; font-weight: 700; color: #cbd5e1; margin-bottom: 8px;">No estimate — integration not delivered</div>
  <div style="font-size: 11px; color: #94a3b8; display: flex; justify-content: space-between; align-items: center;">
- <span>Vendor Comparison</span>
- <span style="color: #38bdf8; font-weight: 600;">5 Sub-contractors</span>
+ <span>Planned capability</span>
+ <span style="color: #94a3b8; font-weight: 600;">Requires vendor data</span>
  </div>
  </div>
 
  <!-- CARD 4: AI CONTRACT REVIEW -->
  <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 14px; padding: 18px; backdrop-filter: blur(10px);">
  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
- <span style="font-size: 13px; font-weight: 700; color: #38bdf8; font-family: 'Plus Jakarta Sans', sans-serif;">AI Contract Review</span>
- <span style="font-size: 11px; background: rgba(248, 113, 113, 0.15); color: #f87171; padding: 2px 6px; border-radius: 4px; font-weight: 700;">Audited</span>
+ <span style="font-size: 13px; font-weight: 700; color: #38bdf8; font-family: 'Plus Jakarta Sans', sans-serif;">Contract Review Integration</span>
+ <span style="font-size: 11px; background: rgba(148,163,184,.15); color: #cbd5e1; padding: 2px 6px; border-radius: 4px; font-weight: 700;">ROADMAP</span>
  </div>
  <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12px;">
  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 4px;">
  <span style="color: #94a3b8;">Risk Clauses</span>
- <strong style="color: #f87171;">4 Flagged</strong>
+ <strong style="color: #cbd5e1;">Requires contract ingestion</strong>
  </div>
  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 4px;">
  <span style="color: #94a3b8;">Payment Terms</span>
- <strong style="color: #fbbf24;">Milestone 3 Alert</strong>
+ <strong style="color: #cbd5e1;">Not assessed</strong>
  </div>
  <div style="display: flex; justify-content: space-between; align-items: center;">
  <span style="color: #94a3b8;">Claims Exposure</span>
- <strong style="color: #34d399;">Low ($45K)</strong>
+ <strong style="color: #cbd5e1;">Not assessed</strong>
  </div>
  </div>
  </div>
@@ -1313,9 +1313,9 @@
  <div class="card" style="margin-top:24px; border:1px solid #cbd5e1; box-shadow:var(--shadow-md);">
  <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:14px; margin-bottom:18px;">
  <div>
- <span style="background:#eff6ff; color:#2563eb; font-weight:700; font-size:10px; padding:2px 8px; border-radius:4px; text-transform:uppercase;">BUSINESS IMPACT MODEL</span>
- <h2 style="font-family:'Plus Jakarta Sans',sans-serif; font-size:18px; font-weight:800; color:var(--text-main); margin-top:2px;">Proactive Delay Cost Avoidance & ROI Calculator</h2>
- <p style="font-size:12px; color:var(--text-subtle);">Estimate monetary savings achieved by intervening on AI High-Risk task alerts before actual site delays occur</p>
+ <span style="background:#f1f5f9; color:#475569; font-weight:700; font-size:10px; padding:2px 8px; border-radius:4px; text-transform:uppercase;">ROADMAP / ILLUSTRATIVE</span>
+ <h2 style="font-family:'Plus Jakarta Sans',sans-serif; font-size:18px; font-weight:800; color:var(--text-main); margin-top:2px;">Illustrative Delay Cost Scenario</h2>
+ <p style="font-size:12px; color:var(--text-subtle);">A configurable scenario, not a validated savings forecast or an input to the delay model.</p>
  </div>
  <button class="btn btn-outline" onclick="calculateROI()" style="font-size:12px; font-weight:700;"> Recalculate ROI</button>
  </div>
@@ -3368,7 +3368,7 @@
 
  <div style="margin-bottom:24px;">
  <h3 style="font-size:15px; font-weight:700; color:#0f172a; border-bottom:2px solid #e2e8f0; padding-bottom:6px; margin-bottom:10px;">3. Naive Baseline Comparison & Predictive Lift</h3>
- <p>The training pipeline compares the chosen model with an explicit naive baseline: <strong>always predict on-time</strong>. Both the baseline accuracy and the chronological-holdout metrics are saved in the dashboard data at training time, so any claimed predictive lift can be inspected rather than assumed.</p>
+ <p>The training pipeline compares the chosen model with an explicit naive baseline: <strong>flag every task as high risk</strong>. It also records the always-on-time baseline for context. Both baselines and chronological-holdout metrics are saved in the dashboard data at training time, so any claimed predictive lift can be inspected rather than assumed.</p>
  </div>
 
  <div style="margin-bottom:24px;">
@@ -3770,7 +3770,8 @@
   return;
  }
  const lift = (Number(result.accuracy) - Number(result.baseline_accuracy)).toFixed(1);
- el.innerHTML = `<strong>Chronological holdout:</strong> trained on ${result.train_records} older records and tested on ${result.test_records} newer records (cutoff: ${result.cutoff_date}). <strong>Accuracy: ${Number(result.accuracy).toFixed(1)}%</strong> · F1: ${Number(result.f1).toFixed(1)}% · ROC-AUC: ${Number(result.auc_roc).toFixed(1)}%. <strong>Baseline (${result.baseline_name}): ${Number(result.baseline_accuracy).toFixed(1)}%</strong> · accuracy lift: ${lift} points.`;
+ const onTimeContext = result.always_ontime_accuracy === undefined ? '' : ` · always-on-time: ${Number(result.always_ontime_accuracy).toFixed(1)}%`;
+ el.innerHTML = `<strong>Chronological holdout:</strong> trained on ${result.train_records} older records and tested on ${result.test_records} newer records (cutoff: ${result.cutoff_date}). <strong>Accuracy: ${Number(result.accuracy).toFixed(1)}%</strong> · F1: ${Number(result.f1).toFixed(1)}% · ROC-AUC: ${Number(result.auc_roc).toFixed(1)}%. <strong>Baseline (${result.baseline_name}): ${Number(result.baseline_accuracy).toFixed(1)}%</strong> · accuracy lift: ${lift} points${onTimeContext}.`;
  }
 
  function renderFeatureImportance(featMap) {
