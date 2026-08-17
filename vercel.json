@@ -10,7 +10,9 @@
     { "source": "/api/n8n_webhook", "destination": "/api/n8n_webhook.js" },
     { "source": "/api/assistant", "destination": "/api/assistant.js" },
     { "source": "/api/model_registry", "destination": "/api/model_registry.js" },
-    { "source": "/api/sync_integration", "destination": "/api/sync_integration.js" },
+    { "source": "/InterTech_Simple_Dashboard.html", "destination": "/InterTech_Simple_Dashboard.html" },
+    { "source": "/dashboard_data.json", "destination": "/dashboard_data.json" },
+    { "source": "/web.html", "destination": "/web.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
