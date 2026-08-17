@@ -14,14 +14,13 @@ files = ['index.html', 'web.html', 'api/send_email.js', 'api/assistant.js',
 
 for fn in files:
     try:
-        with open(fn, 'r', encoding='utf-8', errors='replace') as f:
+        with open(fn, 'r', encoding='utf-8', errors='ignore') as f:
             c = f.read()
         found = emoji_re.findall(c)
         cleaned = emoji_re.sub('', c)
-        # Clean up spaces left behind in spans
         cleaned = re.sub(r'<span>\s+', '<span>', cleaned)
         cleaned = re.sub(r'\s+</span>', '</span>', cleaned)
-        with open(fn, 'w', encoding='utf-8', errors='replace') as f:
+        with open(fn, 'w', encoding='utf-8', errors='ignore') as f:
             f.write(cleaned)
         if found:
             print(f'{fn}: removed {len(found)} emoji group(s): {set(found[:10])}')
