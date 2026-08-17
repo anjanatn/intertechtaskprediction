@@ -1,5 +1,7 @@
-pandas
-numpy
-scikit-learn
-xgboost
-shap
+pandas==2.2.0
+numpy==1.26.4
+scikit-learn==1.5.1
+xgboost==2.1.1
+shap==0.45.1
+scipy==1.14.0
+flask==3.0.3
