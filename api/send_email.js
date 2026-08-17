@@ -1,3 +1,5 @@
+import nodemailer from 'nodemailer';
+
 // Serverless handler for Vercel API endpoint /api/send_email on intertechtaskprediction.vercel.app
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -15,7 +17,14 @@ export default async function handler(req, res) {
   try {
     const payload = req.body || {};
     const tasks = payload.tasks || [];
-    const recipient = payload.recipient || 'pm.intertech@gmail.com';
+    const recipient = payload.recipient || process.env.MANAGER_EMAIL || 'pm.intertech@gmail.com';
+    const smtpConfig = payload.smtp_config || {};
+
+    const host = smtpConfig.host || process.env.SMTP_HOST || 'smtp.gmail.com';
+    const port = parseInt(smtpConfig.port || process.env.SMTP_PORT || '587');
+    const user = smtpConfig.user || process.env.SMTP_USER || '';
+    const pass = smtpConfig.pass || process.env.SMTP_PASS || '';
+    const sender = smtpConfig.sender || process.env.SMTP_SENDER || user || 'alerts@intertech.com';
 
     let taskRowsHTML = '';
     tasks.forEach(t => {
@@ -35,8 +44,8 @@ export default async function handler(req, res) {
     <body style="font-family: Arial, sans-serif; color: #0f172a; line-height: 1.6;">
         <div style="max-width: 650px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
             <div style="background: #dc2626; color: #ffffff; padding: 20px; text-align: center;">
-                <h2 style="margin: 0;">CRITICAL PM ALERT: High-Risk Task Delay Predicted</h2>
-                <p style="margin: 5px 0 0 0; font-size: 14px;">InterTech Delay Intelligence Platform — Project PRJ001</p>
+                <h2 style="margin: 0;">🚨 CRITICAL PM ALERT: High-Risk Task Delay Predicted</h2>
+                <p style="margin: 5px 0 0 0; font-size: 14px;">InterTech Delay Intelligence Platform - Project PRJ001</p>
             </div>
             <div style="padding: 24px;">
                 <p>Dear Project Manager,</p>
@@ -71,16 +80,47 @@ export default async function handler(req, res) {
     </html>
     `;
 
-    return res.status(200).json({
-      success: true,
-      sent_live: false,
-      simulated: true,
-      recipient: recipient,
-      tasks_notified: tasks.length,
-      html_preview: htmlContent,
-      message: `[SMTP Alert Prepared] ${tasks.length} High-Risk task alert generated for PM (${recipient}).`
-    });
+    if (user && pass) {
+      const transporter = nodemailer.createTransport({
+        host: host,
+        port: port,
+        secure: port === 465,
+        auth: { user: user, pass: pass },
+        connectionTimeout: 10000
+      });
+
+      await transporter.sendMail({
+        from: sender,
+        to: recipient,
+        subject: `🚨 URGENT: High-Risk Project Delay Alert (${tasks.length} Tasks Flagged)`,
+        html: htmlContent
+      });
+
+      return res.status(200).json({
+        success: true,
+        sent_live: true,
+        recipient: recipient,
+        tasks_notified: tasks.length,
+        message: `SMTP email alert successfully sent to ${recipient}`
+      });
+    } else {
+      return res.status(200).json({
+        success: false,
+        sent_live: false,
+        simulated: true,
+        requires_credentials: true,
+        recipient: recipient,
+        tasks_notified: tasks.length,
+        html_preview: htmlContent,
+        message: `SMTP Credentials Missing. Please provide SMTP Username & App Password to send live email to ${recipient}.`
+      });
+    }
   } catch (err) {
-    return res.status(500).json({ success: false, error: err.message });
+    return res.status(500).json({
+      success: false,
+      sent_live: false,
+      error: err.message,
+      message: `SMTP dispatch error (${err.message}). Please check SMTP host, port, user, and password/app password.`
+    });
   }
 }

@@ -371,8 +371,8 @@ def send_high_risk_delay_email(high_risk_tasks, manager_email=None, smtp_config=
     <body style="font-family: Arial, sans-serif; color: #0f172a; line-height: 1.6;">
         <div style="max-width: 650px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
             <div style="background: #dc2626; color: #ffffff; padding: 20px; text-align: center;">
-                <h2 style="margin: 0;">🚨 CRITICAL PM ALERT: High-Risk Task Delay Predicted</h2>
-                <p style="margin: 5px 0 0 0; font-size: 14px;">InterTech Delay Intelligence Platform — Project PRJ001</p>
+                <h2 style="margin: 0;">CRITICAL PM ALERT: High-Risk Task Delay Predicted</h2>
+                <p style="margin: 5px 0 0 0; font-size: 14px;">InterTech Delay Intelligence Platform - Project PRJ001</p>
             </div>
             <div style="padding: 24px;">
                 <p>Dear Project Manager,</p>
@@ -410,15 +410,20 @@ def send_high_risk_delay_email(high_risk_tasks, manager_email=None, smtp_config=
     if smtp_user and smtp_pass:
         try:
             msg = MIMEMultipart("alternative")
-            msg["Subject"] = f"🚨 URGENT: High-Risk Project Delay Alert ({len(high_risk_tasks)} Tasks Flagged)"
+            msg["Subject"] = f"[CRITICAL PM ALERT] High-Risk Project Delay Alert ({len(high_risk_tasks)} Tasks Flagged)"
             msg["From"] = sender_email
             msg["To"] = manager_email
             msg.attach(MIMEText(html_content, "html"))
 
-            with smtplib.SMTP(smtp_host, smtp_port) as server:
-                server.starttls()
-                server.login(smtp_user, smtp_pass)
-                server.sendmail(sender_email, [manager_email], msg.as_string())
+            if smtp_port == 465:
+                with smtplib.SMTP_SSL(smtp_host, smtp_port, timeout=15) as server:
+                    server.login(smtp_user, smtp_pass)
+                    server.sendmail(sender_email, [manager_email], msg.as_string())
+            else:
+                with smtplib.SMTP(smtp_host, smtp_port, timeout=15) as server:
+                    server.starttls()
+                    server.login(smtp_user, smtp_pass)
+                    server.sendmail(sender_email, [manager_email], msg.as_string())
 
             return {
                 "success": True,
@@ -433,17 +438,18 @@ def send_high_risk_delay_email(high_risk_tasks, manager_email=None, smtp_config=
                 "sent_live": False,
                 "error": str(e),
                 "html_preview": html_content,
-                "message": f"SMTP live dispatch error ({str(e)}). Simulation preview generated."
+                "message": f"SMTP live dispatch error ({str(e)}). Please check SMTP host, port, user, and password/app password."
             }
     else:
         return {
-            "success": True,
+            "success": False,
             "sent_live": False,
             "simulated": True,
+            "requires_credentials": True,
             "recipient": manager_email,
             "tasks_notified": len(high_risk_tasks),
             "html_preview": html_content,
-            "message": f"[SMTP Notification Prepared] {len(high_risk_tasks)} High-Risk task alert generated for PM ({manager_email}). Configure SMTP credentials for live sending."
+            "message": f"SMTP Credentials Missing. Please provide SMTP Username & App Password to send live email to {manager_email}."
         }
 
 def trigger_n8n_webhook(high_risk_tasks, webhook_url=None, manager_email="pm.intertech@gmail.com"):

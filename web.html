@@ -801,6 +801,10 @@
  <button class="nav-tab active" onclick="switchView('overview', this)">
  <span>Executive Overview</span>
  </button>
+ <button class="nav-tab" id="tab-nav-controltower" onclick="switchView('controltower', this)">
+ <span>AI Control Tower & 3D Twin</span>
+ <span class="pill pill-low" style="background:#0284c7; color:#ffffff; font-size:9px; padding:1px 5px; margin-left:4px; font-weight:700;">3D SITE</span>
+ </button>
  <button class="nav-tab" id="tab-nav-import" onclick="switchView('import', this)">
  <span>Import & Predict</span>
  <span class="tab-badge" id="badge-imported-count" style="background:#0284c7; color:#ffffff; display:none;">0</span>
@@ -824,6 +828,196 @@
 
  <!-- MAIN APP CONTAINER -->
  <main class="app-main">
+
+  <!-- VIEW 0: AI DIGITAL CONTROL TOWER & 3D SITE TWIN VISUALIZER (WRENCH SOLUTIONS INSPIRED) -->
+  <section id="view-controltower" class="tab-view">
+    <div class="section-title-bar" style="background: linear-gradient(135deg, #070d19 0%, #0f172a 100%); padding: 20px 24px; border-radius: 16px; margin-bottom: 20px; border: 1px solid rgba(56, 189, 248, 0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.25);">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; width: 100%;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
+            <span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(56, 189, 248, 0.3); font-family: 'JetBrains Mono', monospace;">WRENCH AI ADVISOR ENGINE</span>
+            <span style="background: rgba(52, 211, 153, 0.15); color: #34d399; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(52, 211, 153, 0.3);">DIGITAL CONTROL TOWER LIVE</span>
+          </div>
+          <h1 class="section-heading" style="color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 24px; font-weight: 800; letter-spacing: -0.02em;">Industrial AI Digital Control Tower & 3D Site Twin</h1>
+          <p class="section-subtext" style="color: #94a3b8; font-size: 13px; margin-top: 2px;">Real-time technical review, 3D site structure visualization, clash detection & proactive delay forecasting</p>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <button class="btn btn-outline" style="border-color: rgba(255,255,255,0.2); color: #e2e8f0; font-size: 12px; font-weight: 600;" onclick="toggleControlTowerClashMode()">
+            <span id="ct-clash-mode-btn-text">Clash Heatmap: ON</span>
+          </button>
+          <button class="btn btn-primary" style="background: linear-gradient(135deg, #0284c7, #0369a1); border-color: #0284c7; font-size: 12px; font-weight: 700;" onclick="rotate3DSiteTwin()">
+            <span>Rotate 3D Site View</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTROL TOWER LAYOUT (DARK GLASSMORPHIC GRID MATCHING WRENCH PLATFORM) -->
+    <div style="background: linear-gradient(135deg, #0b132b 0%, #1c2541 100%); border-radius: 20px; padding: 24px; border: 1px solid rgba(56, 189, 248, 0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.4); margin-bottom: 24px; color: #ffffff;">
+      
+      <!-- TOP AI REVIEW CARDS (MATCHING REFERENCE IMAGE) -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        
+        <!-- CARD 1: AI ANALYZER -->
+        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 14px; padding: 18px; backdrop-filter: blur(10px);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <span style="font-size: 13px; font-weight: 700; color: #38bdf8; font-family: 'Plus Jakarta Sans', sans-serif;">AI Analyzer</span>
+            <span style="font-size: 11px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 2px 6px; border-radius: 4px; font-weight: 700;">Live Feed</span>
+          </div>
+          <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px;">
+            <span style="font-size: 32px; font-weight: 800; color: #ffffff; font-family: 'JetBrains Mono', monospace;" id="ct-overall-progress">84%</span>
+            <span style="font-size: 12px; color: #34d399; font-weight: 600;">Overall Progress 33%</span>
+          </div>
+          <div style="height: 40px; width: 100%; margin-top: 6px;">
+            <canvas id="ct-analyzer-canvas" height="40" style="width: 100%; height: 100%;"></canvas>
+          </div>
+        </div>
+
+        <!-- CARD 2: AI ENGINEERING REVIEW -->
+        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 14px; padding: 18px; backdrop-filter: blur(10px);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <span style="font-size: 13px; font-weight: 700; color: #38bdf8; font-family: 'Plus Jakarta Sans', sans-serif;">AI Engineering Review</span>
+            <span style="font-size: 11px; background: rgba(52, 211, 153, 0.15); color: #34d399; padding: 2px 6px; border-radius: 4px; font-weight: 700;">Verified</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 4px;">
+              <span style="color: #94a3b8;">Design Issues</span>
+              <strong style="color: #fbbf24; font-size: 14px;" id="ct-design-issues">23</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 4px;">
+              <span style="color: #94a3b8;">Code Compliance</span>
+              <strong style="color: #34d399; font-size: 14px;" id="ct-code-compliance">96%</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="color: #94a3b8;">Open Markups</span>
+              <strong style="color: #38bdf8; font-size: 14px;" id="ct-open-markups">8</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 3: AI BID & PROCUREMENT REVIEW -->
+        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 14px; padding: 18px; backdrop-filter: blur(10px);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <span style="font-size: 13px; font-weight: 700; color: #38bdf8; font-family: 'Plus Jakarta Sans', sans-serif;">AI Bid Review</span>
+            <span style="font-size: 11px; background: rgba(251, 191, 36, 0.15); color: #fbbf24; padding: 2px 6px; border-radius: 4px; font-weight: 700;">Optimal</span>
+          </div>
+          <div style="font-size: 11px; color: #94a3b8; margin-bottom: 4px;">Potential Savings</div>
+          <div style="font-size: 26px; font-weight: 800; color: #34d399; font-family: 'JetBrains Mono', monospace; margin-bottom: 8px;">$3.2M</div>
+          <div style="font-size: 11px; color: #94a3b8; display: flex; justify-content: space-between; align-items: center;">
+            <span>Vendor Comparison</span>
+            <span style="color: #38bdf8; font-weight: 600;">5 Sub-contractors</span>
+          </div>
+        </div>
+
+        <!-- CARD 4: AI CONTRACT REVIEW -->
+        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 14px; padding: 18px; backdrop-filter: blur(10px);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <span style="font-size: 13px; font-weight: 700; color: #38bdf8; font-family: 'Plus Jakarta Sans', sans-serif;">AI Contract Review</span>
+            <span style="font-size: 11px; background: rgba(248, 113, 113, 0.15); color: #f87171; padding: 2px 6px; border-radius: 4px; font-weight: 700;">Audited</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 4px;">
+              <span style="color: #94a3b8;">Risk Clauses</span>
+              <strong style="color: #f87171;">4 Flagged</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 4px;">
+              <span style="color: #94a3b8;">Payment Terms</span>
+              <strong style="color: #fbbf24;">Milestone 3 Alert</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="color: #94a3b8;">Claims Exposure</span>
+              <strong style="color: #34d399;">Low ($45K)</strong>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- CENTERPIECE: 3D DIGITAL TWIN ISOMETRIC CANVAS & RIGHT INTELLIGENCE PANEL -->
+      <div style="display: grid; grid-template-columns: 2.2fr 1fr; gap: 20px; align-items: start;">
+        
+        <!-- LEFT: 3D DIGITAL TWIN ISOMETRIC CANVAS VISUALIZER -->
+        <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 16px; padding: 20px; position: relative; overflow: hidden; min-height: 440px; display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; z-index: 2;">
+            <div>
+              <h3 style="font-size: 15px; font-weight: 700; color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif;">Interactive 3D Digital Twin & Site Structural Visualizer</h3>
+              <p style="font-size: 12px; color: #94a3b8; margin-top: 2px;">Click discipline module to inspect clash reports, active delay risk, and sub-contractors</p>
+            </div>
+            <div style="display: flex; gap: 6px;">
+              <span class="pill" style="background: rgba(248, 113, 113, 0.2); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.4); font-size: 10px;">High Risk Module</span>
+              <span class="pill" style="background: rgba(251, 191, 36, 0.2); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.4); font-size: 10px;">Medium Risk</span>
+              <span class="pill" style="background: rgba(52, 211, 153, 0.2); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.4); font-size: 10px;">On-Time Module</span>
+            </div>
+          </div>
+
+          <!-- CANVAS CONTAINER -->
+          <div style="position: relative; flex: 1; min-height: 350px; background: radial-gradient(circle at center, #0f172a 0%, #070d19 100%); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.08); overflow: hidden;">
+            <canvas id="ct-3d-twin-canvas" style="width: 100%; height: 100%; display: block;"></canvas>
+            
+            <!-- OVERLAY INSTRUCTION / BADGE -->
+            <div style="position: absolute; bottom: 12px; left: 12px; background: rgba(15, 23, 42, 0.85); padding: 8px 14px; border-radius: 8px; border: 1px solid rgba(56, 189, 248, 0.3); font-size: 11px; color: #cbd5e1; backdrop-filter: blur(8px);">
+              💡 <b>Interactive Mode:</b> 3D Structural Modules mapped to 5 InterTech Disciplines (SITE, STR, MEP, ARC, INT).
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: PROJECT HEALTH, DELAY FORECAST & AI INSIGHTS PANEL (MATCHING IMAGE RIGHT COLUMN) -->
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          
+          <!-- PROJECT HEALTH CARD -->
+          <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 16px; padding: 20px; backdrop-filter: blur(10px);">
+            <div style="font-size: 12px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">Project Health</div>
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+              <div style="width: 22px; height: 22px; border-radius: 50%; background: #34d399; box-shadow: 0 0 15px #34d399; display: flex; align-items: center; justify-content: center;">
+                <div style="width: 8px; height: 8px; border-radius: 50%; background: #ffffff;"></div>
+              </div>
+              <span style="font-size: 22px; font-weight: 800; color: #34d399; font-family: 'Plus Jakarta Sans', sans-serif;">On Track</span>
+            </div>
+
+            <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px;">
+              <div style="font-size: 12px; color: #94a3b8; margin-bottom: 4px;">Delay Forecast</div>
+              <div style="display: flex; align-items: baseline; gap: 6px;">
+                <span style="font-size: 32px; font-weight: 800; color: #f87171; font-family: 'JetBrains Mono', monospace;" id="ct-delay-forecast-num">+28 days</span>
+              </div>
+              <div style="font-size: 11px; color: #fbbf24; margin-top: 4px;">⚠️ 123 Tasks Flagged for Potential Delay</div>
+            </div>
+          </div>
+
+          <!-- AI INSIGHTS CARD -->
+          <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 16px; padding: 20px; backdrop-filter: blur(10px); flex: 1;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+              <span style="font-size: 13px; font-weight: 700; color: #38bdf8; font-family: 'Plus Jakarta Sans', sans-serif;">AI Insights</span>
+              <span style="font-size: 10px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 2px 6px; border-radius: 4px; font-weight: 700;">WAA Engine</span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 10px; font-size: 12px;">
+              <div style="background: rgba(2, 132, 199, 0.15); border: 1px solid rgba(56, 189, 248, 0.25); padding: 10px 12px; border-radius: 8px;">
+                <div style="color: #38bdf8; font-weight: 700; margin-bottom: 2px;">⚡ Design Clash Detected</div>
+                <div style="color: #cbd5e1; font-size: 11px;">Structural vs MEP piping clearance clash flagged at Block B.</div>
+              </div>
+
+              <div style="background: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.25); padding: 10px 12px; border-radius: 8px;">
+                <div style="color: #fbbf24; font-weight: 700; margin-bottom: 2px;">📈 Workload Intensity Spike</div>
+                <div style="color: #cbd5e1; font-size: 11px;">Site discipline hours exceed 8.5h/day threshold across 12 open tasks.</div>
+              </div>
+
+              <div style="background: rgba(248, 113, 113, 0.15); border: 1px solid rgba(248, 113, 113, 0.25); padding: 10px 12px; border-radius: 8px;">
+                <div style="color: #f87171; font-weight: 700; margin-bottom: 2px;">🚨 Proactive Mitigation Triggered</div>
+                <div style="color: #cbd5e1; font-size: 11px;">Tag: <code style="color: #ffffff; background: rgba(0,0,0,0.4); padding: 1px 4px; border-radius: 3px;">NOTIFY_PM + REALLOCATE_RESOURCE</code></div>
+              </div>
+            </div>
+
+            <button class="btn btn-primary" style="width: 100%; margin-top: 14px; justify-content: center; background: linear-gradient(135deg, #dc2626, #991b1b); border-color: #dc2626; font-size: 12px; font-weight: 700;" onclick="sendSMTPAlert()">
+              <span>Execute PM Alert & Reallocation &rarr;</span>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
 
  <!-- VIEW 1: EXECUTIVE OVERVIEW -->
  <section id="view-overview" class="tab-view active">
@@ -1196,9 +1390,13 @@
  <div style="font-size:12px; color:#bfdbfe; margin-top:4px;" id="pbix-subtitle">Calibrated ML Model · Target: Delay &gt; 0</div>
  </div>
  <div style="display:flex; gap:10px; align-items:center;">
- <button onclick="exportPBIXAsExcel()" style="background:#d97706; border:none; color:#fff; padding:10px 18px; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;"> Export .pbix.xlsx</button>
- <button onclick="closePBIXModal()" style="background:rgba(255,255,255,0.15); border:none; color:#fff; width:36px; height:36px; border-radius:8px; font-size:20px; cursor:pointer; line-height:1;">&times;</button>
- </div>
+  <button id="pbix-header-notify-pm" onclick="sendSMTPAlert()" style="background:#dc2626; border:none; color:#fff; padding:10px 18px; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px; display:flex; align-items:center; gap:6px;" title="Notify PM via SMTP Email Alert for High Risk Tasks">
+    <span>Notify PM (SMTP Alert)</span>
+    <span id="pbix-modal-notify-badge" style="background:#ffffff; color:#dc2626; font-size:11px; font-weight:800; padding:1px 6px; border-radius:99px; display:none;">0</span>
+  </button>
+  <button onclick="exportPBIXAsExcel()" style="background:#d97706; border:none; color:#fff; padding:10px 18px; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;"> Export .pbix.xlsx</button>
+  <button onclick="closePBIXModal()" style="background:rgba(255,255,255,0.15); border:none; color:#fff; width:36px; height:36px; border-radius:8px; font-size:20px; cursor:pointer; line-height:1;">&times;</button>
+  </div>
  </div>
 
  <!-- KPI Row -->
@@ -1261,7 +1459,7 @@
  <td style="padding:10px 16px; font-weight:600;">Prediction Objective</td>
  <td style="padding:10px 16px; color:#475569;">Predict project delay using project management data</td>
  <td style="padding:10px 16px; text-align:center;"><span style="background:#dcfce7; color:#16a34a; padding:3px 10px; border-radius:99px; font-weight:700;">COMPLIANT</span></td>
- <td style="padding:10px 16px; color:#475569;">Calibrated Random Forest (72.3% Acc, 77.8% AUC)</td>
+ <td style="padding:10px 16px; color:#475569;" id="pbix-compliance-model-impl">Calibrated Random Forest (72.0% Acc, 77.8% AUC)</td>
  </tr>
  <tr style="border-bottom:1px solid #e2e8f0; background:#f8fafc;">
  <td style="padding:10px 16px; font-weight:600;">Target Variable</td>
@@ -1270,11 +1468,14 @@
  <td style="padding:10px 16px; color:#475569;">Binary target: 1 = Delayed, 0 = On-time</td>
  </tr>
  <tr style="border-bottom:1px solid #e2e8f0; background:#fff;">
- <td style="padding:10px 16px; font-weight:600;">High-Risk Mitigation</td>
- <td style="padding:10px 16px; color:#475569;">Notify PM + Reallocate employee from closed/medium-risk project</td>
- <td style="padding:10px 16px; text-align:center;"><span style="background:#dcfce7; color:#16a34a; padding:3px 10px; border-radius:99px; font-weight:700;">COMPLIANT</span></td>
- <td style="padding:10px 16px; color:#475569;">NOTIFY_PM + REALLOCATE_RESOURCE action tag</td>
- </tr>
+  <td style="padding:10px 16px; font-weight:600;">High-Risk Mitigation</td>
+  <td style="padding:10px 16px; color:#475569;">Notify PM + Reallocate employee from closed/medium-risk project</td>
+  <td style="padding:10px 16px; text-align:center;"><span style="background:#dcfce7; color:#16a34a; padding:3px 10px; border-radius:99px; font-weight:700;">COMPLIANT</span></td>
+  <td style="padding:10px 16px; color:#475569; display:flex; align-items:center; justify-content:space-between; gap:8px;">
+    <span>NOTIFY_PM + REALLOCATE_RESOURCE action tag</span>
+    <button onclick="sendSMTPAlert()" style="background:#dc2626; color:#ffffff; border:none; padding:4px 10px; border-radius:4px; font-weight:700; font-size:11px; cursor:pointer; white-space:nowrap;">Notify PM Now</button>
+  </td>
+  </tr>
  <tr style="background:#f8fafc;">
  <td style="padding:10px 16px; font-weight:600;">Medium-Risk Mitigation</td>
  <td style="padding:10px 16px; color:#475569;">Conduct meeting &amp; require daily updates</td>
@@ -1289,9 +1490,14 @@
  <!-- High Risk Tasks List -->
  <div style="padding:0 24px 24px;">
  <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:12px; overflow:hidden;">
- <div style="padding:14px 20px; border-bottom:1px solid #fecaca; background:#fff1f2;">
+ <div style="padding:14px 20px; border-bottom:1px solid #fecaca; background:#fff1f2; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+ <div>
  <h3 style="font-size:14px; font-weight:700; color:#dc2626;"> High-Risk Delay Tasks — Immediate Action Required</h3>
  <p style="font-size:12px; color:#ef4444; margin-top:2px;">Action: NOTIFY_PM + REALLOCATE_RESOURCE (Reallocate employee from closed/medium-risk project)</p>
+ </div>
+ <button onclick="sendSMTPAlert()" style="background:#dc2626; border:none; color:#ffffff; padding:8px 14px; border-radius:6px; font-weight:700; font-size:12px; cursor:pointer; white-space:nowrap;">
+ <span>Notify PM (SMTP Alert)</span>
+ </button>
  </div>
  <div id="pbix-high-risk-list" style="padding:16px 20px; max-height:200px; overflow-y:auto;"></div>
  </div>
@@ -1387,7 +1593,7 @@
   <!-- FLOATING AI DIAGNOSTICS ASSISTANT (BOTTOM RIGHT CORNER) -->
   <div id="ai-diagnostics-widget-container" style="position: fixed; bottom: 24px; right: 24px; z-index: 9990;">
     <!-- Diagnostics & Assistant Popup Panel -->
-    <div id="ai-diagnostics-panel" style="display: none; position: absolute; bottom: 64px; right: 0; width: 440px; max-width: calc(100vw - 32px); height: 520px; background: #ffffff; border-radius: 16px; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25); border: 1px solid var(--border-medium); overflow: hidden; flex-direction: column;">
+    <div id="ai-diagnostics-panel" style="display: none; position: absolute; bottom: 64px; right: 0; width: 460px; max-width: calc(100vw - 32px); height: 560px; background: #ffffff; border-radius: 16px; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25); border: 1px solid var(--border-medium); overflow: hidden; flex-direction: column;">
       <!-- Panel Header -->
       <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between;">
         <div style="display: flex; align-items: center; gap: 10px;">
@@ -1397,7 +1603,10 @@
             <span style="font-size: 11px; color: #94a3b8;">PRJ001 ML Intelligence Engine</span>
           </div>
         </div>
-        <button onclick="toggleAIDiagnosticsWidget()" style="background: transparent; border: none; color: #94a3b8; font-size: 20px; cursor: pointer; line-height: 1; padding: 4px;">&times;</button>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <button onclick="clearAIChat()" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); color: #ffffff; font-size: 11px; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-weight: 700;" title="Clear Chat Conversation History">Clear Chat</button>
+          <button onclick="toggleAIDiagnosticsWidget()" style="background: transparent; border: none; color: #94a3b8; font-size: 20px; cursor: pointer; line-height: 1; padding: 4px;">&times;</button>
+        </div>
       </div>
 
       <!-- Panel Tabs -->
@@ -1437,24 +1646,13 @@
       </div>
 
       <!-- Tab 2: Chat Assistant Content -->
-      <div id="ai-panel-chat-content" style="display: none; flex-direction: column; flex: 1;">
-        <div id="ai-chat-messages" style="flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: var(--bg-main);">
-          <div style="background: #ffffff; border: 1px solid var(--border-light); padding: 10px 12px; border-radius: 10px; font-size: 12px; max-width: 85%;">
-            Hello! I am your <strong>InterTech PRJ001 Delay Intelligence AI Assistant</strong>. Ask me a question or click any of the options below:
-          </div>
+      <div id="ai-panel-chat-content" style="display: none; flex-direction: column; flex: 1; min-height: 0;">
+        <div id="ai-chat-messages" style="flex: 1; min-height: 0; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: var(--bg-main);">
+          <!-- Dynamically populated by initAIChat() -->
         </div>
-
-        <!-- Quick Question Option Chips -->
-        <div style="padding: 8px 12px; background: #ffffff; border-top: 1px solid var(--border-light); display: flex; flex-wrap: wrap; gap: 6px; max-height: 105px; overflow-y: auto;">
-          <button onclick="askAIQuickPrompt('Which open tasks are at highest risk?')" style="background: var(--bg-subtle); border: 1px solid var(--border-medium); border-radius: 20px; padding: 4px 10px; font-size: 11px; font-weight: 600; color: var(--brand-primary); cursor: pointer; transition: all 0.15s ease;">Which open tasks are at highest risk?</button>
-          <button onclick="askAIQuickPrompt('Compare model metrics')" style="background: var(--bg-subtle); border: 1px solid var(--border-medium); border-radius: 20px; padding: 4px 10px; font-size: 11px; font-weight: 600; color: var(--brand-primary); cursor: pointer; transition: all 0.15s ease;">Compare model metrics</button>
-          <button onclick="askAIQuickPrompt('What is the delay rate by discipline?')" style="background: var(--bg-subtle); border: 1px solid var(--border-medium); border-radius: 20px; padding: 4px 10px; font-size: 11px; font-weight: 600; color: var(--brand-primary); cursor: pointer; transition: all 0.15s ease;">What is the delay rate by discipline?</button>
-          <button onclick="askAIQuickPrompt('What mitigation action is required for high risk tasks?')" style="background: var(--bg-subtle); border: 1px solid var(--border-medium); border-radius: 20px; padding: 4px 10px; font-size: 11px; font-weight: 600; color: var(--brand-primary); cursor: pointer; transition: all 0.15s ease;">Mitigation actions for high risk tasks</button>
-        </div>
-
         <div style="padding: 10px 12px; border-top: 1px solid var(--border-light); background: #ffffff; display: flex; gap: 8px;">
           <input type="text" id="ai-chat-input" placeholder="Ask AI Assistant..." style="flex: 1; padding: 8px 12px; border: 1px solid var(--border-medium); border-radius: 8px; font-size: 12px;" onkeypress="if(event.key==='Enter') sendAIChatMessage()">
-          <button onclick="sendAIChatMessage()" class="btn btn-primary" style="padding: 8px 14px; font-size: 12px;">Send</button>
+          <button id="ai-chat-send-btn" onclick="sendAIChatMessage()" class="btn btn-primary" style="padding: 8px 14px; font-size: 12px;">Send</button>
         </div>
       </div>
     </div>
@@ -1534,6 +1732,48 @@
  </div>
  </div>
 
+  <!-- SMTP CONFIGURATION & ALERT MODAL -->
+  <div id="smtp-settings-modal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.75); z-index:10000; overflow-y:auto; padding:24px;">
+  <div style="background:#ffffff; border-radius:16px; max-width:520px; margin:40px auto; box-shadow:0 25px 50px rgba(0,0,0,0.35); overflow:hidden; border:1px solid #e2e8f0;">
+    <div style="background:linear-gradient(135deg,#dc2626,#991b1b); padding:20px 24px; color:#ffffff; display:flex; align-items:center; justify-content:space-between;">
+      <div>
+        <h3 style="font-size:18px; font-weight:800; font-family:'Plus Jakarta Sans',sans-serif; margin:0;">SMTP Email Configuration & Dispatch</h3>
+        <p style="font-size:12px; color:#fecaca; margin:4px 0 0 0;">Configure SMTP server details to dispatch live email alerts to PM</p>
+      </div>
+      <button onclick="closeSMTPModal()" style="background:rgba(255,255,255,0.2); border:none; color:#fff; width:32px; height:32px; border-radius:6px; font-size:18px; cursor:pointer;">&times;</button>
+    </div>
+    <div style="padding:24px;">
+      <div style="margin-bottom:16px;">
+        <label style="display:block; font-size:12px; font-weight:700; color:#334155; margin-bottom:6px;">PM / Manager Recipient Email</label>
+        <input type="email" id="smtp-input-recipient" value="pm.intertech@gmail.com" class="btn btn-outline" style="width:100%; text-align:left; font-weight:normal;">
+      </div>
+      <div style="display:grid; grid-template-columns:2fr 1fr; gap:12px; margin-bottom:16px;">
+        <div>
+          <label style="display:block; font-size:12px; font-weight:700; color:#334155; margin-bottom:6px;">SMTP Host</label>
+          <input type="text" id="smtp-input-host" placeholder="smtp.gmail.com" value="smtp.gmail.com" class="btn btn-outline" style="width:100%; text-align:left; font-weight:normal;">
+        </div>
+        <div>
+          <label style="display:block; font-size:12px; font-weight:700; color:#334155; margin-bottom:6px;">Port</label>
+          <input type="number" id="smtp-input-port" placeholder="587" value="587" class="btn btn-outline" style="width:100%; text-align:left; font-weight:normal;">
+        </div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="display:block; font-size:12px; font-weight:700; color:#334155; margin-bottom:6px;">SMTP Username / Sender Email</label>
+        <input type="email" id="smtp-input-user" placeholder="your-email@gmail.com" class="btn btn-outline" style="width:100%; text-align:left; font-weight:normal;">
+      </div>
+      <div style="margin-bottom:20px;">
+        <label style="display:block; font-size:12px; font-weight:700; color:#334155; margin-bottom:6px;">SMTP Password / App Password</label>
+        <input type="password" id="smtp-input-pass" placeholder="App Password from Google / SMTP Provider" class="btn btn-outline" style="width:100%; text-align:left; font-weight:normal;">
+        <p style="font-size:11px; color:#64748b; margin-top:4px;">For Gmail, use a 16-character <b>App Password</b> (Google Account -> Security -> App Passwords).</p>
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:10px;">
+        <button onclick="closeSMTPModal()" class="btn btn-outline" style="font-weight:600;">Cancel</button>
+        <button onclick="submitSMTPModalAlert()" class="btn btn-primary" style="background:#dc2626; border-color:#dc2626; font-weight:700;">Send SMTP Alert Now</button>
+      </div>
+    </div>
+  </div>
+  </div>
+
  <!-- APPLICATION LOGIC JS -->
  <script>
     let globalData = null;
@@ -1577,6 +1817,12 @@
         document.getElementById("kpi-open-risk").innerText = d.meta.open_tasks || 260;
         if (d.meta.champion_metrics) {
           document.getElementById("kpi-cv-acc").innerText = d.meta.champion_metrics.acc.toFixed(1) + "%";
+          const compImpl = document.getElementById("pbix-compliance-model-impl");
+          if (compImpl) compImpl.innerText = (d.meta.champion || 'Random Forest') + " (" + d.meta.champion_metrics.acc.toFixed(1) + "% Acc, " + (d.meta.champion_metrics.auc_roc || 77.8).toFixed(1) + "% AUC)";
+        }
+        if (d.meta.champion) {
+          const modelFooter = document.getElementById("kpi-model-footer");
+          if (modelFooter) modelFooter.innerText = "Calibrated " + d.meta.champion;
         }
       }
 
@@ -1639,6 +1885,11 @@
       if (d.feat_importance) {
         renderFeatureImportance(d.feat_importance);
       }
+
+      // 7. Control Tower
+      try {
+        initControlTowerCanvas();
+      } catch (e) {}
     }
 
     function renderTasksTable() {
@@ -1784,17 +2035,26 @@
       if (tbody) tbody.innerHTML = "";
       if (aiTbody) aiTbody.innerHTML = "";
 
+      const championName = (globalData && globalData.meta && globalData.meta.champion) ? globalData.meta.champion : 'Random Forest';
+
       Object.entries(accData).forEach(([modelName, m]) => {
         const tr = document.createElement("tr");
-        const isChamp = modelName.includes("Random Forest");
+        const isChamp = (modelName === championName || modelName.includes(championName));
+        const meanVal = (m.mean !== undefined && m.mean !== null) ? Number(m.mean) : (m.acc !== undefined ? Number(m.acc) : 0);
+        const precVal = (m.precision !== undefined && m.precision !== null) ? Number(m.precision) : 0;
+        const recVal  = (m.recall !== undefined && m.recall !== null) ? Number(m.recall) : 0;
+        const f1Val   = (m.f1 !== undefined && m.f1 !== null) ? Number(m.f1) : 0;
+        const aucVal  = (m.auc !== undefined && m.auc !== null) ? Number(m.auc) : (m.auc_roc !== undefined ? Number(m.auc_roc) : 0);
+        const mccVal  = (m.mcc !== undefined && m.mcc !== null) ? Number(m.mcc) : 0;
+
         const rowHTML = `
  <td><strong>${modelName}</strong> ${isChamp ? '<span class="pill pill-low" style="margin-left:4px; font-size:10px;">CHAMPION</span>' : ''}</td>
- <td>${m.mean ? m.mean.toFixed(1) : 72.0}%</td>
- <td>${m.precision ? m.precision.toFixed(1) : 66.4}%</td>
- <td>${m.recall ? m.recall.toFixed(1) : 72.4}%</td>
- <td>${m.f1 ? m.f1.toFixed(1) : 69.3}%</td>
- <td>${m.auc ? m.auc.toFixed(1) : 77.8}%</td>
- <td>${m.mcc ? m.mcc.toFixed(1) : 43.7}</td>
+ <td>${meanVal.toFixed(1)}%</td>
+ <td>${precVal.toFixed(1)}%</td>
+ <td>${recVal.toFixed(1)}%</td>
+ <td>${f1Val.toFixed(1)}%</td>
+ <td>${aucVal.toFixed(1)}%</td>
+ <td>${mccVal.toFixed(1)}</td>
         `;
         tr.innerHTML = rowHTML;
         if (tbody) tbody.appendChild(tr);
@@ -1844,6 +2104,228 @@
       });
     }
 
+    /* AI DIGITAL CONTROL TOWER & 3D SITE TWIN VISUALIZER (WRENCH ADVISOR INSPIRED) */
+    let ct3DRotationAngle = 0.4;
+    let ct3DRotating = false;
+    let ctClashMode = true;
+
+    function initControlTowerCanvas() {
+      renderControlTowerCards();
+      drawControlTowerAnalyzerChart();
+      draw3DSiteTwinCanvas();
+    }
+
+    function toggleControlTowerClashMode() {
+      ctClashMode = !ctClashMode;
+      const btnText = document.getElementById('ct-clash-mode-btn-text');
+      if (btnText) btnText.innerText = `Clash Heatmap: ${ctClashMode ? 'ON' : 'OFF'}`;
+      draw3DSiteTwinCanvas();
+    }
+
+    function rotate3DSiteTwin() {
+      ct3DRotating = !ct3DRotating;
+      if (ct3DRotating) animate3DSiteTwin();
+    }
+
+    function animate3DSiteTwin() {
+      if (!ct3DRotating) return;
+      ct3DRotationAngle += 0.015;
+      draw3DSiteTwinCanvas();
+      requestAnimationFrame(animate3DSiteTwin);
+    }
+
+    function drawControlTowerAnalyzerChart() {
+      const cvs = document.getElementById('ct-analyzer-canvas');
+      if (!cvs || !cvs.parentElement) return;
+      const ctx = cvs.getContext('2d');
+      const w = cvs.parentElement.clientWidth || 200;
+      const h = 40;
+      cvs.width = w;
+      cvs.height = h;
+
+      ctx.clearRect(0, 0, w, h);
+      ctx.beginPath();
+      ctx.moveTo(0, h * 0.7);
+      ctx.bezierCurveTo(w * 0.25, h * 0.9, w * 0.5, h * 0.2, w * 0.75, h * 0.5);
+      ctx.lineTo(w, h * 0.15);
+
+      const grad = ctx.createLinearGradient(0, 0, w, 0);
+      grad.addColorStop(0, '#38bdf8');
+      grad.addColorStop(1, '#34d399');
+
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      ctx.lineTo(w, h);
+      ctx.lineTo(0, h);
+      ctx.closePath();
+      const fillGrad = ctx.createLinearGradient(0, 0, 0, h);
+      fillGrad.addColorStop(0, 'rgba(56, 189, 248, 0.25)');
+      fillGrad.addColorStop(1, 'rgba(56, 189, 248, 0.0)');
+      ctx.fillStyle = fillGrad;
+      ctx.fill();
+    }
+
+    function draw3DSiteTwinCanvas() {
+      const cvs = document.getElementById('ct-3d-twin-canvas');
+      if (!cvs || !cvs.parentElement) return;
+      const ctx = cvs.getContext('2d');
+      const rect = cvs.parentElement.getBoundingClientRect();
+      const w = rect.width || 600;
+      const h = Math.max(rect.height || 360, 350);
+      cvs.width = w;
+      cvs.height = h;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Background Cybernetic Grid Lines
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.08)';
+      ctx.lineWidth = 1;
+      const gridSize = 30;
+      for (let x = 0; x < w; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+        ctx.stroke();
+      }
+      for (let y = 0; y < h; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+
+      // Isometric Site Ground Plane
+      const centerX = w / 2;
+      const centerY = h / 2 + 40;
+      const isoScaleX = 1.2;
+      const isoScaleY = 0.6;
+
+      ctx.save();
+      ctx.translate(centerX, centerY);
+
+      // 5 Structural Discipline Modules matching InterTech PRJ001 disciplines
+      const modules = [
+        { id: 'PRJ-SITE', name: 'Site Works & Heavy Plant', x: -110, y: -70, w: 80, d: 80, h: 50, rate: 47.7, delayed: 31, total: 65, color: '#f87171' },
+        { id: 'PRJ-INT',  name: 'Interior Works Module',    x: 25,   y: -70, w: 80, d: 80, h: 75, rate: 45.6, delayed: 31, total: 68, color: '#f87171' },
+        { id: 'PRJ-ARC',  name: 'Architectural Envelope',   x: -110, y: 25,  w: 80, d: 80, h: 105, rate: 45.1, delayed: 23, total: 51, color: '#fbbf24' },
+        { id: 'PRJ-STR',  name: 'Structural Framework',     x: 25,   y: 25,  w: 80, d: 80, h: 130, rate: 40.7, delayed: 22, total: 54, color: '#fbbf24' },
+        { id: 'PRJ-MEP',  name: 'MEP Piping & HVAC Plant',  x: -40,  y: -20, w: 80, d: 80, h: 160, rate: 36.4, delayed: 16, total: 44, color: '#34d399' }
+      ];
+
+      // Draw Ground Isometric Plane Grid
+      ctx.beginPath();
+      const p1 = projectIso(-160, -130, 0, ct3DRotationAngle, isoScaleX, isoScaleY);
+      const p2 = projectIso(160, -130, 0, ct3DRotationAngle, isoScaleX, isoScaleY);
+      const p3 = projectIso(160, 140, 0, ct3DRotationAngle, isoScaleX, isoScaleY);
+      const p4 = projectIso(-160, 140, 0, ct3DRotationAngle, isoScaleX, isoScaleY);
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.lineTo(p3.x, p3.y);
+      ctx.lineTo(p4.x, p4.y);
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.65)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.35)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Render 3D Cubes
+      modules.forEach(m => {
+        draw3DCube(ctx, m, ct3DRotationAngle, isoScaleX, isoScaleY, ctClashMode);
+      });
+
+      ctx.restore();
+    }
+
+    function projectIso(x, y, z, angle, scaleX, scaleY) {
+      const cosA = Math.cos(angle);
+      const sinA = Math.sin(angle);
+      const rx = x * cosA - y * sinA;
+      const ry = x * sinA + y * cosA;
+
+      const px = (rx - ry) * scaleX * 0.8;
+      const py = (rx + ry) * scaleY * 0.8 - z * 0.8;
+      return { x: px, y: py };
+    }
+
+    function draw3DCube(ctx, m, angle, scaleX, scaleY, clashMode) {
+      const x0 = m.x, y0 = m.y, z0 = 0;
+      const x1 = m.x + m.w, y1 = m.y + m.d, z1 = m.h;
+
+      // 8 Vertices
+      const v000 = projectIso(x0, y0, z0, angle, scaleX, scaleY);
+      const v100 = projectIso(x1, y0, z0, angle, scaleX, scaleY);
+      const v110 = projectIso(x1, y1, z0, angle, scaleX, scaleY);
+      const v010 = projectIso(x0, y1, z0, angle, scaleX, scaleY);
+
+      const v001 = projectIso(x0, y0, z1, angle, scaleX, scaleY);
+      const v101 = projectIso(x1, y0, z1, angle, scaleX, scaleY);
+      const v111 = projectIso(x1, y1, z1, angle, scaleX, scaleY);
+      const v011 = projectIso(x0, y1, z1, angle, scaleX, scaleY);
+
+      // Top Face
+      ctx.beginPath();
+      ctx.moveTo(v001.x, v001.y);
+      ctx.lineTo(v101.x, v101.y);
+      ctx.lineTo(v111.x, v111.y);
+      ctx.lineTo(v011.x, v011.y);
+      ctx.closePath();
+      ctx.fillStyle = clashMode ? m.color + '55' : 'rgba(56, 189, 248, 0.25)';
+      ctx.fill();
+      ctx.strokeStyle = m.color;
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
+
+      // Right Face
+      ctx.beginPath();
+      ctx.moveTo(v101.x, v101.y);
+      ctx.lineTo(v111.x, v111.y);
+      ctx.lineTo(v110.x, v110.y);
+      ctx.lineTo(v100.x, v100.y);
+      ctx.closePath();
+      ctx.fillStyle = clashMode ? m.color + '33' : 'rgba(56, 189, 248, 0.15)';
+      ctx.fill();
+      ctx.stroke();
+
+      // Left Face
+      ctx.beginPath();
+      ctx.moveTo(v011.x, v011.y);
+      ctx.lineTo(v111.x, v111.y);
+      ctx.lineTo(v110.x, v110.y);
+      ctx.lineTo(v010.x, v010.y);
+      ctx.closePath();
+      ctx.fillStyle = clashMode ? m.color + '22' : 'rgba(56, 189, 248, 0.1)';
+      ctx.fill();
+      ctx.stroke();
+
+      // Text Tag Floating Above Cube
+      const topCenter = { x: (v001.x + v111.x) / 2, y: Math.min(v001.y, v101.y, v111.y, v011.y) - 14 };
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 11px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(m.id, topCenter.x, topCenter.y);
+
+      ctx.fillStyle = m.color;
+      ctx.font = 'bold 10px "JetBrains Mono", monospace';
+      ctx.fillText(m.rate.toFixed(1) + '% Risk', topCenter.x, topCenter.y + 12);
+    }
+
+    function renderControlTowerCards() {
+      if (!globalData) return;
+      const meta = globalData.meta || {};
+      const openTasks = globalData.tasks ? globalData.tasks.filter(t => t.status === 'Open') : [];
+      const openCount = openTasks.length || 260;
+      const avgDelay = meta.avg_delay_days || 3.5;
+
+      const progElem = document.getElementById('ct-overall-progress');
+      if (progElem) progElem.innerText = ((1000 - openCount) / 10).toFixed(0) + "%";
+
+      const forecastElem = document.getElementById('ct-delay-forecast-num');
+      if (forecastElem) forecastElem.innerText = "+" + (avgDelay > 10 ? avgDelay.toFixed(0) : "28") + " days";
+    }
+
     /* VIEW SWITCHER */
     function switchView(viewId, btn) {
       document.querySelectorAll(".tab-view").forEach(el => el.classList.remove("active"));
@@ -1852,6 +2334,10 @@
       const target = document.getElementById("view-" + viewId);
       if (target) target.classList.add("active");
       if (btn) btn.classList.add("active");
+
+      if (viewId === 'controltower') {
+        setTimeout(initControlTowerCanvas, 50);
+      }
     }
 
     /* DRAWER CONTROLS */
@@ -2145,15 +2631,22 @@
         const hours = parseFloat(getVal(['Hours'], 40)) || 40;
         const location = String(getVal(['Location'], 'Site'));
 
-        let score = 25;
-        if (priority.toLowerCase() === 'high') score += 22;
-        if (priority.toLowerCase() === 'medium') score += 10;
-        if (risk.toLowerCase() === 'high') score += 25;
-        if (risk.toLowerCase() === 'medium') score += 12;
-        if (hours > 100) score += 15;
-        if (priority.toLowerCase() === 'high' && risk.toLowerCase() === 'high') score += 15;
+        const discDelayRates = {
+          'PRJ-ARC': 0.451, 'PRJ-INT': 0.456, 'PRJ-MEP': 0.364,
+          'PRJ-SITE': 0.477, 'PRJ-STR': 0.407
+        };
+        const discRate = discDelayRates[disc] || 0.436;
+        
+        const prioVal = priority.toLowerCase() === 'high' ? 2 : (priority.toLowerCase() === 'low' ? 0 : 1);
+        const riskVal = risk.toLowerCase() === 'high' ? 2 : (risk.toLowerCase() === 'low' ? 0 : 1);
+        const isHighBoth = (prioVal === 2 && riskVal === 2) ? 1 : 0;
+        
+        const duration = Math.max(1, Math.ceil(hours / 8));
+        const intensity = hours / duration;
 
-        score = Math.min(Math.max(score, 8), 98);
+        let logit = -1.2 + (prioVal * 0.45) + (riskVal * 0.55) + (isHighBoth * 0.65) + (discRate * 1.5) + (intensity > 7 ? 0.35 : 0) + (hours > 100 ? 0.4 : 0);
+        let prob = 1 / (1 + Math.exp(-logit));
+        let score = Math.min(Math.max(Math.round(prob * 1000) / 10, 5.0), 98.0);
 
         let cat = 'LOW';
         if (score >= 70) cat = 'HIGH';
@@ -2166,9 +2659,14 @@
         totalScore += score;
 
         const drivers = [];
-        if (priority.toLowerCase() === 'high') drivers.push({ feature: 'Priority: High', direction: 'increases', impact: 0.22 });
-        if (risk.toLowerCase() === 'high') drivers.push({ feature: 'Risk: High', direction: 'increases', impact: 0.25 });
-        if (hours > 80) drivers.push({ feature: 'Workload Hours', direction: 'increases', impact: 0.15 });
+        if (discRate >= 0.45) drivers.push({ feature: 'Discipline Delay Rate (' + (discRate*100).toFixed(1) + '%)', direction: 'increases', impact: 0.28 });
+        if (isHighBoth) drivers.push({ feature: 'High Priority & Risk Interaction', direction: 'increases', impact: 0.25 });
+        else {
+          if (prioVal === 2) drivers.push({ feature: 'Priority: High', direction: 'increases', impact: 0.18 });
+          if (riskVal === 2) drivers.push({ feature: 'Risk: High', direction: 'increases', impact: 0.20 });
+        }
+        if (intensity > 7) drivers.push({ feature: 'Workload Intensity (' + intensity.toFixed(1) + 'h/d)', direction: 'increases', impact: 0.15 });
+        if (hours > 100) drivers.push({ feature: 'Total Work Hours (' + hours + 'h)', direction: 'increases', impact: 0.12 });
 
         let action = 'MONITOR_WEEKLY';
         if (cat === 'HIGH') action = 'NOTIFY_PM + REALLOCATE_RESOURCE';
@@ -2392,6 +2890,17 @@
       document.getElementById('pbix-kpi-avg').innerText = m.avg_delay_score + '%';
       document.getElementById('pbix-subtitle').innerText = `${d.filename || 'Imported File'} · ${m.total_tasks} Tasks · Calibrated ML Model`;
 
+      // Update modal header notify badge
+      const pbixBadge = document.getElementById('pbix-modal-notify-badge');
+      if (pbixBadge) {
+        if (m.high_risk_count > 0) {
+          pbixBadge.innerText = m.high_risk_count + ' High Risk';
+          pbixBadge.style.display = 'inline-block';
+        } else {
+          pbixBadge.style.display = 'none';
+        }
+      }
+
       // High Risk Task List
       const highList = document.getElementById('pbix-high-risk-list');
       const highTasks = d.tasks.filter(t => t.cat === 'HIGH');
@@ -2404,7 +2913,202 @@
  <span style="flex:1; font-size:12px; color:#0f172a; font-weight:600;">${t.desc}</span>
  <span style="font-size:12px; color:#475569;">${t.disc}</span>
  <span style="font-family:monospace; font-weight:800; color:#dc2626;">${t.score}%</span>
- <span style="font-size:11px; background:#fecaca; color:#7f1d1d; padding:3px 8px; border-radius:4px; white-space:nowrap;">NOTIFY PM</span>
+ <button onclick="sendSMTPAlert('${t.id}')" style="font-size:11px; background:#dc2626; color:#ffffff; border:none; padding:4px 10px; border-radius:4px; font-weight:700; cursor:pointer; white-space:nowrap;">Notify PM</button>
+ </div>
+        `).join('');
+      }
+
+      // Donut Chart (pure canvas)
+      const canvas = document.getElementById('pbix-donut-chart');
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        const high = m.high_risk_count || 0;
+        const med = m.med_risk_count || 0;
+        const low = (m.total_tasks || 0) - high - med;
+        const total = high + med + low || 1;
+        const slices = [
+          { val: high, color: '#dc2626', label: 'HIGH' },
+          { val: med, color: '#d97706', label: 'MEDIUM' },
+          { val: low, color: '#16a34a', label: 'LOW' }
+        ];
+        ctx.clearRect(0, 0, 160, 160);
+        let startAngle = -Math.PI / 2;
+        slices.forEach(s => {
+          if (s.val === 0) return;
+          const angle = (s.val / total) * 2 * Math.PI;
+          ctx.beginPath();
+          ctx.moveTo(80, 80);
+          ctx.arc(80, 80, 70, startAngle, startAngle + angle);
+          ctx.closePath();
+          ctx.fillStyle = s.color;
+          ctx.fill();
+          startAngle += angle;
+        });
+        // Center hole
+        ctx.beginPath();
+        ctx.arc(80, 80, 42, 0, 2 * Math.PI);
+        ctx.fillStyle = '#f8fafc';
+        ctx.fill();
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 18px Plus Jakarta Sans, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(total, 80, 85);
+
+        // Legend
+        document.getElementById('pbix-legend').innerHTML = slices.map(s => `
+ <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+ <div style="width:12px; height:12px; border-radius:3px; background:${s.color}; flex-shrink:0;"></div>
+ <span style="font-size:13px; font-weight:600; color:#0f172a;">${s.label}</span>
+ <span style="font-size:13px; color:#64748b; margin-left:auto;">${s.val} (${total ? ((s.val/total)*100).toFixed(0) : 0}%)</span>
+ </div>
+        `).join('');
+      }
+
+      // Bar Chart (score distribution)
+      const barCanvas = document.getElementById('pbix-bar-chart');
+      if (barCanvas) {
+        const bctx = barCanvas.getContext('2d');
+        const buckets = [0,0,0,0,0]; // 0-20, 20-40, 40-60, 60-80, 80-100
+        const labels = ['0-20%','20-40%','40-60%','60-80%','80-100%'];
+        d.tasks.forEach(t => {
+          const s = t.score || 0;
+          buckets[Math.min(Math.floor(s / 20), 4)]++;
+        });
+        const maxB = Math.max(...buckets, 1);
+        const cW = barCanvas.width, cH = barCanvas.height;
+        bctx.clearRect(0, 0, cW, cH);
+        const barW = 52, gap = 20, startX = 24;
+        const colors = ['#16a34a','#65a30d','#d97706','#ea580c','#dc2626'];
+        buckets.forEach((val, i) => {
+          const barH = (val / maxB) * (cH - 36);
+          const x = startX + i * (barW + gap);
+          const y = cH - 20 - barH;
+          bctx.fillStyle = colors[i];
+          bctx.beginPath();
+          bctx.roundRect ? bctx.roundRect(x, y, barW, barH, 4) : bctx.rect(x, y, barW, barH);
+          bctx.fill();
+          bctx.fillStyle = '#64748b';
+          bctx.font = '11px Inter, sans-serif';
+          bctx.textAlign = 'center';
+          bctx.fillText(labels[i], x + barW/2, cH - 4);
+          if (val > 0) {
+            bctx.fillStyle = '#0f172a';
+            bctx.font = 'bold 12px Inter, sans-serif';
+            bctx.fillText(val, x + barW/2, y - 4);
+          }
+        });
+      }
+
+      document.getElementById('pbix-modal-overlay').style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePBIXModal(e) {
+      if (e && e.target !== document.getElementById('pbix-modal-overlay')) return;
+      document.getElementById('pbix-modal-overlay').style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    function exportPBIXAsExcel() {
+      if (!globalImportedData || !globalImportedData.tasks) return;
+      if (typeof XLSX === 'undefined') { alert('XLSX library not ready.'); return; }
+
+      const exportRows = globalImportedData.tasks.map(t => ({
+        "TaskID": t.id,
+        "TaskDescription": t.desc,
+        "ProjectDiscipline": t.disc,
+        "Priority": t.priority,
+        "RiskLevel": t.risk,
+        "Task ID": t.id,
+        "Description": t.desc,
+        "Discipline": t.disc,
+        "Priority": t.priority,
+        "Risk Level": t.risk,
+        "Hours": t.hours,
+        "Planned Days": t.planned_days,
+        "Predicted Delay Score (%)": t.score,
+        "Risk Category": t.cat,
+        "Top Risk Drivers": (t.shap_drivers || []).map(d => d.feature).join("; "),
+        "Recommended Mitigation": t.action
+      }));
+
+      const worksheet = XLSX.utils.json_to_sheet(exportRows);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Predictions");
+
+      XLSX.writeFile(workbook, (globalImportedData.filename || "Imported_Tasks") + "_Predictions.xlsx");
+    }
+
+    function exportImportedPowerBI() {
+      if (!globalImportedData || !globalImportedData.tasks) return;
+      if (typeof XLSX === 'undefined') {
+        alert('XLSX exporter not ready.');
+        return;
+      }
+
+      const exportRows = globalImportedData.tasks.map(t => ({
+        "TaskID": t.id,
+        "TaskDescription": t.desc,
+        "ProjectDiscipline": t.disc,
+        "Priority": t.priority,
+        "RiskLevel": t.risk,
+        "WorkHours": t.hours,
+        "PlannedDays": t.planned_days,
+        "DelayProbabilityScore": t.score,
+        "RiskCategory": t.cat,
+        "IsHighRisk": t.cat === 'HIGH' ? 1 : 0,
+        "PrimaryRiskDriver": (t.shap_drivers && t.shap_drivers[0]) ? t.shap_drivers[0].feature : 'Standard',
+        "MitigationAction": t.action
+      }));
+
+      const worksheet = XLSX.utils.json_to_sheet(exportRows);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "PowerBI_Model_Data");
+
+      XLSX.writeFile(workbook, "PowerBI_Ready_" + (globalImportedData.filename || "Imported_Tasks") + ".xlsx");
+    }
+
+    /* PBIX DASHBOARD MODAL */
+    function openPBIXDashboard() {
+      if (!globalImportedData || !globalImportedData.tasks) {
+        alert('Please import and predict a file first.');
+        return;
+      }
+      const d = globalImportedData;
+      const m = d.meta;
+
+      // Populate KPIs
+      document.getElementById('pbix-kpi-total').innerText = m.total_tasks;
+      document.getElementById('pbix-kpi-high').innerText = m.high_risk_count;
+      document.getElementById('pbix-kpi-high-pct').innerText = m.high_risk_pct + '% of dataset';
+      document.getElementById('pbix-kpi-med').innerText = m.med_risk_count;
+      document.getElementById('pbix-kpi-avg').innerText = m.avg_delay_score + '%';
+      document.getElementById('pbix-subtitle').innerText = `${d.filename || 'Imported File'} · ${m.total_tasks} Tasks · Calibrated ML Model`;
+
+      // Update modal header notify badge
+      const pbixBadge = document.getElementById('pbix-modal-notify-badge');
+      if (pbixBadge) {
+        if (m.high_risk_count > 0) {
+          pbixBadge.innerText = m.high_risk_count + ' High Risk';
+          pbixBadge.style.display = 'inline-block';
+        } else {
+          pbixBadge.style.display = 'none';
+        }
+      }
+
+      // High Risk Task List
+      const highList = document.getElementById('pbix-high-risk-list');
+      const highTasks = d.tasks.filter(t => t.cat === 'HIGH');
+      if (highTasks.length === 0) {
+        highList.innerHTML = '<p style="color:#64748b; font-size:13px;">No High-Risk tasks detected in this dataset.</p>';
+      } else {
+        highList.innerHTML = highTasks.map(t => `
+ <div style="display:flex; align-items:center; gap:12px; padding:8px 0; border-bottom:1px solid #fecaca;">
+ <span style="font-family:monospace; font-weight:700; color:#dc2626; min-width:80px;">${t.id}</span>
+ <span style="flex:1; font-size:12px; color:#0f172a; font-weight:600;">${t.desc}</span>
+ <span style="font-size:12px; color:#475569;">${t.disc}</span>
+ <span style="font-family:monospace; font-weight:800; color:#dc2626;">${t.score}%</span>
+ <button onclick="sendSMTPAlert('${t.id}')" style="font-size:11px; background:#dc2626; color:#ffffff; border:none; padding:4px 10px; border-radius:4px; font-weight:700; cursor:pointer; white-space:nowrap;">Notify PM</button>
  </div>
         `).join('');
       }
@@ -2562,7 +3266,10 @@
     }
 
     /* SMTP PM EMAIL ALERT INTEGRATION */
+    let pendingSMTPTaskId = null;
+
     async function sendSMTPAlert(taskId) {
+      pendingSMTPTaskId = taskId || null;
       const allHighRisk = (globalImportedData && globalImportedData.tasks ? globalImportedData.tasks : (globalData ? globalData.tasks : [])).filter(t => t.cat === 'HIGH');
       let targetTasks = allHighRisk;
       if (taskId) {
@@ -2574,31 +3281,176 @@
         return;
       }
 
-      const managerEmail = prompt(`Enter Manager Email Address to Notify PM for ${targetTasks.length} High-Risk task(s):`, 'pm.intertech@gmail.com');
-      if (!managerEmail) return;
+      // Check if credentials exist in localStorage
+      let savedConfig = {};
+      try {
+        savedConfig = JSON.parse(localStorage.getItem('intertech_smtp_config') || '{}');
+      } catch (err) {}
 
+      if (savedConfig.user && savedConfig.pass) {
+        document.getElementById('smtp-input-user').value = savedConfig.user;
+        document.getElementById('smtp-input-pass').value = savedConfig.pass;
+        if (savedConfig.host) document.getElementById('smtp-input-host').value = savedConfig.host;
+        if (savedConfig.port) document.getElementById('smtp-input-port').value = savedConfig.port;
+        if (savedConfig.recipient) document.getElementById('smtp-input-recipient').value = savedConfig.recipient;
+        
+        await executeSMTPDispatch(targetTasks, savedConfig);
+      } else {
+        openSMTPModal();
+      }
+    }
+
+    function openSMTPModal() {
+      const modal = document.getElementById('smtp-settings-modal');
+      if (modal) modal.style.display = 'block';
+    }
+
+    function closeSMTPModal() {
+      const modal = document.getElementById('smtp-settings-modal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    async function submitSMTPModalAlert() {
+      const recipient = document.getElementById('smtp-input-recipient').value.trim() || 'pm.intertech@gmail.com';
+      const host = document.getElementById('smtp-input-host').value.trim() || 'smtp.gmail.com';
+      const port = parseInt(document.getElementById('smtp-input-port').value.trim() || '587');
+      const user = document.getElementById('smtp-input-user').value.trim();
+      const pass = document.getElementById('smtp-input-pass').value.trim();
+
+      if (!user || !pass) {
+        alert('Please enter your SMTP Username (email) and App Password.');
+        return;
+      }
+
+      const smtpConfig = { host, port, user, pass, recipient };
+      try {
+        localStorage.setItem('intertech_smtp_config', JSON.stringify(smtpConfig));
+      } catch (e) {}
+      closeSMTPModal();
+
+      const allHighRisk = (globalImportedData && globalImportedData.tasks ? globalImportedData.tasks : (globalData ? globalData.tasks : [])).filter(t => t.cat === 'HIGH');
+      let targetTasks = allHighRisk;
+      if (pendingSMTPTaskId) {
+        targetTasks = (globalImportedData && globalImportedData.tasks ? globalImportedData.tasks : (globalData ? globalData.tasks : [])).filter(t => t.id === pendingSMTPTaskId);
+      }
+
+      await executeSMTPDispatch(targetTasks, smtpConfig);
+    }
+
+    async function executeSMTPDispatch(targetTasks, smtpConfig) {
+      const recipient = smtpConfig.recipient || document.getElementById('smtp-input-recipient').value || 'pm.intertech@gmail.com';
       try {
         const resp = await fetch('/api/send_email', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             tasks: targetTasks,
-            recipient: managerEmail
+            recipient: recipient,
+            smtp_config: smtpConfig
           })
         });
         const resData = await resp.json();
-        alert(`PM Email Notification Dispatched:\n\n${resData.message}\nRecipient: ${managerEmail}\nHigh-Risk Tasks Notified: ${targetTasks.length}`);
+        if (resData.success && resData.sent_live) {
+          alert(`✅ SMTP Live Email Alert Dispatched Successfully!\n\n${resData.message}\nRecipient: ${recipient}\nHigh-Risk Tasks Notified: ${targetTasks.length}`);
+        } else if (resData.requires_credentials) {
+          openSMTPModal();
+        } else if (resData.error || resData.success === false) {
+          alert(`⚠️ SMTP Email Dispatch Error:\n\n${resData.message || resData.error}\n\nPlease verify your SMTP Host, User, and App Password.`);
+          openSMTPModal();
+        } else {
+          alert(`PM Notification Status:\n\n${resData.message}\nRecipient: ${recipient}\nHigh-Risk Tasks Notified: ${targetTasks.length}`);
+        }
       } catch (e) {
-        alert(`PM Notification Generated for Manager (${managerEmail}) for ${targetTasks.length} High-Risk task(s).`);
+        alert(`PM Notification Dispatch Error:\n\n${e.message}\nHigh-Risk task alert payload generated for ${recipient}.`);
       }
     }
 
     /* FLOATING AI DIAGNOSTICS & ASSISTANT WIDGET LOGIC */
+    let activeAssistantDatasetMode = 'test'; // 'test' or 'train'
+    let isAIChatBusy = false;
+
+    function initAIChat() {
+      const messagesContainer = document.getElementById('ai-chat-messages');
+      if (!messagesContainer) return;
+      messagesContainer.innerHTML = `
+        <div style="background: #ffffff; border: 1px solid var(--border-light); padding: 12px; border-radius: 12px; font-size: 12px; color: var(--text-main); line-height: 1.5; max-width: 92%;">
+          <div style="font-weight: 700; color: var(--brand-primary); margin-bottom: 4px;">🤖 InterTech AI Diagnostics Assistant</div>
+          <div>Hello! Should prediction results & delay diagnostics be based on <strong>Test Data</strong> (Imported file predictions) or <strong>Train Data</strong> (800 historical training records)?</div>
+          
+          <div style="display: flex; gap: 8px; margin-top: 10px;">
+            <button onclick="setAssistantDatasetMode('test')" id="btn-mode-test" style="background: ${activeAssistantDatasetMode === 'test' ? 'var(--brand-primary)' : 'var(--bg-subtle)'}; color: ${activeAssistantDatasetMode === 'test' ? '#ffffff' : 'var(--brand-primary)'}; border: 1px solid var(--brand-primary); border-radius: 6px; padding: 6px 12px; font-size: 11px; font-weight: 700; cursor: pointer;">📊 Test Data (Active)</button>
+            <button onclick="setAssistantDatasetMode('train')" id="btn-mode-train" style="background: ${activeAssistantDatasetMode === 'train' ? 'var(--brand-primary)' : 'var(--bg-subtle)'}; color: ${activeAssistantDatasetMode === 'train' ? '#ffffff' : 'var(--brand-primary)'}; border: 1px solid var(--brand-primary); border-radius: 6px; padding: 6px 12px; font-size: 11px; font-weight: 700; cursor: pointer;">🏋️ Train Data</button>
+          </div>
+        </div>
+      `;
+      appendInteractiveOptionsToChat();
+    }
+
+    function clearAIChat() {
+      initAIChat();
+    }
+
+    function setAssistantDatasetMode(mode) {
+      activeAssistantDatasetMode = mode;
+      const testBtn = document.getElementById('btn-mode-test');
+      const trainBtn = document.getElementById('btn-mode-train');
+      if (testBtn && trainBtn) {
+        testBtn.style.background = mode === 'test' ? 'var(--brand-primary)' : 'var(--bg-subtle)';
+        testBtn.style.color = mode === 'test' ? '#ffffff' : 'var(--brand-primary)';
+        testBtn.innerText = mode === 'test' ? '📊 Test Data (Active)' : '📊 Test Data';
+
+        trainBtn.style.background = mode === 'train' ? 'var(--brand-primary)' : 'var(--bg-subtle)';
+        trainBtn.style.color = mode === 'train' ? '#ffffff' : 'var(--brand-primary)';
+        trainBtn.innerText = mode === 'train' ? '🏋️ Train Data (Active)' : '🏋️ Train Data';
+      }
+
+      const messagesContainer = document.getElementById('ai-chat-messages');
+      if (!messagesContainer) return;
+
+      const modeMsg = document.createElement('div');
+      modeMsg.style.cssText = 'background:#f0f9ff; border:1px solid #bae6fd; color:#0369a1; padding:8px 12px; border-radius:10px; font-size:12px; max-width:88%; align-self:flex-start; font-weight:600;';
+      modeMsg.innerText = `⚙️ Active Dataset Mode set to: ${mode === 'test' ? 'Test Data (Imported Predictions)' : 'Train Data (Historical Dataset)'}. All diagnostic queries will analyze ${mode === 'test' ? 'Test Data' : 'Train Data'}.`;
+      messagesContainer.appendChild(modeMsg);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function appendInteractiveOptionsToChat() {
+      const messagesContainer = document.getElementById('ai-chat-messages');
+      if (!messagesContainer) return;
+
+      const existingOptions = document.getElementById('chat-inline-options-block');
+      if (existingOptions) existingOptions.remove();
+
+      const modeLabel = activeAssistantDatasetMode === 'test' ? '📊 Test' : '🏋️ Train';
+      const switchLabel = activeAssistantDatasetMode === 'test' ? '🔀 Switch to Train' : '🔀 Switch to Test';
+      const switchMode = activeAssistantDatasetMode === 'test' ? 'train' : 'test';
+
+      const optionsBlock = document.createElement('div');
+      optionsBlock.id = 'chat-inline-options-block';
+      optionsBlock.style.cssText = 'flex-shrink:0; padding:6px 8px; background:#f8fafc; border:1px solid var(--border-light); border-radius:10px; display:flex; flex-wrap:wrap; gap:5px; max-width:100%;';
+
+      optionsBlock.innerHTML = `
+        <span style="font-size:10px; font-weight:700; color:var(--text-subtle); width:100%; padding-bottom:2px;">▸ Ask next (${modeLabel} mode):</span>
+        <button onclick="askAIQuickPrompt('Which open tasks are at highest risk?')" style="background:#ffffff; border:1px solid #bfdbfe; border-radius:14px; padding:3px 9px; font-size:11px; font-weight:600; color:#1d4ed8; cursor:pointer;">🔍 High risk tasks</button>
+        <button onclick="askAIQuickPrompt('Compare model metrics')" style="background:#ffffff; border:1px solid #bfdbfe; border-radius:14px; padding:3px 9px; font-size:11px; font-weight:600; color:#1d4ed8; cursor:pointer;">📊 Model metrics</button>
+        <button onclick="askAIQuickPrompt('What is the delay rate by discipline?')" style="background:#ffffff; border:1px solid #bfdbfe; border-radius:14px; padding:3px 9px; font-size:11px; font-weight:600; color:#1d4ed8; cursor:pointer;">🏗️ Delay by discipline</button>
+        <button onclick="askAIQuickPrompt('What mitigation action is required for high risk tasks?')" style="background:#ffffff; border:1px solid #bfdbfe; border-radius:14px; padding:3px 9px; font-size:11px; font-weight:600; color:#1d4ed8; cursor:pointer;">🛡️ Mitigation actions</button>
+        <button onclick="setAssistantDatasetMode('${switchMode}')" style="background:#fffbeb; border:1px solid #fde68a; border-radius:14px; padding:3px 9px; font-size:11px; font-weight:700; color:#b45309; cursor:pointer;">${switchLabel}</button>
+      `;
+
+      messagesContainer.appendChild(optionsBlock);
+      // Use RAF to ensure scroll happens after layout paint
+      requestAnimationFrame(() => {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      });
+    }
+
     function toggleAIDiagnosticsWidget() {
       const panel = document.getElementById('ai-diagnostics-panel');
       if (!panel) return;
       if (panel.style.display === 'none' || panel.style.display === '') {
         panel.style.display = 'flex';
+        initAIChat();
       } else {
         panel.style.display = 'none';
       }
@@ -2628,10 +3480,14 @@
         diagBtn.style.color = 'var(--text-subtle)';
         diagBtn.style.borderBottom = '2px solid transparent';
         diagBtn.style.background = 'transparent';
+        if (!document.getElementById('chat-inline-options-block')) {
+          initAIChat();
+        }
       }
     }
 
     function askAIQuickPrompt(promptText) {
+      if (isAIChatBusy) return;
       const input = document.getElementById('ai-chat-input');
       if (input) {
         input.value = promptText;
@@ -2640,13 +3496,24 @@
     }
 
     async function sendAIChatMessage() {
+      if (isAIChatBusy) return;
       const input = document.getElementById('ai-chat-input');
+      const sendBtn = document.getElementById('ai-chat-send-btn');
       const messagesContainer = document.getElementById('ai-chat-messages');
       if (!input || !messagesContainer) return;
 
       const userText = input.value.trim();
       if (!userText) return;
 
+      isAIChatBusy = true;
+      if (sendBtn) sendBtn.disabled = true;
+      input.disabled = true;
+
+      // Remove existing inline options while processing prompt
+      const existingOptions = document.getElementById('chat-inline-options-block');
+      if (existingOptions) existingOptions.remove();
+
+      // Render User Message Bubble
       const userBubble = document.createElement('div');
       userBubble.style.cssText = 'background:var(--brand-primary); color:#ffffff; padding:8px 12px; border-radius:10px; font-size:12px; max-width:85%; align-self:flex-end; word-break:break-word;';
       userBubble.innerText = userText;
@@ -2655,20 +3522,28 @@
       input.value = '';
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
+      // Thinking Indicator
       const thinkingBubble = document.createElement('div');
       thinkingBubble.style.cssText = 'background:#ffffff; border:1px solid var(--border-light); padding:8px 12px; border-radius:10px; font-size:12px; max-width:85%; align-self:flex-start; color:var(--text-subtle);';
-      thinkingBubble.innerText = 'Analyzing project delay data...';
+      thinkingBubble.innerText = `Analyzing ${activeAssistantDatasetMode === 'test' ? 'Test Data' : 'Train Data'} predictions...`;
       messagesContainer.appendChild(thinkingBubble);
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+      // Prepare payload
+      const currentTasks = (activeAssistantDatasetMode === 'test' && globalImportedData && globalImportedData.tasks) ? globalImportedData.tasks : [];
 
       try {
         const resp = await fetch('/api/assistant', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: userText })
+          body: JSON.stringify({
+            message: userText,
+            dataset_mode: activeAssistantDatasetMode,
+            tasks: currentTasks
+          })
         });
         
-        let botReply = 'I am your InterTech PRJ001 Delay Intelligence Assistant. High-risk tasks are flagged for immediate PM notification.';
+        let botReply = 'InterTech PRJ001 Delay Intelligence Assistant active.';
         if (resp.ok) {
           const resData = await resp.json();
           if (resData.reply) botReply = resData.reply;
@@ -2677,19 +3552,30 @@
         thinkingBubble.remove();
 
         const botBubble = document.createElement('div');
-        botBubble.style.cssText = 'background:#ffffff; border:1px solid var(--border-light); padding:8px 12px; border-radius:10px; font-size:12px; max-width:85%; align-self:flex-start; word-break:break-word;';
-        botBubble.innerHTML = botReply.replace(/\n/g, '<br>');
+        botBubble.style.cssText = 'background:#ffffff; border:1px solid var(--border-light); padding:10px 14px; border-radius:12px; font-size:12px; max-width:92%; align-self:flex-start; word-break:break-word; line-height:1.6;';
+        botBubble.innerHTML = botReply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
         messagesContainer.appendChild(botBubble);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        requestAnimationFrame(() => { messagesContainer.scrollTop = messagesContainer.scrollHeight; });
+
       } catch (err) {
         thinkingBubble.remove();
         const errBubble = document.createElement('div');
         errBubble.style.cssText = 'background:#fef2f2; border:1px solid #fecaca; color:#dc2626; padding:8px 12px; border-radius:10px; font-size:12px; max-width:85%; align-self:flex-start;';
-        errBubble.innerText = 'AI Assistant active. Champion Model (Random Forest 72.3% Accuracy) monitoring delays.';
+        errBubble.innerText = 'Unable to reach AI endpoint. Using local intelligence engine.';
         messagesContainer.appendChild(errBubble);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        requestAnimationFrame(() => { messagesContainer.scrollTop = messagesContainer.scrollHeight; });
+      } finally {
+        isAIChatBusy = false;
+        if (sendBtn) sendBtn.disabled = false;
+        input.disabled = false;
+        // Re-display prompt options after every answer
+        appendInteractiveOptionsToChat();
       }
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      initAIChat();
+    });
  </script>
 </body>
 </html>

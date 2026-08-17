@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "name": "intertechtaskprediction",
+  "alias": ["intertechtaskprediction.vercel.app"],
   "outputDirectory": ".",
   "rewrites": [
     { "source": "/api/data", "destination": "/api/data.js" },
@@ -15,7 +15,8 @@
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" }
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
       ]
     }
   ]

@@ -6,6 +6,7 @@
     "start": "python server.py"
   },
   "dependencies": {
-    "@google/generative-ai": "^0.21.0"
+    "@google/generative-ai": "^0.21.0",
+    "nodemailer": "^9.0.5"
   }
 }

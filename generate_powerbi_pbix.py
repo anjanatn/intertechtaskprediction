@@ -64,13 +64,19 @@ def create_powerbi_solution_package(dashboard_json_path=None):
 
     df_preds = pd.DataFrame(pred_rows)
 
+    meta = data.get("meta", {})
+    champ_name = meta.get("champion", "Random Forest")
+    champ_m = meta.get("champion_metrics", {})
+    acc_val = champ_m.get("acc", 72.0)
+    auc_val = champ_m.get("auc_roc", 77.8)
+
     # 2. Problem Statement Compliance Reference Table
     df_compliance = pd.DataFrame([
         {
             "Requirement": "Project Delay Prediction Objective",
             "Specification": "Predict project delay using project management data",
             "Status": "COMPLIANT",
-            "Implementation": "Random Forest Champion Model (72.3% Accuracy, 77.8% AUC)"
+            "Implementation": f"{champ_name} Champion Model ({acc_val:.1f}% Accuracy, {auc_val:.1f}% AUC)"
         },
         {
             "Requirement": "Target Variable Definition",
