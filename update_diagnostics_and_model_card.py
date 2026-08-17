@@ -107,11 +107,13 @@ model_card_modal_html = """
         </div>
 
         <div style="margin-bottom:12px;">
-          <h3 style="font-size:15px; font-weight:700; color:#0f172a; border-bottom:2px solid #e2e8f0; padding-bottom:6px; margin-bottom:10px;">5. Scope, Known Limitations & "COMPLIANT" Definition</h3>
+          <h3 style="font-size:15px; font-weight:700; color:#0f172a; border-bottom:2px solid #e2e8f0; padding-bottom:6px; margin-bottom:10px;">5. Validation Status & Known Limitations</h3>
           <ul style="margin-left:20px;">
-            <li><strong>COMPLIANT Definition</strong>: Indicates complete compliance with InterTech problem statement specifications: binary delay target modeling (<code>Delay > 0</code>), automated PM alert triggers, and dynamic employee reallocation.</li>
-            <li><strong>Project Scope</strong>: Pre-trained on baseline PRJ001 dataset while supporting multi-project filtering across arbitrary project IDs (PRJ001, PRJ002, PRJ003, etc.).</li>
-            <li><strong>Pre-Execution Boundary</strong>: Model predicts delay risks prior to task execution based on initial scope and workload intensity. Unpredictable black-swan events (weather disasters, vendor bankruptcy) require real-time site updates.</li>
+            <li><strong>✅ Validated</strong>: Binary delay target modeling, 5-Fold CV evaluation, chronological holdout test, calibrated probability outputs, and SHAP explainability on synthetic dataset.</li>
+            <li><strong>❌ Not Yet Validated</strong>: Real-world project outcome matching, prospective model performance, cost-benefit analysis of delay interventions, and fairness/bias evaluation across project types.</li>
+            <li><strong>Project Scope</strong>: Pre-trained on baseline PRJ001 synthetic dataset (1,000 tasks). Multi-project filtering supported but unvalidated for accuracy transfer across project types.</li>
+            <li><strong>Pre-Execution Boundary</strong>: Model predicts delay risks prior to task execution based on initial scope, priority, hours, and discipline. Black-swan events (weather, vendor bankruptcy, permits) require real-time manual updates.</li>
+            <li><strong>⚠️ Disclaimer</strong>: This is a demonstration decision-support tool. Predictions are not operational decisions and should not replace project-manager judgment. Real-world deployment requires prospective validation on actual project outcomes.</li>
           </ul>
         </div>
 
