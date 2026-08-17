@@ -1075,13 +1075,6 @@
  <button class="nav-tab active" role="tab" aria-selected="true" aria-controls="view-overview" onclick="switchView('overview', this)">
  <span>Executive Overview</span>
  </button>
- <button class="nav-tab" role="tab" aria-selected="false" aria-controls="view-controltower" id="tab-nav-controltower" onclick="switchView('controltower', this)">
- <span>Advanced Analytics</span>
- <span class="pill pill-low" style="background:#475569; color:#ffffff; font-size:9px; padding:1px 5px; margin-left:4px; font-weight:700;">EXPLORATORY</span>
- </button>
- <button class="nav-tab" role="tab" aria-selected="false" aria-controls="view-siteview" onclick="switchView('siteview', this)">
- <span>Site View</span>
- </button>
  <button class="nav-tab" role="tab" aria-selected="false" aria-controls="view-import" id="tab-nav-import" onclick="switchView('import', this)">
  <span>Import & Predict</span>
  <span class="tab-badge" id="badge-imported-count" style="background:#0284c7; color:#ffffff; display:none;" title="Imported tasks">Imported: 0</span>
@@ -1092,6 +1085,9 @@
  </button>
  <button class="nav-tab" role="tab" aria-selected="false" aria-controls="view-mitigation" onclick="switchView('mitigation', this)">
  <span>Mitigation Planner</span>
+ </button>
+ <button class="nav-tab" role="tab" aria-selected="false" aria-controls="view-controltower" id="tab-nav-controltower" onclick="switchView('controltower', this)" style="color:#94a3b8;">
+ <span>Optional visual tools</span>
  </button>
  </div>
 
@@ -1119,27 +1115,27 @@
  </div>
 
 
- <!-- VIEW 0: AI DIGITAL CONTROL TOWER & 3D SITE TWIN VISUALIZER (WRENCH SOLUTIONS INSPIRED) -->
+ <!-- OPTIONAL: visual exploration tools; these do not drive predictions or mitigation decisions. -->
  <section id="view-controltower" class="tab-view">
  <div class="section-title-bar" style="background: linear-gradient(135deg, #070d19 0%, #0f172a 100%); padding: 20px 24px; border-radius: 16px; margin-bottom: 20px; border: 1px solid rgba(56, 189, 248, 0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.25);">
  <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; width: 100%;">
  <div>
  <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
  <span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(56, 189, 248, 0.3); font-family: 'JetBrains Mono', monospace;">INTERTECH AI ENGINE</span>
- <span style="background: rgba(52, 211, 153, 0.15); color: #34d399; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(52, 211, 153, 0.3);">DIGITAL CONTROL TOWER LIVE</span>
+ <span style="background: rgba(148,163,184,.15); color: #cbd5e1; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(148,163,184,.3);">OPTIONAL / DISPLAY ONLY</span>
  </div>
- <h1 class="section-heading" style="color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 24px; font-weight: 800; letter-spacing: -0.02em;">Advanced Analytics: Exploratory Site Visualizer</h1>
- <p class="section-subtext" style="color: #94a3b8; font-size: 13px; margin-top: 2px;">A visual exploration of imported risk scores. This module is not used to generate model predictions or mitigation decisions.</p>
+ <h1 class="section-heading" style="color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 24px; font-weight: 800; letter-spacing: -0.02em;">Optional visual exploration</h1>
+ <p class="section-subtext" style="color: #94a3b8; font-size: 13px; margin-top: 2px;">Explore imported risk scores visually. Use Import & Predict, Task Risk Matrix, and Mitigation Planner for the working decision workflow.</p>
  </div>
  <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
  <button class="btn btn-outline" style="border-color: rgba(255,255,255,0.2); color: #e2e8f0; font-size: 12px; font-weight: 600;" onclick="toggleControlTowerClashMode()">
- <span id="ct-clash-mode-btn-text">Clash Heatmap: ON</span>
+ <span id="ct-clash-mode-btn-text">Visual heatmap: ON</span>
  </button>
  <button class="btn btn-outline" style="border-color: rgba(52, 211, 153, 0.4); color: #34d399; font-size: 12px; font-weight: 600;" onclick="loadTestDataIntoControlTower()">
- <span>View Test Data in 3D Twin</span>
+ <span>View sample data</span>
  </button>
  <button class="btn btn-primary" style="background: linear-gradient(135deg, #0284c7, #0369a1); border-color: #0284c7; font-size: 12px; font-weight: 700;" onclick="rotate3DSiteTwin()">
- <span>Rotate 3D Site View</span>
+ <span>Rotate visual</span>
  </button>
  </div>
  </div>
@@ -1233,8 +1229,8 @@
  <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 16px; padding: 20px; position: relative; overflow: hidden; min-height: 440px; display: flex; flex-direction: column;">
  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; z-index: 2;">
  <div>
- <h3 style="font-size: 15px; font-weight: 700; color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif;">Interactive 3D Digital Twin & Site Structural Visualizer</h3>
- <p style="font-size: 12px; color: #94a3b8; margin-top: 2px;">Click discipline module to inspect clash reports, active delay risk, and sub-contractors</p>
+ <h3 style="font-size: 15px; font-weight: 700; color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif;">Optional 3D risk visual</h3>
+ <p style="font-size: 12px; color: #94a3b8; margin-top: 2px;">A display-only view of discipline-level risk. It does not create predictions, clash findings, or actions.</p>
  </div>
  <div style="display: flex; gap: 6px;">
  <span class="pill" style="background: rgba(248, 113, 113, 0.2); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.4); font-size: 10px;">High Risk Module</span>
@@ -1285,8 +1281,8 @@
 
  <div style="display: flex; flex-direction: column; gap: 10px; font-size: 12px;">
  <div style="background: rgba(2, 132, 199, 0.15); border: 1px solid rgba(56, 189, 248, 0.25); padding: 10px 12px; border-radius: 8px;">
- <div style="color: #38bdf8; font-weight: 700; margin-bottom: 2px;">Design Clash Detected</div>
- <div style="color: #cbd5e1; font-size: 11px;">Structural vs MEP piping clearance clash flagged at Block B.</div>
+ <div style="color: #38bdf8; font-weight: 700; margin-bottom: 2px;">Visual risk signal</div>
+ <div style="color: #cbd5e1; font-size: 11px;">A display cue derived from task risk data; it is not a design-clash detection result.</div>
  </div>
 
  <div style="background: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.25); padding: 10px 12px; border-radius: 8px;">
@@ -1324,6 +1320,15 @@
  <div style="background:linear-gradient(135deg,#0f172a,#172554); border:1px solid #334155; border-radius:16px; padding:22px 24px; margin-bottom:20px; color:#fff; box-shadow:0 10px 26px rgba(15,23,42,.16);">
   <div style="display:flex; justify-content:space-between; gap:14px; align-items:flex-start; flex-wrap:wrap;"><div><div style="font-size:11px; font-weight:800; letter-spacing:.08em; color:#7dd3fc;">LIVE DECISION SNAPSHOT</div><div style="font-size:22px; font-weight:800; margin-top:4px;">Model Engine: <span id="decision-model">Predictive AI Engine</span></div><div style="font-size:13px; color:#cbd5e1; margin-top:6px;">DATA SOURCE: SIMULATED PROJECT-MANAGEMENT DATA — demonstration only; not a forecast for a real project.</div></div><button class="btn btn-primary" onclick="switchView('import', document.getElementById('tab-nav-import'))" style="background:#0284c7; border-color:#0284c7;">Try Demo Dataset</button></div>
   <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(185px,1fr)); gap:12px; margin-top:18px;"><div style="background:rgba(255,255,255,.08); border-radius:10px; padding:13px;"><div style="font-size:11px; color:#94a3b8;">PREDICTION</div><strong id="decision-at-risk" style="font-size:20px;">123 / 1,000 at risk</strong></div><div style="background:rgba(255,255,255,.08); border-radius:10px; padding:13px;"><div style="font-size:11px; color:#94a3b8;">OVERALL RISK</div><strong id="decision-risk" style="font-size:20px; color:#fca5a5;">HIGH</strong></div><div style="background:rgba(255,255,255,.08); border-radius:10px; padding:13px;"><div style="font-size:11px; color:#94a3b8;">RECOMMENDED ACTION</div><strong style="font-size:15px;">Notify PM + reallocate resource</strong></div><div style="background:rgba(255,255,255,.08); border-radius:10px; padding:13px;"><div style="font-size:11px; color:#94a3b8;">TOP RISK SIGNALS</div><strong id="decision-drivers" style="font-size:15px;">Workload, site risk, duration</strong></div></div>
+ </div>
+
+ <div class="card" style="margin-bottom:20px; border-left:4px solid #0284c7;">
+  <div style="font-size:11px; font-weight:800; letter-spacing:.08em; color:#0369a1;">HOW TO USE THIS DASHBOARD</div>
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-top:12px;">
+   <div><strong style="color:#0f172a;">1. Import & predict</strong><p style="font-size:12px; color:var(--text-subtle); margin-top:3px;">Upload project tasks or use the demo dataset.</p></div>
+   <div><strong style="color:#0f172a;">2. Review risk</strong><p style="font-size:12px; color:var(--text-subtle); margin-top:3px;">Focus on high-risk tasks and their drivers.</p></div>
+   <div><strong style="color:#0f172a;">3. Take action</strong><p style="font-size:12px; color:var(--text-subtle); margin-top:3px;">Use the mitigation plan to assign the next step.</p></div>
+  </div>
  </div>
 
  <div class="grid-2col" style="margin-bottom:20px;"><div class="card"><h2 class="card-title">Prediction → Action Pipeline</h2><p style="font-size:13px; color:var(--text-subtle); margin:10px 0; line-height:1.8;">Project data → preprocessing → predictive model → delay probability → risk classification → mitigation recommendation</p><p style="font-size:12px; color:#0369a1; font-weight:700;">Probabilities are classified as Low: 0–39%, Medium: 40–69%, High: ≥70%.</p></div><div class="card"><h2 class="card-title">Risk → Action Policy</h2><div style="font-size:13px; line-height:1.9;"><div><span class="pill pill-low">LOW &lt;40%</span> Normal monitoring</div><div><span class="pill pill-med">MEDIUM 40–69%</span> Weekly status meeting</div><div><span class="pill pill-high">HIGH ≥70%</span> Notify PM + reallocate one available employee</div></div><p style="font-size:11px; color:var(--text-subtle); margin-top:10px;">Thresholds are configurable in Sandbox mode; the production baseline is preserved.</p></div></div>
@@ -1534,8 +1539,10 @@
 </div></div>
  </div>
  
- <!-- ROI & COST-AVOIDANCE IMPACT CALCULATOR PANEL -->
- <div class="card" style="margin-top:24px; border:1px solid #cbd5e1; box-shadow:var(--shadow-md);">
+ <!-- OPTIONAL ROI & COST-AVOIDANCE IMPACT CALCULATOR PANEL -->
+ <details class="card" style="margin-top:24px; border:1px solid #cbd5e1; box-shadow:var(--shadow-md);">
+ <summary style="cursor:pointer; font-weight:800; color:var(--text-main); list-style:none; display:flex; align-items:center; gap:10px;"><span style="background:#f1f5f9; color:#475569; font-weight:700; font-size:10px; padding:2px 8px; border-radius:4px; text-transform:uppercase;">OPTIONAL</span> Illustrative ROI scenario <span style="font-size:12px; font-weight:500; color:var(--text-subtle);">Not part of the prediction workflow</span></summary>
+ <div style="margin-top:18px;">
  <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:14px; margin-bottom:18px;">
  <div>
  <span style="background:#f1f5f9; color:#475569; font-weight:700; font-size:10px; padding:2px 8px; border-radius:4px; text-transform:uppercase;">ROADMAP / ILLUSTRATIVE</span>
@@ -1591,6 +1598,8 @@
  </div>
  </div>
  </div>
+ </div>
+ </details>
 
 
  </section>
@@ -4048,6 +4057,7 @@
  ${reallocHTML}
  ${inspectionMeeting}
  </div>
+
  `;
  highList.appendChild(div);
  });
@@ -4177,7 +4187,7 @@
  function toggleControlTowerClashMode() {
  ctClashMode = !ctClashMode;
  const btnText = document.getElementById('ct-clash-mode-btn-text');
- if (btnText) btnText.innerText = `Clash Heatmap: ${ctClashMode ? 'ON' : 'OFF'}`;
+ if (btnText) btnText.innerText = `Visual heatmap: ${ctClashMode ? 'ON' : 'OFF'}`;
  draw3DSiteTwinCanvas();
  }
 

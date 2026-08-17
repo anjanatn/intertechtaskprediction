@@ -211,17 +211,26 @@
  /* SUB-NAV / TAB BAR */
  .nav-bar {
  background-color: #1e293b;
- padding: 0 24px;
+ padding: 0 12px;
  display: flex;
  align-items: center;
  justify-content: space-between;
  border-bottom: 1px solid #334155;
+ flex-wrap: wrap;
+ gap: 0;
  }
 
  .nav-tabs {
  display: flex;
- gap: 4px;
+ gap: 2px;
+ overflow-x: auto;
+ -webkit-overflow-scrolling: touch;
+ scrollbar-width: none;
+ flex: 1;
  }
+
+ .nav-tabs::-webkit-scrollbar { display: none; }
+ .nav-tab { flex-shrink: 0; }
 
  .nav-tab {
  background: none;
@@ -757,7 +766,7 @@
  }
 
  
- /* ACCESSIBILITY & MOBILE RESPONSIVE SITE SUPERVISOR STYLES */
+ /* ACCESSIBILITY */
  @media (prefers-contrast: more) {
  .pill-high { background: #7f1d1d !important; color: #ffffff !important; font-weight: 800 !important; border: 2px solid #ffffff !important; }
  .pill-med { background: #78350f !important; color: #ffffff !important; font-weight: 800 !important; border: 2px solid #ffffff !important; }
@@ -765,20 +774,22 @@
  .nav-tab.active { border-bottom-width: 4px !important; }
  }
 
- @media (max-width: 640px) {
+ @media (max-width: 768px) {
  .app-header { flex-direction: column; height: auto; padding: 12px 16px; gap: 10px; align-items: stretch; }
  .brand-group { justify-content: space-between; width: 100%; }
  .header-actions { justify-content: space-between; width: 100%; flex-wrap: wrap; }
- .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; top: auto; z-index: 999; background: #0f172a; border-top: 1px solid #1e293b; padding: 6px 8px; box-shadow: 0 -4px 12px rgba(0,0,0,0.3); }
- .nav-tabs { justify-content: space-around; width: 100%; overflow-x: auto; gap: 2px; }
- .nav-tab { padding: 8px 6px; font-size: 11px; flex-direction: column; gap: 2px; text-align: center; border-bottom: none; border-top: 3px solid transparent; }
- .nav-tab.active { border-bottom: none; border-top-color: var(--brand-primary); background: rgba(37, 99, 235, 0.15); border-radius: 6px; }
- .app-main { padding: 12px 12px 80px 12px; }
+ .nav-tab { padding: 8px 8px; font-size: 11.5px; }
+ .app-main { padding: 12px 12px 16px 12px; }
  .kpi-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
  .section-heading { font-size: 18px !important; }
  .mobile-hide { display: none !important; }
  .mobile-show { display: block !important; }
- .btn { min-height: 44px; min-width: 44px; align-items: center; justify-content: center; } /* 44px touch target */
+ .btn { min-height: 44px; min-width: 44px; align-items: center; justify-content: center; }
+ }
+
+ @media (max-width: 480px) {
+ .kpi-grid { grid-template-columns: 1fr; }
+ .nav-tab { font-size: 11px; padding: 6px 6px; }
  }
 
  .mit-card.high { border-left-color: var(--high-text); }
@@ -979,13 +990,6 @@
  flex-shrink: 0;
  }
 
- @media (prefers-contrast: more) {
- .pill-high { background: #7f1d1d !important; color: #ffffff !important; font-weight: 800 !important; border: 2px solid #ffffff !important; }
- .pill-med { background: #78350f !important; color: #ffffff !important; font-weight: 800 !important; border: 2px solid #ffffff !important; }
- .pill-low { background: #14532d !important; color: #ffffff !important; font-weight: 800 !important; border: 2px solid #ffffff !important; }
- .nav-tab.active { border-bottom-width: 4px !important; }
- }
-
  /* TABLET & MEDIUM BREAKPOINT (max-width: 1024px) */
  @media (max-width: 1024px) {
  .nav-bar { padding: 8px 16px; }
@@ -1071,22 +1075,19 @@
  <button class="nav-tab active" role="tab" aria-selected="true" aria-controls="view-overview" onclick="switchView('overview', this)">
  <span>Executive Overview</span>
  </button>
- <button class="nav-tab" role="tab" aria-selected="false" aria-controls="view-controltower" id="tab-nav-controltower" onclick="switchView('controltower', this)">
- <span>Advanced Analytics</span>
- <span class="pill pill-low" style="background:#475569; color:#ffffff; font-size:9px; padding:1px 5px; margin-left:4px; font-weight:700;">EXPLORATORY</span>
- </button>
- <button class="nav-tab" role="tab" aria-selected="false" aria-controls="view-siteview" onclick="switchView('siteview', this)">
- <span>Site View</span>
- </button>
  <button class="nav-tab" role="tab" aria-selected="false" aria-controls="view-import" id="tab-nav-import" onclick="switchView('import', this)">
  <span>Import & Predict</span>
- <span class="tab-badge" id="badge-imported-count" style="background:#0284c7; color:#ffffff; display:none;">0</span>
+ <span class="tab-badge" id="badge-imported-count" style="background:#0284c7; color:#ffffff; display:none;" title="Imported tasks">Imported: 0</span>
+ <span class="tab-badge" id="badge-predicted-high-count" style="background:#dc2626; color:#ffffff; display:none;" title="Predicted high-risk tasks">High: 0</span>
  </button>
  <button class="nav-tab" role="tab" aria-selected="false" aria-controls="view-tasks" onclick="switchView('tasks', this)">
  <span>Task Risk Matrix</span>
  </button>
  <button class="nav-tab" role="tab" aria-selected="false" aria-controls="view-mitigation" onclick="switchView('mitigation', this)">
  <span>Mitigation Planner</span>
+ </button>
+ <button class="nav-tab" role="tab" aria-selected="false" aria-controls="view-controltower" id="tab-nav-controltower" onclick="switchView('controltower', this)" style="color:#94a3b8;">
+ <span>Optional visual tools</span>
  </button>
  </div>
 
@@ -1114,27 +1115,27 @@
  </div>
 
 
- <!-- VIEW 0: AI DIGITAL CONTROL TOWER & 3D SITE TWIN VISUALIZER (WRENCH SOLUTIONS INSPIRED) -->
+ <!-- OPTIONAL: visual exploration tools; these do not drive predictions or mitigation decisions. -->
  <section id="view-controltower" class="tab-view">
  <div class="section-title-bar" style="background: linear-gradient(135deg, #070d19 0%, #0f172a 100%); padding: 20px 24px; border-radius: 16px; margin-bottom: 20px; border: 1px solid rgba(56, 189, 248, 0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.25);">
  <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; width: 100%;">
  <div>
  <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
  <span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(56, 189, 248, 0.3); font-family: 'JetBrains Mono', monospace;">INTERTECH AI ENGINE</span>
- <span style="background: rgba(52, 211, 153, 0.15); color: #34d399; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(52, 211, 153, 0.3);">DIGITAL CONTROL TOWER LIVE</span>
+ <span style="background: rgba(148,163,184,.15); color: #cbd5e1; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(148,163,184,.3);">OPTIONAL / DISPLAY ONLY</span>
  </div>
- <h1 class="section-heading" style="color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 24px; font-weight: 800; letter-spacing: -0.02em;">Advanced Analytics: Exploratory Site Visualizer</h1>
- <p class="section-subtext" style="color: #94a3b8; font-size: 13px; margin-top: 2px;">A visual exploration of imported risk scores. This module is not used to generate model predictions or mitigation decisions.</p>
+ <h1 class="section-heading" style="color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 24px; font-weight: 800; letter-spacing: -0.02em;">Optional visual exploration</h1>
+ <p class="section-subtext" style="color: #94a3b8; font-size: 13px; margin-top: 2px;">Explore imported risk scores visually. Use Import & Predict, Task Risk Matrix, and Mitigation Planner for the working decision workflow.</p>
  </div>
  <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
  <button class="btn btn-outline" style="border-color: rgba(255,255,255,0.2); color: #e2e8f0; font-size: 12px; font-weight: 600;" onclick="toggleControlTowerClashMode()">
- <span id="ct-clash-mode-btn-text">Clash Heatmap: ON</span>
+ <span id="ct-clash-mode-btn-text">Visual heatmap: ON</span>
  </button>
  <button class="btn btn-outline" style="border-color: rgba(52, 211, 153, 0.4); color: #34d399; font-size: 12px; font-weight: 600;" onclick="loadTestDataIntoControlTower()">
- <span>View Test Data in 3D Twin</span>
+ <span>View sample data</span>
  </button>
  <button class="btn btn-primary" style="background: linear-gradient(135deg, #0284c7, #0369a1); border-color: #0284c7; font-size: 12px; font-weight: 700;" onclick="rotate3DSiteTwin()">
- <span>Rotate 3D Site View</span>
+ <span>Rotate visual</span>
  </button>
  </div>
  </div>
@@ -1228,8 +1229,8 @@
  <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 16px; padding: 20px; position: relative; overflow: hidden; min-height: 440px; display: flex; flex-direction: column;">
  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; z-index: 2;">
  <div>
- <h3 style="font-size: 15px; font-weight: 700; color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif;">Interactive 3D Digital Twin & Site Structural Visualizer</h3>
- <p style="font-size: 12px; color: #94a3b8; margin-top: 2px;">Click discipline module to inspect clash reports, active delay risk, and sub-contractors</p>
+ <h3 style="font-size: 15px; font-weight: 700; color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif;">Optional 3D risk visual</h3>
+ <p style="font-size: 12px; color: #94a3b8; margin-top: 2px;">A display-only view of discipline-level risk. It does not create predictions, clash findings, or actions.</p>
  </div>
  <div style="display: flex; gap: 6px;">
  <span class="pill" style="background: rgba(248, 113, 113, 0.2); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.4); font-size: 10px;">High Risk Module</span>
@@ -1280,8 +1281,8 @@
 
  <div style="display: flex; flex-direction: column; gap: 10px; font-size: 12px;">
  <div style="background: rgba(2, 132, 199, 0.15); border: 1px solid rgba(56, 189, 248, 0.25); padding: 10px 12px; border-radius: 8px;">
- <div style="color: #38bdf8; font-weight: 700; margin-bottom: 2px;">Design Clash Detected</div>
- <div style="color: #cbd5e1; font-size: 11px;">Structural vs MEP piping clearance clash flagged at Block B.</div>
+ <div style="color: #38bdf8; font-weight: 700; margin-bottom: 2px;">Visual risk signal</div>
+ <div style="color: #cbd5e1; font-size: 11px;">A display cue derived from task risk data; it is not a design-clash detection result.</div>
  </div>
 
  <div style="background: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.25); padding: 10px 12px; border-radius: 8px;">
@@ -1319,6 +1320,15 @@
  <div style="background:linear-gradient(135deg,#0f172a,#172554); border:1px solid #334155; border-radius:16px; padding:22px 24px; margin-bottom:20px; color:#fff; box-shadow:0 10px 26px rgba(15,23,42,.16);">
   <div style="display:flex; justify-content:space-between; gap:14px; align-items:flex-start; flex-wrap:wrap;"><div><div style="font-size:11px; font-weight:800; letter-spacing:.08em; color:#7dd3fc;">LIVE DECISION SNAPSHOT</div><div style="font-size:22px; font-weight:800; margin-top:4px;">Model Engine: <span id="decision-model">Predictive AI Engine</span></div><div style="font-size:13px; color:#cbd5e1; margin-top:6px;">DATA SOURCE: SIMULATED PROJECT-MANAGEMENT DATA — demonstration only; not a forecast for a real project.</div></div><button class="btn btn-primary" onclick="switchView('import', document.getElementById('tab-nav-import'))" style="background:#0284c7; border-color:#0284c7;">Try Demo Dataset</button></div>
   <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(185px,1fr)); gap:12px; margin-top:18px;"><div style="background:rgba(255,255,255,.08); border-radius:10px; padding:13px;"><div style="font-size:11px; color:#94a3b8;">PREDICTION</div><strong id="decision-at-risk" style="font-size:20px;">123 / 1,000 at risk</strong></div><div style="background:rgba(255,255,255,.08); border-radius:10px; padding:13px;"><div style="font-size:11px; color:#94a3b8;">OVERALL RISK</div><strong id="decision-risk" style="font-size:20px; color:#fca5a5;">HIGH</strong></div><div style="background:rgba(255,255,255,.08); border-radius:10px; padding:13px;"><div style="font-size:11px; color:#94a3b8;">RECOMMENDED ACTION</div><strong style="font-size:15px;">Notify PM + reallocate resource</strong></div><div style="background:rgba(255,255,255,.08); border-radius:10px; padding:13px;"><div style="font-size:11px; color:#94a3b8;">TOP RISK SIGNALS</div><strong id="decision-drivers" style="font-size:15px;">Workload, site risk, duration</strong></div></div>
+ </div>
+
+ <div class="card" style="margin-bottom:20px; border-left:4px solid #0284c7;">
+  <div style="font-size:11px; font-weight:800; letter-spacing:.08em; color:#0369a1;">HOW TO USE THIS DASHBOARD</div>
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-top:12px;">
+   <div><strong style="color:#0f172a;">1. Import & predict</strong><p style="font-size:12px; color:var(--text-subtle); margin-top:3px;">Upload project tasks or use the demo dataset.</p></div>
+   <div><strong style="color:#0f172a;">2. Review risk</strong><p style="font-size:12px; color:var(--text-subtle); margin-top:3px;">Focus on high-risk tasks and their drivers.</p></div>
+   <div><strong style="color:#0f172a;">3. Take action</strong><p style="font-size:12px; color:var(--text-subtle); margin-top:3px;">Use the mitigation plan to assign the next step.</p></div>
+  </div>
  </div>
 
  <div class="grid-2col" style="margin-bottom:20px;"><div class="card"><h2 class="card-title">Prediction → Action Pipeline</h2><p style="font-size:13px; color:var(--text-subtle); margin:10px 0; line-height:1.8;">Project data → preprocessing → predictive model → delay probability → risk classification → mitigation recommendation</p><p style="font-size:12px; color:#0369a1; font-weight:700;">Probabilities are classified as Low: 0–39%, Medium: 40–69%, High: ≥70%.</p></div><div class="card"><h2 class="card-title">Risk → Action Policy</h2><div style="font-size:13px; line-height:1.9;"><div><span class="pill pill-low">LOW &lt;40%</span> Normal monitoring</div><div><span class="pill pill-med">MEDIUM 40–69%</span> Weekly status meeting</div><div><span class="pill pill-high">HIGH ≥70%</span> Notify PM + reallocate one available employee</div></div><p style="font-size:11px; color:var(--text-subtle); margin-top:10px;">Thresholds are configurable in Sandbox mode; the production baseline is preserved.</p></div></div>
@@ -1529,8 +1539,10 @@
 </div></div>
  </div>
  
- <!-- ROI & COST-AVOIDANCE IMPACT CALCULATOR PANEL -->
- <div class="card" style="margin-top:24px; border:1px solid #cbd5e1; box-shadow:var(--shadow-md);">
+ <!-- OPTIONAL ROI & COST-AVOIDANCE IMPACT CALCULATOR PANEL -->
+ <details class="card" style="margin-top:24px; border:1px solid #cbd5e1; box-shadow:var(--shadow-md);">
+ <summary style="cursor:pointer; font-weight:800; color:var(--text-main); list-style:none; display:flex; align-items:center; gap:10px;"><span style="background:#f1f5f9; color:#475569; font-weight:700; font-size:10px; padding:2px 8px; border-radius:4px; text-transform:uppercase;">OPTIONAL</span> Illustrative ROI scenario <span style="font-size:12px; font-weight:500; color:var(--text-subtle);">Not part of the prediction workflow</span></summary>
+ <div style="margin-top:18px;">
  <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:14px; margin-bottom:18px;">
  <div>
  <span style="background:#f1f5f9; color:#475569; font-weight:700; font-size:10px; padding:2px 8px; border-radius:4px; text-transform:uppercase;">ROADMAP / ILLUSTRATIVE</span>
@@ -1586,6 +1598,8 @@
  </div>
  </div>
  </div>
+ </div>
+ </details>
 
 
  </section>
@@ -3880,6 +3894,28 @@
  } catch (e) {}
  }
 
+ function rootCauseNeedsSiteInspection(task) {
+ const rootCause = String(task?.root_cause || '').trim().toLowerCase();
+ return !rootCause || ['not detected', 'not recorded', 'unknown', 'n/a', 'na', 'pre-execution'].includes(rootCause);
+ }
+
+ function rootCauseStatusLabel(task) {
+ return rootCauseNeedsSiteInspection(task) ? 'Not detected — site inspection required' : task.root_cause;
+ }
+
+ function siteInspectionMeetingAction(task, compact = false) {
+ const spacing = compact ? 'gap:3px;' : 'gap:6px;';
+ const padding = compact ? '3px 8px' : '6px 10px';
+ const fontSize = compact ? '11px' : '12px';
+ return `
+ <div style="display:flex; flex-direction:column; align-items:flex-start; ${spacing}">
+ <span style="font-size:${fontSize}; font-weight:700; color:#b45309;">ROOT CAUSE NOT DETECTED</span>
+ <button type="button" class="btn" onclick="event.stopPropagation(); sendScheduleMeetingAlert('${task.id}')" style="background:#b45309; border:none; color:#fff; padding:${padding}; font-size:${fontSize}; font-weight:700; border-radius:6px; cursor:pointer;">
+ Schedule Site Inspection Meeting
+ </button>
+ </div>`;
+ }
+
  function renderTasksTable() {
  const tbody = document.getElementById("task-table-body");
  if (!tbody) return;
@@ -3892,6 +3928,10 @@
 
  const riskPill = t.cat === 'HIGH' ? 'pill-high' : (t.cat === 'MEDIUM' ? 'pill-med' : 'pill-low');
  const scoreColor = t.score > 60 ? 'danger' : (t.score > 35 ? 'warning' : '');
+ const needsInspectionMeeting = t.cat === 'HIGH' && rootCauseNeedsSiteInspection(t);
+ const taskAction = needsInspectionMeeting
+ ? siteInspectionMeetingAction(t)
+ : '<button class="btn btn-outline" style="padding:2px 8px; font-size:11px;">Inspect</button>';
 
  tr.innerHTML = `
  <td><span class="task-id-code">${t.id}</span></td>
@@ -3909,8 +3949,8 @@
  <span style="font-family:'JetBrains Mono', monospace; font-weight:600;">${t.score ? t.score.toFixed(0) : 0}%</span>
  </div>
  </td>
- <td style="color:var(--text-subtle);">${t.root_cause || 'Pre-execution'}</td>
- <td><button class="btn btn-outline" style="padding:2px 8px; font-size:11px;">Inspect</button></td>
+ <td style="color:${needsInspectionMeeting ? '#b45309' : 'var(--text-subtle)'}; font-weight:${needsInspectionMeeting ? '700' : '400'};">${rootCauseStatusLabel(t)}</td>
+ <td>${taskAction}</td>
  `;
  tbody.appendChild(tr);
  });
@@ -3958,6 +3998,7 @@
  highRiskTasks.forEach(t => {
  const candidates = getReallocCandidates(t, empMap);
  const reallocHTML = buildReallocHTML(candidates, 3);
+ const inspectionMeeting = rootCauseNeedsSiteInspection(t) ? siteInspectionMeetingAction(t, true) : '';
 
  const card = document.createElement("div");
  card.className = "mit-card high";
@@ -3972,6 +4013,7 @@
  <div class="mit-action-box" style="padding-bottom:${reallocHTML ? '6px' : ''}">
  <span style="font-weight:700;">ACTION: NOTIFY PM + REALLOCATE RESOURCE</span>
  ${reallocHTML}
+ ${inspectionMeeting}
  </div>
  <button class="btn btn-outline" style="width:100%; justify-content:center;" onclick="openDrawerById('${t.id}')">Inspect Task & Plan &rarr;</button>
  `;
@@ -3993,6 +4035,7 @@
  openTasks.filter(t => t.cat === 'HIGH').slice(0, 6).forEach(t => {
  const candidates = getReallocCandidates(t, empMap);
  const reallocHTML = buildReallocHTML(candidates, 3);
+ const inspectionMeeting = rootCauseNeedsSiteInspection(t) ? siteInspectionMeetingAction(t, true) : '';
 
  const assignedBadge = t.assigned_to
  ? `<span style="font-size:11px; color:var(--text-subtle); margin-left:6px;">Assigned: <strong style="color:var(--text-main);">${t.assigned_to}</strong></span>`
@@ -4012,7 +4055,9 @@
  <div class="mit-action-box">
  <div style="font-weight:700; margin-bottom:${reallocHTML ? '2px' : '0'};">PM Alert Issued</div>
  ${reallocHTML}
+ ${inspectionMeeting}
  </div>
+
  `;
  highList.appendChild(div);
  });
@@ -4142,7 +4187,7 @@
  function toggleControlTowerClashMode() {
  ctClashMode = !ctClashMode;
  const btnText = document.getElementById('ct-clash-mode-btn-text');
- if (btnText) btnText.innerText = `Clash Heatmap: ${ctClashMode ? 'ON' : 'OFF'}`;
+ if (btnText) btnText.innerText = `Visual heatmap: ${ctClashMode ? 'ON' : 'OFF'}`;
  draw3DSiteTwinCanvas();
  }
 
@@ -4552,9 +4597,11 @@
  const empMap = (globalImportedData && globalImportedData.employeeMap) ? globalImportedData.employeeMap : (globalData && globalData.employeeMap ? globalData.employeeMap : null);
  const candidates = getReallocCandidates(t, empMap);
  const reallocHTML = buildReallocHTML(candidates, 5);
+ const inspectionMeeting = rootCauseNeedsSiteInspection(t) ? siteInspectionMeetingAction(t) : '';
  drawerActionEl.innerHTML = `
 <div style="font-weight:700; color:#dc2626; margin-bottom:6px;">NOTIFY PM + REALLOCATE RESOURCE</div>
-${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No available reallocation candidates.</div>'}`;
+${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No available reallocation candidates.</div>'}
+${inspectionMeeting}`;
  } else if (t.cat === 'MEDIUM') {
  drawerActionEl.innerText = 'SCHEDULE STATUS MEETING + DAILY UPDATES';
  } else {
@@ -4641,19 +4688,6 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
  a.href = URL.createObjectURL(blob);
  a.download = "InterTech_PRJ001_Task_Predictions.csv";
  a.click();
- }
-
- function sendScheduleMeetingAlert(taskId) {
- // SMTP Rate Limiting Guardrail: Max 3 per 60s
- const now = Date.now();
- window.SMTP_DISPATCH_HISTORY = (window.SMTP_DISPATCH_HISTORY || []).filter(t => (now - t) < 60000);
- if (window.SMTP_DISPATCH_HISTORY.length >= 3) {
- alert(' SMTP Rate Limit Exceeded: Maximum 3 email dispatches per 60 seconds allowed to prevent mail server flooding.');
- return;
- }
- window.SMTP_DISPATCH_HISTORY.push(now);
- logAIUsage('SMTP_ALERT', 'Meeting alert: ' + taskId, 'SMTP Meeting Guardrail');
- alert('SMTP Meeting alert dispatched to Project Manager for task ' + taskId + ': STATUS_MEETING_SYNC');
  }
 
  async function triggerMLRetrain() {
@@ -4978,9 +5012,14 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
  document.getElementById('imp-kpi-avg-score').innerText = data.meta.avg_delay_score + '%';
 
  const badge = document.getElementById('badge-imported-count');
+ const predictedHighBadge = document.getElementById('badge-predicted-high-count');
  if (badge) {
- badge.innerText = data.meta.total_tasks;
+ badge.innerText = 'Imported: ' + data.meta.total_tasks;
  badge.style.display = 'inline-block';
+ }
+ if (predictedHighBadge) {
+ predictedHighBadge.innerText = 'High: ' + data.meta.high_risk_count;
+ predictedHighBadge.style.display = 'inline-block';
  }
 
  const discSelect = document.getElementById('imp-disc-filter');
@@ -5048,12 +5087,14 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
 
  let actionHTML = `<span style="font-size:12px; font-weight:600; color:var(--text-main);">${t.action}</span>`;
  if (t.cat === 'HIGH') {
+ const needsInspectionMeeting = rootCauseNeedsSiteInspection(t);
  actionHTML = `
  <div style="display:flex; flex-direction:column; gap:4px;">
  <span style="font-size:11px; font-weight:700; color:#dc2626;">NOTIFY_PM + REALLOCATE</span>
  <button onclick="sendSMTPAlert('${t.id}')" class="btn btn-primary" style="background:#dc2626; border-color:#dc2626; padding:3px 8px; font-size:11px; width:fit-content;">
  <span>Notify PM</span>
  </button>
+ ${needsInspectionMeeting ? siteInspectionMeetingAction(t, true) : ''}
  </div>`;
  } else if (t.cat === 'MEDIUM') {
  actionHTML = `
@@ -5536,6 +5577,7 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
 
  async function sendSMTPAlert(taskId) {
  pendingSMTPTaskId = taskId || null;
+ window._pendingMeetingTasks = null;
  const allHighRisk = (globalImportedData && globalImportedData.tasks ? globalImportedData.tasks : (globalData ? globalData.tasks : [])).filter(t => t.cat === 'HIGH');
  let targetTasks = allHighRisk;
  if (taskId) {
@@ -5567,18 +5609,28 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
  }
 
  async function sendScheduleMeetingAlert(taskId) {
+ // SMTP rate-limiting guardrail: max three meeting alerts per minute.
+ const now = Date.now();
+ window.SMTP_DISPATCH_HISTORY = (window.SMTP_DISPATCH_HISTORY || []).filter(timestamp => (now - timestamp) < 60000);
+ if (window.SMTP_DISPATCH_HISTORY.length >= 3) {
+ alert('SMTP rate limit exceeded: wait one minute before sending another meeting alert.');
+ return;
+ }
+ window.SMTP_DISPATCH_HISTORY.push(now);
+
  // Find the task from imported or global data
  const allTasks = (globalImportedData && globalImportedData.tasks ? globalImportedData.tasks : (globalData ? globalData.tasks : []));
  let targetTasks = taskId ? allTasks.filter(t => t.id === taskId) : allTasks.filter(t => t.cat === 'MEDIUM');
 
  if (!targetTasks.length) {
- alert('No Medium-Risk tasks found for scheduling.');
+ alert('No tasks found for meeting scheduling.');
  return;
  }
 
  // Build a SMTP email specifically for SCHEDULE_STATUS_MEETING
  const t = targetTasks[0];
  pendingSMTPTaskId = taskId || null;
+ window._pendingMeetingTasks = null;
 
  let savedConfig = {};
  try { savedConfig = JSON.parse(localStorage.getItem('intertech_smtp_config') || '{}'); } catch (e) {}
@@ -5586,8 +5638,9 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
  // Inject meeting-specific override into task list
  const meetingTasks = targetTasks.map(task => ({
  ...task,
- action: 'SCHEDULE_STATUS_MEETING',
- _meeting_override: true
+ action: rootCauseNeedsSiteInspection(task) ? 'SCHEDULE_STATUS_MEETING + SITE_INSPECTION' : 'SCHEDULE_STATUS_MEETING',
+ _meeting_override: true,
+ _site_inspection_required: rootCauseNeedsSiteInspection(task)
  }));
 
  if (savedConfig.user && savedConfig.pass) {
@@ -5614,19 +5667,21 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
  tasks: meetingTasks,
  recipient: recipient,
  smtp_config: smtpConfig,
- alert_type: 'schedule_meeting'
+ alert_type: meetingTasks.some(task => task._site_inspection_required) ? 'site_inspection_meeting' : 'schedule_meeting'
  })
  });
  const resData = await resp.json();
  if (resData.success && resData.sent_live) {
- alert(`\u2705 Status Meeting Alert Sent!\n\nA scheduling notification was dispatched to ${recipient}.\nTasks: ${meetingTasks.map(t => t.id).join(', ')}`);
+ const siteInspectionRequired = meetingTasks.some(task => task._site_inspection_required);
+ alert(`\u2705 ${siteInspectionRequired ? 'Site Inspection Meeting' : 'Status Meeting'} Alert Sent!\n\nA scheduling notification was dispatched to ${recipient}.\nTasks: ${meetingTasks.map(t => t.id).join(', ')}`);
  } else if (resData.requires_credentials) {
+ window._pendingMeetingTasks = meetingTasks;
  openSMTPModal();
  } else {
  alert(`\u26a0\ufe0f Meeting Alert Status:\n\n${resData.message || 'Alert processed.'}\nRecipient: ${recipient}\nTasks: ${meetingTasks.map(t => t.id).join(', ')}`);
  }
  } catch (e) {
- alert(`Status Meeting Alert dispatched (simulated) for ${meetingTasks.length} Medium-Risk task(s).\nSMTP error: ${e.message}`);
+ alert(`Status Meeting Alert dispatched (simulated) for ${meetingTasks.length} task(s).\nSMTP error: ${e.message}`);
  }
  }
 
@@ -5657,6 +5712,14 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
  localStorage.setItem('intertech_smtp_config', JSON.stringify(smtpConfig));
  } catch (e) {}
  closeSMTPModal();
+
+ if (window._pendingMeetingTasks && window._pendingMeetingTasks.length) {
+ const meetingTasks = window._pendingMeetingTasks;
+ window._pendingMeetingTasks = null;
+ pendingSMTPTaskId = null;
+ await executeScheduleMeetingSMTP(meetingTasks, smtpConfig);
+ return;
+ }
 
  const allHighRisk = (globalImportedData && globalImportedData.tasks ? globalImportedData.tasks : (globalData ? globalData.tasks : [])).filter(t => t.cat === 'HIGH');
  let targetTasks = allHighRisk;
