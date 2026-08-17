@@ -23,18 +23,6 @@ import numpy as np
 import os, sys, json, warnings
 warnings.filterwarnings("ignore")
 
-import subprocess
-def ensure(pkg, import_name=None):
- import_name = import_name or pkg
- try:
- __import__(import_name)
- except ImportError:
- print(f"[*] Installing {pkg}...")
- subprocess.run([sys.executable, "-m", "pip", "install", pkg, "-q"], check=True)
-
-ensure("xgboost")
-ensure("shap")
-
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, StackingClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import StratifiedKFold, LeaveOneOut
@@ -273,6 +261,48 @@ print(f" F1={champion_metrics['f1']}% AUC={champion_metrics['auc_roc']}% "
 print("=" * 65 + "\n")
 
 # ---------------------------------------------------------------------------
+# 6b. CHRONOLOGICAL HOLDOUT (future-data validation, no random mixing)
+# ---------------------------------------------------------------------------
+# Sort by the task creation date and reserve the newest 20% of closed records
+# as a future holdout. Discipline history is learned only from older records.
+chron_df = train_df.dropna(subset=["Created"]).sort_values("Created").reset_index(drop=True)
+chron_cut = int(len(chron_df) * 0.8)
+temporal_validation = {"available": False}
+if chron_cut >= 20 and len(chron_df) - chron_cut >= 10:
+ chron_fit = chron_df.iloc[:chron_cut]
+ chron_test = chron_df.iloc[chron_cut:]
+ if chron_fit["is_delayed"].nunique() == 2 and chron_test["is_delayed"].nunique() == 2:
+  rate_by_discipline = chron_fit.groupby("ProjectDiscipline")["is_delayed"].mean()
+  fallback_rate = float(chron_fit["is_delayed"].mean())
+  X_chron_fit = chron_fit[FEATURES].fillna(0).copy()
+  X_chron_test = chron_test[FEATURES].fillna(0).copy()
+  X_chron_fit.loc[:, "disc_hist_delay_rate"] = chron_fit["ProjectDiscipline"].map(rate_by_discipline).fillna(fallback_rate).to_numpy()
+  X_chron_test.loc[:, "disc_hist_delay_rate"] = chron_test["ProjectDiscipline"].map(rate_by_discipline).fillna(fallback_rate).to_numpy()
+  y_chron_fit = chron_fit["is_delayed"].to_numpy()
+  y_chron_test = chron_test["is_delayed"].to_numpy()
+  chronological_model = clone(models[champion_name])
+  chronological_model.fit(X_chron_fit, y_chron_fit)
+  chron_pred = chronological_model.predict(X_chron_test)
+  chron_prob = chronological_model.predict_proba(X_chron_test)[:, 1]
+  temporal_validation = {
+   "available": True,
+   "cutoff_date": chron_test["Created"].iloc[0].strftime("%Y-%m-%d"),
+   "train_records": int(len(chron_fit)),
+   "test_records": int(len(chron_test)),
+   "accuracy": round(accuracy_score(y_chron_test, chron_pred) * 100, 1),
+   "f1": round(f1_score(y_chron_test, chron_pred, zero_division=0) * 100, 1),
+   "precision": round(precision_score(y_chron_test, chron_pred, zero_division=0) * 100, 1),
+   "recall": round(recall_score(y_chron_test, chron_pred, zero_division=0) * 100, 1),
+   "auc_roc": round(roc_auc_score(y_chron_test, chron_prob) * 100, 1),
+   "mcc": round(matthews_corrcoef(y_chron_test, chron_pred) * 100, 1),
+   "baseline_accuracy": round(accuracy_score(y_chron_test, np.zeros_like(y_chron_test)) * 100, 1),
+   "baseline_name": "Always predict on-time",
+  }
+  print(f"[TEMPORAL HOLDOUT] Newest {len(chron_test)} records | Accuracy {temporal_validation['accuracy']}% | F1 {temporal_validation['f1']}% | Baseline {temporal_validation['baseline_accuracy']}%")
+else:
+ print("[TEMPORAL HOLDOUT] Not available: insufficient dated closed records with both classes.")
+
+# ---------------------------------------------------------------------------
 # 7. TRAIN FINAL CALIBRATED MODEL
 # ---------------------------------------------------------------------------
 base_champion = models[champion_name]
@@ -471,6 +501,7 @@ dashboard_payload = {
  for name, res in loo_results.items()
  },
  "champion_metrics": champion_metrics,
+ "temporal_validation": temporal_validation,
  },
  "disc_stats": disc_stats,
  "root_causes": rc_counts,

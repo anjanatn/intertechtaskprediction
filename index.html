@@ -847,8 +847,8 @@
  <span>Executive Overview</span>
  </button>
  <button class="nav-tab" role="tab" aria-selected="false" aria-controls="view-controltower" id="tab-nav-controltower" onclick="switchView('controltower', this)">
- <span>AI Control Tower & 3D Twin</span>
- <span class="pill pill-low" style="background:#0284c7; color:#ffffff; font-size:9px; padding:1px 5px; margin-left:4px; font-weight:700;">3D SITE</span>
+ <span>Advanced Analytics</span>
+ <span class="pill pill-low" style="background:#475569; color:#ffffff; font-size:9px; padding:1px 5px; margin-left:4px; font-weight:700;">EXPLORATORY</span>
  </button>
  <button class="nav-tab" role="tab" aria-selected="false" aria-controls="view-siteview" onclick="switchView('siteview', this)">
  <span>Site View</span>
@@ -903,8 +903,8 @@
  <span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(56, 189, 248, 0.3); font-family: 'JetBrains Mono', monospace;">INTERTECH AI ENGINE</span>
  <span style="background: rgba(52, 211, 153, 0.15); color: #34d399; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(52, 211, 153, 0.3);">DIGITAL CONTROL TOWER LIVE</span>
  </div>
- <h1 class="section-heading" style="color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 24px; font-weight: 800; letter-spacing: -0.02em;">AI Digital Control Tower & 3D Site Twin Visualizer</h1>
- <p class="section-subtext" style="color: #94a3b8; font-size: 13px; margin-top: 2px;">Real-time technical review, 3D site structure visualization, clash detection & proactive delay forecasting</p>
+ <h1 class="section-heading" style="color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 24px; font-weight: 800; letter-spacing: -0.02em;">Advanced Analytics: Exploratory Site Visualizer</h1>
+ <p class="section-subtext" style="color: #94a3b8; font-size: 13px; margin-top: 2px;">A visual exploration of imported risk scores. This module is not used to generate model predictions or mitigation decisions.</p>
  </div>
  <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
  <button class="btn btn-outline" style="border-color: rgba(255,255,255,0.2); color: #e2e8f0; font-size: 12px; font-weight: 600;" onclick="toggleControlTowerClashMode()">
@@ -944,8 +944,8 @@
  <!-- CARD 2: AI ENGINEERING REVIEW -->
  <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 14px; padding: 18px; backdrop-filter: blur(10px);">
  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
- <span style="font-size: 13px; font-weight: 700; color: #38bdf8; font-family: 'Plus Jakarta Sans', sans-serif;">AI Engineering Review</span>
- <span style="font-size: 11px; background: rgba(52, 211, 153, 0.15); color: #34d399; padding: 2px 6px; border-radius: 4px; font-weight: 700;">Verified</span>
+ <span style="font-size: 13px; font-weight: 700; color: #38bdf8; font-family: 'Plus Jakarta Sans', sans-serif;">Exploratory Visual Indicators</span>
+ <span style="font-size: 11px; background: rgba(148,163,184,.15); color: #cbd5e1; padding: 2px 6px; border-radius: 4px; font-weight: 700;">DISPLAY ONLY</span>
  </div>
  <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12px;">
  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 4px;">
@@ -953,7 +953,7 @@
  <strong style="color: #fbbf24; font-size: 14px;" id="ct-design-issues">23</strong>
  </div>
  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 4px;">
- <span style="color: #94a3b8;">Code Compliance</span>
+ <span style="color: #94a3b8;">Visual Coverage</span>
  <strong style="color: #34d399; font-size: 14px;" id="ct-code-compliance">96%</strong>
  </div>
  <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -1102,6 +1102,8 @@
  </div>
 
  <div class="grid-2col" style="margin-bottom:20px;"><div class="card"><h2 class="card-title">Prediction → Action Pipeline</h2><p style="font-size:13px; color:var(--text-subtle); margin:10px 0; line-height:1.8;">Project data → preprocessing → calibrated Random Forest → delay probability → risk classification → mitigation recommendation</p><p style="font-size:12px; color:#0369a1; font-weight:700;">Probabilities are classified as Low: 0–39%, Medium: 40–69%, High: ≥70%.</p></div><div class="card"><h2 class="card-title">Risk → Action Policy</h2><div style="font-size:13px; line-height:1.9;"><div><span class="pill pill-low">LOW &lt;40%</span> Normal monitoring</div><div><span class="pill pill-med">MEDIUM 40–69%</span> Weekly status meeting</div><div><span class="pill pill-high">HIGH ≥70%</span> Notify PM + reallocate one available employee</div></div><p style="font-size:11px; color:var(--text-subtle); margin-top:10px;">Thresholds are configurable in Sandbox mode; the production baseline is preserved.</p></div></div>
+
+ <div class="grid-2col" style="margin-bottom:20px;"><div class="card"><h2 class="card-title">Simulated Dataset Card</h2><p style="font-size:13px; color:var(--text-subtle); line-height:1.6;">The 1,000-task demonstration dataset was synthetically generated to resemble project-management records. It includes task dates, discipline, priority, site risk, planned hours, resource assignment, status, and an observed delay outcome. The target is <strong>Delay &gt; 0</strong>.</p><p style="font-size:11px; color:#64748b; margin-top:9px;">Root cause, overdue flags, actual dates, and delay are excluded from prediction features to prevent post-outcome leakage.</p></div><div class="card"><h2 class="card-title">Known Limitations</h2><ul style="font-size:13px; color:var(--text-subtle); line-height:1.65; padding-left:18px;"><li>Data is simulated; no external real-world validation has been completed.</li><li>Predictions depend on a limited set of project features and historical patterns.</li><li>Weather, supplier failure, and scope changes may create risks the model cannot anticipate.</li><li>Use results to support—not replace—project-manager judgment.</li></ul></div></div>
 
  <!-- KPI METRIC CARDS -->
  <div class="kpi-grid">
@@ -2645,6 +2647,7 @@
 </tr></tbody>
  </table>
  </div>
+ <div id="temporal-validation-summary" style="margin-top:16px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; padding:14px 16px; font-size:13px; color:#334155;"><strong>Temporal holdout & baseline:</strong> The newest dated records are held out from training. Metrics are refreshed when the training pipeline runs.</div>
  <div style="margin-top:16px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:10px; padding:14px 16px; font-size:13px; color:#334155; line-height:1.55;"><strong style="color:#0f3b74;">Selected model: Calibrated Random Forest.</strong> Logistic Regression has a slightly higher accuracy and ROC-AUC in this evaluation. Random Forest is selected for the operational workflow because it has the strongest delayed-class recall (72.4%), supports the implemented TreeExplainer feature explanations, and captures non-linear feature interactions. Recall is prioritised because failing to flag a genuinely delayed task can prevent an early PM intervention.</div>
  </div>
 
@@ -2872,37 +2875,37 @@
  </div>
  </div>
 
- <!-- Compliance Table -->
+ <!-- Implementation traceability (evidence, not a self-assessment) -->
  <div style="padding:0 24px 24px;">
  <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; overflow:hidden;">
  <div style="padding:16px 20px; border-bottom:1px solid #e2e8f0; background:#fff;">
- <h3 style="font-size:14px; font-weight:700; color:#0f172a;">Problem Statement Compliance Report</h3>
- <p style="font-size:12px; color:#64748b; margin-top:2px;">Verification against InterTech.pdf specifications</p>
+ <h3 style="font-size:14px; font-weight:700; color:#0f172a;">Implementation Traceability</h3>
+ <p style="font-size:12px; color:#64748b; margin-top:2px;">Delivered functionality mapped to the project brief; evaluation remains with the reviewer.</p>
  </div>
  <table style="width:100%; border-collapse:collapse; font-size:12px;">
  <thead><tr style="background:#1e3a5f; color:#fff;">
  <th style="padding:10px 16px; text-align:left; font-weight:600;">Requirement</th>
  <th style="padding:10px 16px; text-align:left; font-weight:600;">Specification</th>
- <th style="padding:10px 16px; text-align:center; font-weight:600;">Status</th>
+ <th style="padding:10px 16px; text-align:center; font-weight:600;">Evidence</th>
  <th style="padding:10px 16px; text-align:left; font-weight:600;">Implementation</th>
  </tr></thead>
  <tbody>
  <tr style="border-bottom:1px solid #e2e8f0; background:#fff;">
  <td style="padding:10px 16px; font-weight:600;">Prediction Objective</td>
  <td style="padding:10px 16px; color:#475569;">Predict project delay using project management data</td>
- <td style="padding:10px 16px; text-align:center;"><span style="background:#dcfce7; color:#16a34a; padding:3px 10px; border-radius:99px; font-weight:700;">COMPLIANT</span></td>
+ <td style="padding:10px 16px; text-align:center; color:#475569;">Model output</td>
  <td style="padding:10px 16px; color:#475569;" id="pbix-compliance-model-impl">Calibrated Random Forest (72.0% Acc, 77.8% AUC)</td>
  </tr>
  <tr style="border-bottom:1px solid #e2e8f0; background:#f8fafc;">
  <td style="padding:10px 16px; font-weight:600;">Target Variable</td>
  <td style="padding:10px 16px; color:#475569;">Delay &gt; 0 = Delayed project</td>
- <td style="padding:10px 16px; text-align:center;"><span style="background:#dcfce7; color:#16a34a; padding:3px 10px; border-radius:99px; font-weight:700;">COMPLIANT</span></td>
+ <td style="padding:10px 16px; text-align:center; color:#475569;">Target transform</td>
  <td style="padding:10px 16px; color:#475569;">Binary target: 1 = Delayed, 0 = On-time</td>
  </tr>
  <tr style="border-bottom:1px solid #e2e8f0; background:#fff;">
  <td style="padding:10px 16px; font-weight:600;">High-Risk Mitigation</td>
  <td style="padding:10px 16px; color:#475569;">Notify PM + Reallocate employee from closed/medium-risk project</td>
- <td style="padding:10px 16px; text-align:center;"><span style="background:#dcfce7; color:#16a34a; padding:3px 10px; border-radius:99px; font-weight:700;">COMPLIANT</span></td>
+ <td style="padding:10px 16px; text-align:center; color:#475569;">Action workflow</td>
  <td style="padding:10px 16px; color:#475569; display:flex; align-items:center; justify-content:space-between; gap:8px;">
  <span>NOTIFY_PM + REALLOCATE_RESOURCE action tag</span>
  <button onclick="sendSMTPAlert()" style="background:#dc2626; color:#ffffff; border:none; padding:4px 10px; border-radius:4px; font-weight:700; font-size:11px; cursor:pointer; white-space:nowrap;">Notify PM Now</button>
@@ -2911,7 +2914,7 @@
  <tr style="background:#f8fafc;">
  <td style="padding:10px 16px; font-weight:600;">Medium-Risk Mitigation</td>
  <td style="padding:10px 16px; color:#475569;">Conduct meeting &amp; require daily updates</td>
- <td style="padding:10px 16px; text-align:center;"><span style="background:#dcfce7; color:#16a34a; padding:3px 10px; border-radius:99px; font-weight:700;">COMPLIANT</span></td>
+ <td style="padding:10px 16px; text-align:center; color:#475569;">Action workflow</td>
  <td style="padding:10px 16px; color:#475569;">SCHEDULE_STATUS_MEETING action tag + daily update workflow</td>
  </tr>
  </tbody>
@@ -3343,7 +3346,7 @@
  <div>
  <div style="font-size:11px; font-weight:700; color:#38bdf8; letter-spacing:0.08em; text-transform:uppercase;">Model Governance & Methodology Transparency</div>
  <h2 style="font-size:20px; font-weight:800; font-family:'Plus Jakarta Sans',sans-serif; margin-top:2px; color:#ffffff;">Model Card & Technical Validation Note</h2>
- <div style="font-size:12px; color:#94a3b8; margin-top:2px;">Calibrated Random Forest Champion · Problem Statement Compliance Specification</div>
+ <div style="font-size:12px; color:#94a3b8; margin-top:2px;">Calibrated Random Forest · Validation and scope note</div>
  </div>
  <button onclick="closeModelCardModal()" style="background:rgba(255,255,255,0.15); border:none; color:#fff; width:36px; height:36px; border-radius:8px; font-size:20px; cursor:pointer;">&times;</button>
  </div>
@@ -3351,7 +3354,7 @@
  
  <div style="margin-bottom:24px;">
  <h3 style="font-size:15px; font-weight:700; color:#0f172a; border-bottom:2px solid #e2e8f0; padding-bottom:6px; margin-bottom:10px;">1. Model Overview & Architecture</h3>
- <p>The champion delay prediction model is a <strong>Calibrated Random Forest Classifier</strong> trained on historical task records. Platt scaling calibration via <code>CalibratedClassifierCV</code> ensures probability scores accurately reflect empirical delay likelihoods rather than uncalibrated confidence outputs.</p>
+ <p>The champion delay prediction model is a <strong>Calibrated Random Forest Classifier</strong> trained on historical task records. Isotonic calibration via <code>CalibratedClassifierCV</code> is used to improve how closely predicted probabilities track observed delay likelihoods.</p>
  </div>
 
  <div style="margin-bottom:24px;">
@@ -3359,13 +3362,13 @@
  <p>To eliminate temporal data leakage (where future task features leak into past predictions), the pipeline was validated using two independent evaluation schemes:</p>
  <ul style="margin-left:20px; margin-top:6px;">
  <li><strong>5-Fold Stratified Cross-Validation</strong>: 72.0% Accuracy, 77.8% ROC-AUC, 43.7 MCC.</li>
- <li><strong>Chronological Time-Split Validation</strong>: Tasks created prior to 2025 form the training set; tasks created in 2025+ serve as the holdout test set. Achieves <strong>70.8% Accuracy, 76.5% ROC-AUC, 41.2 MCC</strong>, confirming real predictive power without temporal leakage.</li>
+ <li><strong>Chronological Time-Split Validation</strong>: The oldest 80% of dated closed tasks train the model; the newest 20% are held out. Discipline-history features are calculated using the older records only. Holdout metrics are generated and stored on each training run.</li>
  </ul>
  </div>
 
  <div style="margin-bottom:24px;">
  <h3 style="font-size:15px; font-weight:700; color:#0f172a; border-bottom:2px solid #e2e8f0; padding-bottom:6px; margin-bottom:10px;">3. Naive Baseline Comparison & Predictive Lift</h3>
- <p>Given the historical dataset delay rate of <strong>43.6%</strong>, a naive majority-class classifier ("always predict on-time") yields an accuracy of <strong>56.4%</strong>. The Calibrated ML Champion achieves <strong>72.0% accuracy</strong>, demonstrating a <strong>+15.6% absolute accuracy lift</strong> (+27.7% relative improvement) and a <strong>Matthews Correlation Coefficient (MCC) of 0.437</strong>, confirming statistically significant predictive signal.</p>
+ <p>The training pipeline compares the chosen model with an explicit naive baseline: <strong>always predict on-time</strong>. Both the baseline accuracy and the chronological-holdout metrics are saved in the dashboard data at training time, so any claimed predictive lift can be inspected rather than assumed.</p>
  </div>
 
  <div style="margin-bottom:24px;">
@@ -3388,11 +3391,12 @@
  </div>
 
  <div style="margin-bottom:12px;">
- <h3 style="font-size:15px; font-weight:700; color:#0f172a; border-bottom:2px solid #e2e8f0; padding-bottom:6px; margin-bottom:10px;">5. Scope, Known Limitations & "COMPLIANT" Definition</h3>
+ <h3 style="font-size:15px; font-weight:700; color:#0f172a; border-bottom:2px solid #e2e8f0; padding-bottom:6px; margin-bottom:10px;">5. Scope & Known Limitations</h3>
  <ul style="margin-left:20px;">
- <li><strong>COMPLIANT Definition</strong>: Indicates complete compliance with InterTech problem statement specifications: binary delay target modeling (<code>Delay > 0</code>), automated PM alert triggers, and dynamic employee reallocation.</li>
- <li><strong>Project Scope</strong>: Pre-trained on baseline PRJ001 dataset while supporting multi-project filtering across arbitrary project IDs (PRJ001, PRJ002, PRJ003, etc.).</li>
+ <li><strong>Simulated data</strong>: The source dataset is synthetic and has not been validated against real project outcomes.</li>
+ <li><strong>Project scope</strong>: The predictive workflow is demonstrated on the baseline PRJ001-style dataset; filters for other project IDs are interface-level views, not separately validated models.</li>
  <li><strong>Pre-Execution Boundary</strong>: Model predicts delay risks prior to task execution based on initial scope and workload intensity. Unpredictable black-swan events (weather disasters, vendor bankruptcy) require real-time site updates.</li>
+ <li><strong>Exploratory modules</strong>: The 3D site view is a risk visualisation only. It is not an input to the model and does not produce operational recommendations.</li>
  </ul>
  </div>
 
@@ -3548,6 +3552,7 @@
  if (d.meta && d.meta.cv_accuracy) {
  renderModelsTable(d.meta.cv_accuracy);
  }
+ if (d.meta) renderTemporalValidation(d.meta.temporal_validation);
 
  // 6. Feature Importance
  if (d.feat_importance) {
@@ -3755,6 +3760,17 @@
  aiTbody.appendChild(aiTr);
  }
  });
+ }
+
+ function renderTemporalValidation(result) {
+ const el = document.getElementById('temporal-validation-summary');
+ if (!el) return;
+ if (!result || !result.available) {
+  el.innerHTML = '<strong>Temporal holdout & baseline:</strong> The newest dated records are held out from training. Run training to generate metrics when enough dated, closed records with both outcome classes are available.';
+  return;
+ }
+ const lift = (Number(result.accuracy) - Number(result.baseline_accuracy)).toFixed(1);
+ el.innerHTML = `<strong>Chronological holdout:</strong> trained on ${result.train_records} older records and tested on ${result.test_records} newer records (cutoff: ${result.cutoff_date}). <strong>Accuracy: ${Number(result.accuracy).toFixed(1)}%</strong> · F1: ${Number(result.f1).toFixed(1)}% · ROC-AUC: ${Number(result.auc_roc).toFixed(1)}%. <strong>Baseline (${result.baseline_name}): ${Number(result.baseline_accuracy).toFixed(1)}%</strong> · accuracy lift: ${lift} points.`;
  }
 
  function renderFeatureImportance(featMap) {
@@ -4199,6 +4215,7 @@
  } else {
  shapContainer.innerHTML = `<span style="font-size:12px; color:var(--text-subtle);">Pre-execution features balanced</span>`;
  }
+
  const positiveDrivers = (t.shap_drivers || []).filter(d => d.direction === 'increases').slice(0, 3).map(d => d.feature.replace(/: High/g, '')).join(', ');
  document.getElementById('drawer-explanation').innerText = positiveDrivers ? `This task is classified as ${t.cat || 'LOW'} risk primarily because of ${positiveDrivers}.` : 'No dominant risk contributor was identified; continue normal monitoring.';
 
@@ -5147,16 +5164,16 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
  "IsDelayedTarget": t.cat === 'HIGH' ? 1 : 0
  }));
 
- const complianceRows = [
- { Requirement: 'Prediction Objective', Specification: 'Predict project delay', Status: 'COMPLIANT', Implementation: 'Calibrated Random Forest' },
- { Requirement: 'Target Variable', Specification: 'Delay > 0 = Delayed', Status: 'COMPLIANT', Implementation: 'Binary 1=Delayed, 0=On-time' },
- { Requirement: 'High-Risk Mitigation', Specification: 'NOTIFY_PM + REALLOCATE_RESOURCE', Status: 'COMPLIANT', Implementation: 'Auto PM alert + reallocation' },
- { Requirement: 'Medium-Risk Mitigation', Specification: 'STATUS_MEETING + DAILY_UPDATES', Status: 'COMPLIANT', Implementation: 'Mandatory sync + update workflow' }
+ const traceabilityRows = [
+ { Requirement: 'Prediction Objective', Specification: 'Predict project delay', Evidence: 'Model output', Implementation: 'Calibrated Random Forest' },
+ { Requirement: 'Target Variable', Specification: 'Delay > 0 = Delayed', Evidence: 'Target transform', Implementation: 'Binary 1=Delayed, 0=On-time' },
+ { Requirement: 'High-Risk Mitigation', Specification: 'NOTIFY_PM + REALLOCATE_RESOURCE', Evidence: 'Action workflow', Implementation: 'Auto PM alert + reallocation' },
+ { Requirement: 'Medium-Risk Mitigation', Specification: 'STATUS_MEETING + DAILY_UPDATES', Evidence: 'Action workflow', Implementation: 'Mandatory sync + update workflow' }
  ];
 
  const wb = XLSX.utils.book_new();
  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(exportRows), 'Delay_Predictions_Model');
- XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(complianceRows), 'Problem_Statement_Compliance');
+ XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(traceabilityRows), 'Implementation_Traceability');
  XLSX.writeFile(wb, 'InterTech_Project_Delay_Prediction_Solution.pbix.xlsx');
  }
 
