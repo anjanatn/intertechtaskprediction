@@ -6158,9 +6158,6 @@ function saveSimScenario(params, result) {
   note.textContent = `[Saved] Scenario #${simScenarios.length} saved (${simScenarios.length}/3). ${simScenarios.length >= 2 ? 'Type "compare scenarios" to see comparison.' : 'Add more scenarios or export.'}`;
   mc.appendChild(note);
   requestAnimationFrame(() => { mc.scrollTop = mc.scrollHeight; });
-}saved (${simScenarios.length}/3). ${simScenarios.length >= 2 ? 'Type "compare scenarios" to see comparison.' : 'Add more scenarios or export.'}`;
-  mc.appendChild(note);
-  requestAnimationFrame(() => { mc.scrollTop = mc.scrollHeight; });
 }
 
 // --- Export to CSV/Excel ---
