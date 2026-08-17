@@ -3396,38 +3396,38 @@
  </div>
 
  </div>
- </section>
+</section>
 
  </main>
 
  <!-- FLOATING AI DIAGNOSTICS ASSISTANT (BOTTOM RIGHT CORNER) -->
  <div id="ai-diagnostics-widget-container" style="position: fixed; bottom: 24px; right: 24px; z-index: 9990;">
  <!-- Diagnostics & Assistant Popup Panel -->
- <div id="ai-diagnostics-panel" style="display: none; position: absolute; bottom: 64px; right: 0; width: 460px; max-width: calc(100vw - 32px); height: 560px; background: #ffffff; border-radius: 16px; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25); border: 1px solid var(--border-medium); overflow: hidden; flex-direction: column;">
+ <div id="ai-diagnostics-panel" style="display: none; position: absolute; bottom: 64px; right: 0; width: 580px; max-width: calc(100vw - 32px); height: 680px; max-height: calc(100vh - 100px); background: #ffffff; border-radius: 16px; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25); border: 1px solid var(--border-medium); overflow: hidden; flex-direction: column;">
  <!-- Panel Header -->
- <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between;">
- <div style="display: flex; align-items: center; gap: 10px;">
- <div style="width: 10px; height: 10px; background: #34d399; border-radius: 50%; box-shadow: 0 0 8px #34d399;"></div>
+ <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+ <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
+ <div style="width: 10px; height: 10px; background: #34d399; border-radius: 50%; box-shadow: 0 0 8px #34d399; flex-shrink: 0;"></div>
  <div>
- <h3 style="font-size: 14px; font-weight: 700; color: #ffffff; margin: 0;">AI Diagnostics & Assistant</h3>
+ <h3 style="font-size: 15px; font-weight: 800; color: #ffffff; margin: 0;">AI Diagnostics & Assistant</h3>
  <span style="font-size: 11px; color: #94a3b8;">PRJ001 ML Intelligence Engine</span>
  </div>
  </div>
- <div style="display: flex; align-items: center; gap: 6px;">
- <button onclick="clearAIChat()" style="background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.4); color: #ffffff; font-size: 11px; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-weight: 700; transition: all 0.2s ease;" title="Clear Chat Conversation History" onmouseover="this.style.background='rgba(255,255,255,0.35)'" onmouseout="this.style.background='rgba(255,255,255,0.25)'">Clear Chat</button>
- <button onclick="toggleAIDiagnosticsWidget()" style="background: rgba(255,255,255,0.15); border: none; color: #ffffff; font-size: 20px; cursor: pointer; line-height: 1; padding: 4px; border-radius: 4px; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">&times;</button>
+ <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+ <button onclick="clearAIChat()" style="background: rgba(239,68,68,0.3); border: 1.5px solid #f87171; color: #ffffff; font-size: 12px; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: 700; letter-spacing: 0.3px; transition: all 0.2s ease;" title="Clear Chat History" onmouseover="this.style.background='rgba(239,68,68,0.55)'" onmouseout="this.style.background='rgba(239,68,68,0.3)'">&#128465; Clear</button>
+ <button onclick="toggleAIDiagnosticsWidget()" style="background: rgba(255,255,255,0.18); border: 1.5px solid rgba(255,255,255,0.5); color: #ffffff; font-size: 22px; font-weight: 700; cursor: pointer; width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; line-height: 1; transition: all 0.2s ease; flex-shrink: 0;" title="Close" onmouseover="this.style.background='rgba(255,255,255,0.35)'" onmouseout="this.style.background='rgba(255,255,255,0.18)'">&times;</button>
  </div>
  </div>
 
  <!-- Panel Tabs -->
  <div style="display: flex; border-bottom: 1px solid var(--border-light); background: var(--bg-subtle);">
- <button id="ai-tab-btn-diag" onclick="switchAIPanelTab('diag')" style="flex: 1; padding: 10px 4px; border: none; background: #ffffff; font-weight: 700; font-size: 11px; color: var(--brand-primary); border-bottom: 2px solid var(--brand-primary); cursor: pointer;">Diagnostics</button>
- <button id="ai-tab-btn-chat" onclick="switchAIPanelTab('chat')" style="flex: 1; padding: 10px 4px; border: none; background: transparent; font-weight: 600; font-size: 11px; color: var(--text-subtle); border-bottom: 2px solid transparent; cursor: pointer;">Ask Assistant</button>
- <button id="ai-tab-btn-audit" onclick="switchAIPanelTab('audit')" style="flex: 1; padding: 10px 4px; border: none; background: transparent; font-weight: 600; font-size: 11px; color: var(--text-subtle); border-bottom: 2px solid transparent; cursor: pointer;">Audit Log</button>
+ <button id="ai-tab-btn-chat" onclick="switchAIPanelTab('chat')" style="flex: 1; padding: 10px 4px; border: none; background: #ffffff; font-weight: 700; font-size: 12px; color: var(--brand-primary); border-bottom: 2px solid var(--brand-primary); cursor: pointer;">&#128488; Ask Assistant</button>
+ <button id="ai-tab-btn-diag" onclick="switchAIPanelTab('diag')" style="flex: 1; padding: 10px 4px; border: none; background: transparent; font-weight: 600; font-size: 12px; color: var(--text-subtle); border-bottom: 2px solid transparent; cursor: pointer;">&#128202; Diagnostics</button>
+ <button id="ai-tab-btn-audit" onclick="switchAIPanelTab('audit')" style="flex: 1; padding: 10px 4px; border: none; background: transparent; font-weight: 600; font-size: 12px; color: var(--text-subtle); border-bottom: 2px solid transparent; cursor: pointer;">&#128203; Audit Log</button>
  </div>
 
  <!-- Tab 1: Diagnostics Content -->
- <div id="ai-panel-diag-content" style="padding: 16px; overflow-y: auto; flex: 1;">
+ <div id="ai-panel-diag-content" style="display: none; padding: 16px; overflow-y: auto; flex: 1;">
  <div style="margin-bottom: 16px;">
  <h4 style="font-size: 12px; font-weight: 700; color: var(--text-main); margin-bottom: 8px;">Model Performance Leaderboard</h4>
  <div style="overflow-x: auto; font-size: 11px;">
@@ -3541,7 +3541,7 @@
  </div>
 
  <!-- Tab 2: Chat Assistant Content -->
- <div id="ai-panel-chat-content" style="display: none; flex-direction: column; flex: 1; min-height: 0;">
+ <div id="ai-panel-chat-content" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
  <!-- Scope Disclaimer Banner -->
  <div style="background:#eff6ff; border-bottom:1px solid #bfdbfe; padding:6px 12px; font-size:10.5px; color:#1d4ed8; display:flex; align-items:center; gap:6px;">
  <span><strong>Scoped AI</strong>: Grounded in project dataset. Probabilities calculated by Calibrated Random Forest engine.</span>
@@ -3561,7 +3561,7 @@
 
  <div style="padding: 10px 12px; border-top: 1px solid var(--border-light); background: #ffffff; display: flex; gap: 8px;">
  <input type="text" id="ai-chat-input" placeholder="Ask project intelligence..." style="flex: 1; padding: 8px 12px; border: 1px solid var(--border-medium); border-radius: 8px; font-size: 12px;" onkeypress="if(event.key==='Enter') sendAIChatMessage()">
- <button id="ai-chat-send-btn" onclick="sendAIChatMessage()" class="btn btn-primary" style="padding: 8px 14px; font-size: 12px;">Send</button>
+ <button id="btn-send-ai" onclick="sendAIChatMessage()" class="btn btn-primary" style="padding: 8px 14px; font-size: 12px;">Send</button>
  </div>
  </div>
 
@@ -5829,10 +5829,26 @@ function toggleAIDiagnosticsWidget() {
   if (!panel) return;
   if (panel.style.display === 'none' || panel.style.display === '') {
     panel.style.display = 'flex';
+    switchAIPanelTab('chat');
     initAIChat();
   } else {
     panel.style.display = 'none';
   }
+}
+
+function switchAIPanelTab(tab) {
+  const tabs = ['chat', 'diag', 'audit'];
+  tabs.forEach(t => {
+    const btn = document.getElementById('ai-tab-btn-' + t);
+    const content = document.getElementById('ai-panel-' + t + '-content');
+    if (!btn || !content) return;
+    const isActive = (t === tab);
+    btn.style.background = isActive ? '#ffffff' : 'transparent';
+    btn.style.fontWeight = isActive ? '700' : '600';
+    btn.style.color = isActive ? 'var(--brand-primary)' : 'var(--text-subtle)';
+    btn.style.borderBottom = isActive ? '2px solid var(--brand-primary)' : '2px solid transparent';
+    content.style.display = isActive ? (t === 'chat' ? 'flex' : 'block') : 'none';
+  });
 }
 
 async function askAIQuickPrompt(promptText) {
