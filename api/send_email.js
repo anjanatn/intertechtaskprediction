@@ -19,6 +19,8 @@ export default async function handler(req, res) {
     const tasks = payload.tasks || [];
     const recipient = payload.recipient || process.env.MANAGER_EMAIL || 'pm.intertech@gmail.com';
     const smtpConfig = payload.smtp_config || {};
+    const isSiteInspectionMeeting = payload.alert_type === 'site_inspection_meeting';
+    const isScheduleMeeting = isSiteInspectionMeeting || payload.alert_type === 'schedule_meeting';
 
     const host = smtpConfig.host || process.env.SMTP_HOST || 'smtp.gmail.com';
     const port = parseInt(smtpConfig.port || process.env.SMTP_PORT || '587');
@@ -40,17 +42,42 @@ export default async function handler(req, res) {
       `;
     });
 
+    const alertHeading = isSiteInspectionMeeting
+      ? 'SITE INSPECTION REQUIRED: Schedule High-Risk Status Meeting'
+      : isScheduleMeeting
+      ? 'ACTION REQUIRED: Schedule Status Meeting'
+      : 'CRITICAL PM ALERT: High-Risk Task Delay Predicted';
+    const alertIntro = isSiteInspectionMeeting
+      ? `A high-risk task has no confirmed root cause. Please schedule a status meeting and inspect the site before selecting a mitigation plan.`
+      : isScheduleMeeting
+      ? `Please schedule a status meeting to review the identified delay risk, agree corrective actions, and assign owners.`
+      : `The ML Delay Prediction Engine has flagged <strong>${tasks.length} High-Risk Task(s)</strong> with high probability of completion delay.`;
+    const actionRequired = isSiteInspectionMeeting
+      ? `<li>Schedule a status meeting with the project manager, discipline lead, and site supervisor.</li>
+         <li>Inspect the site and record the root cause, constraints, and required corrective action.</li>
+         <li>Confirm the mitigation owner and due date after the inspection.</li>`
+      : isScheduleMeeting
+      ? `<li>Schedule a status meeting with the project manager and delivery leads.</li>
+         <li>Confirm the mitigation owner, due date, and follow-up update cadence.</li>`
+      : `<li>Reallocate senior personnel from closed or medium-risk projects immediately.</li>
+         <li>Schedule urgent site coordination sync with sub-contractor leads.</li>`;
+    const subject = isSiteInspectionMeeting
+      ? `ACTION REQUIRED: Schedule Site Inspection Meeting (${tasks.length} High-Risk Task${tasks.length === 1 ? '' : 's'})`
+      : isScheduleMeeting
+      ? `ACTION REQUIRED: Schedule Status Meeting (${tasks.length} Task${tasks.length === 1 ? '' : 's'})`
+      : `URGENT: High-Risk Project Delay Alert (${tasks.length} Tasks Flagged)`;
+
     const htmlContent = `
     <html>
     <body style="font-family: Arial, sans-serif; color: #0f172a; line-height: 1.6;">
         <div style="max-width: 650px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
             <div style="background: #dc2626; color: #ffffff; padding: 20px; text-align: center;">
-                <h2 style="margin: 0;"> CRITICAL PM ALERT: High-Risk Task Delay Predicted</h2>
+                <h2 style="margin: 0;">${alertHeading}</h2>
                 <p style="margin: 5px 0 0 0; font-size: 14px;">InterTech Delay Intelligence Platform - Project PRJ001</p>
             </div>
             <div style="padding: 24px;">
                 <p>Dear Project Manager,</p>
-                <p>The ML Delay Prediction Engine has flagged <strong>${tasks.length} High-Risk Task(s)</strong> with high probability of completion delay.</p>
+                <p>${alertIntro}</p>
                 
                 <h3 style="color: #0f172a; margin-top: 20px;">High-Risk Task Breakdown</h3>
                 <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
@@ -71,8 +98,7 @@ export default async function handler(req, res) {
                 <div style="background: #fef2f2; border: 1px solid #fecaca; padding: 15px; border-radius: 6px; margin-top: 20px;">
                     <strong style="color: #dc2626;">Action Required (per Problem Statement Mitigation Plan):</strong>
                     <ul style="margin: 5px 0 0 20px; color: #991b1b;">
-                        <li>Reallocate senior personnel from closed or medium-risk projects immediately.</li>
-                        <li>Schedule urgent site coordination sync with sub-contractor leads.</li>
+                        ${actionRequired}
                     </ul>
                 </div>
             </div>
@@ -93,7 +119,7 @@ export default async function handler(req, res) {
       await transporter.sendMail({
         from: sender,
         to: recipient,
-        subject: ` URGENT: High-Risk Project Delay Alert (${tasks.length} Tasks Flagged)`,
+        subject,
         html: htmlContent
       });
 

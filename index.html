@@ -1084,7 +1084,8 @@
  </button>
  <button class="nav-tab" role="tab" aria-selected="false" aria-controls="view-import" id="tab-nav-import" onclick="switchView('import', this)">
  <span>Import & Predict</span>
- <span class="tab-badge" id="badge-imported-count" style="background:#0284c7; color:#ffffff; display:none;">0</span>
+ <span class="tab-badge" id="badge-imported-count" style="background:#0284c7; color:#ffffff; display:none;" title="Imported tasks">Imported: 0</span>
+ <span class="tab-badge" id="badge-predicted-high-count" style="background:#dc2626; color:#ffffff; display:none;" title="Predicted high-risk tasks">High: 0</span>
  </button>
  <button class="nav-tab" role="tab" aria-selected="false" aria-controls="view-tasks" onclick="switchView('tasks', this)">
  <span>Task Risk Matrix</span>
@@ -3884,6 +3885,28 @@
  } catch (e) {}
  }
 
+ function rootCauseNeedsSiteInspection(task) {
+ const rootCause = String(task?.root_cause || '').trim().toLowerCase();
+ return !rootCause || ['not detected', 'not recorded', 'unknown', 'n/a', 'na', 'pre-execution'].includes(rootCause);
+ }
+
+ function rootCauseStatusLabel(task) {
+ return rootCauseNeedsSiteInspection(task) ? 'Not detected — site inspection required' : task.root_cause;
+ }
+
+ function siteInspectionMeetingAction(task, compact = false) {
+ const spacing = compact ? 'gap:3px;' : 'gap:6px;';
+ const padding = compact ? '3px 8px' : '6px 10px';
+ const fontSize = compact ? '11px' : '12px';
+ return `
+ <div style="display:flex; flex-direction:column; align-items:flex-start; ${spacing}">
+ <span style="font-size:${fontSize}; font-weight:700; color:#b45309;">ROOT CAUSE NOT DETECTED</span>
+ <button type="button" class="btn" onclick="event.stopPropagation(); sendScheduleMeetingAlert('${task.id}')" style="background:#b45309; border:none; color:#fff; padding:${padding}; font-size:${fontSize}; font-weight:700; border-radius:6px; cursor:pointer;">
+ Schedule Site Inspection Meeting
+ </button>
+ </div>`;
+ }
+
  function renderTasksTable() {
  const tbody = document.getElementById("task-table-body");
  if (!tbody) return;
@@ -3896,6 +3919,10 @@
 
  const riskPill = t.cat === 'HIGH' ? 'pill-high' : (t.cat === 'MEDIUM' ? 'pill-med' : 'pill-low');
  const scoreColor = t.score > 60 ? 'danger' : (t.score > 35 ? 'warning' : '');
+ const needsInspectionMeeting = t.cat === 'HIGH' && rootCauseNeedsSiteInspection(t);
+ const taskAction = needsInspectionMeeting
+ ? siteInspectionMeetingAction(t)
+ : '<button class="btn btn-outline" style="padding:2px 8px; font-size:11px;">Inspect</button>';
 
  tr.innerHTML = `
  <td><span class="task-id-code">${t.id}</span></td>
@@ -3913,8 +3940,8 @@
  <span style="font-family:'JetBrains Mono', monospace; font-weight:600;">${t.score ? t.score.toFixed(0) : 0}%</span>
  </div>
  </td>
- <td style="color:var(--text-subtle);">${t.root_cause || 'Pre-execution'}</td>
- <td><button class="btn btn-outline" style="padding:2px 8px; font-size:11px;">Inspect</button></td>
+ <td style="color:${needsInspectionMeeting ? '#b45309' : 'var(--text-subtle)'}; font-weight:${needsInspectionMeeting ? '700' : '400'};">${rootCauseStatusLabel(t)}</td>
+ <td>${taskAction}</td>
  `;
  tbody.appendChild(tr);
  });
@@ -3962,6 +3989,7 @@
  highRiskTasks.forEach(t => {
  const candidates = getReallocCandidates(t, empMap);
  const reallocHTML = buildReallocHTML(candidates, 3);
+ const inspectionMeeting = rootCauseNeedsSiteInspection(t) ? siteInspectionMeetingAction(t, true) : '';
 
  const card = document.createElement("div");
  card.className = "mit-card high";
@@ -3976,6 +4004,7 @@
  <div class="mit-action-box" style="padding-bottom:${reallocHTML ? '6px' : ''}">
  <span style="font-weight:700;">ACTION: NOTIFY PM + REALLOCATE RESOURCE</span>
  ${reallocHTML}
+ ${inspectionMeeting}
  </div>
  <button class="btn btn-outline" style="width:100%; justify-content:center;" onclick="openDrawerById('${t.id}')">Inspect Task & Plan &rarr;</button>
  `;
@@ -3997,6 +4026,7 @@
  openTasks.filter(t => t.cat === 'HIGH').slice(0, 6).forEach(t => {
  const candidates = getReallocCandidates(t, empMap);
  const reallocHTML = buildReallocHTML(candidates, 3);
+ const inspectionMeeting = rootCauseNeedsSiteInspection(t) ? siteInspectionMeetingAction(t, true) : '';
 
  const assignedBadge = t.assigned_to
  ? `<span style="font-size:11px; color:var(--text-subtle); margin-left:6px;">Assigned: <strong style="color:var(--text-main);">${t.assigned_to}</strong></span>`
@@ -4016,6 +4046,7 @@
  <div class="mit-action-box">
  <div style="font-weight:700; margin-bottom:${reallocHTML ? '2px' : '0'};">PM Alert Issued</div>
  ${reallocHTML}
+ ${inspectionMeeting}
  </div>
  `;
  highList.appendChild(div);
@@ -4556,9 +4587,11 @@
  const empMap = (globalImportedData && globalImportedData.employeeMap) ? globalImportedData.employeeMap : (globalData && globalData.employeeMap ? globalData.employeeMap : null);
  const candidates = getReallocCandidates(t, empMap);
  const reallocHTML = buildReallocHTML(candidates, 5);
+ const inspectionMeeting = rootCauseNeedsSiteInspection(t) ? siteInspectionMeetingAction(t) : '';
  drawerActionEl.innerHTML = `
 <div style="font-weight:700; color:#dc2626; margin-bottom:6px;">NOTIFY PM + REALLOCATE RESOURCE</div>
-${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No available reallocation candidates.</div>'}`;
+${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No available reallocation candidates.</div>'}
+${inspectionMeeting}`;
  } else if (t.cat === 'MEDIUM') {
  drawerActionEl.innerText = 'SCHEDULE STATUS MEETING + DAILY UPDATES';
  } else {
@@ -4645,19 +4678,6 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
  a.href = URL.createObjectURL(blob);
  a.download = "InterTech_PRJ001_Task_Predictions.csv";
  a.click();
- }
-
- function sendScheduleMeetingAlert(taskId) {
- // SMTP Rate Limiting Guardrail: Max 3 per 60s
- const now = Date.now();
- window.SMTP_DISPATCH_HISTORY = (window.SMTP_DISPATCH_HISTORY || []).filter(t => (now - t) < 60000);
- if (window.SMTP_DISPATCH_HISTORY.length >= 3) {
- alert(' SMTP Rate Limit Exceeded: Maximum 3 email dispatches per 60 seconds allowed to prevent mail server flooding.');
- return;
- }
- window.SMTP_DISPATCH_HISTORY.push(now);
- logAIUsage('SMTP_ALERT', 'Meeting alert: ' + taskId, 'SMTP Meeting Guardrail');
- alert('SMTP Meeting alert dispatched to Project Manager for task ' + taskId + ': STATUS_MEETING_SYNC');
  }
 
  async function triggerMLRetrain() {
@@ -4982,9 +5002,14 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
  document.getElementById('imp-kpi-avg-score').innerText = data.meta.avg_delay_score + '%';
 
  const badge = document.getElementById('badge-imported-count');
+ const predictedHighBadge = document.getElementById('badge-predicted-high-count');
  if (badge) {
- badge.innerText = data.meta.total_tasks;
+ badge.innerText = 'Imported: ' + data.meta.total_tasks;
  badge.style.display = 'inline-block';
+ }
+ if (predictedHighBadge) {
+ predictedHighBadge.innerText = 'High: ' + data.meta.high_risk_count;
+ predictedHighBadge.style.display = 'inline-block';
  }
 
  const discSelect = document.getElementById('imp-disc-filter');
@@ -5052,12 +5077,14 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
 
  let actionHTML = `<span style="font-size:12px; font-weight:600; color:var(--text-main);">${t.action}</span>`;
  if (t.cat === 'HIGH') {
+ const needsInspectionMeeting = rootCauseNeedsSiteInspection(t);
  actionHTML = `
  <div style="display:flex; flex-direction:column; gap:4px;">
  <span style="font-size:11px; font-weight:700; color:#dc2626;">NOTIFY_PM + REALLOCATE</span>
  <button onclick="sendSMTPAlert('${t.id}')" class="btn btn-primary" style="background:#dc2626; border-color:#dc2626; padding:3px 8px; font-size:11px; width:fit-content;">
  <span>Notify PM</span>
  </button>
+ ${needsInspectionMeeting ? siteInspectionMeetingAction(t, true) : ''}
  </div>`;
  } else if (t.cat === 'MEDIUM') {
  actionHTML = `
@@ -5540,6 +5567,7 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
 
  async function sendSMTPAlert(taskId) {
  pendingSMTPTaskId = taskId || null;
+ window._pendingMeetingTasks = null;
  const allHighRisk = (globalImportedData && globalImportedData.tasks ? globalImportedData.tasks : (globalData ? globalData.tasks : [])).filter(t => t.cat === 'HIGH');
  let targetTasks = allHighRisk;
  if (taskId) {
@@ -5571,18 +5599,28 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
  }
 
  async function sendScheduleMeetingAlert(taskId) {
+ // SMTP rate-limiting guardrail: max three meeting alerts per minute.
+ const now = Date.now();
+ window.SMTP_DISPATCH_HISTORY = (window.SMTP_DISPATCH_HISTORY || []).filter(timestamp => (now - timestamp) < 60000);
+ if (window.SMTP_DISPATCH_HISTORY.length >= 3) {
+ alert('SMTP rate limit exceeded: wait one minute before sending another meeting alert.');
+ return;
+ }
+ window.SMTP_DISPATCH_HISTORY.push(now);
+
  // Find the task from imported or global data
  const allTasks = (globalImportedData && globalImportedData.tasks ? globalImportedData.tasks : (globalData ? globalData.tasks : []));
  let targetTasks = taskId ? allTasks.filter(t => t.id === taskId) : allTasks.filter(t => t.cat === 'MEDIUM');
 
  if (!targetTasks.length) {
- alert('No Medium-Risk tasks found for scheduling.');
+ alert('No tasks found for meeting scheduling.');
  return;
  }
 
  // Build a SMTP email specifically for SCHEDULE_STATUS_MEETING
  const t = targetTasks[0];
  pendingSMTPTaskId = taskId || null;
+ window._pendingMeetingTasks = null;
 
  let savedConfig = {};
  try { savedConfig = JSON.parse(localStorage.getItem('intertech_smtp_config') || '{}'); } catch (e) {}
@@ -5590,8 +5628,9 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
  // Inject meeting-specific override into task list
  const meetingTasks = targetTasks.map(task => ({
  ...task,
- action: 'SCHEDULE_STATUS_MEETING',
- _meeting_override: true
+ action: rootCauseNeedsSiteInspection(task) ? 'SCHEDULE_STATUS_MEETING + SITE_INSPECTION' : 'SCHEDULE_STATUS_MEETING',
+ _meeting_override: true,
+ _site_inspection_required: rootCauseNeedsSiteInspection(task)
  }));
 
  if (savedConfig.user && savedConfig.pass) {
@@ -5618,19 +5657,21 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
  tasks: meetingTasks,
  recipient: recipient,
  smtp_config: smtpConfig,
- alert_type: 'schedule_meeting'
+ alert_type: meetingTasks.some(task => task._site_inspection_required) ? 'site_inspection_meeting' : 'schedule_meeting'
  })
  });
  const resData = await resp.json();
  if (resData.success && resData.sent_live) {
- alert(`\u2705 Status Meeting Alert Sent!\n\nA scheduling notification was dispatched to ${recipient}.\nTasks: ${meetingTasks.map(t => t.id).join(', ')}`);
+ const siteInspectionRequired = meetingTasks.some(task => task._site_inspection_required);
+ alert(`\u2705 ${siteInspectionRequired ? 'Site Inspection Meeting' : 'Status Meeting'} Alert Sent!\n\nA scheduling notification was dispatched to ${recipient}.\nTasks: ${meetingTasks.map(t => t.id).join(', ')}`);
  } else if (resData.requires_credentials) {
+ window._pendingMeetingTasks = meetingTasks;
  openSMTPModal();
  } else {
  alert(`\u26a0\ufe0f Meeting Alert Status:\n\n${resData.message || 'Alert processed.'}\nRecipient: ${recipient}\nTasks: ${meetingTasks.map(t => t.id).join(', ')}`);
  }
  } catch (e) {
- alert(`Status Meeting Alert dispatched (simulated) for ${meetingTasks.length} Medium-Risk task(s).\nSMTP error: ${e.message}`);
+ alert(`Status Meeting Alert dispatched (simulated) for ${meetingTasks.length} task(s).\nSMTP error: ${e.message}`);
  }
  }
 
@@ -5661,6 +5702,14 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
  localStorage.setItem('intertech_smtp_config', JSON.stringify(smtpConfig));
  } catch (e) {}
  closeSMTPModal();
+
+ if (window._pendingMeetingTasks && window._pendingMeetingTasks.length) {
+ const meetingTasks = window._pendingMeetingTasks;
+ window._pendingMeetingTasks = null;
+ pendingSMTPTaskId = null;
+ await executeScheduleMeetingSMTP(meetingTasks, smtpConfig);
+ return;
+ }
 
  const allHighRisk = (globalImportedData && globalImportedData.tasks ? globalImportedData.tasks : (globalData ? globalData.tasks : [])).filter(t => t.cat === 'HIGH');
  let targetTasks = allHighRisk;
