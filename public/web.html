@@ -3553,10 +3553,11 @@
 
  <!-- Starter Question Chips -->
  <div id="ai-chat-starter-chips" style="display:flex; gap:6px; overflow-x:auto; padding:6px 10px; background:var(--bg-subtle); border-top:1px solid var(--border-light); white-space:nowrap;">
- <button onclick="askAIQuickPrompt('What mitigation action is required for high risk tasks?')" style="background:#ffffff; border:1px solid #bfdbfe; border-radius:12px; padding:3px 8px; font-size:10.5px; font-weight:600; color:#1d4ed8; cursor:pointer;">High risk mitigations</button>
- <button onclick="askAIQuickPrompt('Show discipline delay risk breakdown')" style="background:#ffffff; border:1px solid #bfdbfe; border-radius:12px; padding:3px 8px; font-size:10.5px; font-weight:600; color:#1d4ed8; cursor:pointer;">Discipline breakdown</button>
- <button onclick="askAIQuickPrompt('What are top SHAP risk drivers?')" style="background:#ffffff; border:1px solid #bfdbfe; border-radius:12px; padding:3px 8px; font-size:10.5px; font-weight:600; color:#1d4ed8; cursor:pointer;">SHAP risk drivers</button>
- <button onclick="askAIQuickPrompt('Show employee reallocation headroom')" style="background:#ffffff; border:1px solid #bfdbfe; border-radius:12px; padding:3px 8px; font-size:10.5px; font-weight:600; color:#1d4ed8; cursor:pointer;">Employee headroom</button>
+  <button onclick="askAIQuickPrompt('Simulate MEP task 120 hours 14 days high priority')" style="background:#fff0f0; border:1px solid #fca5a5; border-radius:12px; padding:3px 8px; font-size:10.5px; font-weight:700; color:#dc2626; cursor:pointer;">🔬 Simulate MEP 120h/14d</button>
+  <button onclick="askAIQuickPrompt('What if STR task 80 hours 10 days medium priority?')" style="background:#fff7ed; border:1px solid #fdba74; border-radius:12px; padding:3px 8px; font-size:10.5px; font-weight:700; color:#c2410c; cursor:pointer;">🔬 Simulate STR 80h/10d</button>
+  <button onclick="askAIQuickPrompt('What mitigation action is required for high risk tasks?')" style="background:#ffffff; border:1px solid #bfdbfe; border-radius:12px; padding:3px 8px; font-size:10.5px; font-weight:600; color:#1d4ed8; cursor:pointer;">High risk mitigations</button>
+  <button onclick="askAIQuickPrompt('Compare all scenarios')" style="background:#f5f3ff; border:1px solid #a5b4fc; border-radius:12px; padding:3px 8px; font-size:10.5px; font-weight:600; color:#4f46e5; cursor:pointer;">📊 Compare scenarios</button>
+  <button onclick="askAIQuickPrompt('help')" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:3px 8px; font-size:10.5px; font-weight:600; color:#475569; cursor:pointer;">❓ Help</button>
  </div>
 
  <div style="padding: 10px 12px; border-top: 1px solid var(--border-light); background: #ffffff; display: flex; gap: 8px;">
@@ -5859,6 +5860,388 @@ async function askAIQuickPrompt(promptText) {
   }
 }
 
+/* =========================================================
+   WHAT-IF SIMULATOR ENGINE — NLP + SHAP-Based Risk Scoring
+   ========================================================= */
+
+// --- Discipline data (SHAP-derived delay rates) ---
+const SIM_DISC_RATES = { MEP: 0.42, STR: 0.38, SITE: 0.35, ARC: 0.28, INT: 0.22 };
+const SIM_DISC_ALIASES = {
+  mep:1, mechanical:1, electrical:1, plumbing:1,
+  str:1, structural:1, structure:1,
+  site:1, civil:1, 'site works':1,
+  arc:1, architectural:1, architecture:1,
+  int:1, interior:1, interiors:1, 'interior design':1
+};
+const SIM_DISC_MAP = {
+  mep:'MEP', mechanical:'MEP', electrical:'MEP', plumbing:'MEP',
+  str:'STR', structural:'STR', structure:'STR',
+  site:'SITE', civil:'SITE',
+  arc:'ARC', architectural:'ARC', architecture:'ARC',
+  int:'INT', interior:'INT', interiors:'INT'
+};
+
+// --- Scenario store (up to 3 scenarios for comparison) ---
+let simScenarios = [];
+
+// --- Detect simulator intent ---
+function detectWhatIfIntent(text) {
+  const t = text.toLowerCase();
+  return t.includes('simulat') || t.includes('what if') || t.includes('what-if') ||
+    t.includes('hrs/day') || t.includes('hours/day') ||
+    (t.includes('hours') && (t.includes('days') || t.includes('weeks'))) ||
+    t.includes('scenario') || t.includes('predict risk') ||
+    t.includes('calculate risk') || t.includes('risk if') ||
+    (t.includes('compare') && simScenarios.length > 0);
+}
+
+// --- NLP Parameter Parser ---
+function parseSimulatorParams(text) {
+  const t = text.toLowerCase();
+  const params = { disc: null, priority: null, risk: null, hours: null, days: null };
+
+  // Discipline
+  for (const [alias, disc] of Object.entries(SIM_DISC_MAP)) {
+    if (t.includes(alias)) { params.disc = disc; break; }
+  }
+  if (!params.disc) params.disc = 'MEP'; // sensible default
+
+  // Priority
+  if (t.includes('high priority') || t.includes('priority high') || t.match(/priority[:\s]+h/)) params.priority = 'High';
+  else if (t.includes('medium priority') || t.includes('priority medium') || t.match(/priority[:\s]+m/)) params.priority = 'Medium';
+  else if (t.includes('low priority') || t.includes('priority low') || t.match(/priority[:\s]+l/)) params.priority = 'Low';
+  else if (t.includes('high')) params.priority = 'High';
+  else if (t.includes('medium') || t.includes('mid')) params.priority = 'Medium';
+  else params.priority = 'High'; // default
+
+  // Pre-assessed risk tier
+  const riskMatch = t.match(/(?:risk|tier)[:\s]+?(high|medium|low)/);
+  if (riskMatch) params.risk = riskMatch[1].charAt(0).toUpperCase() + riskMatch[1].slice(1);
+  else params.risk = params.priority; // default to priority if not specified
+
+  // Hours — look for patterns like "120 hours", "80hrs", "120h"
+  const hoursMatch = text.match(/(\d+(?:\.\d+)?)\s*(?:hours?|hrs?)\b/i);
+  if (hoursMatch) params.hours = parseFloat(hoursMatch[1]);
+  else params.hours = 80;
+
+  // Days — look for "14 days", "2 weeks"
+  const daysMatch = text.match(/(\d+(?:\.\d+)?)\s*(?:days?)\b/i);
+  const weeksMatch = text.match(/(\d+(?:\.\d+)?)\s*(?:weeks?)\b/i);
+  if (daysMatch) params.days = parseFloat(daysMatch[1]);
+  else if (weeksMatch) params.days = Math.round(parseFloat(weeksMatch[1]) * 5);
+  else params.days = 10;
+
+  return params;
+}
+
+// --- SHAP-Weighted Risk Calculation Engine ---
+function calculateWhatIfRisk(params) {
+  const { disc, priority, risk, hours, days } = params;
+  const safeDays = Math.max(days, 1);
+
+  // SHAP feature values
+  const hrsPerDay = hours / safeDays;
+  const discRate = SIM_DISC_RATES[disc] || 0.35;
+  const riskEnc = risk === 'High' ? 1.0 : risk === 'Medium' ? 0.5 : 0.0;
+  const hoursNorm = Math.min(hours / 160, 1.5);
+  const highPriHighRisk = (priority === 'High' && risk === 'High') ? 1 : 0;
+
+  // SHAP weights (from trained model)
+  const W_HPD = 0.32, W_RENC = 0.26, W_HRS = 0.18, W_DISC = 0.12, W_COMBO = 0.11;
+
+  // Normalise hours_per_day: 0 at 0, 0.5 at 8.5, 1.0 at 17+
+  const hpdNorm = Math.min(hrsPerDay / 17, 1.0);
+
+  const rawScore = (W_HPD * hpdNorm + W_RENC * riskEnc + W_HRS * hoursNorm +
+    W_DISC * discRate + W_COMBO * highPriHighRisk);
+
+  // Scale to 0-100%
+  const score = Math.round(Math.min(rawScore * 140, 98));
+  const tier = score >= 70 ? 'HIGH' : score >= 40 ? 'MEDIUM' : 'LOW';
+
+  // Build SHAP driver explanations (sorted by impact)
+  const drivers = [];
+  if (hpdNorm > 0.4) drivers.push({
+    key: 'Workload Intensity',
+    impact: Math.round(W_HPD * 100),
+    detail: `${hrsPerDay.toFixed(1)} hrs/day — ${hrsPerDay > 8.5 ? `⚠️ exceeds the 8.5 hrs/day safe threshold by ${(hrsPerDay - 8.5).toFixed(1)} hrs` : '✅ within safe threshold (≤ 8.5 hrs/day)'}`
+  });
+  if (riskEnc > 0) drivers.push({
+    key: 'Pre-Assessed Risk Rating',
+    impact: Math.round(W_RENC * 100),
+    detail: `Task has a pre-assessed **${risk} Risk** rating (encoded: ${riskEnc})`
+  });
+  if (hoursNorm > 0.5) drivers.push({
+    key: 'Task Scope (Hours)',
+    impact: Math.round(W_HRS * 100),
+    detail: `${hours} hours — ${hours > 80 ? 'large scope increases delay probability' : 'moderate scope'}`
+  });
+  drivers.push({
+    key: `Discipline (${disc})`,
+    impact: Math.round(W_DISC * 100),
+    detail: `Historical delay rate for ${disc}: **${Math.round(discRate * 100)}%** of tasks delayed`
+  });
+  if (highPriHighRisk) drivers.push({
+    key: 'High Priority + High Risk Combination',
+    impact: Math.round(W_COMBO * 100),
+    detail: 'High-priority tasks with high risk pre-assessment compound delay probability'
+  });
+
+  // Warnings
+  const warnings = [];
+  if (hrsPerDay > 8.5) warnings.push(`⚠️ Workload: **${hrsPerDay.toFixed(1)} hrs/day** exceeds the **8.5 hrs/day** safe threshold`);
+  if (hours > 120) warnings.push(`⚠️ Large task scope (**${hours} hrs**) — consider splitting into sub-tasks`);
+  if (days < 5) warnings.push(`⚠️ Very short duration (**${days} days**) creates high schedule pressure`);
+
+  // Mitigation action
+  let mitigation, mitigationColor;
+  if (tier === 'HIGH') {
+    mitigation = '🚨 NOTIFY_PM + REALLOCATE_RESOURCE — Alert Project Manager immediately. Reallocate senior personnel from completed or low-risk tasks.';
+    mitigationColor = '#fef2f2';
+  } else if (tier === 'MEDIUM') {
+    mitigation = '📅 SCHEDULE_STATUS_MEETING + Daily Updates — Schedule mandatory sync with discipline leads. Require daily progress reports until risk reduces.';
+    mitigationColor = '#fffbeb';
+  } else {
+    mitigation = '✅ Standard Weekly Monitoring — Include in regular weekly progress review. No immediate escalation required.';
+    mitigationColor = '#f0fdf4';
+  }
+
+  // Follow-up suggestion
+  const followUps = [];
+  if (hrsPerDay > 8.5) followUps.push(`extend the deadline by ${Math.ceil((hours / 8.5) - days)} days (to reach safe workload intensity)`);
+  if (risk === 'High') followUps.push('reduce the pre-assessed risk tier to Medium');
+  if (priority === 'High') followUps.push('change priority to Medium');
+  followUps.push('try a different discipline');
+
+  return { score, tier, drivers, warnings, mitigation, mitigationColor, hrsPerDay, followUps };
+}
+
+// --- Render simulator result as a rich chat bubble (returns DOM element) ---
+function renderWhatIfBubble(params, result, scenarioNum) {
+  const { disc, priority, risk, hours, days } = params;
+  const { score, tier, drivers, warnings, mitigation, mitigationColor, hrsPerDay, followUps } = result;
+
+  const tierColor = tier === 'HIGH' ? '#dc2626' : tier === 'MEDIUM' ? '#d97706' : '#16a34a';
+  const tierBg = tier === 'HIGH' ? '#fef2f2' : tier === 'MEDIUM' ? '#fffbeb' : '#f0fdf4';
+  const hpdSafe = 8.5;
+  const hpdPct = Math.min((hrsPerDay / 17) * 100, 100);
+  const thresholdPct = (hpdSafe / 17) * 100;
+
+  const bubble = document.createElement('div');
+  bubble.style.cssText = 'background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:14px; font-size:12px; max-width:96%; align-self:flex-start; overflow:hidden; word-break:break-word; line-height:1.6; margin-bottom:4px;';
+
+  bubble.innerHTML = `
+    <!-- Header -->
+    <div style="background:linear-gradient(135deg,#0f172a,#1e3a5f); color:#fff; padding:10px 14px; display:flex; align-items:center; justify-content:space-between;">
+      <div style="font-weight:800; font-size:13px;">🔬 What-If Scenario${scenarioNum ? ' #' + scenarioNum : ''}</div>
+      <div style="background:${tierColor}; color:#fff; font-size:11px; font-weight:800; padding:3px 10px; border-radius:20px;">${tier} RISK</div>
+    </div>
+
+    <!-- Params summary -->
+    <div style="padding:10px 14px; display:flex; flex-wrap:wrap; gap:8px; border-bottom:1px solid #e2e8f0; background:#fff;">
+      <span style="background:#eff6ff; color:#1d4ed8; font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:10px;">📐 ${disc}</span>
+      <span style="background:#f0fdf4; color:#166534; font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:10px;">⏱ ${hours} hrs / ${days} days</span>
+      <span style="background:#faf5ff; color:#7c3aed; font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:10px;">🎯 Priority: ${priority}</span>
+      <span style="background:#fff7ed; color:#c2410c; font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:10px;">⚡ Risk Tier: ${risk}</span>
+    </div>
+
+    <!-- Risk Score -->
+    <div style="padding:12px 14px; text-align:center; background:${tierBg}; border-bottom:1px solid #e2e8f0;">
+      <div style="font-size:11px; color:#64748b; margin-bottom:4px; font-weight:600;">DELAY PROBABILITY SCORE</div>
+      <div style="font-size:36px; font-weight:900; color:${tierColor}; line-height:1;">${score}%</div>
+      <div style="font-size:11px; color:${tierColor}; font-weight:700; margin-top:2px;">${tier === 'HIGH' ? 'High Delay Risk' : tier === 'MEDIUM' ? 'Moderate Delay Risk' : 'Low Delay Risk'}</div>
+      <!-- Score bar -->
+      <div style="margin-top:8px; background:#e2e8f0; border-radius:6px; height:8px; position:relative;">
+        <div style="width:${score}%; background:${tierColor}; height:8px; border-radius:6px; transition:width 0.4s;"></div>
+        <div style="position:absolute; left:70%; top:-4px; width:2px; height:16px; background:#94a3b8;" title="High Risk threshold (70%)"></div>
+        <div style="position:absolute; left:40%; top:-4px; width:2px; height:16px; background:#cbd5e1;" title="Medium Risk threshold (40%)"></div>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-size:9px; color:#94a3b8; margin-top:2px;"><span>0%</span><span>LOW|40%|MED|70%|HIGH</span><span>100%</span></div>
+    </div>
+
+    <!-- Workload Intensity Warning -->
+    <div style="padding:10px 14px; border-bottom:1px solid #e2e8f0; background:#fff;">
+      <div style="font-size:11px; font-weight:700; color:#374151; margin-bottom:6px;">⚡ Workload Intensity</div>
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+        <div style="flex:1; background:#e2e8f0; border-radius:6px; height:10px; position:relative;">
+          <div style="width:${hpdPct}%; background:${hrsPerDay > hpdSafe ? '#ef4444' : '#22c55e'}; height:10px; border-radius:6px;"></div>
+          <div style="position:absolute; left:${thresholdPct}%; top:-3px; width:2px; height:16px; background:#f59e0b;" title="8.5 hrs/day threshold"></div>
+        </div>
+        <span style="font-size:12px; font-weight:800; color:${hrsPerDay > hpdSafe ? '#dc2626' : '#16a34a'}; white-space:nowrap;">${hrsPerDay.toFixed(1)} hrs/day</span>
+      </div>
+      <div style="font-size:10.5px; color:${hrsPerDay > hpdSafe ? '#dc2626' : '#16a34a'}; font-weight:600;">
+        ${hrsPerDay > hpdSafe ? `⚠️ ${hrsPerDay.toFixed(1)} hrs/day — exceeds the 8.5 hrs/day safe threshold by ${(hrsPerDay - hpdSafe).toFixed(1)} hrs` : `✅ ${hrsPerDay.toFixed(1)} hrs/day — within safe threshold (≤ 8.5 hrs/day)`}
+      </div>
+      ${warnings.filter(w => !w.includes('Workload')).map(w => `<div style="font-size:10.5px; color:#b45309; margin-top:3px;">${w}</div>`).join('')}
+    </div>
+
+    <!-- SHAP Drivers -->
+    <div style="padding:10px 14px; border-bottom:1px solid #e2e8f0;">
+      <div style="font-size:11px; font-weight:700; color:#374151; margin-bottom:6px;">🔍 Why this score? (SHAP Risk Drivers)</div>
+      ${drivers.map(d => `
+        <div style="margin-bottom:6px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:2px;">
+            <span style="font-size:11px; font-weight:700; color:#1e293b;">${d.key}</span>
+            <span style="font-size:10px; font-weight:800; color:#2563eb; background:#eff6ff; padding:1px 6px; border-radius:8px;">${d.impact}% weight</span>
+          </div>
+          <div style="background:#f1f5f9; border-radius:5px; height:5px; margin-bottom:3px;">
+            <div style="width:${d.impact}%; background:#2563eb; height:5px; border-radius:5px;"></div>
+          </div>
+          <div style="font-size:10.5px; color:#64748b;">${d.detail.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <!-- Mitigation Action -->
+    <div style="padding:10px 14px; background:${mitigationColor}; border-bottom:1px solid #e2e8f0;">
+      <div style="font-size:11px; font-weight:700; color:#374151; margin-bottom:4px;">🛡️ Recommended Mitigation Action</div>
+      <div style="font-size:11.5px; font-weight:600; color:#1e293b;">${mitigation}</div>
+    </div>
+
+    <!-- Export + Save buttons -->
+    <div style="padding:8px 14px; background:#f8fafc; display:flex; gap:6px; flex-wrap:wrap; border-bottom:1px solid #e2e8f0;">
+      <button onclick="saveSimScenario(${JSON.stringify(params).replace(/"/g,'&quot;')}, ${JSON.stringify({score,tier,hrsPerDay}).replace(/"/g,'&quot;')})" style="background:#2563eb; border:none; color:#fff; font-size:10.5px; font-weight:700; padding:5px 10px; border-radius:6px; cursor:pointer;">💾 Save Scenario</button>
+      <button onclick="exportScenariosToExcel()" style="background:#16a34a; border:none; color:#fff; font-size:10.5px; font-weight:700; padding:5px 10px; border-radius:6px; cursor:pointer;">📊 Export Excel</button>
+      <button onclick="exportScenariosToPDF()" style="background:#7c3aed; border:none; color:#fff; font-size:10.5px; font-weight:700; padding:5px 10px; border-radius:6px; cursor:pointer;">📄 Export PDF</button>
+    </div>
+
+    <!-- Follow-up prompts -->
+    <div style="padding:8px 14px; background:#f0f9ff;">
+      <div style="font-size:10.5px; color:#0369a1; font-weight:700; margin-bottom:5px;">💬 Want to explore further?</div>
+      <div style="display:flex; flex-wrap:wrap; gap:5px;">
+        ${followUps.slice(0,3).map(f => `<button onclick="askAIQuickPrompt('What if I ${f}?')" style="background:#fff; border:1px solid #bae6fd; border-radius:12px; padding:3px 9px; font-size:10.5px; font-weight:600; color:#0369a1; cursor:pointer;">What if I ${f}?</button>`).join('')}
+        ${simScenarios.length >= 1 ? `<button onclick="askAIQuickPrompt('Compare all scenarios')" style="background:#fff; border:1px solid #a5b4fc; border-radius:12px; padding:3px 9px; font-size:10.5px; font-weight:600; color:#4f46e5; cursor:pointer;">📊 Compare all scenarios</button>` : ''}
+      </div>
+    </div>
+  `;
+  return bubble;
+}
+
+// --- Render multi-scenario comparison table ---
+function renderScenarioComparison() {
+  if (simScenarios.length < 2) return null;
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'background:#fff; border:1.5px solid #e2e8f0; border-radius:14px; font-size:12px; max-width:96%; align-self:flex-start; overflow:hidden;';
+
+  const tierColor = t => t === 'HIGH' ? '#dc2626' : t === 'MEDIUM' ? '#d97706' : '#16a34a';
+  const rows = simScenarios.map((s, i) => `
+    <tr>
+      <td style="padding:7px 10px; font-weight:700; white-space:nowrap;">Scenario #${i+1}</td>
+      <td style="padding:7px 10px;">${s.params.disc}</td>
+      <td style="padding:7px 10px;">${s.params.hours}h / ${s.params.days}d</td>
+      <td style="padding:7px 10px;">${s.params.priority}</td>
+      <td style="padding:7px 10px; font-weight:800; color:${tierColor(s.result.tier)};">${s.result.score}%</td>
+      <td style="padding:7px 10px;"><span style="background:${tierColor(s.result.tier)}; color:#fff; font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px;">${s.result.tier}</span></td>
+      <td style="padding:7px 10px; color:${s.result.hrsPerDay > 8.5 ? '#dc2626' : '#16a34a'}; font-weight:700;">${s.result.hrsPerDay.toFixed(1)} h/d</td>
+    </tr>
+  `).join('');
+
+  wrap.innerHTML = `
+    <div style="background:linear-gradient(135deg,#0f172a,#1e3a5f); color:#fff; padding:10px 14px; font-weight:800; font-size:13px;">📊 Multi-Scenario Comparison (${simScenarios.length} scenarios)</div>
+    <div style="overflow-x:auto; padding:4px;">
+      <table style="width:100%; border-collapse:collapse; font-size:11.5px;">
+        <thead><tr style="background:#f8fafc; border-bottom:2px solid #e2e8f0;">
+          <th style="padding:7px 10px; text-align:left; font-weight:700;">Scenario</th>
+          <th style="padding:7px 10px; text-align:left; font-weight:700;">Disc</th>
+          <th style="padding:7px 10px; text-align:left; font-weight:700;">Hrs/Days</th>
+          <th style="padding:7px 10px; text-align:left; font-weight:700;">Priority</th>
+          <th style="padding:7px 10px; text-align:left; font-weight:700;">Score</th>
+          <th style="padding:7px 10px; text-align:left; font-weight:700;">Tier</th>
+          <th style="padding:7px 10px; text-align:left; font-weight:700;">Intensity</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <div style="padding:8px 14px; background:#f8fafc; display:flex; gap:6px; border-top:1px solid #e2e8f0;">
+      <button onclick="exportScenariosToExcel()" style="background:#16a34a; border:none; color:#fff; font-size:10.5px; font-weight:700; padding:5px 10px; border-radius:6px; cursor:pointer;">📊 Export All to Excel</button>
+      <button onclick="exportScenariosToPDF()" style="background:#7c3aed; border:none; color:#fff; font-size:10.5px; font-weight:700; padding:5px 10px; border-radius:6px; cursor:pointer;">📄 Export PDF</button>
+      <button onclick="simScenarios=[]; addChatBubble('Scenarios cleared. Start a new simulation.', 'bot')" style="background:#dc2626; border:none; color:#fff; font-size:10.5px; font-weight:700; padding:5px 10px; border-radius:6px; cursor:pointer;">🗑 Clear All</button>
+    </div>
+  `;
+  return wrap;
+}
+
+// --- Save scenario to store ---
+function saveSimScenario(params, result) {
+  if (simScenarios.length >= 3) simScenarios.shift(); // keep max 3
+  simScenarios.push({ params, result });
+  const mc = document.getElementById('ai-chat-messages');
+  if (!mc) return;
+  const note = document.createElement('div');
+  note.style.cssText = 'background:#f0fdf4; border:1px solid #86efac; color:#166534; padding:6px 12px; border-radius:10px; font-size:11px; font-weight:600; align-self:flex-start;';
+  note.textContent = `✅ Scenario #${simScenarios.length} saved (${simScenarios.length}/3). ${simScenarios.length >= 2 ? 'Type "compare scenarios" to see comparison.' : 'Add more scenarios or export.'}`;
+  mc.appendChild(note);
+  requestAnimationFrame(() => { mc.scrollTop = mc.scrollHeight; });
+}
+
+// --- Export to CSV/Excel ---
+function exportScenariosToExcel() {
+  const data = simScenarios.length ? simScenarios : [];
+  if (!data.length) { alert('No saved scenarios to export. Run a simulation and click "Save Scenario" first.'); return; }
+  const header = 'Scenario,Discipline,Hours,Days,Priority,Risk Tier,Delay Score (%),Risk Category,Workload (hrs/day),Safe Threshold,Mitigation\n';
+  const rows = data.map((s, i) => {
+    const tier = s.result.tier;
+    const mit = tier === 'HIGH' ? 'NOTIFY_PM + REALLOCATE_RESOURCE' : tier === 'MEDIUM' ? 'SCHEDULE_STATUS_MEETING + Daily Updates' : 'Standard Weekly Monitoring';
+    return `"Scenario #${i+1}","${s.params.disc}","${s.params.hours}","${s.params.days}","${s.params.priority}","${s.params.risk}","${s.result.score}","${tier}","${s.result.hrsPerDay.toFixed(1)}","8.5","${mit}"`;
+  }).join('\n');
+  const blob = new Blob([header + rows], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'InterTech_WhatIf_Scenarios.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// --- Export to PDF (print-ready) ---
+function exportScenariosToPDF() {
+  const data = simScenarios.length ? simScenarios : [];
+  if (!data.length) { alert('No saved scenarios to export. Run a simulation and click "Save Scenario" first.'); return; }
+  const tierColor = t => t === 'HIGH' ? '#dc2626' : t === 'MEDIUM' ? '#d97706' : '#16a34a';
+  const rows = data.map((s,i) => `
+    <tr><td>#${i+1}</td><td>${s.params.disc}</td><td>${s.params.hours}h / ${s.params.days}d</td>
+    <td>${s.params.priority}</td><td>${s.params.risk}</td>
+    <td style="color:${tierColor(s.result.tier)};font-weight:800">${s.result.score}%</td>
+    <td style="color:${tierColor(s.result.tier)};font-weight:800">${s.result.tier}</td>
+    <td style="color:${s.result.hrsPerDay>8.5?'#dc2626':'#16a34a'}">${s.result.hrsPerDay.toFixed(1)}</td></tr>
+  `).join('');
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html><html><head><title>InterTech What-If Scenarios</title><style>
+    body{font-family:Arial,sans-serif;padding:24px;color:#1e293b}
+    h1{font-size:20px;border-bottom:2px solid #2563eb;padding-bottom:8px}
+    table{border-collapse:collapse;width:100%;margin-top:16px}
+    th{background:#0f172a;color:#fff;padding:8px 10px;text-align:left;font-size:12px}
+    td{padding:7px 10px;border-bottom:1px solid #e2e8f0;font-size:12px}
+    tr:nth-child(even)td{background:#f8fafc}
+    .footer{margin-top:24px;font-size:11px;color:#94a3b8}
+  </style></head><body>
+    <h1>🔬 InterTech What-If Scenario Report</h1>
+    <p style="font-size:12px;color:#64748b">Generated: ${new Date().toLocaleString()} | PRJ001 ML Intelligence Engine</p>
+    <table><thead><tr><th>#</th><th>Disc</th><th>Hrs/Days</th><th>Priority</th><th>Risk</th><th>Score</th><th>Tier</th><th>Intensity</th></tr></thead>
+    <tbody>${rows}</tbody></table>
+    <div class="footer">Calibrated Random Forest Model (72.0% Acc, 77.8% AUC) | Safe workload threshold: 8.5 hrs/day</div>
+  </body></html>`);
+  win.document.close();
+  setTimeout(() => win.print(), 400);
+}
+
+// --- Helper: add a simple text bubble to chat ---
+function addChatBubble(text, type) {
+  const mc = document.getElementById('ai-chat-messages');
+  if (!mc) return;
+  const el = document.createElement('div');
+  if (type === 'bot') {
+    el.style.cssText = 'background:#ffffff; border:1px solid var(--border-light); padding:10px 14px; border-radius:12px; font-size:12px; max-width:92%; align-self:flex-start; word-break:break-word; line-height:1.6;';
+    el.innerHTML = text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  } else {
+    el.style.cssText = 'background:var(--brand-primary); color:#fff; padding:10px 14px; border-radius:12px; font-size:12px; max-width:85%; align-self:flex-end; font-weight:500;';
+    el.innerText = text;
+  }
+  mc.appendChild(el);
+  requestAnimationFrame(() => { mc.scrollTop = mc.scrollHeight; });
+  return el;
+}
+
+/* =========================================================
+   ASSISTANT: Fallback NLP Reply Engine
+   ========================================================= */
 function getAssistantFallbackReply(userText, datasetMode, tasks) {
   const isTestData = (datasetMode === 'test');
   const openHighRisk = (tasks || []).filter(t => t.cat === 'HIGH' || t.risk_cat === 'HIGH');
@@ -5875,7 +6258,7 @@ function getAssistantFallbackReply(userText, datasetMode, tasks) {
       `- **Gradient Boosting**: Accuracy **70.2%**, F1 **66.1%**, AUC **74.6%**\n` +
       `- **XGBoost Classifier**: Accuracy **69.5%**, F1 **66.4%**, AUC **75.7%**\n` +
       `- **Naive Baseline (Flag All High Risk)**: Accuracy **43.6%** (Model Lift: **+28.4 pp**)`;
-  } else if (lower.includes("delay rate") || lower.includes("discipline") || lower.includes("site") || lower.includes("mep")) {
+  } else if (lower.includes("delay rate") || lower.includes("discipline breakdown") || lower.includes("mep rate")) {
     const discCounts = {};
     (tasks || []).forEach(t => {
       const d = t.disc || t.discipline || 'General';
@@ -5888,20 +6271,28 @@ function getAssistantFallbackReply(userText, datasetMode, tasks) {
         const rate = info.total ? ((info.high / info.total) * 100).toFixed(1) : 0;
         return `- **${disc}**: ${rate}% High-Risk rate (${info.high} high-risk out of ${info.total} total tasks)`;
       }).join("\n");
-  } else if (lower.includes("mitigation") || lower.includes("action") || lower.includes("reallocate")) {
+  } else if (lower.includes("mitigation") || lower.includes("reallocate") || lower.includes("notify pm")) {
     return `**Mitigation Protocols per Problem Statement:**\n` +
-      `- **High-Risk Tasks (Probability >= 70%)**: Trigger action tag \`NOTIFY_PM + REALLOCATE_RESOURCE\`. Notify PM via SMTP alert and reallocate senior personnel from completed or low/medium-risk projects.\n` +
-      `- **Medium-Risk Tasks (40% - 69%)**: Trigger action tag \`SCHEDULE_STATUS_MEETING\`. Schedule mandatory sync with discipline leads and require daily progress updates.\n` +
-      `- **Low-Risk Tasks (< 40%)**: Monitor weekly in standard progress meetings.`;
+      `- **High-Risk Tasks (Probability >= 70%)**: Trigger \`NOTIFY_PM + REALLOCATE_RESOURCE\`. Alert PM via SMTP and reallocate senior personnel.\n` +
+      `- **Medium-Risk Tasks (40%–69%)**: Trigger \`SCHEDULE_STATUS_MEETING\`. Mandatory sync with discipline leads + daily updates.\n` +
+      `- **Low-Risk Tasks (< 40%)**: Standard weekly monitoring in progress meetings.`;
+  } else if (lower.includes('help') || lower.includes('what can you do') || lower.includes('commands')) {
+    return `**AI Assistant — Available Commands:**\n\n` +
+      `**🔬 What-If Simulator** (try any of these):\n- "Simulate MEP task 120 hours 14 days high priority"\n- "What if STR 80 hours 10 days medium risk?"\n- "Compare all scenarios"\n\n` +
+      `**📊 Data Queries:**\n- "High risk tasks" — list current HIGH risk tasks\n- "Model metrics" — compare ML models\n- "Discipline breakdown" — delay rates by discipline\n- "Mitigation actions" — PM protocols`;
   } else {
     return `**Project PRJ001 Delay Intelligence Snapshot (${isTestData ? 'Mode: Test Data' : 'Mode: Train Data'}):**\n` +
       `- **Active Dataset**: ${isTestData ? 'Test Data (Imported Predictions)' : 'Train Data (Historical Dataset)'}\n` +
       `- **Total Analyzed Tasks**: ${(tasks || []).length}\n` +
       `- **High-Risk Tasks**: ${openHighRisk.length}\n` +
-      `- **Champion Model**: Calibrated Random Forest (72.0% Acc, 77.8% AUC)`;
+      `- **Champion Model**: Calibrated Random Forest (72.0% Acc, 77.8% AUC)\n\n` +
+      `💡 **Tip**: Type "simulate MEP task 120 hours 14 days" to run a What-If scenario, or "help" for all commands.`;
   }
 }
 
+/* =========================================================
+   CHAT: Message Handler (enhanced with simulator routing)
+   ========================================================= */
 async function sendAIChatMessage() {
   if (isAIChatBusy) return;
   const input = document.getElementById('ai-chat-input');
@@ -5916,6 +6307,7 @@ async function sendAIChatMessage() {
   if (sendBtn) sendBtn.disabled = true;
   input.disabled = true;
 
+  // User bubble
   const userBubble = document.createElement('div');
   userBubble.style.cssText = 'background:var(--brand-primary); color:#ffffff; padding:10px 14px; border-radius:12px; font-size:12px; max-width:85%; align-self:flex-end; word-break:break-word; font-weight:500;';
   userBubble.innerText = userText;
@@ -5924,25 +6316,55 @@ async function sendAIChatMessage() {
 
   const thinkingBubble = document.createElement('div');
   thinkingBubble.style.cssText = 'background:#f1f5f9; border:1px solid var(--border-light); color:var(--text-subtle); padding:8px 12px; border-radius:10px; font-size:11px; max-width:75%; align-self:flex-start; font-style:italic;';
-  thinkingBubble.innerText = 'Analyzing project intelligence dataset...';
+  thinkingBubble.innerText = detectWhatIfIntent(userText) ? '🔬 Running What-If simulation...' : 'Analyzing project intelligence dataset...';
   messagesContainer.appendChild(thinkingBubble);
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
-  let botReply = '';
-  let citation = activeAssistantDatasetMode === 'test' ? 'Imported Predictions (Test Data)' : 'Historical Project Dataset (Train Data)';
   const tasks = (globalImportedData && globalImportedData.tasks) ? globalImportedData.tasks : (globalData ? globalData.tasks : []);
+  const lower = userText.toLowerCase();
+
+  // --- Scenario comparison shortcut ---
+  if ((lower.includes('compare') || lower.includes('comparison')) && simScenarios.length >= 2) {
+    thinkingBubble.remove();
+    const compEl = renderScenarioComparison();
+    if (compEl) messagesContainer.appendChild(compEl);
+    requestAnimationFrame(() => { messagesContainer.scrollTop = messagesContainer.scrollHeight; });
+    isAIChatBusy = false;
+    if (sendBtn) sendBtn.disabled = false;
+    input.disabled = false;
+    appendInteractiveOptionsToChat();
+    return;
+  }
+
+  // --- What-If Simulator path ---
+  if (detectWhatIfIntent(userText)) {
+    await new Promise(r => setTimeout(r, 500)); // brief thinking delay
+    thinkingBubble.remove();
+
+    const params = parseSimulatorParams(userText);
+    const result = calculateWhatIfRisk(params);
+    const scenarioNum = simScenarios.length + 1;
+    const simBubble = renderWhatIfBubble(params, result, scenarioNum);
+    messagesContainer.appendChild(simBubble);
+    requestAnimationFrame(() => { messagesContainer.scrollTop = messagesContainer.scrollHeight; });
+
+    isAIChatBusy = false;
+    if (sendBtn) sendBtn.disabled = false;
+    input.disabled = false;
+    appendInteractiveOptionsToChat();
+    return;
+  }
+
+  // --- Standard assistant path (API → fallback) ---
+  let botReply = '';
+  const citation = activeAssistantDatasetMode === 'test' ? 'Imported Predictions (Test Data)' : 'Historical Project Dataset (Train Data)';
 
   try {
     const resp = await fetch('/api/assistant', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: userText,
-        dataset_mode: activeAssistantDatasetMode,
-        tasks: tasks
-      })
+      body: JSON.stringify({ message: userText, dataset_mode: activeAssistantDatasetMode, tasks })
     });
-
     if (resp.ok) {
       const data = await resp.json();
       botReply = data.reply;
