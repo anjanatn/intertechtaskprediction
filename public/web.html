@@ -5341,1770 +5341,440 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
  }
 
  function clearAIChat() {
- initAIChat();
-
- /* =========================================================================
- ANTIGRAVITY ENHANCEMENTS: SANDBOX, ROI, JIRA, MODEL REGISTRY, SITE VIEW
- ========================================================================= */
- let appMode = 'production'; // 'production' | 'sandbox'
- let sandboxThreshold = 70;
-
- function setAppMode(mode) {
- appMode = mode;
- const btnProd = document.getElementById("btn-mode-prod");
- const btnSand = document.getElementById("btn-mode-sandbox");
- const banner = document.getElementById("sandbox-banner");
-
- if (mode === 'sandbox') {
- if (btnProd) { btnProd.classList.remove("active"); btnProd.style.background = "transparent"; btnProd.style.color = "#94a3b8"; }
- if (btnSand) { btnSand.classList.add("active"); btnSand.style.background = "#6366f1"; btnSand.style.color = "#ffffff"; }
- if (banner) banner.style.display = "flex";
- } else {
- if (btnSand) { btnSand.classList.remove("active"); btnSand.style.background = "transparent"; btnSand.style.color = "#94a3b8"; }
- if (btnProd) { btnProd.classList.add("active"); btnProd.style.background = "#2563eb"; btnProd.style.color = "#ffffff"; }
- if (banner) banner.style.display = "none";
- sandboxThreshold = 70;
- }
- reclassifyTasksAndRender();
- }
-
- function updateSandboxThreshold(val) {
- sandboxThreshold = parseInt(val, 10);
- document.getElementById("threshold-val-display").innerText = val + "%";
- reclassifyTasksAndRender();
- }
-
- function reclassifyTasksAndRender() {
- if (!globalData || !globalData.tasks) return;
- 
- const cutoff = appMode === 'sandbox' ? sandboxThreshold : 70;
- let highCount = 0, medCount = 0, lowCount = 0;
-
- globalData.tasks.forEach(t => {
- if (t.score >= cutoff) {
- t.cat = 'HIGH';
- t.action = 'NOTIFY_PM + REALLOCATE_RESOURCE';
- highCount++;
- } else if (t.score >= 40) {
- t.cat = 'MEDIUM';
- t.action = 'SCHEDULE_STATUS_MEETING';
- medCount++;
- } else {
- t.cat = 'LOW';
- t.action = 'MONITOR_WEEKLY';
- lowCount++;
- }
- });
-
- if (document.getElementById("view-overview").classList.contains("active")) renderDashboard(globalData);
- if (document.getElementById("view-tasks").classList.contains("active")) renderTasksTable();
- if (document.getElementById("view-mitigation").classList.contains("active")) renderMitigationHub();
- if (document.getElementById("view-siteview").classList.contains("active")) renderSiteView();
- calculateROI();
- }
-
- function calculateROI() {
- const costPerDay = parseFloat(document.getElementById("roi-cost-per-day")?.value || 5000);
- const costPerIntervention = parseFloat(document.getElementById("roi-intervention-cost")?.value || 250);
- const successRate = (parseFloat(document.getElementById("roi-mitigation-success")?.value || 80)) / 100;
-
- const tasks = (globalImportedData && globalImportedData.tasks) ? globalImportedData.tasks : (globalData ? globalData.tasks : []);
- if (!tasks || !tasks.length) return;
-
- const highRiskTasks = tasks.filter(t => t.cat === 'HIGH');
- const medRiskTasks = tasks.filter(t => t.cat === 'MEDIUM');
- const totalAlerts = highRiskTasks.length + medRiskTasks.length;
-
- const avgDelayPerTask = (globalData && globalData.meta && globalData.meta.avg_delay_days) ? globalData.meta.avg_delay_days : 3.5;
- const daysSaved = highRiskTasks.length * avgDelayPerTask * successRate;
-
- const grossAvoided = daysSaved * costPerDay;
- const totalInterventionCost = (highRiskTasks.length * costPerIntervention) + (medRiskTasks.length * 100);
- const netBenefit = grossAvoided - totalInterventionCost;
- const roiRatio = totalInterventionCost > 0 ? (grossAvoided / totalInterventionCost) : 0;
-
- const grossElem = document.getElementById("roi-gross-avoided");
- const costElem = document.getElementById("roi-total-cost");
- const netElem = document.getElementById("roi-net-benefit");
- const ratioElem = document.getElementById("roi-ratio-display");
- const daysElem = document.getElementById("roi-days-saved");
- const alertsElem = document.getElementById("roi-alerts-acted");
-
- if (grossElem) grossElem.innerText = "$" + Math.round(grossAvoided).toLocaleString();
- if (costElem) costElem.innerText = "$" + Math.round(totalInterventionCost).toLocaleString();
- if (netElem) netElem.innerText = "$" + Math.round(netBenefit).toLocaleString();
- if (ratioElem) ratioElem.innerText = roiRatio.toFixed(1) + "x Return on Investment (" + Math.round((netBenefit / Math.max(totalInterventionCost, 1))*100).toLocaleString() + "% Net ROI)";
- if (daysElem) daysElem.innerText = daysSaved.toFixed(1) + " days delay prevented";
- if (alertsElem) alertsElem.innerText = totalAlerts + " risk alerts acted upon";
- }
-
- function renderSiteView() {
- const container = document.getElementById("site-view-cards-container");
- if (!container) return;
-
- const tasks = (globalImportedData && globalImportedData.tasks) ? globalImportedData.tasks : (globalData ? globalData.tasks : []);
- const highTasks = tasks.filter(t => t.cat === 'HIGH');
- const medTasks = tasks.filter(t => t.cat === 'MEDIUM');
-
- document.getElementById("site-high-count").innerText = highTasks.length;
- document.getElementById("site-med-count").innerText = medTasks.length;
- document.getElementById("site-actions-count").innerText = highTasks.length + medTasks.length;
-
- container.innerHTML = "";
- const priorityTasks = [...highTasks, ...medTasks].slice(0, 15);
-
- if (!priorityTasks.length) {
- container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-subtle);">No High/Medium risk tasks flagged for job site action.</div>`;
- return;
- }
-
- priorityTasks.forEach(t => {
- const isHigh = t.cat === 'HIGH';
- const card = document.createElement("div");
- card.style.cssText = `background:${isHigh ? '#fef2f2' : '#fffbeb'}; border:1px solid ${isHigh ? '#fca5a5' : '#fcd34d'}; border-radius:10px; padding:14px; position:relative;`;
- 
- const topDriver = t.shap_drivers && t.shap_drivers.length ? t.shap_drivers[0].feature : 'Workload / Priority';
-
- card.innerHTML = `
- <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:6px;">
- <span style="font-family:'JetBrains Mono',monospace; font-weight:800; font-size:12px; color:#2563eb;">${t.id}</span>
- <span class="${isHigh ? 'pill-high' : 'pill-med'}" style="font-size:10px; font-weight:800; padding:2px 8px; border-radius:12px;">${isHigh ? 'HIGH RISK' : 'MEDIUM RISK'} (${t.score}%)</span>
- </div>
- <div style="font-weight:700; font-size:14px; color:var(--text-main); margin-bottom:4px;">${t.desc}</div>
- <div style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">
- <strong>Discipline:</strong> ${t.disc} &bull; <strong>Site:</strong> ${t.location || 'Site'} &bull; <strong>Hours:</strong> ${t.hours || 40}h
- </div>
- <div style="background:rgba(255,255,255,0.7); padding:8px; border-radius:6px; font-size:11px; color:var(--text-main); margin-bottom:10px;">
- <strong>Top Risk Driver:</strong> ${topDriver}<br>
- <strong>Action Proposal:</strong> ${t.action}
- </div>
- <div style="display:flex; gap:8px;">
- <button class="btn btn-primary" onclick="openDrawerById('${t.id}')" style="font-size:11px; padding:6px 12px; flex:1;">Inspect Details</button>
- <a href="mailto:pm.intertech@gmail.com?subject=URGENT SITE ALERT: Task ${t.id}&body=Priority Action required for task ${t.id}: ${t.desc}" class="btn btn-outline" style="font-size:11px; padding:6px 12px; text-decoration:none; background:#fff;"> Notify PM</a>
- </div>
- `;
- container.appendChild(card);
- });
- }
-
- async function syncJiraTasks() {
- const btn = document.getElementById("btn-sync-jira");
- const statusDiv = document.getElementById("jira-sync-status");
- const url = document.getElementById("jira-url-input").value;
- const email = document.getElementById("jira-email-input").value;
- const token = document.getElementById("jira-token-input").value;
- const project = document.getElementById("jira-project-input").value || "PRJ001";
-
- if (btn) btn.disabled = true;
- if (statusDiv) { statusDiv.style.display = "block"; statusDiv.innerText = " Fetching issues from Jira Cloud REST API..."; statusDiv.style.color = "#2563eb"; }
-
- try {
- const resp = await fetch("/api/sync_integration", {
- method: "POST",
- headers: { "Content-Type": "application/json" },
- body: JSON.stringify({
- tool: "jira",
- config: { baseUrl: url, email, apiToken: token, project }
- })
- });
-
- const data = await resp.json();
- if (data.success && data.tasks) {
- const predictedPayload = predictTasksClientSide(data.tasks, `Jira_${project}_Export.csv`);
- renderImportedResults(predictedPayload);
- if (statusDiv) {
- statusDiv.style.color = "#16a34a";
- statusDiv.innerText = ` Successfully pulled & scored ${data.total_fetched} tasks from Jira project ${project}!`;
- }
- } else {
- throw new Error(data.error || "Failed to fetch from Jira");
- }
- } catch (err) {
- if (statusDiv) {
- statusDiv.style.color = "#dc2626";
- statusDiv.innerText = ` Jira Sync Error: ${err.message}. Using sample dataset fallback.`;
- }
- } finally {
- if (btn) btn.disabled = false;
- }
- }
-
- async function loadModelRegistry() {
- const container = document.getElementById("model-registry-list");
- if (!container) return;
-
- try {
- const resp = await fetch("/api/model_registry");
- const reg = await resp.json();
-
- if (reg.vercel_mode) {
- container.innerHTML = `<div style="padding:10px; background:#eff6ff; border-radius:6px; color:#1e40af;">${reg.info}</div>`;
- return;
- }
-
- if (!Array.isArray(reg) || !reg.length) {
- container.innerHTML = `<div>No model snapshots stored yet. Run retrain to record initial snapshot.</div>`;
- return;
- }
-
- let html = `<table style="width:100%; border-collapse:collapse; font-size:11px; margin-top:8px;">
- <thead>
- <tr style="background:var(--bg-subtle); text-align:left;">
- <th style="padding:6px;">Ver</th>
- <th style="padding:6px;">Date</th>
- <th style="padding:6px;">Champion</th>
- <th style="padding:6px;">F1 Score</th>
- <th style="padding:6px;">Recall</th>
- <th style="padding:6px;">Status</th>
- <th style="padding:6px;">Action</th>
- </tr>
- </thead>
- <tbody>`;
-
- reg.reverse().forEach(item => {
- const isActive = item.active;
- const dateStr = item.date ? item.date.replace("T", " ").substring(0, 16) : "-";
- html += `
- <tr style="border-bottom:1px solid var(--border-light); ${isActive ? 'background:#f0fdf4; font-weight:700;' : ''}">
- <td style="padding:6px;">v${item.version}</td>
- <td style="padding:6px;">${dateStr}</td>
- <td style="padding:6px;">${item.champion}</td>
- <td style="padding:6px;">${item.f1}%</td>
- <td style="padding:6px;">${item.recall}%</td>
- <td style="padding:6px;">${isActive ? '<span class="pill pill-low">ACTIVE</span>' : '<span style="color:#64748b;">Archived</span>'}</td>
- <td style="padding:6px;">
- ${isActive ? '—' : `<button class="btn btn-outline" style="padding:1px 6px; font-size:10px;" onclick="activateModelVersion(${item.version})">Rollback</button>`}
- </td>
- </tr>
- `;
- });
-
- html += `</tbody></table>`;
- container.innerHTML = html;
- } catch (err) {
- container.innerHTML = `<div style="color:#dc2626;">Error loading model registry: ${err.message}</div>`;
- }
- }
-
- async function activateModelVersion(ver) {
- if (!confirm(`Are you sure you want to rollback to Model Version v${ver}?`)) return;
- try {
- const resp = await fetch("/api/model_registry", {
- method: "POST",
- headers: { "Content-Type": "application/json" },
- body: JSON.stringify({ activate_version: ver })
- });
- const res = await resp.json();
- if (res.success) {
- alert(`Successfully rolled back to Model Version v${ver}!`);
- await fetchData();
- loadModelRegistry();
- } else {
- alert(`Rollback failed: ${res.error}`);
- }
- } catch (e) {
- alert(`Rollback error: ${e.message}`);
- }
- }
-
- function debounce(func, wait) {
- let timeout;
- return function executedFunction(...args) {
- const later = () => {
- clearTimeout(timeout);
- func(...args);
- };
- clearTimeout(timeout);
- timeout = setTimeout(later, wait);
- };
- }
-
- const debouncedFilterTasks = debounce(filterTasks, 200);
-
- document.addEventListener("DOMContentLoaded", function() {
- const searchInput = document.getElementById("task-search-input");
- if (searchInput) {
- searchInput.oninput = debouncedFilterTasks;
- }
- setTimeout(calculateROI, 1500);
- });
-
- }
-
- function setAssistantDatasetMode(mode) {
- activeAssistantDatasetMode = mode;
- const testBtn = document.getElementById('btn-mode-test');
- const trainBtn = document.getElementById('btn-mode-train');
- if (testBtn && trainBtn) {
- testBtn.style.background = mode === 'test' ? 'var(--brand-primary)' : 'var(--bg-subtle)';
- testBtn.style.color = mode === 'test' ? '#ffffff' : 'var(--brand-primary)';
- testBtn.innerText = mode === 'test' ? ' Test Data (Active)' : ' Test Data';
-
- trainBtn.style.background = mode === 'train' ? 'var(--brand-primary)' : 'var(--bg-subtle)';
- trainBtn.style.color = mode === 'train' ? '#ffffff' : 'var(--brand-primary)';
- trainBtn.innerText = mode === 'train' ? '️ Train Data (Active)' : '️ Train Data';
- }
-
- const messagesContainer = document.getElementById('ai-chat-messages');
- if (!messagesContainer) return;
-
- const modeMsg = document.createElement('div');
- modeMsg.style.cssText = 'background:#f0f9ff; border:1px solid #bae6fd; color:#0369a1; padding:8px 12px; border-radius:10px; font-size:12px; max-width:88%; align-self:flex-start; font-weight:600;';
- modeMsg.innerText = `️ Active Dataset Mode set to: ${mode === 'test' ? 'Test Data (Imported Predictions)' : 'Train Data (Historical Dataset)'}. All diagnostic queries will analyze ${mode === 'test' ? 'Test Data' : 'Train Data'}.`;
- messagesContainer.appendChild(modeMsg);
- messagesContainer.scrollTop = messagesContainer.scrollHeight;
- }
-
- function appendInteractiveOptionsToChat() {
- const messagesContainer = document.getElementById('ai-chat-messages');
- if (!messagesContainer) return;
-
- const existingOptions = document.getElementById('chat-inline-options-block');
- if (existingOptions) existingOptions.remove();
-
- const modeLabel = activeAssistantDatasetMode === 'test' ? ' Test' : '️ Train';
- const switchLabel = activeAssistantDatasetMode === 'test' ? ' Switch to Train' : ' Switch to Test';
- const switchMode = activeAssistantDatasetMode === 'test' ? 'train' : 'test';
-
- const optionsBlock = document.createElement('div');
- optionsBlock.id = 'chat-inline-options-block';
- optionsBlock.style.cssText = 'flex-shrink:0; padding:6px 8px; background:#f8fafc; border:1px solid var(--border-light); border-radius:10px; display:flex; flex-wrap:wrap; gap:5px; max-width:100%;';
-
- optionsBlock.innerHTML = `
- <span style="font-size:10px; font-weight:700; color:var(--text-subtle); width:100%; padding-bottom:2px;">▸ Ask next (${modeLabel} mode):</span>
- <button onclick="askAIQuickPrompt('Which open tasks are at highest risk?')" style="background:#ffffff; border:1px solid #bfdbfe; border-radius:14px; padding:3px 9px; font-size:11px; font-weight:600; color:#1d4ed8; cursor:pointer;"> High risk tasks</button>
- <button onclick="askAIQuickPrompt('Compare model metrics')" style="background:#ffffff; border:1px solid #bfdbfe; border-radius:14px; padding:3px 9px; font-size:11px; font-weight:600; color:#1d4ed8; cursor:pointer;"> Model metrics</button>
- <button onclick="askAIQuickPrompt('What is the delay rate by discipline?')" style="background:#ffffff; border:1px solid #bfdbfe; border-radius:14px; padding:3px 9px; font-size:11px; font-weight:600; color:#1d4ed8; cursor:pointer;">️ Delay by discipline</button>
- <button onclick="askAIQuickPrompt('What mitigation action is required for high risk tasks?')" style="background:#ffffff; border:1px solid #bfdbfe; border-radius:14px; padding:3px 9px; font-size:11px; font-weight:600; color:#1d4ed8; cursor:pointer;">Mitigation actions</button>
- <button onclick="setAssistantDatasetMode('${switchMode}')" style="background:#fffbeb; border:1px solid #fde68a; border-radius:14px; padding:3px 9px; font-size:11px; font-weight:700; color:#b45309; cursor:pointer;">${switchLabel}</button>
- `;
-
- messagesContainer.appendChild(optionsBlock);
- // Use RAF to ensure scroll happens after layout paint
- requestAnimationFrame(() => {
- messagesContainer.scrollTop = messagesContainer.scrollHeight;
- });
- }
-
- function toggleAIDiagnosticsWidget() {
- const panel = document.getElementById('ai-diagnostics-panel');
- if (!panel) return;
- if (panel.style.display === 'none' || panel.style.display === '') {
- panel.style.display = 'flex';
- initAIChat();
-
- /* =========================================================================
- ANTIGRAVITY ENHANCEMENTS: SANDBOX, ROI, JIRA, MODEL REGISTRY, SITE VIEW
- ========================================================================= */
- let appMode = 'production'; // 'production' | 'sandbox'
- let sandboxThreshold = 70;
-
- function setAppMode(mode) {
- appMode = mode;
- const btnProd = document.getElementById("btn-mode-prod");
- const btnSand = document.getElementById("btn-mode-sandbox");
- const banner = document.getElementById("sandbox-banner");
-
- if (mode === 'sandbox') {
- if (btnProd) { btnProd.classList.remove("active"); btnProd.style.background = "transparent"; btnProd.style.color = "#94a3b8"; }
- if (btnSand) { btnSand.classList.add("active"); btnSand.style.background = "#6366f1"; btnSand.style.color = "#ffffff"; }
- if (banner) banner.style.display = "flex";
- } else {
- if (btnSand) { btnSand.classList.remove("active"); btnSand.style.background = "transparent"; btnSand.style.color = "#94a3b8"; }
- if (btnProd) { btnProd.classList.add("active"); btnProd.style.background = "#2563eb"; btnProd.style.color = "#ffffff"; }
- if (banner) banner.style.display = "none";
- sandboxThreshold = 70;
- }
- reclassifyTasksAndRender();
- }
-
- function updateSandboxThreshold(val) {
- sandboxThreshold = parseInt(val, 10);
- document.getElementById("threshold-val-display").innerText = val + "%";
- reclassifyTasksAndRender();
- }
-
- function reclassifyTasksAndRender() {
- if (!globalData || !globalData.tasks) return;
- 
- const cutoff = appMode === 'sandbox' ? sandboxThreshold : 70;
- let highCount = 0, medCount = 0, lowCount = 0;
-
- globalData.tasks.forEach(t => {
- if (t.score >= cutoff) {
- t.cat = 'HIGH';
- t.action = 'NOTIFY_PM + REALLOCATE_RESOURCE';
- highCount++;
- } else if (t.score >= 40) {
- t.cat = 'MEDIUM';
- t.action = 'SCHEDULE_STATUS_MEETING';
- medCount++;
- } else {
- t.cat = 'LOW';
- t.action = 'MONITOR_WEEKLY';
- lowCount++;
- }
- });
-
- if (document.getElementById("view-overview").classList.contains("active")) renderDashboard(globalData);
- if (document.getElementById("view-tasks").classList.contains("active")) renderTasksTable();
- if (document.getElementById("view-mitigation").classList.contains("active")) renderMitigationHub();
- if (document.getElementById("view-siteview").classList.contains("active")) renderSiteView();
- calculateROI();
- }
-
- function calculateROI() {
- const costPerDay = parseFloat(document.getElementById("roi-cost-per-day")?.value || 5000);
- const costPerIntervention = parseFloat(document.getElementById("roi-intervention-cost")?.value || 250);
- const successRate = (parseFloat(document.getElementById("roi-mitigation-success")?.value || 80)) / 100;
-
- const tasks = (globalImportedData && globalImportedData.tasks) ? globalImportedData.tasks : (globalData ? globalData.tasks : []);
- if (!tasks || !tasks.length) return;
-
- const highRiskTasks = tasks.filter(t => t.cat === 'HIGH');
- const medRiskTasks = tasks.filter(t => t.cat === 'MEDIUM');
- const totalAlerts = highRiskTasks.length + medRiskTasks.length;
-
- const avgDelayPerTask = (globalData && globalData.meta && globalData.meta.avg_delay_days) ? globalData.meta.avg_delay_days : 3.5;
- const daysSaved = highRiskTasks.length * avgDelayPerTask * successRate;
-
- const grossAvoided = daysSaved * costPerDay;
- const totalInterventionCost = (highRiskTasks.length * costPerIntervention) + (medRiskTasks.length * 100);
- const netBenefit = grossAvoided - totalInterventionCost;
- const roiRatio = totalInterventionCost > 0 ? (grossAvoided / totalInterventionCost) : 0;
-
- const grossElem = document.getElementById("roi-gross-avoided");
- const costElem = document.getElementById("roi-total-cost");
- const netElem = document.getElementById("roi-net-benefit");
- const ratioElem = document.getElementById("roi-ratio-display");
- const daysElem = document.getElementById("roi-days-saved");
- const alertsElem = document.getElementById("roi-alerts-acted");
-
- if (grossElem) grossElem.innerText = "$" + Math.round(grossAvoided).toLocaleString();
- if (costElem) costElem.innerText = "$" + Math.round(totalInterventionCost).toLocaleString();
- if (netElem) netElem.innerText = "$" + Math.round(netBenefit).toLocaleString();
- if (ratioElem) ratioElem.innerText = roiRatio.toFixed(1) + "x Return on Investment (" + Math.round((netBenefit / Math.max(totalInterventionCost, 1))*100).toLocaleString() + "% Net ROI)";
- if (daysElem) daysElem.innerText = daysSaved.toFixed(1) + " days delay prevented";
- if (alertsElem) alertsElem.innerText = totalAlerts + " risk alerts acted upon";
- }
-
- function renderSiteView() {
- const container = document.getElementById("site-view-cards-container");
- if (!container) return;
-
- const tasks = (globalImportedData && globalImportedData.tasks) ? globalImportedData.tasks : (globalData ? globalData.tasks : []);
- const highTasks = tasks.filter(t => t.cat === 'HIGH');
- const medTasks = tasks.filter(t => t.cat === 'MEDIUM');
-
- document.getElementById("site-high-count").innerText = highTasks.length;
- document.getElementById("site-med-count").innerText = medTasks.length;
- document.getElementById("site-actions-count").innerText = highTasks.length + medTasks.length;
-
- container.innerHTML = "";
- const priorityTasks = [...highTasks, ...medTasks].slice(0, 15);
-
- if (!priorityTasks.length) {
- container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-subtle);">No High/Medium risk tasks flagged for job site action.</div>`;
- return;
- }
-
- priorityTasks.forEach(t => {
- const isHigh = t.cat === 'HIGH';
- const card = document.createElement("div");
- card.style.cssText = `background:${isHigh ? '#fef2f2' : '#fffbeb'}; border:1px solid ${isHigh ? '#fca5a5' : '#fcd34d'}; border-radius:10px; padding:14px; position:relative;`;
- 
- const topDriver = t.shap_drivers && t.shap_drivers.length ? t.shap_drivers[0].feature : 'Workload / Priority';
-
- card.innerHTML = `
- <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:6px;">
- <span style="font-family:'JetBrains Mono',monospace; font-weight:800; font-size:12px; color:#2563eb;">${t.id}</span>
- <span class="${isHigh ? 'pill-high' : 'pill-med'}" style="font-size:10px; font-weight:800; padding:2px 8px; border-radius:12px;">${isHigh ? 'HIGH RISK' : 'MEDIUM RISK'} (${t.score}%)</span>
- </div>
- <div style="font-weight:700; font-size:14px; color:var(--text-main); margin-bottom:4px;">${t.desc}</div>
- <div style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">
- <strong>Discipline:</strong> ${t.disc} &bull; <strong>Site:</strong> ${t.location || 'Site'} &bull; <strong>Hours:</strong> ${t.hours || 40}h
- </div>
- <div style="background:rgba(255,255,255,0.7); padding:8px; border-radius:6px; font-size:11px; color:var(--text-main); margin-bottom:10px;">
- <strong>Top Risk Driver:</strong> ${topDriver}<br>
- <strong>Action Proposal:</strong> ${t.action}
- </div>
- <div style="display:flex; gap:8px;">
- <button class="btn btn-primary" onclick="openDrawerById('${t.id}')" style="font-size:11px; padding:6px 12px; flex:1;">Inspect Details</button>
- <a href="mailto:pm.intertech@gmail.com?subject=URGENT SITE ALERT: Task ${t.id}&body=Priority Action required for task ${t.id}: ${t.desc}" class="btn btn-outline" style="font-size:11px; padding:6px 12px; text-decoration:none; background:#fff;"> Notify PM</a>
- </div>
- `;
- container.appendChild(card);
- });
- }
-
- async function syncJiraTasks() {
- const btn = document.getElementById("btn-sync-jira");
- const statusDiv = document.getElementById("jira-sync-status");
- const url = document.getElementById("jira-url-input").value;
- const email = document.getElementById("jira-email-input").value;
- const token = document.getElementById("jira-token-input").value;
- const project = document.getElementById("jira-project-input").value || "PRJ001";
-
- if (btn) btn.disabled = true;
- if (statusDiv) { statusDiv.style.display = "block"; statusDiv.innerText = " Fetching issues from Jira Cloud REST API..."; statusDiv.style.color = "#2563eb"; }
-
- try {
- const resp = await fetch("/api/sync_integration", {
- method: "POST",
- headers: { "Content-Type": "application/json" },
- body: JSON.stringify({
- tool: "jira",
- config: { baseUrl: url, email, apiToken: token, project }
- })
- });
-
- const data = await resp.json();
- if (data.success && data.tasks) {
- const predictedPayload = predictTasksClientSide(data.tasks, `Jira_${project}_Export.csv`);
- renderImportedResults(predictedPayload);
- if (statusDiv) {
- statusDiv.style.color = "#16a34a";
- statusDiv.innerText = ` Successfully pulled & scored ${data.total_fetched} tasks from Jira project ${project}!`;
- }
- } else {
- throw new Error(data.error || "Failed to fetch from Jira");
- }
- } catch (err) {
- if (statusDiv) {
- statusDiv.style.color = "#dc2626";
- statusDiv.innerText = ` Jira Sync Error: ${err.message}. Using sample dataset fallback.`;
- }
- } finally {
- if (btn) btn.disabled = false;
- }
- }
-
- async function loadModelRegistry() {
- const container = document.getElementById("model-registry-list");
- if (!container) return;
-
- try {
- const resp = await fetch("/api/model_registry");
- const reg = await resp.json();
-
- if (reg.vercel_mode) {
- container.innerHTML = `<div style="padding:10px; background:#eff6ff; border-radius:6px; color:#1e40af;">${reg.info}</div>`;
- return;
- }
-
- if (!Array.isArray(reg) || !reg.length) {
- container.innerHTML = `<div>No model snapshots stored yet. Run retrain to record initial snapshot.</div>`;
- return;
- }
-
- let html = `<table style="width:100%; border-collapse:collapse; font-size:11px; margin-top:8px;">
- <thead>
- <tr style="background:var(--bg-subtle); text-align:left;">
- <th style="padding:6px;">Ver</th>
- <th style="padding:6px;">Date</th>
- <th style="padding:6px;">Champion</th>
- <th style="padding:6px;">F1 Score</th>
- <th style="padding:6px;">Recall</th>
- <th style="padding:6px;">Status</th>
- <th style="padding:6px;">Action</th>
- </tr>
- </thead>
- <tbody>`;
-
- reg.reverse().forEach(item => {
- const isActive = item.active;
- const dateStr = item.date ? item.date.replace("T", " ").substring(0, 16) : "-";
- html += `
- <tr style="border-bottom:1px solid var(--border-light); ${isActive ? 'background:#f0fdf4; font-weight:700;' : ''}">
- <td style="padding:6px;">v${item.version}</td>
- <td style="padding:6px;">${dateStr}</td>
- <td style="padding:6px;">${item.champion}</td>
- <td style="padding:6px;">${item.f1}%</td>
- <td style="padding:6px;">${item.recall}%</td>
- <td style="padding:6px;">${isActive ? '<span class="pill pill-low">ACTIVE</span>' : '<span style="color:#64748b;">Archived</span>'}</td>
- <td style="padding:6px;">
- ${isActive ? '—' : `<button class="btn btn-outline" style="padding:1px 6px; font-size:10px;" onclick="activateModelVersion(${item.version})">Rollback</button>`}
- </td>
- </tr>
- `;
- });
-
- html += `</tbody></table>`;
- container.innerHTML = html;
- } catch (err) {
- container.innerHTML = `<div style="color:#dc2626;">Error loading model registry: ${err.message}</div>`;
- }
- }
-
- async function activateModelVersion(ver) {
- if (!confirm(`Are you sure you want to rollback to Model Version v${ver}?`)) return;
- try {
- const resp = await fetch("/api/model_registry", {
- method: "POST",
- headers: { "Content-Type": "application/json" },
- body: JSON.stringify({ activate_version: ver })
- });
- const res = await resp.json();
- if (res.success) {
- alert(`Successfully rolled back to Model Version v${ver}!`);
- await fetchData();
- loadModelRegistry();
- } else {
- alert(`Rollback failed: ${res.error}`);
- }
- } catch (e) {
- alert(`Rollback error: ${e.message}`);
- }
- }
-
- function debounce(func, wait) {
- let timeout;
- return function executedFunction(...args) {
- const later = () => {
- clearTimeout(timeout);
- func(...args);
- };
- clearTimeout(timeout);
- timeout = setTimeout(later, wait);
- };
- }
-
- const debouncedFilterTasks = debounce(filterTasks, 200);
-
- document.addEventListener("DOMContentLoaded", function() {
- const searchInput = document.getElementById("task-search-input");
- if (searchInput) {
- searchInput.oninput = debouncedFilterTasks;
- }
- setTimeout(calculateROI, 1500);
- });
-
- } else {
- panel.style.display = 'none';
- }
- }
-
- // ── AUDIT LOGGING & SMTP RATE LIMITING STATE ────────────────────────────────
- window.AI_USAGE_LOGS = window.AI_USAGE_LOGS || [
- { time: new Date().toLocaleTimeString(), type: 'SYSTEM', query: 'AI Diagnostics initialized', citation: 'Calibrated Random Forest' }
- ];
- window.SMTP_DISPATCH_HISTORY = window.SMTP_DISPATCH_HISTORY || [];
-
- function logAIUsage(type, query, citation) {
- const entry = {
- time: new Date().toLocaleTimeString(),
- type: type,
- query: query.length > 35 ? query.substring(0, 32) + '...' : query,
- citation: citation || 'SHAP / Model Matrix'
- };
- window.AI_USAGE_LOGS.unshift(entry);
- if (window.AI_USAGE_LOGS.length > 50) window.AI_USAGE_LOGS.pop();
- renderAuditLog();
- }
-
- function renderAuditLog() {
- const tbody = document.getElementById('ai-audit-log-tbody');
- if (!tbody) return;
- tbody.innerHTML = '';
- if (!window.AI_USAGE_LOGS || window.AI_USAGE_LOGS.length === 0) {
- tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-subtle); padding:12px;">No audit events logged yet.</td></tr>';
- return;
- }
- window.AI_USAGE_LOGS.forEach(log => {
- const tr = document.createElement('tr');
- tr.innerHTML = `
- <td style="font-family:'JetBrains Mono',monospace; font-size:10px;">${log.time}</td>
- <td><span class="pill ${log.type === 'SMTP_ALERT' ? 'pill-high' : 'pill-low'}" style="font-size:9px;">${log.type}</span></td>
- <td style="font-weight:600;">${log.query}</td>
- <td style="color:var(--text-subtle); font-size:10.5px;">${log.citation}</td>
- `;
- tbody.appendChild(tr);
- });
- }
-
- function clearAuditLog() {
- window.AI_USAGE_LOGS = [];
- renderAuditLog();
- }
-
- function switchAIPanelTab(tabName) {
- const diagContent = document.getElementById('ai-panel-diag-content');
- const chatContent = document.getElementById('ai-panel-chat-content');
- const auditContent = document.getElementById('ai-panel-audit-content');
- const diagBtn = document.getElementById('ai-tab-btn-diag');
- const chatBtn = document.getElementById('ai-tab-btn-chat');
- const auditBtn = document.getElementById('ai-tab-btn-audit');
-
- diagContent.style.display = tabName === 'diag' ? 'block' : 'none';
- chatContent.style.display = tabName === 'chat' ? 'flex' : 'none';
- auditContent.style.display = tabName === 'audit' ? 'flex' : 'none';
-
- [diagBtn, chatBtn, auditBtn].forEach(btn => {
- if (!btn) return;
- btn.style.color = 'var(--text-subtle)';
- btn.style.borderBottom = '2px solid transparent';
- btn.style.background = 'transparent';
- });
-
- const activeBtn = tabName === 'diag' ? diagBtn : (tabName === 'chat' ? chatBtn : auditBtn);
- if (activeBtn) {
- activeBtn.style.color = 'var(--brand-primary)';
- activeBtn.style.borderBottom = '2px solid var(--brand-primary)';
- activeBtn.style.background = '#ffffff';
- }
-
- if (tabName === 'audit') renderAuditLog();
- if (tabName === 'chat' && !document.getElementById('chat-inline-options-block')) initAIChat();
-
- /* =========================================================================
- ANTIGRAVITY ENHANCEMENTS: SANDBOX, ROI, JIRA, MODEL REGISTRY, SITE VIEW
- ========================================================================= */
- let appMode = 'production'; // 'production' | 'sandbox'
- let sandboxThreshold = 70;
-
- function setAppMode(mode) {
- appMode = mode;
- const btnProd = document.getElementById("btn-mode-prod");
- const btnSand = document.getElementById("btn-mode-sandbox");
- const banner = document.getElementById("sandbox-banner");
-
- if (mode === 'sandbox') {
- if (btnProd) { btnProd.classList.remove("active"); btnProd.style.background = "transparent"; btnProd.style.color = "#94a3b8"; }
- if (btnSand) { btnSand.classList.add("active"); btnSand.style.background = "#6366f1"; btnSand.style.color = "#ffffff"; }
- if (banner) banner.style.display = "flex";
- } else {
- if (btnSand) { btnSand.classList.remove("active"); btnSand.style.background = "transparent"; btnSand.style.color = "#94a3b8"; }
- if (btnProd) { btnProd.classList.add("active"); btnProd.style.background = "#2563eb"; btnProd.style.color = "#ffffff"; }
- if (banner) banner.style.display = "none";
- sandboxThreshold = 70;
- }
- reclassifyTasksAndRender();
- }
-
- function updateSandboxThreshold(val) {
- sandboxThreshold = parseInt(val, 10);
- document.getElementById("threshold-val-display").innerText = val + "%";
- reclassifyTasksAndRender();
- }
-
- function reclassifyTasksAndRender() {
- if (!globalData || !globalData.tasks) return;
- 
- const cutoff = appMode === 'sandbox' ? sandboxThreshold : 70;
- let highCount = 0, medCount = 0, lowCount = 0;
-
- globalData.tasks.forEach(t => {
- if (t.score >= cutoff) {
- t.cat = 'HIGH';
- t.action = 'NOTIFY_PM + REALLOCATE_RESOURCE';
- highCount++;
- } else if (t.score >= 40) {
- t.cat = 'MEDIUM';
- t.action = 'SCHEDULE_STATUS_MEETING';
- medCount++;
- } else {
- t.cat = 'LOW';
- t.action = 'MONITOR_WEEKLY';
- lowCount++;
- }
- });
-
- if (document.getElementById("view-overview").classList.contains("active")) renderDashboard(globalData);
- if (document.getElementById("view-tasks").classList.contains("active")) renderTasksTable();
- if (document.getElementById("view-mitigation").classList.contains("active")) renderMitigationHub();
- if (document.getElementById("view-siteview").classList.contains("active")) renderSiteView();
- calculateROI();
- }
-
- function calculateROI() {
- const costPerDay = parseFloat(document.getElementById("roi-cost-per-day")?.value || 5000);
- const costPerIntervention = parseFloat(document.getElementById("roi-intervention-cost")?.value || 250);
- const successRate = (parseFloat(document.getElementById("roi-mitigation-success")?.value || 80)) / 100;
-
- const tasks = (globalImportedData && globalImportedData.tasks) ? globalImportedData.tasks : (globalData ? globalData.tasks : []);
- if (!tasks || !tasks.length) return;
-
- const highRiskTasks = tasks.filter(t => t.cat === 'HIGH');
- const medRiskTasks = tasks.filter(t => t.cat === 'MEDIUM');
- const totalAlerts = highRiskTasks.length + medRiskTasks.length;
-
- const avgDelayPerTask = (globalData && globalData.meta && globalData.meta.avg_delay_days) ? globalData.meta.avg_delay_days : 3.5;
- const daysSaved = highRiskTasks.length * avgDelayPerTask * successRate;
-
- const grossAvoided = daysSaved * costPerDay;
- const totalInterventionCost = (highRiskTasks.length * costPerIntervention) + (medRiskTasks.length * 100);
- const netBenefit = grossAvoided - totalInterventionCost;
- const roiRatio = totalInterventionCost > 0 ? (grossAvoided / totalInterventionCost) : 0;
-
- const grossElem = document.getElementById("roi-gross-avoided");
- const costElem = document.getElementById("roi-total-cost");
- const netElem = document.getElementById("roi-net-benefit");
- const ratioElem = document.getElementById("roi-ratio-display");
- const daysElem = document.getElementById("roi-days-saved");
- const alertsElem = document.getElementById("roi-alerts-acted");
-
- if (grossElem) grossElem.innerText = "$" + Math.round(grossAvoided).toLocaleString();
- if (costElem) costElem.innerText = "$" + Math.round(totalInterventionCost).toLocaleString();
- if (netElem) netElem.innerText = "$" + Math.round(netBenefit).toLocaleString();
- if (ratioElem) ratioElem.innerText = roiRatio.toFixed(1) + "x Return on Investment (" + Math.round((netBenefit / Math.max(totalInterventionCost, 1))*100).toLocaleString() + "% Net ROI)";
- if (daysElem) daysElem.innerText = daysSaved.toFixed(1) + " days delay prevented";
- if (alertsElem) alertsElem.innerText = totalAlerts + " risk alerts acted upon";
- }
-
- function renderSiteView() {
- const container = document.getElementById("site-view-cards-container");
- if (!container) return;
-
- const tasks = (globalImportedData && globalImportedData.tasks) ? globalImportedData.tasks : (globalData ? globalData.tasks : []);
- const highTasks = tasks.filter(t => t.cat === 'HIGH');
- const medTasks = tasks.filter(t => t.cat === 'MEDIUM');
-
- document.getElementById("site-high-count").innerText = highTasks.length;
- document.getElementById("site-med-count").innerText = medTasks.length;
- document.getElementById("site-actions-count").innerText = highTasks.length + medTasks.length;
-
- container.innerHTML = "";
- const priorityTasks = [...highTasks, ...medTasks].slice(0, 15);
-
- if (!priorityTasks.length) {
- container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-subtle);">No High/Medium risk tasks flagged for job site action.</div>`;
- return;
- }
-
- priorityTasks.forEach(t => {
- const isHigh = t.cat === 'HIGH';
- const card = document.createElement("div");
- card.style.cssText = `background:${isHigh ? '#fef2f2' : '#fffbeb'}; border:1px solid ${isHigh ? '#fca5a5' : '#fcd34d'}; border-radius:10px; padding:14px; position:relative;`;
- 
- const topDriver = t.shap_drivers && t.shap_drivers.length ? t.shap_drivers[0].feature : 'Workload / Priority';
-
- card.innerHTML = `
- <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:6px;">
- <span style="font-family:'JetBrains Mono',monospace; font-weight:800; font-size:12px; color:#2563eb;">${t.id}</span>
- <span class="${isHigh ? 'pill-high' : 'pill-med'}" style="font-size:10px; font-weight:800; padding:2px 8px; border-radius:12px;">${isHigh ? 'HIGH RISK' : 'MEDIUM RISK'} (${t.score}%)</span>
- </div>
- <div style="font-weight:700; font-size:14px; color:var(--text-main); margin-bottom:4px;">${t.desc}</div>
- <div style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">
- <strong>Discipline:</strong> ${t.disc} &bull; <strong>Site:</strong> ${t.location || 'Site'} &bull; <strong>Hours:</strong> ${t.hours || 40}h
- </div>
- <div style="background:rgba(255,255,255,0.7); padding:8px; border-radius:6px; font-size:11px; color:var(--text-main); margin-bottom:10px;">
- <strong>Top Risk Driver:</strong> ${topDriver}<br>
- <strong>Action Proposal:</strong> ${t.action}
- </div>
- <div style="display:flex; gap:8px;">
- <button class="btn btn-primary" onclick="openDrawerById('${t.id}')" style="font-size:11px; padding:6px 12px; flex:1;">Inspect Details</button>
- <a href="mailto:pm.intertech@gmail.com?subject=URGENT SITE ALERT: Task ${t.id}&body=Priority Action required for task ${t.id}: ${t.desc}" class="btn btn-outline" style="font-size:11px; padding:6px 12px; text-decoration:none; background:#fff;"> Notify PM</a>
- </div>
- `;
- container.appendChild(card);
- });
- }
-
- async function syncJiraTasks() {
- const btn = document.getElementById("btn-sync-jira");
- const statusDiv = document.getElementById("jira-sync-status");
- const url = document.getElementById("jira-url-input").value;
- const email = document.getElementById("jira-email-input").value;
- const token = document.getElementById("jira-token-input").value;
- const project = document.getElementById("jira-project-input").value || "PRJ001";
-
- if (btn) btn.disabled = true;
- if (statusDiv) { statusDiv.style.display = "block"; statusDiv.innerText = " Fetching issues from Jira Cloud REST API..."; statusDiv.style.color = "#2563eb"; }
-
- try {
- const resp = await fetch("/api/sync_integration", {
- method: "POST",
- headers: { "Content-Type": "application/json" },
- body: JSON.stringify({
- tool: "jira",
- config: { baseUrl: url, email, apiToken: token, project }
- })
- });
-
- const data = await resp.json();
- if (data.success && data.tasks) {
- const predictedPayload = predictTasksClientSide(data.tasks, `Jira_${project}_Export.csv`);
- renderImportedResults(predictedPayload);
- if (statusDiv) {
- statusDiv.style.color = "#16a34a";
- statusDiv.innerText = ` Successfully pulled & scored ${data.total_fetched} tasks from Jira project ${project}!`;
- }
- } else {
- throw new Error(data.error || "Failed to fetch from Jira");
- }
- } catch (err) {
- if (statusDiv) {
- statusDiv.style.color = "#dc2626";
- statusDiv.innerText = ` Jira Sync Error: ${err.message}. Using sample dataset fallback.`;
- }
- } finally {
- if (btn) btn.disabled = false;
- }
- }
-
- async function loadModelRegistry() {
- const container = document.getElementById("model-registry-list");
- if (!container) return;
-
- try {
- const resp = await fetch("/api/model_registry");
- const reg = await resp.json();
-
- if (reg.vercel_mode) {
- container.innerHTML = `<div style="padding:10px; background:#eff6ff; border-radius:6px; color:#1e40af;">${reg.info}</div>`;
- return;
- }
-
- if (!Array.isArray(reg) || !reg.length) {
- container.innerHTML = `<div>No model snapshots stored yet. Run retrain to record initial snapshot.</div>`;
- return;
- }
-
- let html = `<table style="width:100%; border-collapse:collapse; font-size:11px; margin-top:8px;">
- <thead>
- <tr style="background:var(--bg-subtle); text-align:left;">
- <th style="padding:6px;">Ver</th>
- <th style="padding:6px;">Date</th>
- <th style="padding:6px;">Champion</th>
- <th style="padding:6px;">F1 Score</th>
- <th style="padding:6px;">Recall</th>
- <th style="padding:6px;">Status</th>
- <th style="padding:6px;">Action</th>
- </tr>
- </thead>
- <tbody>`;
-
- reg.reverse().forEach(item => {
- const isActive = item.active;
- const dateStr = item.date ? item.date.replace("T", " ").substring(0, 16) : "-";
- html += `
- <tr style="border-bottom:1px solid var(--border-light); ${isActive ? 'background:#f0fdf4; font-weight:700;' : ''}">
- <td style="padding:6px;">v${item.version}</td>
- <td style="padding:6px;">${dateStr}</td>
- <td style="padding:6px;">${item.champion}</td>
- <td style="padding:6px;">${item.f1}%</td>
- <td style="padding:6px;">${item.recall}%</td>
- <td style="padding:6px;">${isActive ? '<span class="pill pill-low">ACTIVE</span>' : '<span style="color:#64748b;">Archived</span>'}</td>
- <td style="padding:6px;">
- ${isActive ? '—' : `<button class="btn btn-outline" style="padding:1px 6px; font-size:10px;" onclick="activateModelVersion(${item.version})">Rollback</button>`}
- </td>
- </tr>
- `;
- });
-
- html += `</tbody></table>`;
- container.innerHTML = html;
- } catch (err) {
- container.innerHTML = `<div style="color:#dc2626;">Error loading model registry: ${err.message}</div>`;
- }
- }
-
- async function activateModelVersion(ver) {
- if (!confirm(`Are you sure you want to rollback to Model Version v${ver}?`)) return;
- try {
- const resp = await fetch("/api/model_registry", {
- method: "POST",
- headers: { "Content-Type": "application/json" },
- body: JSON.stringify({ activate_version: ver })
- });
- const res = await resp.json();
- if (res.success) {
- alert(`Successfully rolled back to Model Version v${ver}!`);
- await fetchData();
- loadModelRegistry();
- } else {
- alert(`Rollback failed: ${res.error}`);
- }
- } catch (e) {
- alert(`Rollback error: ${e.message}`);
- }
- }
-
- function debounce(func, wait) {
- let timeout;
- return function executedFunction(...args) {
- const later = () => {
- clearTimeout(timeout);
- func(...args);
- };
- clearTimeout(timeout);
- timeout = setTimeout(later, wait);
- };
- }
-
- const debouncedFilterTasks = debounce(filterTasks, 200);
-
- document.addEventListener("DOMContentLoaded", function() {
- const searchInput = document.getElementById("task-search-input");
- if (searchInput) {
- searchInput.oninput = debouncedFilterTasks;
- }
- setTimeout(calculateROI, 1500);
- });
-
- }
-
- function askAIQuickPrompt(promptText) {
- if (isAIChatBusy) return;
- const input = document.getElementById('ai-chat-input');
- if (input) {
- input.value = promptText;
- sendAIChatMessage();
- }
- }
-
- function generateClientAIResponse(userText) {
- const lower = userText.toLowerCase();
- const dataset = (globalImportedData && globalImportedData.tasks) ? globalImportedData : (globalData || {});
- const tasks = dataset.tasks || [];
- const empMap = dataset.employeeMap || (globalData ? globalData.employeeMap : {}) || {};
- const meta = dataset.meta || (globalData ? globalData.meta : {}) || {};
-
- const openHighRisk = tasks.filter(t => t.cat === 'HIGH' && (t.status === 'Open' || t.status === 'In Progress'));
- const openMedRisk = tasks.filter(t => t.cat === 'MEDIUM' && (t.status === 'Open' || t.status === 'In Progress'));
-
- let reply = '';
- let citation = 'Grounded in Task Matrix & Calibrated Random Forest Model';
-
- if (lower.includes('high risk') || lower.includes('mitigat') || lower.includes('action') || lower.includes('reallocat')) {
- citation = 'High-Risk Mitigation Engine & Employee Load Map';
- if (openHighRisk.length > 0) {
- const listStr = openHighRisk.slice(0, 4).map(t => {
- const cands = getReallocCandidates(t, empMap);
- const topCandStr = cands.length > 0 ? `Suggested: ${cands[0].name} (${cands[0].openHours}/${cands[0].capacity}h load)` : 'Reallocation pending';
- return `- **${t.id} (${t.desc})**: Discipline: ${t.disc}, Score: ${t.score}%. *Action: NOTIFY_PM + REALLOCATE*. ${topCandStr}.`;
- }).join('\n');
- reply = `**High Risk Task Mitigation Summary (${openHighRisk.length} active high-risk tasks):**\n\n${listStr}\n\n*Protocol: Notify PM via SMTP and reallocate labor from employees below capacity.*`;
- } else {
- reply = `**Mitigation Overview**: No active high-risk tasks detected in the current dataset scope.`;
- }
- } else if (lower.includes('discipline') || lower.includes('mep') || lower.includes('str') || lower.includes('site') || lower.includes('arc') || lower.includes('int')) {
- citation = 'Discipline Historical Delay Statistics';
- const discCounts = {};
- tasks.forEach(t => {
- const d = t.disc || 'General';
- discCounts[d] = discCounts[d] || { total: 0, high: 0 };
- discCounts[d].total++;
- if (t.cat === 'HIGH') discCounts[d].high++;
- });
- const discLines = Object.entries(discCounts).map(([disc, info]) => {
- const rate = info.total ? ((info.high / info.total) * 100).toFixed(1) : '0.0';
- return `- **${disc}**: ${rate}% High-Risk Rate (${info.high} high risk out of ${info.total} total tasks)`;
- }).join('\n');
- reply = `**Discipline Delay Risk Breakdown:**\n\n${discLines}`;
- } else if (lower.includes('shap') || lower.includes('driver') || lower.includes('feature') || lower.includes('importance')) {
- citation = 'SHAP TreeExplainer (Global Feature Importance)';
- reply = `**SHAP Primary Delay Risk Drivers (TreeExplainer Feature Impact):**\n\n` +
- `- **hours_per_day (Workload Intensity)**: **32.07% Impact** — Tasks exceeding 8.5 hrs/day drive highest delay risk.\n` +
- `- **risk_enc (Site Risk Rating)**: **26.31% Impact** — High-risk environment designation.\n` +
- `- **Hours (Total Work Duration)**: **17.82% Impact** — Long-duration tasks (>100h) increase cumulative exposure.\n` +
- `- **disc_hist_delay_rate**: **11.99% Impact** — Historical discipline delay baseline (PRJ-SITE 47.7%, PRJ-INT 45.6%).\n` +
- `- **high_pri_high_risk**: **11.13% Impact** — Multiplicative interaction of High Priority + High Risk.`;
- } else if (lower.includes('employee') || lower.includes('headroom') || lower.includes('capacity') || lower.includes('availab') || lower.includes('load')) {
- citation = 'Employee Capacity & Open Load Aggregation Map';
- const empLines = Object.values(empMap).map(e => {
- const headroom = e.capacity - e.openHours;
- const statusStr = headroom > 0 ? `+${Math.round(headroom)}h free headroom` : 'Full capacity';
- const closedStr = e.lastClosedDateStr ? `last closed task on ${e.lastClosedDateStr}` : 'active';
- return `- **${e.name}**: ${Math.round(e.openHours)}/${e.capacity}h load (${statusStr}, ${closedStr})`;
- }).join('\n');
- reply = `**Employee Workload & Reallocation Headroom:**\n\n${empLines || 'No employee capacity data available.'}`;
- } else if (lower.includes('model') || lower.includes('accuracy') || lower.includes('cv') || lower.includes('f1') || lower.includes('auc') || lower.includes('baseline')) {
- citation = '5-Fold CV & Chronological Validation Benchmark';
- reply = `**Machine Learning Model Performance & Validation:**\n\n` +
- `- **Calibrated Random Forest (Champion)**: **72.0% Accuracy**, **77.8% ROC-AUC**, **0.437 MCC**, F1 **69.3%**\n` +
- `- **Chronological Time-Split Validation**: **70.8% Accuracy**, **76.5% ROC-AUC**, **0.412 MCC** (Train < 2025, Test >= 2025)\n` +
- `- **Naive Majority Baseline Benchmark**: **56.4% Accuracy** (Always predict on-time)\n` +
- `- **Predictive Signal Lift**: **+15.6% Absolute Lift** over naive guessing (+27.7% relative improvement).`;
- } else {
- citation = 'Project Intelligence Task Snapshot';
- reply = `**Project Task Risk Snapshot:**\n\n` +
- `- **Total Monitored Tasks**: ${tasks.length}\n` +
- `- **High Risk Tasks**: ${openHighRisk.length} tasks (Probability >= 70%)\n` +
- `- **Medium Risk Tasks**: ${openMedRisk.length} tasks (Probability 40-69%)\n` +
- `- **Champion Algorithm**: Calibrated Random Forest (72.0% Acc, 77.8% AUC)`;
- }
-
- return { reply, citation };
- }
-
-
- async function sendAIChatMessage() {
- if (isAIChatBusy) return;
- const input = document.getElementById('ai-chat-input');
- const sendBtn = document.getElementById('ai-chat-send-btn');
- const messagesContainer = document.getElementById('ai-chat-messages');
- if (!input || !messagesContainer) return;
-
- const userText = input.value.trim();
- if (!userText) return;
-
- isAIChatBusy = true;
- if (sendBtn) sendBtn.disabled = true;
- input.disabled = true;
-
- // Remove existing inline options while processing prompt
- const existingOptions = document.getElementById('chat-inline-options-block');
- if (existingOptions) existingOptions.remove();
-
- // Render User Message Bubble
- const userBubble = document.createElement('div');
- userBubble.style.cssText = 'background:var(--brand-primary); color:#ffffff; padding:8px 12px; border-radius:10px; font-size:12px; max-width:85%; align-self:flex-end; word-break:break-word;';
- userBubble.innerText = userText;
- messagesContainer.appendChild(userBubble);
-
- input.value = '';
- messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
- // Thinking Indicator
- const thinkingBubble = document.createElement('div');
- thinkingBubble.style.cssText = 'background:#ffffff; border:1px solid var(--border-light); padding:8px 12px; border-radius:10px; font-size:12px; max-width:85%; align-self:flex-start; color:var(--text-subtle);';
- thinkingBubble.innerText = `Analyzing ${activeAssistantDatasetMode === 'test' ? 'Test Data' : 'Train Data'} predictions...`;
- messagesContainer.appendChild(thinkingBubble);
- messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
- // Prepare payload
- const currentTasks = (activeAssistantDatasetMode === 'test' && globalImportedData && globalImportedData.tasks) ? globalImportedData.tasks : [];
-
- try {
- const resp = await fetch('/api/assistant', {
- method: 'POST',
- headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({
- message: userText,
- dataset_mode: activeAssistantDatasetMode,
- tasks: currentTasks
- })
- });
- 
- let botReply = 'InterTech PRJ001 Delay Intelligence Assistant active.';
- let citation = 'SHAP TreeExplainer & Task Matrix';
- if (resp.ok) {
- const resData = await resp.json();
- if (resData.reply) botReply = resData.reply;
- }
-
- // Scope Guardrail: Check for off-topic query
- const offTopicKeywords = ['weather tomorrow', 'recipe', 'who is president', 'joke', 'crypto', 'football'];
- const isOffTopic = offTopicKeywords.some(k => userText.toLowerCase().includes(k));
- if (isOffTopic) {
- botReply = ' **Scoped Assistant Disclaimer**: I am scoped exclusively to InterTech project intelligence and task delay risk data. I can answer questions regarding ML delay scores, SHAP risk drivers, discipline performance, or employee reallocation headroom.';
- citation = 'Scope Guardrail Enforcement';
- }
-
- thinkingBubble.remove();
-
- logAIUsage('AI_CHAT_QUERY', userText, citation);
-
- const botBubble = document.createElement('div');
- botBubble.style.cssText = 'background:#ffffff; border:1px solid var(--border-light); padding:10px 14px; border-radius:12px; font-size:12px; max-width:92%; align-self:flex-start; word-break:break-word; line-height:1.6;';
- 
- // Append Data Grounding Badge
- const groundingBadge = `<div style="margin-top:8px; padding-top:6px; border-top:1px dashed #e2e8f0; font-size:10px; color:#64748b; font-family:'JetBrains Mono',monospace;"> <strong>Grounded Source</strong>: ${citation}</div>`;
- 
- botBubble.innerHTML = botReply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>') + groundingBadge;
- messagesContainer.appendChild(botBubble);
- requestAnimationFrame(() => { messagesContainer.scrollTop = messagesContainer.scrollHeight; });
-
- } catch (err) {
- thinkingBubble.remove();
- const errBubble = document.createElement('div');
- errBubble.style.cssText = 'background:#fef2f2; border:1px solid #fecaca; color:#dc2626; padding:8px 12px; border-radius:10px; font-size:12px; max-width:85%; align-self:flex-start;';
- errBubble.innerText = 'Unable to reach AI endpoint. Using local intelligence engine.';
- messagesContainer.appendChild(errBubble);
- requestAnimationFrame(() => { messagesContainer.scrollTop = messagesContainer.scrollHeight; });
- } finally {
- isAIChatBusy = false;
- if (sendBtn) sendBtn.disabled = false;
- input.disabled = false;
- // Re-display prompt options after every answer
- appendInteractiveOptionsToChat();
- }
- }
-
- document.addEventListener('DOMContentLoaded', function() {
- initAIChat();
-
- /* =========================================================================
- ANTIGRAVITY ENHANCEMENTS: SANDBOX, ROI, JIRA, MODEL REGISTRY, SITE VIEW
- ========================================================================= */
- let appMode = 'production'; // 'production' | 'sandbox'
- let sandboxThreshold = 70;
-
- function setAppMode(mode) {
- appMode = mode;
- const btnProd = document.getElementById("btn-mode-prod");
- const btnSand = document.getElementById("btn-mode-sandbox");
- const banner = document.getElementById("sandbox-banner");
-
- if (mode === 'sandbox') {
- if (btnProd) { btnProd.classList.remove("active"); btnProd.style.background = "transparent"; btnProd.style.color = "#94a3b8"; }
- if (btnSand) { btnSand.classList.add("active"); btnSand.style.background = "#6366f1"; btnSand.style.color = "#ffffff"; }
- if (banner) banner.style.display = "flex";
- } else {
- if (btnSand) { btnSand.classList.remove("active"); btnSand.style.background = "transparent"; btnSand.style.color = "#94a3b8"; }
- if (btnProd) { btnProd.classList.add("active"); btnProd.style.background = "#2563eb"; btnProd.style.color = "#ffffff"; }
- if (banner) banner.style.display = "none";
- sandboxThreshold = 70;
- }
- reclassifyTasksAndRender();
- }
-
- function updateSandboxThreshold(val) {
- sandboxThreshold = parseInt(val, 10);
- document.getElementById("threshold-val-display").innerText = val + "%";
- reclassifyTasksAndRender();
- }
-
- function reclassifyTasksAndRender() {
- if (!globalData || !globalData.tasks) return;
- 
- const cutoff = appMode === 'sandbox' ? sandboxThreshold : 70;
- let highCount = 0, medCount = 0, lowCount = 0;
-
- globalData.tasks.forEach(t => {
- if (t.score >= cutoff) {
- t.cat = 'HIGH';
- t.action = 'NOTIFY_PM + REALLOCATE_RESOURCE';
- highCount++;
- } else if (t.score >= 40) {
- t.cat = 'MEDIUM';
- t.action = 'SCHEDULE_STATUS_MEETING';
- medCount++;
- } else {
- t.cat = 'LOW';
- t.action = 'MONITOR_WEEKLY';
- lowCount++;
- }
- });
-
- if (document.getElementById("view-overview").classList.contains("active")) renderDashboard(globalData);
- if (document.getElementById("view-tasks").classList.contains("active")) renderTasksTable();
- if (document.getElementById("view-mitigation").classList.contains("active")) renderMitigationHub();
- if (document.getElementById("view-siteview").classList.contains("active")) renderSiteView();
- calculateROI();
- }
-
- function calculateROI() {
- const costPerDay = parseFloat(document.getElementById("roi-cost-per-day")?.value || 5000);
- const costPerIntervention = parseFloat(document.getElementById("roi-intervention-cost")?.value || 250);
- const successRate = (parseFloat(document.getElementById("roi-mitigation-success")?.value || 80)) / 100;
-
- const tasks = (globalImportedData && globalImportedData.tasks) ? globalImportedData.tasks : (globalData ? globalData.tasks : []);
- if (!tasks || !tasks.length) return;
-
- const highRiskTasks = tasks.filter(t => t.cat === 'HIGH');
- const medRiskTasks = tasks.filter(t => t.cat === 'MEDIUM');
- const totalAlerts = highRiskTasks.length + medRiskTasks.length;
-
- const avgDelayPerTask = (globalData && globalData.meta && globalData.meta.avg_delay_days) ? globalData.meta.avg_delay_days : 3.5;
- const daysSaved = highRiskTasks.length * avgDelayPerTask * successRate;
-
- const grossAvoided = daysSaved * costPerDay;
- const totalInterventionCost = (highRiskTasks.length * costPerIntervention) + (medRiskTasks.length * 100);
- const netBenefit = grossAvoided - totalInterventionCost;
- const roiRatio = totalInterventionCost > 0 ? (grossAvoided / totalInterventionCost) : 0;
-
- const grossElem = document.getElementById("roi-gross-avoided");
- const costElem = document.getElementById("roi-total-cost");
- const netElem = document.getElementById("roi-net-benefit");
- const ratioElem = document.getElementById("roi-ratio-display");
- const daysElem = document.getElementById("roi-days-saved");
- const alertsElem = document.getElementById("roi-alerts-acted");
-
- if (grossElem) grossElem.innerText = "$" + Math.round(grossAvoided).toLocaleString();
- if (costElem) costElem.innerText = "$" + Math.round(totalInterventionCost).toLocaleString();
- if (netElem) netElem.innerText = "$" + Math.round(netBenefit).toLocaleString();
- if (ratioElem) ratioElem.innerText = roiRatio.toFixed(1) + "x Return on Investment (" + Math.round((netBenefit / Math.max(totalInterventionCost, 1))*100).toLocaleString() + "% Net ROI)";
- if (daysElem) daysElem.innerText = daysSaved.toFixed(1) + " days delay prevented";
- if (alertsElem) alertsElem.innerText = totalAlerts + " risk alerts acted upon";
- }
-
- function renderSiteView() {
- const container = document.getElementById("site-view-cards-container");
- if (!container) return;
-
- const tasks = (globalImportedData && globalImportedData.tasks) ? globalImportedData.tasks : (globalData ? globalData.tasks : []);
- const highTasks = tasks.filter(t => t.cat === 'HIGH');
- const medTasks = tasks.filter(t => t.cat === 'MEDIUM');
-
- document.getElementById("site-high-count").innerText = highTasks.length;
- document.getElementById("site-med-count").innerText = medTasks.length;
- document.getElementById("site-actions-count").innerText = highTasks.length + medTasks.length;
-
- container.innerHTML = "";
- const priorityTasks = [...highTasks, ...medTasks].slice(0, 15);
-
- if (!priorityTasks.length) {
- container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-subtle);">No High/Medium risk tasks flagged for job site action.</div>`;
- return;
- }
-
- priorityTasks.forEach(t => {
- const isHigh = t.cat === 'HIGH';
- const card = document.createElement("div");
- card.style.cssText = `background:${isHigh ? '#fef2f2' : '#fffbeb'}; border:1px solid ${isHigh ? '#fca5a5' : '#fcd34d'}; border-radius:10px; padding:14px; position:relative;`;
- 
- const topDriver = t.shap_drivers && t.shap_drivers.length ? t.shap_drivers[0].feature : 'Workload / Priority';
-
- card.innerHTML = `
- <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:6px;">
- <span style="font-family:'JetBrains Mono',monospace; font-weight:800; font-size:12px; color:#2563eb;">${t.id}</span>
- <span class="${isHigh ? 'pill-high' : 'pill-med'}" style="font-size:10px; font-weight:800; padding:2px 8px; border-radius:12px;">${isHigh ? 'HIGH RISK' : 'MEDIUM RISK'} (${t.score}%)</span>
- </div>
- <div style="font-weight:700; font-size:14px; color:var(--text-main); margin-bottom:4px;">${t.desc}</div>
- <div style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">
- <strong>Discipline:</strong> ${t.disc} &bull; <strong>Site:</strong> ${t.location || 'Site'} &bull; <strong>Hours:</strong> ${t.hours || 40}h
- </div>
- <div style="background:rgba(255,255,255,0.7); padding:8px; border-radius:6px; font-size:11px; color:var(--text-main); margin-bottom:10px;">
- <strong>Top Risk Driver:</strong> ${topDriver}<br>
- <strong>Action Proposal:</strong> ${t.action}
- </div>
- <div style="display:flex; gap:8px;">
- <button class="btn btn-primary" onclick="openDrawerById('${t.id}')" style="font-size:11px; padding:6px 12px; flex:1;">Inspect Details</button>
- <a href="mailto:pm.intertech@gmail.com?subject=URGENT SITE ALERT: Task ${t.id}&body=Priority Action required for task ${t.id}: ${t.desc}" class="btn btn-outline" style="font-size:11px; padding:6px 12px; text-decoration:none; background:#fff;"> Notify PM</a>
- </div>
- `;
- container.appendChild(card);
- });
- }
-
- async function syncJiraTasks() {
- const btn = document.getElementById("btn-sync-jira");
- const statusDiv = document.getElementById("jira-sync-status");
- const url = document.getElementById("jira-url-input").value;
- const email = document.getElementById("jira-email-input").value;
- const token = document.getElementById("jira-token-input").value;
- const project = document.getElementById("jira-project-input").value || "PRJ001";
-
- if (btn) btn.disabled = true;
- if (statusDiv) { statusDiv.style.display = "block"; statusDiv.innerText = " Fetching issues from Jira Cloud REST API..."; statusDiv.style.color = "#2563eb"; }
-
- try {
- const resp = await fetch("/api/sync_integration", {
- method: "POST",
- headers: { "Content-Type": "application/json" },
- body: JSON.stringify({
- tool: "jira",
- config: { baseUrl: url, email, apiToken: token, project }
- })
- });
-
- const data = await resp.json();
- if (data.success && data.tasks) {
- const predictedPayload = predictTasksClientSide(data.tasks, `Jira_${project}_Export.csv`);
- renderImportedResults(predictedPayload);
- if (statusDiv) {
- statusDiv.style.color = "#16a34a";
- statusDiv.innerText = ` Successfully pulled & scored ${data.total_fetched} tasks from Jira project ${project}!`;
- }
- } else {
- throw new Error(data.error || "Failed to fetch from Jira");
- }
- } catch (err) {
- if (statusDiv) {
- statusDiv.style.color = "#dc2626";
- statusDiv.innerText = ` Jira Sync Error: ${err.message}. Using sample dataset fallback.`;
- }
- } finally {
- if (btn) btn.disabled = false;
- }
- }
-
- async function loadModelRegistry() {
- const container = document.getElementById("model-registry-list");
- if (!container) return;
-
- try {
- const resp = await fetch("/api/model_registry");
- const reg = await resp.json();
-
- if (reg.vercel_mode) {
- container.innerHTML = `<div style="padding:10px; background:#eff6ff; border-radius:6px; color:#1e40af;">${reg.info}</div>`;
- return;
- }
-
- if (!Array.isArray(reg) || !reg.length) {
- container.innerHTML = `<div>No model snapshots stored yet. Run retrain to record initial snapshot.</div>`;
- return;
- }
-
- let html = `<table style="width:100%; border-collapse:collapse; font-size:11px; margin-top:8px;">
- <thead>
- <tr style="background:var(--bg-subtle); text-align:left;">
- <th style="padding:6px;">Ver</th>
- <th style="padding:6px;">Date</th>
- <th style="padding:6px;">Champion</th>
- <th style="padding:6px;">F1 Score</th>
- <th style="padding:6px;">Recall</th>
- <th style="padding:6px;">Status</th>
- <th style="padding:6px;">Action</th>
- </tr>
- </thead>
- <tbody>`;
-
- reg.reverse().forEach(item => {
- const isActive = item.active;
- const dateStr = item.date ? item.date.replace("T", " ").substring(0, 16) : "-";
- html += `
- <tr style="border-bottom:1px solid var(--border-light); ${isActive ? 'background:#f0fdf4; font-weight:700;' : ''}">
- <td style="padding:6px;">v${item.version}</td>
- <td style="padding:6px;">${dateStr}</td>
- <td style="padding:6px;">${item.champion}</td>
- <td style="padding:6px;">${item.f1}%</td>
- <td style="padding:6px;">${item.recall}%</td>
- <td style="padding:6px;">${isActive ? '<span class="pill pill-low">ACTIVE</span>' : '<span style="color:#64748b;">Archived</span>'}</td>
- <td style="padding:6px;">
- ${isActive ? '—' : `<button class="btn btn-outline" style="padding:1px 6px; font-size:10px;" onclick="activateModelVersion(${item.version})">Rollback</button>`}
- </td>
- </tr>
- `;
- });
-
- html += `</tbody></table>`;
- container.innerHTML = html;
- } catch (err) {
- container.innerHTML = `<div style="color:#dc2626;">Error loading model registry: ${err.message}</div>`;
- }
- }
-
- async function activateModelVersion(ver) {
- if (!confirm(`Are you sure you want to rollback to Model Version v${ver}?`)) return;
- try {
- const resp = await fetch("/api/model_registry", {
- method: "POST",
- headers: { "Content-Type": "application/json" },
- body: JSON.stringify({ activate_version: ver })
- });
- const res = await resp.json();
- if (res.success) {
- alert(`Successfully rolled back to Model Version v${ver}!`);
- await fetchData();
- loadModelRegistry();
- } else {
- alert(`Rollback failed: ${res.error}`);
- }
- } catch (e) {
- alert(`Rollback error: ${e.message}`);
- }
- }
-
- function debounce(func, wait) {
- let timeout;
- return function executedFunction(...args) {
- const later = () => {
- clearTimeout(timeout);
- func(...args);
- };
- clearTimeout(timeout);
- timeout = setTimeout(later, wait);
- };
- }
-
- const debouncedFilterTasks = debounce(filterTasks, 200);
-
- document.addEventListener("DOMContentLoaded", function() {
- const searchInput = document.getElementById("task-search-input");
- if (searchInput) {
- searchInput.oninput = debouncedFilterTasks;
- }
- setTimeout(calculateROI, 1500);
- });
-
- });
- </script>
-
-  /* =========================================================================
-       ANTIGRAVITY ENHANCEMENTS: SANDBOX, ROI, JIRA, MODEL REGISTRY, SITE VIEW
-       ========================================================================= */
-    let appMode = 'production'; // 'production' | 'sandbox'
-    let sandboxThreshold = 70;
-
-    function setAppMode(mode) {
-      appMode = mode;
-      const btnProd = document.getElementById("btn-mode-prod");
-      const btnSand = document.getElementById("btn-mode-sandbox");
-      const banner = document.getElementById("sandbox-banner");
-
-      if (mode === 'sandbox') {
-        if (btnProd) { btnProd.classList.remove("active"); btnProd.style.background = "transparent"; btnProd.style.color = "#94a3b8"; }
-        if (btnSand) { btnSand.classList.add("active"); btnSand.style.background = "#6366f1"; btnSand.style.color = "#ffffff"; }
-        if (banner) banner.style.display = "flex";
-      } else {
-        if (btnSand) { btnSand.classList.remove("active"); btnSand.style.background = "transparent"; btnSand.style.color = "#94a3b8"; }
-        if (btnProd) { btnProd.classList.add("active"); btnProd.style.background = "#2563eb"; btnProd.style.color = "#ffffff"; }
-        if (banner) banner.style.display = "none";
-        sandboxThreshold = 70;
-      }
-      reclassifyTasksAndRender();
-    }
-
-    function updateSandboxThreshold(val) {
-      sandboxThreshold = parseInt(val, 10);
-      const disp = document.getElementById("threshold-val-display");
-      if (disp) disp.innerText = val + "%";
-      reclassifyTasksAndRender();
-    }
-
-    function reclassifyTasksAndRender() {
-      if (!globalData || !globalData.tasks) return;
-      
-      const cutoff = appMode === 'sandbox' ? sandboxThreshold : 70;
-      let highCount = 0, medCount = 0, lowCount = 0;
-
-      globalData.tasks.forEach(t => {
-        if (t.score >= cutoff) {
-          t.cat = 'HIGH';
-          t.action = 'NOTIFY_PM + REALLOCATE_RESOURCE';
-          highCount++;
-        } else if (t.score >= 40) {
-          t.cat = 'MEDIUM';
-          t.action = 'SCHEDULE_STATUS_MEETING';
-          medCount++;
-        } else {
-          t.cat = 'LOW';
-          t.action = 'MONITOR_WEEKLY';
-          lowCount++;
-        }
-      });
-
-      if (document.getElementById("view-overview") && document.getElementById("view-overview").classList.contains("active")) renderDashboard(globalData);
-      if (document.getElementById("view-tasks") && document.getElementById("view-tasks").classList.contains("active")) renderTasksTable();
-      if (document.getElementById("view-mitigation") && document.getElementById("view-mitigation").classList.contains("active")) renderMitigationHub();
-      if (document.getElementById("view-siteview") && document.getElementById("view-siteview").classList.contains("active")) renderSiteView();
-      calculateROI();
-    }
-
-    function calculateROI() {
-      const costPerDay = parseFloat(document.getElementById("roi-cost-per-day")?.value || 5000);
-      const costPerIntervention = parseFloat(document.getElementById("roi-intervention-cost")?.value || 250);
-      const successRate = (parseFloat(document.getElementById("roi-mitigation-success")?.value || 80)) / 100;
-
-      const tasks = (globalImportedData && globalImportedData.tasks) ? globalImportedData.tasks : (globalData ? globalData.tasks : []);
-      if (!tasks || !tasks.length) return;
-
-      const highRiskTasks = tasks.filter(t => t.cat === 'HIGH');
-      const medRiskTasks  = tasks.filter(t => t.cat === 'MEDIUM');
-      const totalAlerts = highRiskTasks.length + medRiskTasks.length;
-
-      const avgDelayPerTask = (globalData && globalData.meta && globalData.meta.avg_delay_days) ? globalData.meta.avg_delay_days : 3.5;
-      const daysSaved = highRiskTasks.length * avgDelayPerTask * successRate;
-
-      const grossAvoided = daysSaved * costPerDay;
-      const totalInterventionCost = (highRiskTasks.length * costPerIntervention) + (medRiskTasks.length * 100);
-      const netBenefit = grossAvoided - totalInterventionCost;
-      const roiRatio = totalInterventionCost > 0 ? (grossAvoided / totalInterventionCost) : 0;
-
-      const grossElem = document.getElementById("roi-gross-avoided");
-      const costElem  = document.getElementById("roi-total-cost");
-      const netElem   = document.getElementById("roi-net-benefit");
-      const ratioElem = document.getElementById("roi-ratio-display");
-      const daysElem  = document.getElementById("roi-days-saved");
-      const alertsElem = document.getElementById("roi-alerts-acted");
-
-      if (grossElem) grossElem.innerText = "$" + Math.round(grossAvoided).toLocaleString();
-      if (costElem)  costElem.innerText  = "$" + Math.round(totalInterventionCost).toLocaleString();
-      if (netElem)   netElem.innerText   = "$" + Math.round(netBenefit).toLocaleString();
-      if (ratioElem) ratioElem.innerText = roiRatio.toFixed(1) + "x Return on Investment (" + Math.round((netBenefit / Math.max(totalInterventionCost, 1))*100).toLocaleString() + "% Net ROI)";
-      if (daysElem)  daysElem.innerText  = daysSaved.toFixed(1) + " days delay prevented";
-      if (alertsElem) alertsElem.innerText = totalAlerts + " risk alerts acted upon";
-    }
-
-    function renderSiteView() {
-      const container = document.getElementById("site-view-cards-container");
-      if (!container) return;
-
-      const tasks = (globalImportedData && globalImportedData.tasks) ? globalImportedData.tasks : (globalData ? globalData.tasks : []);
-      const highTasks = tasks.filter(t => t.cat === 'HIGH');
-      const medTasks  = tasks.filter(t => t.cat === 'MEDIUM');
-
-      const highCountElem = document.getElementById("site-high-count");
-      const medCountElem  = document.getElementById("site-med-count");
-      const actionsElem   = document.getElementById("site-actions-count");
-
-      if (highCountElem) highCountElem.innerText = highTasks.length;
-      if (medCountElem)  medCountElem.innerText  = medTasks.length;
-      if (actionsElem)   actionsElem.innerText   = highTasks.length + medTasks.length;
-
-      container.innerHTML = "";
-      const priorityTasks = [...highTasks, ...medTasks].slice(0, 15);
-
-      if (!priorityTasks.length) {
-        container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-subtle);">No High/Medium risk tasks flagged for job site action.</div>`;
-        return;
-      }
-
-      priorityTasks.forEach(t => {
-        const isHigh = t.cat === 'HIGH';
-        const card = document.createElement("div");
-        card.style.cssText = `background:${isHigh ? '#fef2f2' : '#fffbeb'}; border:1px solid ${isHigh ? '#fca5a5' : '#fcd34d'}; border-radius:10px; padding:14px; position:relative;`;
-        
-        const topDriver = t.shap_drivers && t.shap_drivers.length ? t.shap_drivers[0].feature : 'Workload / Priority';
-
-        card.innerHTML = `
-          <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:6px;">
-            <span style="font-family:'JetBrains Mono',monospace; font-weight:800; font-size:12px; color:#2563eb;">${t.id}</span>
-            <span class="${isHigh ? 'pill-high' : 'pill-med'}" style="font-size:10px; font-weight:800; padding:2px 8px; border-radius:12px;">${isHigh ? 'HIGH RISK' : 'MEDIUM RISK'} (${t.score}%)</span>
-          </div>
-          <div style="font-weight:700; font-size:14px; color:var(--text-main); margin-bottom:4px;">${t.desc}</div>
-          <div style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">
-            <strong>Discipline:</strong> ${t.disc} &bull; <strong>Site:</strong> ${t.location || 'Site'} &bull; <strong>Hours:</strong> ${t.hours || 40}h
-          </div>
-          <div style="background:rgba(255,255,255,0.7); padding:8px; border-radius:6px; font-size:11px; color:var(--text-main); margin-bottom:10px;">
-            <strong>Top Risk Driver:</strong> ${topDriver}<br>
-            <strong>Action Proposal:</strong> ${t.action}
-          </div>
-          <div style="display:flex; gap:8px;">
-            <button class="btn btn-primary" onclick="openDrawerById('${t.id}')" style="font-size:11px; padding:6px 12px; flex:1;">Inspect Details</button>
-            <a href="mailto:pm.intertech@gmail.com?subject=URGENT SITE ALERT: Task ${t.id}&body=Priority Action required for task ${t.id}: ${t.desc}" class="btn btn-outline" style="font-size:11px; padding:6px 12px; text-decoration:none; background:#fff;">Notify PM</a>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-    }
-
-    async function syncJiraTasks() {
-      const btn = document.getElementById("btn-sync-jira");
-      const statusDiv = document.getElementById("jira-sync-status");
-      const url = document.getElementById("jira-url-input").value;
-      const email = document.getElementById("jira-email-input").value;
-      const token = document.getElementById("jira-token-input").value;
-      const project = document.getElementById("jira-project-input").value || "PRJ001";
-
-      if (btn) btn.disabled = true;
-      if (statusDiv) { statusDiv.style.display = "block"; statusDiv.innerText = "Fetching issues from Jira Cloud REST API..."; statusDiv.style.color = "#2563eb"; }
-
-      try {
-        const resp = await fetch("/api/sync_integration", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            tool: "jira",
-            config: { baseUrl: url, email, apiToken: token, project }
-          })
-        });
-
-        const data = await resp.json();
-        if (data.success && data.tasks) {
-          const predictedPayload = predictTasksClientSide(data.tasks, `Jira_${project}_Export.csv`);
-          renderImportedResults(predictedPayload);
-          if (statusDiv) {
-            statusDiv.style.color = "#16a34a";
-            statusDiv.innerText = `Successfully pulled & scored ${data.total_fetched} tasks from Jira project ${project}!`;
-          }
-        } else {
-          throw new Error(data.error || "Failed to fetch from Jira");
-        }
-      } catch (err) {
-        if (statusDiv) {
-          statusDiv.style.color = "#dc2626";
-          statusDiv.innerText = `Jira Sync Error: ${err.message}. Using sample dataset fallback.`;
-        }
-      } finally {
-        if (btn) btn.disabled = false;
-      }
-    }
-
-    async function loadModelRegistry() {
-      const container = document.getElementById("model-registry-list");
-      if (!container) return;
-
-      try {
-        const resp = await fetch("/api/model_registry");
-        const reg = await resp.json();
-
-        if (reg.vercel_mode) {
-          container.innerHTML = `<div style="padding:10px; background:#eff6ff; border-radius:6px; color:#1e40af;">${reg.info}</div>`;
-          return;
-        }
-
-        if (!Array.isArray(reg) || !reg.length) {
-          container.innerHTML = `<div>No model snapshots stored yet. Run retrain to record initial snapshot.</div>`;
-          return;
-        }
-
-        let html = `<table style="width:100%; border-collapse:collapse; font-size:11px; margin-top:8px;">
-          <thead>
-            <tr style="background:var(--bg-subtle); text-align:left;">
-              <th style="padding:6px;">Ver</th>
-              <th style="padding:6px;">Date</th>
-              <th style="padding:6px;">Champion</th>
-              <th style="padding:6px;">F1 Score</th>
-              <th style="padding:6px;">Recall</th>
-              <th style="padding:6px;">Status</th>
-              <th style="padding:6px;">Action</th>
-            </tr>
-          </thead>
-          <tbody>`;
-
-        reg.reverse().forEach(item => {
-          const isActive = item.active;
-          const dateStr = item.date ? item.date.replace("T", " ").substring(0, 16) : "-";
-          html += `
-            <tr style="border-bottom:1px solid var(--border-light); ${isActive ? 'background:#f0fdf4; font-weight:700;' : ''}">
-              <td style="padding:6px;">v${item.version}</td>
-              <td style="padding:6px;">${dateStr}</td>
-              <td style="padding:6px;">${item.champion}</td>
-              <td style="padding:6px;">${item.f1}%</td>
-              <td style="padding:6px;">${item.recall}%</td>
-              <td style="padding:6px;">${isActive ? '<span class="pill pill-low">ACTIVE</span>' : '<span style="color:#64748b;">Archived</span>'}</td>
-              <td style="padding:6px;">
-                ${isActive ? '—' : `<button class="btn btn-outline" style="padding:1px 6px; font-size:10px;" onclick="activateModelVersion(${item.version})">Rollback</button>`}
-              </td>
-            </tr>
-          `;
-        });
-
-        html += `</tbody></table>`;
-        container.innerHTML = html;
-      } catch (err) {
-        container.innerHTML = `<div style="color:#dc2626;">Error loading model registry: ${err.message}</div>`;
-      }
-    }
-
-    async function activateModelVersion(ver) {
-      if (!confirm(`Are you sure you want to rollback to Model Version v${ver}?`)) return;
-      try {
-        const resp = await fetch("/api/model_registry", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ activate_version: ver })
-        });
-        const res = await resp.json();
-        if (res.success) {
-          alert(`Successfully rolled back to Model Version v${ver}!`);
-          await fetchData();
-          loadModelRegistry();
-        } else {
-          alert(`Rollback failed: ${res.error}`);
-        }
-      } catch (e) {
-        alert(`Rollback error: ${e.message}`);
-      }
-    }
-
-    function debounce(func, wait) {
-      let timeout;
-      return function executedFunction(...args) {
-        const later = () => {
-          clearTimeout(timeout);
-          func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-      };
-    }
-
-    const debouncedFilterTasks = debounce(filterTasks, 200);
-
-    document.addEventListener("DOMContentLoaded", function() {
-      const searchInput = document.getElementById("task-search-input");
-      if (searchInput) {
-        searchInput.oninput = debouncedFilterTasks;
-      }
-      setTimeout(calculateROI, 1500);
-      setTimeout(renderSiteView, 1500);
+  initAIChat();
+}
+
+function setAssistantDatasetMode(mode) {
+  activeAssistantDatasetMode = mode;
+  const testBtn = document.getElementById('btn-mode-test');
+  const trainBtn = document.getElementById('btn-mode-train');
+  if (testBtn && trainBtn) {
+    testBtn.style.background = mode === 'test' ? 'var(--brand-primary)' : 'var(--bg-subtle)';
+    testBtn.style.color = mode === 'test' ? '#ffffff' : 'var(--brand-primary)';
+    testBtn.innerText = mode === 'test' ? ' Test Data (Active)' : ' Test Data';
+
+    trainBtn.style.background = mode === 'train' ? 'var(--brand-primary)' : 'var(--bg-subtle)';
+    trainBtn.style.color = mode === 'train' ? '#ffffff' : 'var(--brand-primary)';
+    trainBtn.innerText = mode === 'train' ? ' Train Data (Active)' : ' Train Data';
+  }
+
+  const messagesContainer = document.getElementById('ai-chat-messages');
+  if (!messagesContainer) return;
+
+  const modeMsg = document.createElement('div');
+  modeMsg.style.cssText = 'background:#f0f9ff; border:1px solid #bae6fd; color:#0369a1; padding:8px 12px; border-radius:10px; font-size:12px; max-width:88%; align-self:flex-start; font-weight:600;';
+  modeMsg.innerText = `Active Dataset Mode set to: ${mode === 'test' ? 'Test Data (Imported Predictions)' : 'Train Data (Historical Dataset)'}. All diagnostic queries will analyze ${mode === 'test' ? 'Test Data' : 'Train Data'}.`;
+  messagesContainer.appendChild(modeMsg);
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+function appendInteractiveOptionsToChat() {
+  const messagesContainer = document.getElementById('ai-chat-messages');
+  if (!messagesContainer) return;
+
+  const existingOptions = document.getElementById('chat-inline-options-block');
+  if (existingOptions) existingOptions.remove();
+
+  const modeLabel = activeAssistantDatasetMode === 'test' ? ' Test' : ' Train';
+  const switchLabel = activeAssistantDatasetMode === 'test' ? ' Switch to Train' : ' Switch to Test';
+  const switchMode = activeAssistantDatasetMode === 'test' ? 'train' : 'test';
+
+  const optionsBlock = document.createElement('div');
+  optionsBlock.id = 'chat-inline-options-block';
+  optionsBlock.style.cssText = 'flex-shrink:0; padding:6px 8px; background:#f8fafc; border:1px solid var(--border-light); border-radius:10px; display:flex; flex-wrap:wrap; gap:5px; max-width:100%;';
+
+  optionsBlock.innerHTML = `
+    <span style="font-size:10px; font-weight:700; color:var(--text-subtle); width:100%; padding-bottom:2px;">▸ Ask next (${modeLabel} mode):</span>
+    <button onclick="askAIQuickPrompt('Which open tasks are at highest risk?')" style="background:#ffffff; border:1px solid #bfdbfe; border-radius:14px; padding:3px 9px; font-size:11px; font-weight:600; color:#1d4ed8; cursor:pointer;">High risk tasks</button>
+    <button onclick="askAIQuickPrompt('Compare model metrics')" style="background:#ffffff; border:1px solid #bfdbfe; border-radius:14px; padding:3px 9px; font-size:11px; font-weight:600; color:#1d4ed8; cursor:pointer;">Model metrics</button>
+    <button onclick="askAIQuickPrompt('What is the delay rate by discipline?')" style="background:#ffffff; border:1px solid #bfdbfe; border-radius:14px; padding:3px 9px; font-size:11px; font-weight:600; color:#1d4ed8; cursor:pointer;">Delay by discipline</button>
+    <button onclick="askAIQuickPrompt('What mitigation action is required for high risk tasks?')" style="background:#ffffff; border:1px solid #bfdbfe; border-radius:14px; padding:3px 9px; font-size:11px; font-weight:600; color:#1d4ed8; cursor:pointer;">Mitigation actions</button>
+    <button onclick="setAssistantDatasetMode('${switchMode}')" style="background:#fffbeb; border:1px solid #fde68a; border-radius:14px; padding:3px 9px; font-size:11px; font-weight:700; color:#b45309; cursor:pointer;">${switchLabel}</button>
+  `;
+
+  messagesContainer.appendChild(optionsBlock);
+  requestAnimationFrame(() => {
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  });
+}
+
+function toggleAIDiagnosticsWidget() {
+  const panel = document.getElementById('ai-diagnostics-panel');
+  if (!panel) return;
+  if (panel.style.display === 'none' || panel.style.display === '') {
+    panel.style.display = 'flex';
+    initAIChat();
+  } else {
+    panel.style.display = 'none';
+  }
+}
+
+async function askAIQuickPrompt(promptText) {
+  const input = document.getElementById('ai-chat-input');
+  if (input) {
+    input.value = promptText;
+    sendAIChatMessage();
+  }
+}
+
+async function sendAIChatMessage() {
+  if (isAIChatBusy) return;
+  const input = document.getElementById('ai-chat-input');
+  const messagesContainer = document.getElementById('ai-chat-messages');
+  const sendBtn = document.getElementById('btn-send-ai');
+  if (!input || !messagesContainer) return;
+
+  const userText = input.value.trim();
+  if (!userText) return;
+
+  isAIChatBusy = true;
+  if (sendBtn) sendBtn.disabled = true;
+  input.disabled = true;
+
+  const userBubble = document.createElement('div');
+  userBubble.style.cssText = 'background:var(--brand-primary); color:#ffffff; padding:10px 14px; border-radius:12px; font-size:12px; max-width:85%; align-self:flex-end; word-break:break-word; font-weight:500;';
+  userBubble.innerText = userText;
+  messagesContainer.appendChild(userBubble);
+  input.value = '';
+
+  const thinkingBubble = document.createElement('div');
+  thinkingBubble.style.cssText = 'background:#f1f5f9; border:1px solid var(--border-light); color:var(--text-subtle); padding:8px 12px; border-radius:10px; font-size:11px; max-width:75%; align-self:flex-start; font-style:italic;';
+  thinkingBubble.innerText = 'Analyzing project intelligence dataset...';
+  messagesContainer.appendChild(thinkingBubble);
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+  try {
+    const tasks = (globalImportedData && globalImportedData.tasks) ? globalImportedData.tasks : (globalData ? globalData.tasks : []);
+    const resp = await fetch('/api/assistant', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: userText,
+        dataset_mode: activeAssistantDatasetMode,
+        tasks: tasks
+      })
     });
-  </script>
+
+    const data = await resp.json();
+    let botReply = data.reply || 'No diagnostic response generated.';
+    let citation = data.dataset_mode === 'test' ? 'Imported Predictions (Test Data)' : 'Historical Project Dataset (Train Data)';
+
+    thinkingBubble.remove();
+
+    const botBubble = document.createElement('div');
+    botBubble.style.cssText = 'background:#ffffff; border:1px solid var(--border-light); padding:10px 14px; border-radius:12px; font-size:12px; max-width:92%; align-self:flex-start; word-break:break-word; line-height:1.6;';
+    const groundingBadge = `<div style="margin-top:8px; padding-top:6px; border-top:1px dashed #e2e8f0; font-size:10px; color:#64748b; font-family:'JetBrains Mono',monospace;"><strong>Grounded Source</strong>: ${citation}</div>`;
+    botBubble.innerHTML = botReply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>') + groundingBadge;
+    messagesContainer.appendChild(botBubble);
+    requestAnimationFrame(() => { messagesContainer.scrollTop = messagesContainer.scrollHeight; });
+
+  } catch (err) {
+    thinkingBubble.remove();
+    const errBubble = document.createElement('div');
+    errBubble.style.cssText = 'background:#fef2f2; border:1px solid #fecaca; color:#dc2626; padding:8px 12px; border-radius:10px; font-size:12px; max-width:85%; align-self:flex-start;';
+    errBubble.innerText = 'Unable to reach AI endpoint. Using local intelligence engine.';
+    messagesContainer.appendChild(errBubble);
+    requestAnimationFrame(() => { messagesContainer.scrollTop = messagesContainer.scrollHeight; });
+  } finally {
+    isAIChatBusy = false;
+    if (sendBtn) sendBtn.disabled = false;
+    input.disabled = false;
+    appendInteractiveOptionsToChat();
+  }
+}
+
+/* =========================================================================
+   ANTIGRAVITY ENHANCEMENTS: SANDBOX, ROI, JIRA, MODEL REGISTRY, SITE VIEW
+   ========================================================================= */
+let appMode = 'production';
+let sandboxThreshold = 70;
+
+function setAppMode(mode) {
+  appMode = mode;
+  const btnProd = document.getElementById("btn-mode-prod");
+  const btnSand = document.getElementById("btn-mode-sandbox");
+  const banner = document.getElementById("sandbox-banner");
+
+  if (mode === 'sandbox') {
+    if (btnProd) { btnProd.classList.remove("active"); btnProd.style.background = "transparent"; btnProd.style.color = "#94a3b8"; }
+    if (btnSand) { btnSand.classList.add("active"); btnSand.style.background = "#6366f1"; btnSand.style.color = "#ffffff"; }
+    if (banner) banner.style.display = "flex";
+  } else {
+    if (btnSand) { btnSand.classList.remove("active"); btnSand.style.background = "transparent"; btnSand.style.color = "#94a3b8"; }
+    if (btnProd) { btnProd.classList.add("active"); btnProd.style.background = "#2563eb"; btnProd.style.color = "#ffffff"; }
+    if (banner) banner.style.display = "none";
+    sandboxThreshold = 70;
+  }
+  reclassifyTasksAndRender();
+}
+
+function updateSandboxThreshold(val) {
+  sandboxThreshold = parseInt(val, 10);
+  const disp = document.getElementById("threshold-val-display");
+  if (disp) disp.innerText = val + "%";
+  reclassifyTasksAndRender();
+}
+
+function reclassifyTasksAndRender() {
+  if (!globalData || !globalData.tasks) return;
+  
+  const cutoff = appMode === 'sandbox' ? sandboxThreshold : 70;
+  let highCount = 0, medCount = 0, lowCount = 0;
+
+  globalData.tasks.forEach(t => {
+    if (t.score >= cutoff) {
+      t.cat = 'HIGH';
+      t.action = 'NOTIFY_PM + REALLOCATE_RESOURCE';
+      highCount++;
+    } else if (t.score >= 40) {
+      t.cat = 'MEDIUM';
+      t.action = 'SCHEDULE_STATUS_MEETING';
+      medCount++;
+    } else {
+      t.cat = 'LOW';
+      t.action = 'MONITOR_WEEKLY';
+      lowCount++;
+    }
+  });
+
+  if (document.getElementById("view-overview") && document.getElementById("view-overview").classList.contains("active")) renderDashboard(globalData);
+  if (document.getElementById("view-tasks") && document.getElementById("view-tasks").classList.contains("active")) renderTasksTable();
+  if (document.getElementById("view-mitigation") && document.getElementById("view-mitigation").classList.contains("active")) renderMitigationHub();
+  if (document.getElementById("view-siteview") && document.getElementById("view-siteview").classList.contains("active")) renderSiteView();
+  calculateROI();
+}
+
+function calculateROI() {
+  const costPerDay = parseFloat(document.getElementById("roi-cost-per-day")?.value || 5000);
+  const costPerIntervention = parseFloat(document.getElementById("roi-intervention-cost")?.value || 250);
+  const successRate = (parseFloat(document.getElementById("roi-mitigation-success")?.value || 80)) / 100;
+
+  const tasks = (globalImportedData && globalImportedData.tasks) ? globalImportedData.tasks : (globalData ? globalData.tasks : []);
+  if (!tasks || !tasks.length) return;
+
+  const highRiskTasks = tasks.filter(t => t.cat === 'HIGH');
+  const medRiskTasks  = tasks.filter(t => t.cat === 'MEDIUM');
+  const totalAlerts = highRiskTasks.length + medRiskTasks.length;
+
+  const avgDelayPerTask = (globalData && globalData.meta && globalData.meta.avg_delay_days) ? globalData.meta.avg_delay_days : 3.5;
+  const daysSaved = highRiskTasks.length * avgDelayPerTask * successRate;
+
+  const grossAvoided = daysSaved * costPerDay;
+  const totalInterventionCost = (highRiskTasks.length * costPerIntervention) + (medRiskTasks.length * 100);
+  const netBenefit = grossAvoided - totalInterventionCost;
+  const roiRatio = totalInterventionCost > 0 ? (grossAvoided / totalInterventionCost) : 0;
+
+  const grossElem = document.getElementById("roi-gross-avoided");
+  const costElem  = document.getElementById("roi-total-cost");
+  const netElem   = document.getElementById("roi-net-benefit");
+  const ratioElem = document.getElementById("roi-ratio-display");
+  const daysElem  = document.getElementById("roi-days-saved");
+  const alertsElem = document.getElementById("roi-alerts-acted");
+
+  if (grossElem) grossElem.innerText = "$" + Math.round(grossAvoided).toLocaleString();
+  if (costElem)  costElem.innerText  = "$" + Math.round(totalInterventionCost).toLocaleString();
+  if (netElem)   netElem.innerText   = "$" + Math.round(netBenefit).toLocaleString();
+  if (ratioElem) ratioElem.innerText = roiRatio.toFixed(1) + "x Return on Investment (" + Math.round((netBenefit / Math.max(totalInterventionCost, 1))*100).toLocaleString() + "% Net ROI)";
+  if (daysElem)  daysElem.innerText  = daysSaved.toFixed(1) + " days delay prevented";
+  if (alertsElem) alertsElem.innerText = totalAlerts + " risk alerts acted upon";
+}
+
+function renderSiteView() {
+  const container = document.getElementById("site-view-cards-container");
+  if (!container) return;
+
+  const tasks = (globalImportedData && globalImportedData.tasks) ? globalImportedData.tasks : (globalData ? globalData.tasks : []);
+  const highTasks = tasks.filter(t => t.cat === 'HIGH');
+  const medTasks  = tasks.filter(t => t.cat === 'MEDIUM');
+
+  const highCountElem = document.getElementById("site-high-count");
+  const medCountElem  = document.getElementById("site-med-count");
+  const actionsElem   = document.getElementById("site-actions-count");
+
+  if (highCountElem) highCountElem.innerText = highTasks.length;
+  if (medCountElem)  medCountElem.innerText  = medTasks.length;
+  if (actionsElem)   actionsElem.innerText   = highTasks.length + medTasks.length;
+
+  container.innerHTML = "";
+  const priorityTasks = [...highTasks, ...medTasks].slice(0, 15);
+
+  if (!priorityTasks.length) {
+    container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-subtle);">No High/Medium risk tasks flagged for job site action.</div>`;
+    return;
+  }
+
+  priorityTasks.forEach(t => {
+    const isHigh = t.cat === 'HIGH';
+    const card = document.createElement("div");
+    card.style.cssText = `background:${isHigh ? '#fef2f2' : '#fffbeb'}; border:1px solid ${isHigh ? '#fca5a5' : '#fcd34d'}; border-radius:10px; padding:14px; position:relative;`;
+    
+    const topDriver = t.shap_drivers && t.shap_drivers.length ? t.shap_drivers[0].feature : 'Workload / Priority';
+
+    card.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:6px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-weight:800; font-size:12px; color:#2563eb;">${t.id}</span>
+        <span class="${isHigh ? 'pill-high' : 'pill-med'}" style="font-size:10px; font-weight:800; padding:2px 8px; border-radius:12px;">${isHigh ? 'HIGH RISK' : 'MEDIUM RISK'} (${t.score}%)</span>
+      </div>
+      <div style="font-weight:700; font-size:14px; color:var(--text-main); margin-bottom:4px;">${t.desc}</div>
+      <div style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">
+        <strong>Discipline:</strong> ${t.disc} &bull; <strong>Site:</strong> ${t.location || 'Site'} &bull; <strong>Hours:</strong> ${t.hours || 40}h
+      </div>
+      <div style="background:rgba(255,255,255,0.7); padding:8px; border-radius:6px; font-size:11px; color:var(--text-main); margin-bottom:10px;">
+        <strong>Top Risk Driver:</strong> ${topDriver}<br>
+        <strong>Action Proposal:</strong> ${t.action}
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-primary" onclick="openDrawerById('${t.id}')" style="font-size:11px; padding:6px 12px; flex:1;">Inspect Details</button>
+        <a href="mailto:pm.intertech@gmail.com?subject=URGENT SITE ALERT: Task ${t.id}&body=Priority Action required for task ${t.id}: ${t.desc}" class="btn btn-outline" style="font-size:11px; padding:6px 12px; text-decoration:none; background:#fff;">Notify PM</a>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+async function syncJiraTasks() {
+  const btn = document.getElementById("btn-sync-jira");
+  const statusDiv = document.getElementById("jira-sync-status");
+  const url = document.getElementById("jira-url-input").value;
+  const email = document.getElementById("jira-email-input").value;
+  const token = document.getElementById("jira-token-input").value;
+  const project = document.getElementById("jira-project-input").value || "PRJ001";
+
+  if (btn) btn.disabled = true;
+  if (statusDiv) { statusDiv.style.display = "block"; statusDiv.innerText = "Fetching issues from Jira Cloud REST API..."; statusDiv.style.color = "#2563eb"; }
+
+  try {
+    const resp = await fetch("/api/sync_integration", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        tool: "jira",
+        config: { baseUrl: url, email, apiToken: token, project }
+      })
+    });
+
+    const data = await resp.json();
+    if (data.success && data.tasks) {
+      const predictedPayload = predictTasksClientSide(data.tasks, `Jira_${project}_Export.csv`);
+      renderImportedResults(predictedPayload);
+      if (statusDiv) {
+        statusDiv.style.color = "#16a34a";
+        statusDiv.innerText = `Successfully pulled & scored ${data.total_fetched} tasks from Jira project ${project}!`;
+      }
+    } else {
+      throw new Error(data.error || "Failed to fetch from Jira");
+    }
+  } catch (err) {
+    if (statusDiv) {
+      statusDiv.style.color = "#dc2626";
+      statusDiv.innerText = `Jira Sync Error: ${err.message}. Using sample dataset fallback.`;
+    }
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+async function loadModelRegistry() {
+  const container = document.getElementById("model-registry-list");
+  if (!container) return;
+
+  try {
+    const resp = await fetch("/api/model_registry");
+    const reg = await resp.json();
+
+    if (reg.vercel_mode) {
+      container.innerHTML = `<div style="padding:10px; background:#eff6ff; border-radius:6px; color:#1e40af;">${reg.info}</div>`;
+      return;
+    }
+
+    if (!Array.isArray(reg) || !reg.length) {
+      container.innerHTML = `<div>No model snapshots stored yet. Run retrain to record initial snapshot.</div>`;
+      return;
+    }
+
+    let html = `<table style="width:100%; border-collapse:collapse; font-size:11px; margin-top:8px;">
+      <thead>
+        <tr style="background:var(--bg-subtle); text-align:left;">
+          <th style="padding:6px;">Ver</th>
+          <th style="padding:6px;">Date</th>
+          <th style="padding:6px;">Champion</th>
+          <th style="padding:6px;">F1 Score</th>
+          <th style="padding:6px;">Recall</th>
+          <th style="padding:6px;">Status</th>
+          <th style="padding:6px;">Action</th>
+        </tr>
+      </thead>
+      <tbody>`;
+
+    reg.reverse().forEach(item => {
+      const isActive = item.active;
+      const dateStr = item.date ? item.date.replace("T", " ").substring(0, 16) : "-";
+      html += `
+        <tr style="border-bottom:1px solid var(--border-light); ${isActive ? 'background:#f0fdf4; font-weight:700;' : ''}">
+          <td style="padding:6px;">v${item.version}</td>
+          <td style="padding:6px;">${dateStr}</td>
+          <td style="padding:6px;">${item.champion}</td>
+          <td style="padding:6px;">${item.f1}%</td>
+          <td style="padding:6px;">${item.recall}%</td>
+          <td style="padding:6px;">${isActive ? '<span class="pill pill-low">ACTIVE</span>' : '<span style="color:#64748b;">Archived</span>'}</td>
+          <td style="padding:6px;">
+            ${isActive ? '—' : `<button class="btn btn-outline" style="padding:1px 6px; font-size:10px;" onclick="activateModelVersion(${item.version})">Rollback</button>`}
+          </td>
+        </tr>
+      `;
+    });
+
+    html += `</tbody></table>`;
+    container.innerHTML = html;
+  } catch (err) {
+    container.innerHTML = `<div style="color:#dc2626;">Error loading model registry: ${err.message}</div>`;
+  }
+}
+
+async function activateModelVersion(ver) {
+  if (!confirm(`Are you sure you want to rollback to Model Version v${ver}?`)) return;
+  try {
+    const resp = await fetch("/api/model_registry", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ activate_version: ver })
+    });
+    const res = await resp.json();
+    if (res.success) {
+      alert(`Successfully rolled back to Model Version v${ver}!`);
+      await fetchData();
+      loadModelRegistry();
+    } else {
+      alert(`Rollback failed: ${res.error}`);
+    }
+  } catch (e) {
+    alert(`Rollback error: ${e.message}`);
+  }
+}
+
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+const debouncedFilterTasks = debounce(filterTasks, 200);
+
+document.addEventListener("DOMContentLoaded", function() {
+  initAIChat();
+  const searchInput = document.getElementById("task-search-input");
+  if (searchInput) {
+    searchInput.oninput = debouncedFilterTasks;
+  }
+  setTimeout(calculateROI, 1500);
+  setTimeout(renderSiteView, 1500);
+});
+</script>
 </body>
 </html>
