@@ -11,7 +11,10 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const payload = req.body || {};
+    let payload = req.body || {};
+    if (typeof payload === 'string' || Buffer.isBuffer(payload)) {
+      try { payload = JSON.parse(payload.toString()); } catch (e) { payload = {}; }
+    }
     const message = payload.message || '';
     const datasetMode = (payload.dataset_mode || 'test').toLowerCase();
     const customTasks = payload.tasks || [];
