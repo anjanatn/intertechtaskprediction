@@ -952,7 +952,35 @@
  }
 
  
- /* ACCESSIBILITY & MOBILE RESPONSIVE SITE SUPERVISOR STYLES */
+ /* SUB-NAV & RESPONSIVE DESIGN FOR ALL MENU VIEWS */
+ .nav-bar {
+ background-color: #1e293b;
+ padding: 0 24px;
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ border-bottom: 1px solid #334155;
+ flex-wrap: wrap;
+ gap: 12px;
+ }
+
+ .nav-tabs {
+ display: flex;
+ gap: 4px;
+ overflow-x: auto;
+ white-space: nowrap;
+ -webkit-overflow-scrolling: touch;
+ scrollbar-width: none;
+ }
+
+ .nav-tabs::-webkit-scrollbar {
+ display: none;
+ }
+
+ .nav-tab {
+ flex-shrink: 0;
+ }
+
  @media (prefers-contrast: more) {
  .pill-high { background: #7f1d1d !important; color: #ffffff !important; font-weight: 800 !important; border: 2px solid #ffffff !important; }
  .pill-med { background: #78350f !important; color: #ffffff !important; font-weight: 800 !important; border: 2px solid #ffffff !important; }
@@ -960,23 +988,45 @@
  .nav-tab.active { border-bottom-width: 4px !important; }
  }
 
- @media (max-width: 640px) {
- .app-header { flex-direction: column; height: auto; padding: 12px 16px; gap: 10px; align-items: stretch; }
+ /* TABLET & MEDIUM BREAKPOINT (max-width: 1024px) */
+ @media (max-width: 1024px) {
+ .nav-bar { padding: 8px 16px; }
+ .nav-tab { padding: 10px 12px; font-size: 12px; }
+ .grid-2col { grid-template-columns: 1fr; }
+ .sim-layout { grid-template-columns: 1fr; }
+ .kpi-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+ .section-title-bar { flex-direction: column; align-items: flex-start; gap: 12px; }
+ .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+ #last-sync-time { width: 100%; text-align: right; margin-top: -4px; padding-bottom: 4px; }
+ }
+
+ /* MOBILE BREAKPOINT (max-width: 768px) */
+ @media (max-width: 768px) {
+ .app-header { flex-direction: column; height: auto; padding: 12px 16px; gap: 12px; align-items: stretch; }
  .brand-group { justify-content: space-between; width: 100%; }
- .header-actions { justify-content: space-between; width: 100%; flex-wrap: wrap; }
- .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; top: auto; z-index: 999; background: #0f172a; border-top: 1px solid #1e293b; padding: 6px 8px; box-shadow: 0 -4px 12px rgba(0,0,0,0.3); }
- .nav-tabs { justify-content: space-around; width: 100%; overflow-x: auto; gap: 2px; }
- .nav-tab { padding: 8px 6px; font-size: 11px; flex-direction: column; gap: 2px; text-align: center; border-bottom: none; border-top: 3px solid transparent; }
- .nav-tab.active { border-bottom: none; border-top-color: var(--brand-primary); background: rgba(37, 99, 235, 0.15); border-radius: 6px; }
- .app-main { padding: 12px 12px 80px 12px; }
+ .header-actions { justify-content: flex-start; width: 100%; flex-wrap: wrap; gap: 8px; }
+ .header-actions .btn { font-size: 11px; padding: 6px 10px; flex: 1 1 auto; text-align: center; justify-content: center; }
+ .nav-bar { padding: 8px 12px; }
+ .nav-tabs { width: 100%; padding-bottom: 4px; }
+ .nav-tab { padding: 8px 10px; font-size: 11.5px; }
+ .app-main { padding: 16px 12px 60px 12px; }
  .kpi-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+ .kpi-card { padding: 12px; }
+ .kpi-value { font-size: 20px !important; }
  .section-heading { font-size: 18px !important; }
  .mobile-hide { display: none !important; }
  .mobile-show { display: block !important; }
- .btn { min-height: 44px; min-width: 44px; align-items: center; justify-content: center; } /* 44px touch target */
+ .btn { min-height: 40px; min-width: 40px; align-items: center; justify-content: center; }
+ .controls-bar, .filter-bar { flex-direction: column; align-items: stretch; gap: 10px; }
+ .select-dropdown, .form-control { width: 100%; }
  }
 
- /* PRINT STYLES */
+ /* SMALL MOBILE BREAKPOINT (max-width: 480px) */
+ @media (max-width: 480px) {
+ .kpi-grid { grid-template-columns: 1fr; }
+ .nav-tab { font-size: 11px; padding: 6px 8px; }
+ .brand-logo { font-size: 16px; }
+ }/* PRINT STYLES */
  @media print {
  .app-header, .nav-bar, .filter-bar, .header-actions { display: none !important; }
  .app-main { max-width: 100% !important; padding: 0 !important; }
