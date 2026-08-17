@@ -781,74 +781,251 @@
  .btn { min-height: 44px; min-width: 44px; align-items: center; justify-content: center; } /* 44px touch target */
  }
 
+}
+
+ .mit-card.high { border-left-color: var(--high-text); }
+ .mit-card.med { border-left-color: var(--med-text); }
+ .mit-card.low { border-left-color: var(--low-text); }
+
+ .mit-card-header {
+ display: flex;
+ align-items: flex-start;
+ justify-content: space-between;
+ margin-bottom: 10px;
+ }
+
+ .mit-card-title {
+ font-weight: 700;
+ font-size: 14px;
+ color: var(--text-main);
+ }
+
+ .mit-action-box {
+ background-color: var(--bg-subtle);
+ padding: 10px;
+ border-radius: var(--radius-sm);
+ font-size: 12.5px;
+ color: var(--text-muted);
+ margin: 10px 0;
+ font-family: 'JetBrains Mono', monospace;
+ }
+
+ /* SIMULATOR STYLES */
+ .sim-layout {
+ display: grid;
+ grid-template-columns: 1fr 1fr;
+ gap: 24px;
+ }
+
+ @media (max-width: 900px) {
+ .sim-layout { grid-template-columns: 1fr; }
+ }
+
+ .form-group {
+ margin-bottom: 16px;
+ }
+
+ .form-label {
+ display: block;
+ font-size: 13px;
+ font-weight: 600;
+ color: var(--text-main);
+ margin-bottom: 6px;
+ }
+
+ .form-control {
+ width: 100%;
+ padding: 10px;
+ border: 1px solid var(--border-medium);
+ border-radius: var(--radius-sm);
+ font-size: 13px;
+ outline: none;
+ }
+
+ .gauge-display {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ padding: 30px;
+ background: var(--bg-subtle);
+ border-radius: var(--radius-md);
+ text-align: center;
+ }
+
+ .gauge-number {
+ font-family: 'Plus Jakarta Sans', sans-serif;
+ font-size: 64px;
+ font-weight: 800;
+ line-height: 1;
+ margin: 12px 0;
+ }
+
+ /* SLIDE-OVER DRAWER */
+ .drawer-overlay {
+ position: fixed;
+ top: 0;
+ left: 0;
+ width: 100vw;
+ height: 100vh;
+ background: rgba(15, 23, 42, 0.5);
+ backdrop-filter: blur(2px);
+ z-index: 100;
+ opacity: 0;
+ pointer-events: none;
+ transition: opacity 0.25s ease;
+ }
+
+ .drawer-overlay.open {
+ opacity: 1;
+ pointer-events: auto;
+ }
+
+ .drawer-content {
+ position: fixed;
+ top: 0;
+ right: 0;
+ width: 480px;
+ max-width: 90vw;
+ height: 100vh;
+ background: var(--bg-surface);
+ box-shadow: var(--shadow-lg);
+ z-index: 101;
+ transform: translateX(100%);
+ transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+ display: flex;
+ flex-direction: column;
+ }
+
+ .drawer-overlay.open .drawer-content {
+ transform: translateX(0);
+ }
+
+ .drawer-header {
+ padding: 20px;
+ border-bottom: 1px solid var(--border-light);
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ }
+
+ .drawer-body {
+ padding: 20px;
+ overflow-y: auto;
+ flex: 1;
+ }
+
+ .drawer-close {
+ background: none;
+ border: none;
+ font-size: 20px;
+ cursor: pointer;
+ color: var(--text-subtle);
+ }
+
+ .detail-grid {
+ display: grid;
+ grid-template-columns: 1fr 1fr;
+ gap: 12px;
+ margin-bottom: 20px;
+ background: var(--bg-subtle);
+ padding: 14px;
+ border-radius: var(--radius-sm);
+ }
+
+ .detail-item {
+ display: flex;
+ flex-direction: column;
+ }
+
+ .detail-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ color: var(--text-subtle);
+ font-weight: 600;
+ }
+
+ .detail-val {
+ font-size: 13px;
+ font-weight: 600;
+ color: var(--text-main);
+ }
+
+ 
+ /* ACCESSIBILITY & MOBILE RESPONSIVE SITE SUPERVISOR STYLES */
+ @media (prefers-contrast: more) {
+ .pill-high { background: #7f1d1d !important; color: #ffffff !important; font-weight: 800 !important; border: 2px solid #ffffff !important; }
+ .pill-med { background: #78350f !important; color: #ffffff !important; font-weight: 800 !important; border: 2px solid #ffffff !important; }
+ .pill-low { background: #14532d !important; color: #ffffff !important; font-weight: 800 !important; border: 2px solid #ffffff !important; }
+ .nav-tab.active { border-bottom-width: 4px !important; }
+ }
+
+ @media (max-width: 640px) {
+ .app-header { flex-direction: column; height: auto; padding: 12px 16px; gap: 10px; align-items: stretch; }
+ .brand-group { justify-content: space-between; width: 100%; }
+ .header-actions { justify-content: space-between; width: 100%; flex-wrap: wrap; }
+ .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; top: auto; z-index: 999; background: #0f172a; border-top: 1px solid #1e293b; padding: 6px 8px; box-shadow: 0 -4px 12px rgba(0,0,0,0.3); }
+ .nav-tabs { justify-content: space-around; width: 100%; overflow-x: auto; gap: 2px; }
+ .nav-tab { padding: 8px 6px; font-size: 11px; flex-direction: column; gap: 2px; text-align: center; border-bottom: none; border-top: 3px solid transparent; }
+ .nav-tab.active { border-bottom: none; border-top-color: var(--brand-primary); background: rgba(37, 99, 235, 0.15); border-radius: 6px; }
+ .app-main { padding: 12px 12px 80px 12px; }
+ .kpi-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+ .section-heading { font-size: 18px !important; }
+ .mobile-hide { display: none !important; }
+ .mobile-show { display: block !important; }
+ .btn { min-height: 44px; min-width: 44px; align-items: center; justify-content: center; } /* 44px touch target */
+ }
+
  /* PRINT STYLES */
  @media print {
  .app-header, .nav-bar, .filter-bar, .header-actions { display: none !important; }
  .app-main { max-width: 100% !important; padding: 0 !important; }
  .tab-view { display: block !important; }
- .card { page-break-inside: avoid; border: 1px solid #ccc !important; }
- }
- </style>
+  }
+  </style>
 </head>
 
 <body>
+  <!-- TOP APP BAR -->
+  <header class="app-header">
+    <div class="brand-group">
+      <a href="#" class="brand-logo">
+        <div class="brand-badge-icon">IT</div>
+        <span>InterTech</span>
+      </a>
+      <div class="live-status">
+        <div class="pulse-dot"></div>
+        <span>AI Prediction Active</span>
+      </div>
+    </div>
 
- <!-- TOP APP APP BAR -->
- <header class="app-header">
- <div class="brand-group">
- <a href="#" class="brand-logo">
- <div class="brand-badge-icon">IT</div>
- <span>InterTech</span>
- </a>
- <div class="live-status">
- <div class="pulse-dot"></div>
- <span>AI Prediction Active</span>
- </div>
- <div style="margin-left:12px; display:flex; align-items:center; gap:8px;">
- <span style="font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase;">Scope:</span>
- <select id="global-project-selector" onchange="switchProjectFilter()" style="background:#1e293b; color:#ffffff; border:1px solid #334155; border-radius:6px; padding:5px 10px; font-size:12px; font-weight:700; cursor:pointer;">
- <option value="ALL">All Projects (Multi-Project Scope)</option>
- <option value="PRJ001" selected>PRJ001 — Commercial Tower</option>
- <option value="PRJ002">PRJ002 — Tower Expansion</option>
- <option value="PRJ003">PRJ003 — Infrastructure Site</option>
- </select>
- </div>
- </div>
-
- <div class="header-actions">
-
- <div id="mode-toggle-group" style="display:flex; align-items:center; gap:6px; background:#1e293b; padding:4px 8px; border-radius:20px; border:1px solid #334155;" role="region" aria-label="Environment Mode Switcher">
- <span style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase;">Mode:</span>
- <button id="btn-mode-prod" class="btn-mode active" onclick="setAppMode('production')" style="background:#2563eb; color:#ffffff; border:none; border-radius:12px; padding:3px 10px; font-size:11px; font-weight:700; cursor:pointer; transition:all 0.2s;" aria-label="Switch to Production Mode">PROD</button>
- <button id="btn-mode-sandbox" class="btn-mode" onclick="setAppMode('sandbox')" style="background:transparent; color:#94a3b8; border:none; border-radius:12px; padding:3px 10px; font-size:11px; font-weight:700; cursor:pointer; transition:all 0.2s;" aria-label="Switch to Sandbox Mode">SANDBOX</button>
- </div>
-
- <button class="btn btn-secondary" onclick="openModelCardModal()" style="background:rgba(56,189,248,0.15); border-color:rgba(56,189,248,0.3); color:#38bdf8; font-weight:700;">
- <span>Model Card & Methodology</span>
- </button>
- <button class="btn btn-secondary" onclick="exportDataCSV()">
- <span>Export</span>
- </button>
- <button class="btn btn-secondary" onclick="window.print()">
- <span>Print</span>
- </button>
- <button class="btn btn-primary" id="btn-sync-ml" onclick="triggerMLRetrain()">
- <span id="sync-spinner"></span>
- <span>Retrain</span>
- </button>
- </div>
- </header>
-
- 
- <!-- NAVIGATION TABS -->
+    <div class="header-actions" style="display:flex; gap:10px; align-items:center;">
+      <a href="InterTech_Simple_Dashboard.html" class="btn btn-secondary" style="background:rgba(16,185,129,0.15); border-color:rgba(16,185,129,0.4); color:#10b981; font-weight:700; text-decoration:none; display:inline-flex; align-items:center;">
+        <span>Primary Demo</span>
+      </a>
+      <button class="btn btn-secondary" onclick="openModelCardModal()" style="background:rgba(56,189,248,0.15); border-color:rgba(56,189,248,0.3); color:#38bdf8; font-weight:700;">
+        <span>Model Card</span>
+      </button>
+      <button class="btn btn-secondary" onclick="exportDataCSV()">
+        <span>Export</span>
+      </button>
+      <button class="btn btn-secondary" onclick="window.print()">
+        <span>Print</span>
+      </button>
+      <button class="btn btn-primary" id="btn-sync-ml" onclick="triggerMLRetrain()">
+        <span id="sync-spinner"></span>
+        <span>Retrain</span>
+      </button>
+    </div>
+  </header>
  <nav class="nav-bar" aria-label="Main Navigation">
  <div class="nav-tabs" role="tablist">
  <button class="nav-tab active" role="tab" aria-selected="true" aria-controls="view-overview" onclick="switchView('overview', this)">
  <span>Executive Overview</span>
  </button>
  <button class="nav-tab" role="tab" aria-selected="false" aria-controls="view-controltower" id="tab-nav-controltower" onclick="switchView('controltower', this)">
- <span>AI Control Tower & 3D Twin</span>
- <span class="pill pill-low" style="background:#0284c7; color:#ffffff; font-size:9px; padding:1px 5px; margin-left:4px; font-weight:700;">3D SITE</span>
+ <span>Advanced Analytics</span>
+ <span class="pill pill-low" style="background:#475569; color:#ffffff; font-size:9px; padding:1px 5px; margin-left:4px; font-weight:700;">EXPLORATORY</span>
  </button>
  <button class="nav-tab" role="tab" aria-selected="false" aria-controls="view-siteview" onclick="switchView('siteview', this)">
  <span>Site View</span>
@@ -903,8 +1080,8 @@
  <span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(56, 189, 248, 0.3); font-family: 'JetBrains Mono', monospace;">INTERTECH AI ENGINE</span>
  <span style="background: rgba(52, 211, 153, 0.15); color: #34d399; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(52, 211, 153, 0.3);">DIGITAL CONTROL TOWER LIVE</span>
  </div>
- <h1 class="section-heading" style="color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 24px; font-weight: 800; letter-spacing: -0.02em;">AI Digital Control Tower & 3D Site Twin Visualizer</h1>
- <p class="section-subtext" style="color: #94a3b8; font-size: 13px; margin-top: 2px;">Real-time technical review, 3D site structure visualization, clash detection & proactive delay forecasting</p>
+ <h1 class="section-heading" style="color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 24px; font-weight: 800; letter-spacing: -0.02em;">Advanced Analytics: Exploratory Site Visualizer</h1>
+ <p class="section-subtext" style="color: #94a3b8; font-size: 13px; margin-top: 2px;">A visual exploration of imported risk scores. This module is not used to generate model predictions or mitigation decisions.</p>
  </div>
  <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
  <button class="btn btn-outline" style="border-color: rgba(255,255,255,0.2); color: #e2e8f0; font-size: 12px; font-weight: 600;" onclick="toggleControlTowerClashMode()">
@@ -944,8 +1121,8 @@
  <!-- CARD 2: AI ENGINEERING REVIEW -->
  <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 14px; padding: 18px; backdrop-filter: blur(10px);">
  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
- <span style="font-size: 13px; font-weight: 700; color: #38bdf8; font-family: 'Plus Jakarta Sans', sans-serif;">AI Engineering Review</span>
- <span style="font-size: 11px; background: rgba(52, 211, 153, 0.15); color: #34d399; padding: 2px 6px; border-radius: 4px; font-weight: 700;">Verified</span>
+ <span style="font-size: 13px; font-weight: 700; color: #38bdf8; font-family: 'Plus Jakarta Sans', sans-serif;">Exploratory Visual Indicators</span>
+ <span style="font-size: 11px; background: rgba(148,163,184,.15); color: #cbd5e1; padding: 2px 6px; border-radius: 4px; font-weight: 700;">DISPLAY ONLY</span>
  </div>
  <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12px;">
  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 4px;">
@@ -953,7 +1130,7 @@
  <strong style="color: #fbbf24; font-size: 14px;" id="ct-design-issues">23</strong>
  </div>
  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 4px;">
- <span style="color: #94a3b8;">Code Compliance</span>
+ <span style="color: #94a3b8;">Visual Coverage</span>
  <strong style="color: #34d399; font-size: 14px;" id="ct-code-compliance">96%</strong>
  </div>
  <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -963,38 +1140,38 @@
  </div>
  </div>
 
- <!-- CARD 3: AI BID & PROCUREMENT REVIEW -->
+ <!-- ROADMAP: Bid/contract integrations are not part of the delivered prediction workflow. -->
  <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 14px; padding: 18px; backdrop-filter: blur(10px);">
  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
- <span style="font-size: 13px; font-weight: 700; color: #38bdf8; font-family: 'Plus Jakarta Sans', sans-serif;">AI Bid Review</span>
- <span style="font-size: 11px; background: rgba(251, 191, 36, 0.15); color: #fbbf24; padding: 2px 6px; border-radius: 4px; font-weight: 700;">Optimal</span>
+ <span style="font-size: 13px; font-weight: 700; color: #38bdf8; font-family: 'Plus Jakarta Sans', sans-serif;">Bid Review Integration</span>
+ <span style="font-size: 11px; background: rgba(148,163,184,.15); color: #cbd5e1; padding: 2px 6px; border-radius: 4px; font-weight: 700;">ROADMAP</span>
  </div>
  <div style="font-size: 11px; color: #94a3b8; margin-bottom: 4px;">Potential Savings</div>
- <div style="font-size: 26px; font-weight: 800; color: #34d399; font-family: 'JetBrains Mono', monospace; margin-bottom: 8px;">$3.2M</div>
+ <div style="font-size: 13px; font-weight: 700; color: #cbd5e1; margin-bottom: 8px;">No estimate — integration not delivered</div>
  <div style="font-size: 11px; color: #94a3b8; display: flex; justify-content: space-between; align-items: center;">
- <span>Vendor Comparison</span>
- <span style="color: #38bdf8; font-weight: 600;">5 Sub-contractors</span>
+ <span>Planned capability</span>
+ <span style="color: #94a3b8; font-weight: 600;">Requires vendor data</span>
  </div>
  </div>
 
  <!-- CARD 4: AI CONTRACT REVIEW -->
  <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 14px; padding: 18px; backdrop-filter: blur(10px);">
  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
- <span style="font-size: 13px; font-weight: 700; color: #38bdf8; font-family: 'Plus Jakarta Sans', sans-serif;">AI Contract Review</span>
- <span style="font-size: 11px; background: rgba(248, 113, 113, 0.15); color: #f87171; padding: 2px 6px; border-radius: 4px; font-weight: 700;">Audited</span>
+ <span style="font-size: 13px; font-weight: 700; color: #38bdf8; font-family: 'Plus Jakarta Sans', sans-serif;">Contract Review Integration</span>
+ <span style="font-size: 11px; background: rgba(148,163,184,.15); color: #cbd5e1; padding: 2px 6px; border-radius: 4px; font-weight: 700;">ROADMAP</span>
  </div>
  <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12px;">
  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 4px;">
  <span style="color: #94a3b8;">Risk Clauses</span>
- <strong style="color: #f87171;">4 Flagged</strong>
+ <strong style="color: #cbd5e1;">Requires contract ingestion</strong>
  </div>
  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 4px;">
  <span style="color: #94a3b8;">Payment Terms</span>
- <strong style="color: #fbbf24;">Milestone 3 Alert</strong>
+ <strong style="color: #cbd5e1;">Not assessed</strong>
  </div>
  <div style="display: flex; justify-content: space-between; align-items: center;">
  <span style="color: #94a3b8;">Claims Exposure</span>
- <strong style="color: #34d399;">Low ($45K)</strong>
+ <strong style="color: #cbd5e1;">Not assessed</strong>
  </div>
  </div>
  </div>
@@ -1091,10 +1268,19 @@
  <section id="view-overview" class="tab-view active">
  <div class="section-title-bar">
  <div>
- <h1 class="section-heading">Project Intelligence & Executive Risk Radar</h1>
- <p class="section-subtext">Real-time ML delay forecasting, key performance metrics, and discipline analysis</p>
+ <h1 class="section-heading">Project Delay Prediction System</h1>
+ <p class="section-subtext">A decision-support view for predicting delay, prioritising risk, and acting early.</p>
  </div>
  </div>
+
+ <div style="background:linear-gradient(135deg,#0f172a,#172554); border:1px solid #334155; border-radius:16px; padding:22px 24px; margin-bottom:20px; color:#fff; box-shadow:0 10px 26px rgba(15,23,42,.16);">
+  <div style="display:flex; justify-content:space-between; gap:14px; align-items:flex-start; flex-wrap:wrap;"><div><div style="font-size:11px; font-weight:800; letter-spacing:.08em; color:#7dd3fc;">LIVE DECISION SNAPSHOT</div><div style="font-size:22px; font-weight:800; margin-top:4px;">Model: <span id="decision-model">Calibrated Random Forest</span></div><div style="font-size:13px; color:#cbd5e1; margin-top:6px;">DATA SOURCE: SIMULATED PROJECT-MANAGEMENT DATA — demonstration only; not a forecast for a real project.</div></div><button class="btn btn-primary" onclick="switchView('import', document.getElementById('tab-nav-import'))" style="background:#0284c7; border-color:#0284c7;">Try Demo Dataset</button></div>
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(185px,1fr)); gap:12px; margin-top:18px;"><div style="background:rgba(255,255,255,.08); border-radius:10px; padding:13px;"><div style="font-size:11px; color:#94a3b8;">PREDICTION</div><strong id="decision-at-risk" style="font-size:20px;">123 / 1,000 at risk</strong></div><div style="background:rgba(255,255,255,.08); border-radius:10px; padding:13px;"><div style="font-size:11px; color:#94a3b8;">OVERALL RISK</div><strong id="decision-risk" style="font-size:20px; color:#fca5a5;">HIGH</strong></div><div style="background:rgba(255,255,255,.08); border-radius:10px; padding:13px;"><div style="font-size:11px; color:#94a3b8;">RECOMMENDED ACTION</div><strong style="font-size:15px;">Notify PM + reallocate resource</strong></div><div style="background:rgba(255,255,255,.08); border-radius:10px; padding:13px;"><div style="font-size:11px; color:#94a3b8;">TOP RISK SIGNALS</div><strong id="decision-drivers" style="font-size:15px;">Workload, site risk, duration</strong></div></div>
+ </div>
+
+ <div class="grid-2col" style="margin-bottom:20px;"><div class="card"><h2 class="card-title">Prediction → Action Pipeline</h2><p style="font-size:13px; color:var(--text-subtle); margin:10px 0; line-height:1.8;">Project data → preprocessing → calibrated Random Forest → delay probability → risk classification → mitigation recommendation</p><p style="font-size:12px; color:#0369a1; font-weight:700;">Probabilities are classified as Low: 0–39%, Medium: 40–69%, High: ≥70%.</p></div><div class="card"><h2 class="card-title">Risk → Action Policy</h2><div style="font-size:13px; line-height:1.9;"><div><span class="pill pill-low">LOW &lt;40%</span> Normal monitoring</div><div><span class="pill pill-med">MEDIUM 40–69%</span> Weekly status meeting</div><div><span class="pill pill-high">HIGH ≥70%</span> Notify PM + reallocate one available employee</div></div><p style="font-size:11px; color:var(--text-subtle); margin-top:10px;">Thresholds are configurable in Sandbox mode; the production baseline is preserved.</p></div></div>
+
+ <div class="grid-2col" style="margin-bottom:20px;"><div class="card"><h2 class="card-title">Simulated Dataset Card</h2><p style="font-size:13px; color:var(--text-subtle); line-height:1.6;">The 1,000-task demonstration dataset was synthetically generated to resemble project-management records. It includes task dates, discipline, priority, site risk, planned hours, resource assignment, status, and an observed delay outcome. The target is <strong>Delay &gt; 0</strong>.</p><p style="font-size:11px; color:#64748b; margin-top:9px;">Root cause, overdue flags, actual dates, and delay are excluded from prediction features to prevent post-outcome leakage.</p></div><div class="card"><h2 class="card-title">Known Limitations</h2><ul style="font-size:13px; color:var(--text-subtle); line-height:1.65; padding-left:18px;"><li>Data is simulated; no external real-world validation has been completed.</li><li>Predictions depend on a limited set of project features and historical patterns.</li><li>Weather, supplier failure, and scope changes may create risks the model cannot anticipate.</li><li>Use results to support—not replace—project-manager judgment.</li></ul></div></div>
 
  <!-- KPI METRIC CARDS -->
  <div class="kpi-grid">
@@ -1304,9 +1490,9 @@
  <div class="card" style="margin-top:24px; border:1px solid #cbd5e1; box-shadow:var(--shadow-md);">
  <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:14px; margin-bottom:18px;">
  <div>
- <span style="background:#eff6ff; color:#2563eb; font-weight:700; font-size:10px; padding:2px 8px; border-radius:4px; text-transform:uppercase;">BUSINESS IMPACT MODEL</span>
- <h2 style="font-family:'Plus Jakarta Sans',sans-serif; font-size:18px; font-weight:800; color:var(--text-main); margin-top:2px;">Proactive Delay Cost Avoidance & ROI Calculator</h2>
- <p style="font-size:12px; color:var(--text-subtle);">Estimate monetary savings achieved by intervening on AI High-Risk task alerts before actual site delays occur</p>
+ <span style="background:#f1f5f9; color:#475569; font-weight:700; font-size:10px; padding:2px 8px; border-radius:4px; text-transform:uppercase;">ROADMAP / ILLUSTRATIVE</span>
+ <h2 style="font-family:'Plus Jakarta Sans',sans-serif; font-size:18px; font-weight:800; color:var(--text-main); margin-top:2px;">Illustrative Delay Cost Scenario</h2>
+ <p style="font-size:12px; color:var(--text-subtle);">A configurable scenario, not a validated savings forecast or an input to the delay model.</p>
  </div>
  <button class="btn btn-outline" onclick="calculateROI()" style="font-size:12px; font-weight:700;"> Recalculate ROI</button>
  </div>
@@ -2638,6 +2824,8 @@
 </tr></tbody>
  </table>
  </div>
+ <div id="temporal-validation-summary" style="margin-top:16px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; padding:14px 16px; font-size:13px; color:#334155;"><strong>Temporal holdout & baseline:</strong> The newest dated records are held out from training. Metrics are refreshed when the training pipeline runs.</div>
+ <div style="margin-top:16px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:10px; padding:14px 16px; font-size:13px; color:#334155; line-height:1.55;"><strong style="color:#0f3b74;">Selected model: Calibrated Random Forest.</strong> Logistic Regression has a slightly higher accuracy and ROC-AUC in this evaluation. Random Forest is selected for the operational workflow because it has the strongest delayed-class recall (72.4%), supports the implemented TreeExplainer feature explanations, and captures non-linear feature interactions. Recall is prioritised because failing to flag a genuinely delayed task can prevent an early PM intervention.</div>
  </div>
 
  <div class="card">
@@ -2855,6 +3043,201 @@
  <div style="display:flex; align-items:center; gap:24px;">
  <canvas id="pbix-donut-chart" width="160" height="160" style="flex-shrink:0;"></canvas>
  <div id="pbix-legend" style="flex:1;"></div>
+<span class="stat-name">Hours</span>
+ <span class="stat-val">17.82% Impact</span>
+ </div>
+ <div class="bar-bg">
+ <div class="bar-fill" style="width: 56%;"></div>
+ </div>
+</div><div class="stat-row">
+ <div class="stat-meta">
+ <span class="stat-name">disc_hist_delay_rate</span>
+ <span class="stat-val">11.99% Impact</span>
+ </div>
+ <div class="bar-bg">
+ <div class="bar-fill" style="width: 37%;"></div>
+ </div>
+</div><div class="stat-row">
+ <div class="stat-meta">
+ <span class="stat-name">high_pri_high_risk</span>
+ <span class="stat-val">11.13% Impact</span>
+ </div>
+ <div class="bar-bg">
+ <div class="bar-fill" style="width: 35%;"></div>
+ </div>
+</div><div class="stat-row">
+ <div class="stat-meta">
+ <span class="stat-name">disc_PRJ-STR</span>
+ <span class="stat-val">0.68% Impact</span>
+ </div>
+ <div class="bar-bg">
+ <div class="bar-fill" style="width: 2%;"></div>
+ </div>
+</div></div>
+ </div>
+ </section>
+
+ <!-- VIEW 6: BATCH FILE IMPORT & PREDICT -->
+ 
+ <!-- VIEW: SITE SUPERVISOR MOBILE VIEW (JOB SITE ACCESSIBLE) -->
+ <section id="view-siteview" class="tab-view" role="tabpanel" aria-labelledby="tab-siteview">
+ <div class="section-title-bar" style="background:linear-gradient(135deg, #0f172a, #1e293b); padding:16px 20px; border-radius:12px; margin-bottom:16px; color:#fff;">
+ <div style="display:flex; justify-content:space-between; align-items:center;">
+ <div>
+ <span style="background:#2563eb; color:#fff; font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px;">SITE SUPERVISOR HUD</span>
+ <h1 class="section-heading" style="font-size:20px; font-weight:800; margin-top:2px; color:#fff;">Job Site High-Risk Priority Monitor</h1>
+ <p class="section-subtext" style="color:#94a3b8; font-size:12px;">Mobile-optimized view for field foremen & discipline leads</p>
+ </div>
+ <button class="btn btn-primary" onclick="renderSiteView()" style="font-size:12px; font-weight:700;"> Refresh</button>
+ </div>
+ </div>
+
+ <!-- SITE QUICK STATS -->
+ <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:16px;">
+ <div style="background:#fef2f2; border:1px solid #fca5a5; padding:12px; border-radius:8px; text-align:center;">
+ <div style="font-size:10px; font-weight:700; color:#b91c1c;">HIGH RISK TASKS</div>
+ <div style="font-size:22px; font-weight:800; color:#b91c1c; font-family:'JetBrains Mono',monospace;" id="site-high-count">0</div>
+ </div>
+ <div style="background:#fffbeb; border:1px solid #fcd34d; padding:12px; border-radius:8px; text-align:center;">
+ <div style="font-size:10px; font-weight:700; color:#b45309;">MED RISK TASKS</div>
+ <div style="font-size:22px; font-weight:800; color:#b45309; font-family:'JetBrains Mono',monospace;" id="site-med-count">0</div>
+ </div>
+ <div style="background:#eff6ff; border:1px solid #bfdbfe; padding:12px; border-radius:8px; text-align:center;">
+ <div style="font-size:10px; font-weight:700; color:#1d4ed8;">ACTIONS DUE</div>
+ <div style="font-size:22px; font-weight:800; color:#1d4ed8; font-family:'JetBrains Mono',monospace;" id="site-actions-count">0</div>
+ </div>
+ </div>
+
+ <!-- SITE CARDS CONTAINER -->
+ <div id="site-view-cards-container" style="display:flex; flex-direction:column; gap:12px;">
+ <!-- Populated dynamically via renderSiteView() -->
+ </div>
+ </section>
+
+ <section id="view-import" class="tab-view">
+ <div class="section-title-bar">
+ <div>
+ <h1 class="section-heading">Test Data Import & ML Delay Risk Forecasting</h1>
+ <p class="section-subtext">Model trained on <strong>1,000 historical tasks</strong>. Upload test dataset (.csv, .xlsx, .xls) to predict delays, risk tiers, and mitigation actions.</p>
+ </div>
+ <div style="display:flex; gap:10px;">
+ <button class="btn btn-primary" style="background:#0284c7; border-color:#0284c7; font-size:12px;" onclick="loadSampleTestDataset()">
+ <span>Load Sample Test File (SAMPLE DATA)</span>
+ </button>
+ <a href="/public/sample_import_tasks.csv" download="sample_import_tasks.csv" class="btn btn-outline" style="font-size:12px;">
+ <span>Download Sample CSV</span>
+ </a>
+ <a href="/public/sample_import_tasks.xlsx" download="sample_import_tasks.xlsx" class="btn btn-outline" style="font-size:12px;">
+ <span>Download Sample Excel</span>
+ </a>
+ </div>
+ </div>
+
+ <!-- FILE DROPZONE CARD -->
+ <div class="card" style="padding:36px; text-align:center; border:2px dashed var(--border-medium); background:var(--bg-subtle); border-radius:var(--radius-lg); margin-bottom:24px; transition:all 0.2s ease;" id="import-dropzone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleFileDrop(event)">
+ <input type="file" id="file-import-input" accept=".csv, .xlsx, .xls" style="display:none;" onchange="handleFileSelected(event)">
+ <div style="font-size:48px; margin-bottom:12px;"></div>
+ <h3 style="font-family:'Plus Jakarta Sans', sans-serif; font-size:18px; font-weight:700; color:var(--text-main); margin-bottom:6px;">
+ Drag & Drop Test Dataset (CSV or Excel) Here
+ </h3>
+ <p style="font-size:13px; color:var(--text-subtle); margin-bottom:16px;">
+ Model trained on <strong>1,000 baseline items</strong>. Upload your test file (<strong>.csv, .xlsx, .xls</strong>) for instant delay prediction
+ </p>
+ <div style="display:flex; justify-content:center; gap:12px; margin-bottom:16px;">
+ <button class="btn btn-primary" style="background:linear-gradient(135deg, #0284c7, #0369a1);" onclick="document.getElementById('file-import-input').click()">
+ <span>Browse Test File from Computer</span>
+ </button>
+ <button class="btn btn-secondary" onclick="loadSampleTestDataset()">
+ <span>Load SAMPLE DATA(Book2).csv</span>
+ </button>
+ </div>
+ <div style="display:flex; justify-content:center; gap:8px;">
+ <span class="pill pill-low" style="font-family:'JetBrains Mono', monospace;">.CSV</span>
+ <span class="pill pill-low" style="font-family:'JetBrains Mono', monospace;">.XLSX</span>
+ <span class="pill pill-low" style="font-family:'JetBrains Mono', monospace;">.XLS</span>
+ </div>
+ </div>
+
+ <!-- PROCESSING SPINNER -->
+ <div id="import-loading" style="display:none; text-align:center; padding:40px; background:var(--bg-surface); border-radius:var(--radius-md); border:1px solid var(--border-light); margin-bottom:24px;">
+ <div style="font-size:32px; display:inline-block; margin-bottom:12px;"></div>
+ <h4 style="font-size:16px; font-weight:600; color:var(--text-main);" id="import-loading-status">Analyzing Imported Task Data & Calculating Delay Predictions...</h4>
+ <p style="font-size:13px; color:var(--text-subtle); margin-top:4px;">Applying Calibrated Machine Learning Model & SHAP Feature Explanations</p>
+ </div>
+
+ <!-- IMPORTED RESULTS CONTAINER -->
+ <div id="imported-results-container" style="display:none;">
+ 
+ <!-- POWER BI SOLUTION POPUP BANNER -->
+ <div style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 1px solid #fde68a; border-radius: var(--radius-md); padding: 16px 20px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; box-shadow: var(--shadow-sm);">
+ <div style="display: flex; align-items: center; gap: 14px;">
+ <div style="font-size: 28px;"></div>
+ <div>
+ <h4 style="font-size: 15px; font-weight: 700; color: #92400e;">Prediction Session Complete — Power BI Dashboard Ready</h4>
+ <p style="font-size: 13px; color: #b45309; margin-top: 2px;">
+ View interactive dashboard with risk breakdown charts, mitigation plan, and export to Power BI compatible format.
+ </p>
+ </div>
+ </div>
+ <div style="display:flex; gap:8px;">
+ <button onclick="openPBIXDashboard()" class="btn btn-primary" style="background: #d97706; border-color: #d97706; color: #ffffff; font-weight: 700; white-space: nowrap;">
+ <span>View Dashboard &amp; Export</span>
+ </button>
+ </div>
+ </div>
+
+ <!-- PBIX MODAL DASHBOARD -->
+ <div id="pbix-modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.7); z-index:9999; overflow-y:auto; padding:24px;" onclick="closePBIXModal(event)">
+ <div onclick="event.stopPropagation()" style="background:#ffffff; border-radius:16px; max-width:1100px; margin:0 auto; box-shadow:0 25px 50px rgba(0,0,0,0.25); overflow:hidden;">
+ <!-- Modal Header -->
+ <div style="background:linear-gradient(135deg,#1e3a5f,#2563eb); padding:24px 28px; display:flex; align-items:center; justify-content:space-between;">
+ <div>
+ <div style="font-size:12px; font-weight:600; color:#93c5fd; letter-spacing:0.08em; text-transform:uppercase;">InterTech PRJ001 · Power BI Solution</div>
+ <h2 style="font-size:22px; font-weight:800; color:#ffffff; margin-top:4px; font-family:'Plus Jakarta Sans',sans-serif;">Project Delay Prediction Dashboard</h2>
+ <div style="font-size:12px; color:#bfdbfe; margin-top:4px;" id="pbix-subtitle">Calibrated ML Model · Target: Delay &gt; 0</div>
+ </div>
+ <div style="display:flex; gap:10px; align-items:center;">
+ <button id="pbix-header-notify-pm" onclick="sendSMTPAlert()" style="background:#dc2626; border:none; color:#fff; padding:10px 18px; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px; display:flex; align-items:center; gap:6px;" title="Notify PM via SMTP Email Alert for High Risk Tasks">
+ <span>Notify PM (SMTP Alert)</span>
+ <span id="pbix-modal-notify-badge" style="background:#ffffff; color:#dc2626; font-size:11px; font-weight:800; padding:1px 6px; border-radius:99px; display:none;">0</span>
+ </button>
+ <button onclick="exportPBIXAsExcel()" style="background:#d97706; border:none; color:#fff; padding:10px 18px; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;"> Export .pbix.xlsx</button>
+ <button onclick="closePBIXModal()" style="background:rgba(255,255,255,0.15); border:none; color:#fff; width:36px; height:36px; border-radius:8px; font-size:20px; cursor:pointer; line-height:1;">&times;</button>
+ </div>
+ </div>
+
+ <!-- KPI Row -->
+ <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:#e2e8f0;">
+ <div style="background:#fff; padding:20px 24px; text-align:center;">
+ <div style="font-size:11px; font-weight:600; color:#64748b; text-transform:uppercase; letter-spacing:0.06em;">Total Tasks</div>
+ <div style="font-size:34px; font-weight:800; color:#0f172a; font-family:'Plus Jakarta Sans',sans-serif;" id="pbix-kpi-total">0</div>
+ <div style="font-size:11px; color:#94a3b8;">Imported Dataset</div>
+ </div>
+ <div style="background:#fef2f2; padding:20px 24px; text-align:center;">
+ <div style="font-size:11px; font-weight:600; color:#dc2626; text-transform:uppercase; letter-spacing:0.06em;">High Risk</div>
+ <div style="font-size:34px; font-weight:800; color:#dc2626; font-family:'Plus Jakarta Sans',sans-serif;" id="pbix-kpi-high">0</div>
+ <div style="font-size:11px; color:#dc2626;" id="pbix-kpi-high-pct">NOTIFY PM + REALLOCATE</div>
+ </div>
+ <div style="background:#fffbeb; padding:20px 24px; text-align:center;">
+ <div style="font-size:11px; font-weight:600; color:#d97706; text-transform:uppercase; letter-spacing:0.06em;">Medium Risk</div>
+ <div style="font-size:34px; font-weight:800; color:#d97706; font-family:'Plus Jakarta Sans',sans-serif;" id="pbix-kpi-med">0</div>
+ <div style="font-size:11px; color:#d97706;">STATUS MEETING + UPDATES</div>
+ </div>
+ <div style="background:#f0fdf4; padding:20px 24px; text-align:center;">
+ <div style="font-size:11px; font-weight:600; color:#16a34a; text-transform:uppercase; letter-spacing:0.06em;">Avg Delay Score</div>
+ <div style="font-size:34px; font-weight:800; color:#16a34a; font-family:'Plus Jakarta Sans',sans-serif;" id="pbix-kpi-avg">0%</div>
+ <div style="font-size:11px; color:#16a34a;">Dataset Risk Level</div>
+ </div>
+ </div>
+
+ <!-- Charts Row -->
+ <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; padding:24px;">
+ <!-- Donut Chart -->
+ <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:20px;">
+ <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:16px;">Risk Distribution</h3>
+ <div style="display:flex; align-items:center; gap:24px;">
+ <canvas id="pbix-donut-chart" width="160" height="160" style="flex-shrink:0;"></canvas>
+ <div id="pbix-legend" style="flex:1;"></div>
  </div>
  </div>
  <!-- Bar Chart -->
@@ -2864,37 +3247,40 @@
  </div>
  </div>
 
- <!-- Compliance Table -->
+ <!-- Implementation traceability (evidence, not a self-assessment) -->
  <div style="padding:0 24px 24px;">
  <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; overflow:hidden;">
  <div style="padding:16px 20px; border-bottom:1px solid #e2e8f0; background:#fff;">
- <h3 style="font-size:14px; font-weight:700; color:#0f172a;">Problem Statement Compliance Report</h3>
- <p style="font-size:12px; color:#64748b; margin-top:2px;">Verification against InterTech.pdf specifications</p>
+ <h3 style="font-size:14px; font-weight:700; color:#0f172a;">Spec Mapping</h3>
+ <p style="font-size:12px; color:#64748b; margin-top:2px;">Delivered functionality mapped to project brief specifications.</p>
+ <div style="background:#fffbe6; border:1px solid #ffe58f; padding:8px 12px; border-radius:6px; font-size:11px; color:#873800; margin-top:8px;">
+ <strong>⚠️ Limitations Note:</strong> Model trained on simulated data for demonstration purposes; unvalidated against live real-world outcomes.
+ </div>
  </div>
  <table style="width:100%; border-collapse:collapse; font-size:12px;">
  <thead><tr style="background:#1e3a5f; color:#fff;">
  <th style="padding:10px 16px; text-align:left; font-weight:600;">Requirement</th>
  <th style="padding:10px 16px; text-align:left; font-weight:600;">Specification</th>
- <th style="padding:10px 16px; text-align:center; font-weight:600;">Status</th>
+ <th style="padding:10px 16px; text-align:center; font-weight:600;">Evidence</th>
  <th style="padding:10px 16px; text-align:left; font-weight:600;">Implementation</th>
  </tr></thead>
  <tbody>
  <tr style="border-bottom:1px solid #e2e8f0; background:#fff;">
  <td style="padding:10px 16px; font-weight:600;">Prediction Objective</td>
  <td style="padding:10px 16px; color:#475569;">Predict project delay using project management data</td>
- <td style="padding:10px 16px; text-align:center;"><span style="background:#dcfce7; color:#16a34a; padding:3px 10px; border-radius:99px; font-weight:700;">COMPLIANT</span></td>
+ <td style="padding:10px 16px; text-align:center; color:#475569;">Model output</td>
  <td style="padding:10px 16px; color:#475569;" id="pbix-compliance-model-impl">Calibrated Random Forest (72.0% Acc, 77.8% AUC)</td>
  </tr>
  <tr style="border-bottom:1px solid #e2e8f0; background:#f8fafc;">
  <td style="padding:10px 16px; font-weight:600;">Target Variable</td>
  <td style="padding:10px 16px; color:#475569;">Delay &gt; 0 = Delayed project</td>
- <td style="padding:10px 16px; text-align:center;"><span style="background:#dcfce7; color:#16a34a; padding:3px 10px; border-radius:99px; font-weight:700;">COMPLIANT</span></td>
+ <td style="padding:10px 16px; text-align:center; color:#475569;">Target transform</td>
  <td style="padding:10px 16px; color:#475569;">Binary target: 1 = Delayed, 0 = On-time</td>
  </tr>
  <tr style="border-bottom:1px solid #e2e8f0; background:#fff;">
  <td style="padding:10px 16px; font-weight:600;">High-Risk Mitigation</td>
  <td style="padding:10px 16px; color:#475569;">Notify PM + Reallocate employee from closed/medium-risk project</td>
- <td style="padding:10px 16px; text-align:center;"><span style="background:#dcfce7; color:#16a34a; padding:3px 10px; border-radius:99px; font-weight:700;">COMPLIANT</span></td>
+ <td style="padding:10px 16px; text-align:center; color:#475569;">Action workflow</td>
  <td style="padding:10px 16px; color:#475569; display:flex; align-items:center; justify-content:space-between; gap:8px;">
  <span>NOTIFY_PM + REALLOCATE_RESOURCE action tag</span>
  <button onclick="sendSMTPAlert()" style="background:#dc2626; color:#ffffff; border:none; padding:4px 10px; border-radius:4px; font-weight:700; font-size:11px; cursor:pointer; white-space:nowrap;">Notify PM Now</button>
@@ -2903,7 +3289,7 @@
  <tr style="background:#f8fafc;">
  <td style="padding:10px 16px; font-weight:600;">Medium-Risk Mitigation</td>
  <td style="padding:10px 16px; color:#475569;">Conduct meeting &amp; require daily updates</td>
- <td style="padding:10px 16px; text-align:center;"><span style="background:#dcfce7; color:#16a34a; padding:3px 10px; border-radius:99px; font-weight:700;">COMPLIANT</span></td>
+ <td style="padding:10px 16px; text-align:center; color:#475569;">Action workflow</td>
  <td style="padding:10px 16px; color:#475569;">SCHEDULE_STATUS_MEETING action tag + daily update workflow</td>
  </tr>
  </tbody>
@@ -3265,6 +3651,8 @@
  </div>
  </div>
 
+ <div style="margin-bottom:20px; background:#f8fafc; border:1px solid #e2e8f0; padding:12px; border-radius:10px;"><div style="display:flex; justify-content:space-between; gap:8px; align-items:center;"><div><div class="detail-label">Confidence / Review Guidance</div><strong id="drawer-confidence" style="font-size:13px; color:#0f172a;">High confidence</strong></div><span id="drawer-prediction" class="pill pill-high">PREDICTED DELAY</span></div><p id="drawer-explanation" style="font-size:12px; color:#475569; line-height:1.45; margin:10px 0 0;">Review the contributing factors below.</p></div>
+
  <div style="margin-bottom:20px;">
  <h4 style="font-size:14px; font-weight:700; margin-bottom:8px;">SHAP Primary Delay Drivers</h4>
  <div class="stat-list" id="drawer-shap-list">
@@ -3278,6 +3666,7 @@
  NOTIFY_PM + REALLOCATE_RESOURCE
  </div>
  </div>
+ <div id="drawer-simulation" style="margin-top:16px; display:none; background:#fffbeb; border:1px solid #fde68a; border-radius:10px; padding:12px;"></div>
  </div>
  </div>
  </div>
@@ -3332,7 +3721,7 @@
  <div>
  <div style="font-size:11px; font-weight:700; color:#38bdf8; letter-spacing:0.08em; text-transform:uppercase;">Model Governance & Methodology Transparency</div>
  <h2 style="font-size:20px; font-weight:800; font-family:'Plus Jakarta Sans',sans-serif; margin-top:2px; color:#ffffff;">Model Card & Technical Validation Note</h2>
- <div style="font-size:12px; color:#94a3b8; margin-top:2px;">Calibrated Random Forest Champion · Problem Statement Compliance Specification</div>
+ <div style="font-size:12px; color:#94a3b8; margin-top:2px;">Calibrated Random Forest · Validation and scope note</div>
  </div>
  <button onclick="closeModelCardModal()" style="background:rgba(255,255,255,0.15); border:none; color:#fff; width:36px; height:36px; border-radius:8px; font-size:20px; cursor:pointer;">&times;</button>
  </div>
@@ -3340,7 +3729,7 @@
  
  <div style="margin-bottom:24px;">
  <h3 style="font-size:15px; font-weight:700; color:#0f172a; border-bottom:2px solid #e2e8f0; padding-bottom:6px; margin-bottom:10px;">1. Model Overview & Architecture</h3>
- <p>The champion delay prediction model is a <strong>Calibrated Random Forest Classifier</strong> trained on historical task records. Platt scaling calibration via <code>CalibratedClassifierCV</code> ensures probability scores accurately reflect empirical delay likelihoods rather than uncalibrated confidence outputs.</p>
+ <p>The champion delay prediction model is a <strong>Calibrated Random Forest Classifier</strong> trained on historical task records. Isotonic calibration via <code>CalibratedClassifierCV</code> is used to improve how closely predicted probabilities track observed delay likelihoods.</p>
  </div>
 
  <div style="margin-bottom:24px;">
@@ -3348,13 +3737,13 @@
  <p>To eliminate temporal data leakage (where future task features leak into past predictions), the pipeline was validated using two independent evaluation schemes:</p>
  <ul style="margin-left:20px; margin-top:6px;">
  <li><strong>5-Fold Stratified Cross-Validation</strong>: 72.0% Accuracy, 77.8% ROC-AUC, 43.7 MCC.</li>
- <li><strong>Chronological Time-Split Validation</strong>: Tasks created prior to 2025 form the training set; tasks created in 2025+ serve as the holdout test set. Achieves <strong>70.8% Accuracy, 76.5% ROC-AUC, 41.2 MCC</strong>, confirming real predictive power without temporal leakage.</li>
+ <li><strong>Chronological Time-Split Validation</strong>: The oldest 80% of dated closed tasks train the model; the newest 20% are held out. Discipline-history features are calculated using the older records only. Holdout metrics are generated and stored on each training run.</li>
  </ul>
  </div>
 
  <div style="margin-bottom:24px;">
  <h3 style="font-size:15px; font-weight:700; color:#0f172a; border-bottom:2px solid #e2e8f0; padding-bottom:6px; margin-bottom:10px;">3. Naive Baseline Comparison & Predictive Lift</h3>
- <p>Given the historical dataset delay rate of <strong>43.6%</strong>, a naive majority-class classifier ("always predict on-time") yields an accuracy of <strong>56.4%</strong>. The Calibrated ML Champion achieves <strong>72.0% accuracy</strong>, demonstrating a <strong>+15.6% absolute accuracy lift</strong> (+27.7% relative improvement) and a <strong>Matthews Correlation Coefficient (MCC) of 0.437</strong>, confirming statistically significant predictive signal.</p>
+ <p>The training pipeline compares the chosen model with an explicit naive baseline: <strong>flag every task as high risk</strong>. It also records the always-on-time baseline for context. Both baselines and chronological-holdout metrics are saved in the dashboard data at training time, so any claimed predictive lift can be inspected rather than assumed.</p>
  </div>
 
  <div style="margin-bottom:24px;">
@@ -3377,11 +3766,12 @@
  </div>
 
  <div style="margin-bottom:12px;">
- <h3 style="font-size:15px; font-weight:700; color:#0f172a; border-bottom:2px solid #e2e8f0; padding-bottom:6px; margin-bottom:10px;">5. Scope, Known Limitations & "COMPLIANT" Definition</h3>
+ <h3 style="font-size:15px; font-weight:700; color:#0f172a; border-bottom:2px solid #e2e8f0; padding-bottom:6px; margin-bottom:10px;">5. Scope & Known Limitations</h3>
  <ul style="margin-left:20px;">
- <li><strong>COMPLIANT Definition</strong>: Indicates complete compliance with InterTech problem statement specifications: binary delay target modeling (<code>Delay > 0</code>), automated PM alert triggers, and dynamic employee reallocation.</li>
- <li><strong>Project Scope</strong>: Pre-trained on baseline PRJ001 dataset while supporting multi-project filtering across arbitrary project IDs (PRJ001, PRJ002, PRJ003, etc.).</li>
+ <li><strong>Simulated data</strong>: The source dataset is synthetic and has not been validated against real project outcomes.</li>
+ <li><strong>Project scope</strong>: The predictive workflow is demonstrated on the baseline PRJ001-style dataset; filters for other project IDs are interface-level views, not separately validated models.</li>
  <li><strong>Pre-Execution Boundary</strong>: Model predicts delay risks prior to task execution based on initial scope and workload intensity. Unpredictable black-swan events (weather disasters, vendor bankruptcy) require real-time site updates.</li>
+ <li><strong>Exploratory modules</strong>: The 3D site view is a risk visualisation only. It is not an input to the model and does not produce operational recommendations.</li>
  </ul>
  </div>
 
@@ -3537,6 +3927,7 @@
  if (d.meta && d.meta.cv_accuracy) {
  renderModelsTable(d.meta.cv_accuracy);
  }
+ if (d.meta) renderTemporalValidation(d.meta.temporal_validation);
 
  // 6. Feature Importance
  if (d.feat_importance) {
@@ -3744,6 +4135,18 @@
  aiTbody.appendChild(aiTr);
  }
  });
+ }
+
+ function renderTemporalValidation(result) {
+ const el = document.getElementById('temporal-validation-summary');
+ if (!el) return;
+ if (!result || !result.available) {
+  el.innerHTML = '<strong>Temporal holdout & baseline:</strong> The newest dated records are held out from training. Run training to generate metrics when enough dated, closed records with both outcome classes are available.';
+  return;
+ }
+ const lift = (Number(result.accuracy) - Number(result.baseline_accuracy)).toFixed(1);
+ const onTimeContext = result.always_ontime_accuracy === undefined ? '' : ` · always-on-time: ${Number(result.always_ontime_accuracy).toFixed(1)}%`;
+ el.innerHTML = `<strong>Chronological holdout:</strong> trained on ${result.train_records} older records and tested on ${result.test_records} newer records (cutoff: ${result.cutoff_date}). <strong>Accuracy: ${Number(result.accuracy).toFixed(1)}%</strong> · F1: ${Number(result.f1).toFixed(1)}% · ROC-AUC: ${Number(result.auc_roc).toFixed(1)}%. <strong>Baseline (${result.baseline_name}): ${Number(result.baseline_accuracy).toFixed(1)}%</strong> · accuracy lift: ${lift} points${onTimeContext}.`;
  }
 
  function renderFeatureImportance(featMap) {
@@ -4154,6 +4557,11 @@
  document.getElementById("drawer-hours").innerText = `${t.hours ? t.hours.toFixed(0) : '-'} hrs`;
  document.getElementById("drawer-target").innerText = t.target || '-';
  document.getElementById("drawer-score-num").innerText = (t.score ? t.score.toFixed(0) : 0) + "%";
+ const score = Number(t.score || 0);
+ document.getElementById('drawer-confidence').innerText = score >= 70 || score < 40 ? 'High — clear action tier' : 'Moderate — review manually';
+ const prediction = document.getElementById('drawer-prediction');
+ prediction.innerText = score >= 40 ? 'PREDICTED DELAY' : 'PREDICTED ON TIME';
+ prediction.className = 'pill ' + (score >= 70 ? 'pill-high' : (score >= 40 ? 'pill-med' : 'pill-low'));
 
  const fill = document.getElementById("drawer-bar-fill");
  fill.style.width = Math.min(t.score || 0, 100) + "%";
@@ -4184,6 +4592,9 @@
  shapContainer.innerHTML = `<span style="font-size:12px; color:var(--text-subtle);">Pre-execution features balanced</span>`;
  }
 
+ const positiveDrivers = (t.shap_drivers || []).filter(d => d.direction === 'increases').slice(0, 3).map(d => d.feature.replace(/: High/g, '')).join(', ');
+ document.getElementById('drawer-explanation').innerText = positiveDrivers ? `This task is classified as ${t.cat || 'LOW'} risk primarily because of ${positiveDrivers}.` : 'No dominant risk contributor was identified; continue normal monitoring.';
+
  // Reallocation panel in drawer (HIGH risk only)
  const drawerActionEl = document.getElementById("drawer-action-text");
  if (drawerActionEl) {
@@ -4199,9 +4610,24 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
  } else {
  drawerActionEl.innerText = 'MONITOR WEEKLY';
  }
+
+ const simulationEl = document.getElementById('drawer-simulation');
+ if (t.cat === 'HIGH') {
+  simulationEl.style.display = 'block';
+  simulationEl.innerHTML = `<div style="font-size:11px; color:#92400e; font-weight:800;">SIMULATION / DEMONSTRATION</div><strong style="display:block; margin:4px 0;">Before: ${score.toFixed(0)}% HIGH → After adding 1 employee: <span id="mitigation-after-score">—</span></strong><p id="mitigation-note" style="font-size:11px; color:#78350f; margin:5px 0 9px;">Uses a transparent workload-relief scenario; it does not update live staffing records.</p><button class="btn btn-primary" onclick="simulateTaskMitigation(${score})" style="font-size:12px; padding:7px 10px; background:#b45309; border-color:#b45309;">Simulate Mitigation</button>`;
+ } else { simulationEl.style.display = 'none'; simulationEl.innerHTML = ''; }
  }
 
  document.getElementById("drawer-overlay").classList.add("open");
+ }
+
+ function simulateTaskMitigation(beforeScore) {
+  const after = Math.max(5, Math.round(beforeScore - 18));
+  const tier = after >= 70 ? 'HIGH' : (after >= 40 ? 'MEDIUM' : 'LOW');
+  const output = document.getElementById('mitigation-after-score');
+  if (output) output.innerHTML = `${after}% ${tier}`;
+  const note = document.getElementById('mitigation-note');
+  if (note) note.innerText = `Risk reduction: ${Math.round(beforeScore - after)} percentage points. Recommended: ${tier === 'HIGH' ? 'escalate and reassess capacity.' : 'proceed with the added resource and monitor.'}`;
  }
 
  function closeDrawer(e) {
@@ -4235,12 +4661,12 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
  scoreVal.innerText = baseScore + "%";
  detail.innerText = `Calculated Workload Intensity: ${intensity.toFixed(2)} hrs/day`;
 
- if (baseScore > 65) {
+ if (baseScore >= 70) {
  scoreVal.style.color = "var(--high-text)";
  badge.innerText = "HIGH RISK TIER";
  badge.className = "pill pill-high";
  action.innerText = "Reallocate Labor & Issue Daily PM Alert";
- } else if (baseScore > 35) {
+ } else if (baseScore >= 40) {
  scoreVal.style.color = "var(--med-text)";
  badge.innerText = "MEDIUM RISK TIER";
  badge.className = "pill pill-med";
@@ -5114,16 +5540,16 @@ ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No avai
  "IsDelayedTarget": t.cat === 'HIGH' ? 1 : 0
  }));
 
- const complianceRows = [
- { Requirement: 'Prediction Objective', Specification: 'Predict project delay', Status: 'COMPLIANT', Implementation: 'Calibrated Random Forest' },
- { Requirement: 'Target Variable', Specification: 'Delay > 0 = Delayed', Status: 'COMPLIANT', Implementation: 'Binary 1=Delayed, 0=On-time' },
- { Requirement: 'High-Risk Mitigation', Specification: 'NOTIFY_PM + REALLOCATE_RESOURCE', Status: 'COMPLIANT', Implementation: 'Auto PM alert + reallocation' },
- { Requirement: 'Medium-Risk Mitigation', Specification: 'STATUS_MEETING + DAILY_UPDATES', Status: 'COMPLIANT', Implementation: 'Mandatory sync + update workflow' }
+ const traceabilityRows = [
+ { Requirement: 'Prediction Objective', Specification: 'Predict project delay', Evidence: 'Model output', Implementation: 'Calibrated Random Forest' },
+ { Requirement: 'Target Variable', Specification: 'Delay > 0 = Delayed', Evidence: 'Target transform', Implementation: 'Binary 1=Delayed, 0=On-time' },
+ { Requirement: 'High-Risk Mitigation', Specification: 'NOTIFY_PM + REALLOCATE_RESOURCE', Evidence: 'Action workflow', Implementation: 'Auto PM alert + reallocation' },
+ { Requirement: 'Medium-Risk Mitigation', Specification: 'STATUS_MEETING + DAILY_UPDATES', Evidence: 'Action workflow', Implementation: 'Mandatory sync + update workflow' }
  ];
 
  const wb = XLSX.utils.book_new();
  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(exportRows), 'Delay_Predictions_Model');
- XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(complianceRows), 'Problem_Statement_Compliance');
+ XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(traceabilityRows), 'Implementation_Traceability');
  XLSX.writeFile(wb, 'InterTech_Project_Delay_Prediction_Solution.pbix.xlsx');
  }
 

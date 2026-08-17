@@ -7,7 +7,18 @@
     "recall": 72.4,
     "auc": 77.8,
     "acc": 72.0,
-    "active": true,
+    "active": false,
     "file": "v1_20260817_1424.json"
+  },
+  {
+    "version": 2,
+    "date": "2026-08-17T18:32:30.801975",
+    "champion": "Random Forest",
+    "f1": 69.3,
+    "recall": 72.4,
+    "auc": 77.8,
+    "acc": 72.0,
+    "active": true,
+    "file": "v2_20260817_1832.json"
   }
 ]

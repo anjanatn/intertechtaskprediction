@@ -781,66 +781,243 @@
  .btn { min-height: 44px; min-width: 44px; align-items: center; justify-content: center; } /* 44px touch target */
  }
 
+}
+
+ .mit-card.high { border-left-color: var(--high-text); }
+ .mit-card.med { border-left-color: var(--med-text); }
+ .mit-card.low { border-left-color: var(--low-text); }
+
+ .mit-card-header {
+ display: flex;
+ align-items: flex-start;
+ justify-content: space-between;
+ margin-bottom: 10px;
+ }
+
+ .mit-card-title {
+ font-weight: 700;
+ font-size: 14px;
+ color: var(--text-main);
+ }
+
+ .mit-action-box {
+ background-color: var(--bg-subtle);
+ padding: 10px;
+ border-radius: var(--radius-sm);
+ font-size: 12.5px;
+ color: var(--text-muted);
+ margin: 10px 0;
+ font-family: 'JetBrains Mono', monospace;
+ }
+
+ /* SIMULATOR STYLES */
+ .sim-layout {
+ display: grid;
+ grid-template-columns: 1fr 1fr;
+ gap: 24px;
+ }
+
+ @media (max-width: 900px) {
+ .sim-layout { grid-template-columns: 1fr; }
+ }
+
+ .form-group {
+ margin-bottom: 16px;
+ }
+
+ .form-label {
+ display: block;
+ font-size: 13px;
+ font-weight: 600;
+ color: var(--text-main);
+ margin-bottom: 6px;
+ }
+
+ .form-control {
+ width: 100%;
+ padding: 10px;
+ border: 1px solid var(--border-medium);
+ border-radius: var(--radius-sm);
+ font-size: 13px;
+ outline: none;
+ }
+
+ .gauge-display {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ padding: 30px;
+ background: var(--bg-subtle);
+ border-radius: var(--radius-md);
+ text-align: center;
+ }
+
+ .gauge-number {
+ font-family: 'Plus Jakarta Sans', sans-serif;
+ font-size: 64px;
+ font-weight: 800;
+ line-height: 1;
+ margin: 12px 0;
+ }
+
+ /* SLIDE-OVER DRAWER */
+ .drawer-overlay {
+ position: fixed;
+ top: 0;
+ left: 0;
+ width: 100vw;
+ height: 100vh;
+ background: rgba(15, 23, 42, 0.5);
+ backdrop-filter: blur(2px);
+ z-index: 100;
+ opacity: 0;
+ pointer-events: none;
+ transition: opacity 0.25s ease;
+ }
+
+ .drawer-overlay.open {
+ opacity: 1;
+ pointer-events: auto;
+ }
+
+ .drawer-content {
+ position: fixed;
+ top: 0;
+ right: 0;
+ width: 480px;
+ max-width: 90vw;
+ height: 100vh;
+ background: var(--bg-surface);
+ box-shadow: var(--shadow-lg);
+ z-index: 101;
+ transform: translateX(100%);
+ transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+ display: flex;
+ flex-direction: column;
+ }
+
+ .drawer-overlay.open .drawer-content {
+ transform: translateX(0);
+ }
+
+ .drawer-header {
+ padding: 20px;
+ border-bottom: 1px solid var(--border-light);
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ }
+
+ .drawer-body {
+ padding: 20px;
+ overflow-y: auto;
+ flex: 1;
+ }
+
+ .drawer-close {
+ background: none;
+ border: none;
+ font-size: 20px;
+ cursor: pointer;
+ color: var(--text-subtle);
+ }
+
+ .detail-grid {
+ display: grid;
+ grid-template-columns: 1fr 1fr;
+ gap: 12px;
+ margin-bottom: 20px;
+ background: var(--bg-subtle);
+ padding: 14px;
+ border-radius: var(--radius-sm);
+ }
+
+ .detail-item {
+ display: flex;
+ flex-direction: column;
+ }
+
+ .detail-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ color: var(--text-subtle);
+ font-weight: 600;
+ }
+
+ .detail-val {
+ font-size: 13px;
+ font-weight: 600;
+ color: var(--text-main);
+ }
+
+ 
+ /* ACCESSIBILITY & MOBILE RESPONSIVE SITE SUPERVISOR STYLES */
+ @media (prefers-contrast: more) {
+ .pill-high { background: #7f1d1d !important; color: #ffffff !important; font-weight: 800 !important; border: 2px solid #ffffff !important; }
+ .pill-med { background: #78350f !important; color: #ffffff !important; font-weight: 800 !important; border: 2px solid #ffffff !important; }
+ .pill-low { background: #14532d !important; color: #ffffff !important; font-weight: 800 !important; border: 2px solid #ffffff !important; }
+ .nav-tab.active { border-bottom-width: 4px !important; }
+ }
+
+ @media (max-width: 640px) {
+ .app-header { flex-direction: column; height: auto; padding: 12px 16px; gap: 10px; align-items: stretch; }
+ .brand-group { justify-content: space-between; width: 100%; }
+ .header-actions { justify-content: space-between; width: 100%; flex-wrap: wrap; }
+ .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; top: auto; z-index: 999; background: #0f172a; border-top: 1px solid #1e293b; padding: 6px 8px; box-shadow: 0 -4px 12px rgba(0,0,0,0.3); }
+ .nav-tabs { justify-content: space-around; width: 100%; overflow-x: auto; gap: 2px; }
+ .nav-tab { padding: 8px 6px; font-size: 11px; flex-direction: column; gap: 2px; text-align: center; border-bottom: none; border-top: 3px solid transparent; }
+ .nav-tab.active { border-bottom: none; border-top-color: var(--brand-primary); background: rgba(37, 99, 235, 0.15); border-radius: 6px; }
+ .app-main { padding: 12px 12px 80px 12px; }
+ .kpi-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+ .section-heading { font-size: 18px !important; }
+ .mobile-hide { display: none !important; }
+ .mobile-show { display: block !important; }
+ .btn { min-height: 44px; min-width: 44px; align-items: center; justify-content: center; } /* 44px touch target */
+ }
+
  /* PRINT STYLES */
  @media print {
  .app-header, .nav-bar, .filter-bar, .header-actions { display: none !important; }
  .app-main { max-width: 100% !important; padding: 0 !important; }
  .tab-view { display: block !important; }
- .card { page-break-inside: avoid; border: 1px solid #ccc !important; }
- }
- </style>
+  }
+  </style>
 </head>
 
 <body>
+  <!-- TOP APP BAR -->
+  <header class="app-header">
+    <div class="brand-group">
+      <a href="#" class="brand-logo">
+        <div class="brand-badge-icon">IT</div>
+        <span>InterTech</span>
+      </a>
+      <div class="live-status">
+        <div class="pulse-dot"></div>
+        <span>AI Prediction Active</span>
+      </div>
+    </div>
 
- <!-- TOP APP APP BAR -->
- <header class="app-header">
- <div class="brand-group">
- <a href="#" class="brand-logo">
- <div class="brand-badge-icon">IT</div>
- <span>InterTech</span>
- </a>
- <div class="live-status">
- <div class="pulse-dot"></div>
- <span>AI Prediction Active</span>
- </div>
- <div style="margin-left:12px; display:flex; align-items:center; gap:8px;">
- <span style="font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase;">Scope:</span>
- <select id="global-project-selector" onchange="switchProjectFilter()" style="background:#1e293b; color:#ffffff; border:1px solid #334155; border-radius:6px; padding:5px 10px; font-size:12px; font-weight:700; cursor:pointer;">
- <option value="ALL">All Projects (Multi-Project Scope)</option>
- <option value="PRJ001" selected>PRJ001 — Commercial Tower</option>
- <option value="PRJ002">PRJ002 — Tower Expansion</option>
- <option value="PRJ003">PRJ003 — Infrastructure Site</option>
- </select>
- </div>
- </div>
-
- <div class="header-actions">
-
- <div id="mode-toggle-group" style="display:flex; align-items:center; gap:6px; background:#1e293b; padding:4px 8px; border-radius:20px; border:1px solid #334155;" role="region" aria-label="Environment Mode Switcher">
- <span style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase;">Mode:</span>
- <button id="btn-mode-prod" class="btn-mode active" onclick="setAppMode('production')" style="background:#2563eb; color:#ffffff; border:none; border-radius:12px; padding:3px 10px; font-size:11px; font-weight:700; cursor:pointer; transition:all 0.2s;" aria-label="Switch to Production Mode">PROD</button>
- <button id="btn-mode-sandbox" class="btn-mode" onclick="setAppMode('sandbox')" style="background:transparent; color:#94a3b8; border:none; border-radius:12px; padding:3px 10px; font-size:11px; font-weight:700; cursor:pointer; transition:all 0.2s;" aria-label="Switch to Sandbox Mode">SANDBOX</button>
- </div>
-
- <button class="btn btn-secondary" onclick="openModelCardModal()" style="background:rgba(56,189,248,0.15); border-color:rgba(56,189,248,0.3); color:#38bdf8; font-weight:700;">
- <span>Model Card & Methodology</span>
- </button>
- <button class="btn btn-secondary" onclick="exportDataCSV()">
- <span>Export</span>
- </button>
- <button class="btn btn-secondary" onclick="window.print()">
- <span>Print</span>
- </button>
- <button class="btn btn-primary" id="btn-sync-ml" onclick="triggerMLRetrain()">
- <span id="sync-spinner"></span>
- <span>Retrain</span>
- </button>
- </div>
- </header>
-
- 
- <!-- NAVIGATION TABS -->
+    <div class="header-actions" style="display:flex; gap:10px; align-items:center;">
+      <a href="InterTech_Simple_Dashboard.html" class="btn btn-secondary" style="background:rgba(16,185,129,0.15); border-color:rgba(16,185,129,0.4); color:#10b981; font-weight:700; text-decoration:none; display:inline-flex; align-items:center;">
+        <span>Primary Demo</span>
+      </a>
+      <button class="btn btn-secondary" onclick="openModelCardModal()" style="background:rgba(56,189,248,0.15); border-color:rgba(56,189,248,0.3); color:#38bdf8; font-weight:700;">
+        <span>Model Card</span>
+      </button>
+      <button class="btn btn-secondary" onclick="exportDataCSV()">
+        <span>Export</span>
+      </button>
+      <button class="btn btn-secondary" onclick="window.print()">
+        <span>Print</span>
+      </button>
+      <button class="btn btn-primary" id="btn-sync-ml" onclick="triggerMLRetrain()">
+        <span id="sync-spinner"></span>
+        <span>Retrain</span>
+      </button>
+    </div>
+  </header>
  <nav class="nav-bar" aria-label="Main Navigation">
  <div class="nav-tabs" role="tablist">
  <button class="nav-tab active" role="tab" aria-selected="true" aria-controls="view-overview" onclick="switchView('overview', this)">
@@ -2866,6 +3043,201 @@
  <div style="display:flex; align-items:center; gap:24px;">
  <canvas id="pbix-donut-chart" width="160" height="160" style="flex-shrink:0;"></canvas>
  <div id="pbix-legend" style="flex:1;"></div>
+<span class="stat-name">Hours</span>
+ <span class="stat-val">17.82% Impact</span>
+ </div>
+ <div class="bar-bg">
+ <div class="bar-fill" style="width: 56%;"></div>
+ </div>
+</div><div class="stat-row">
+ <div class="stat-meta">
+ <span class="stat-name">disc_hist_delay_rate</span>
+ <span class="stat-val">11.99% Impact</span>
+ </div>
+ <div class="bar-bg">
+ <div class="bar-fill" style="width: 37%;"></div>
+ </div>
+</div><div class="stat-row">
+ <div class="stat-meta">
+ <span class="stat-name">high_pri_high_risk</span>
+ <span class="stat-val">11.13% Impact</span>
+ </div>
+ <div class="bar-bg">
+ <div class="bar-fill" style="width: 35%;"></div>
+ </div>
+</div><div class="stat-row">
+ <div class="stat-meta">
+ <span class="stat-name">disc_PRJ-STR</span>
+ <span class="stat-val">0.68% Impact</span>
+ </div>
+ <div class="bar-bg">
+ <div class="bar-fill" style="width: 2%;"></div>
+ </div>
+</div></div>
+ </div>
+ </section>
+
+ <!-- VIEW 6: BATCH FILE IMPORT & PREDICT -->
+ 
+ <!-- VIEW: SITE SUPERVISOR MOBILE VIEW (JOB SITE ACCESSIBLE) -->
+ <section id="view-siteview" class="tab-view" role="tabpanel" aria-labelledby="tab-siteview">
+ <div class="section-title-bar" style="background:linear-gradient(135deg, #0f172a, #1e293b); padding:16px 20px; border-radius:12px; margin-bottom:16px; color:#fff;">
+ <div style="display:flex; justify-content:space-between; align-items:center;">
+ <div>
+ <span style="background:#2563eb; color:#fff; font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px;">SITE SUPERVISOR HUD</span>
+ <h1 class="section-heading" style="font-size:20px; font-weight:800; margin-top:2px; color:#fff;">Job Site High-Risk Priority Monitor</h1>
+ <p class="section-subtext" style="color:#94a3b8; font-size:12px;">Mobile-optimized view for field foremen & discipline leads</p>
+ </div>
+ <button class="btn btn-primary" onclick="renderSiteView()" style="font-size:12px; font-weight:700;"> Refresh</button>
+ </div>
+ </div>
+
+ <!-- SITE QUICK STATS -->
+ <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:16px;">
+ <div style="background:#fef2f2; border:1px solid #fca5a5; padding:12px; border-radius:8px; text-align:center;">
+ <div style="font-size:10px; font-weight:700; color:#b91c1c;">HIGH RISK TASKS</div>
+ <div style="font-size:22px; font-weight:800; color:#b91c1c; font-family:'JetBrains Mono',monospace;" id="site-high-count">0</div>
+ </div>
+ <div style="background:#fffbeb; border:1px solid #fcd34d; padding:12px; border-radius:8px; text-align:center;">
+ <div style="font-size:10px; font-weight:700; color:#b45309;">MED RISK TASKS</div>
+ <div style="font-size:22px; font-weight:800; color:#b45309; font-family:'JetBrains Mono',monospace;" id="site-med-count">0</div>
+ </div>
+ <div style="background:#eff6ff; border:1px solid #bfdbfe; padding:12px; border-radius:8px; text-align:center;">
+ <div style="font-size:10px; font-weight:700; color:#1d4ed8;">ACTIONS DUE</div>
+ <div style="font-size:22px; font-weight:800; color:#1d4ed8; font-family:'JetBrains Mono',monospace;" id="site-actions-count">0</div>
+ </div>
+ </div>
+
+ <!-- SITE CARDS CONTAINER -->
+ <div id="site-view-cards-container" style="display:flex; flex-direction:column; gap:12px;">
+ <!-- Populated dynamically via renderSiteView() -->
+ </div>
+ </section>
+
+ <section id="view-import" class="tab-view">
+ <div class="section-title-bar">
+ <div>
+ <h1 class="section-heading">Test Data Import & ML Delay Risk Forecasting</h1>
+ <p class="section-subtext">Model trained on <strong>1,000 historical tasks</strong>. Upload test dataset (.csv, .xlsx, .xls) to predict delays, risk tiers, and mitigation actions.</p>
+ </div>
+ <div style="display:flex; gap:10px;">
+ <button class="btn btn-primary" style="background:#0284c7; border-color:#0284c7; font-size:12px;" onclick="loadSampleTestDataset()">
+ <span>Load Sample Test File (SAMPLE DATA)</span>
+ </button>
+ <a href="/public/sample_import_tasks.csv" download="sample_import_tasks.csv" class="btn btn-outline" style="font-size:12px;">
+ <span>Download Sample CSV</span>
+ </a>
+ <a href="/public/sample_import_tasks.xlsx" download="sample_import_tasks.xlsx" class="btn btn-outline" style="font-size:12px;">
+ <span>Download Sample Excel</span>
+ </a>
+ </div>
+ </div>
+
+ <!-- FILE DROPZONE CARD -->
+ <div class="card" style="padding:36px; text-align:center; border:2px dashed var(--border-medium); background:var(--bg-subtle); border-radius:var(--radius-lg); margin-bottom:24px; transition:all 0.2s ease;" id="import-dropzone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleFileDrop(event)">
+ <input type="file" id="file-import-input" accept=".csv, .xlsx, .xls" style="display:none;" onchange="handleFileSelected(event)">
+ <div style="font-size:48px; margin-bottom:12px;"></div>
+ <h3 style="font-family:'Plus Jakarta Sans', sans-serif; font-size:18px; font-weight:700; color:var(--text-main); margin-bottom:6px;">
+ Drag & Drop Test Dataset (CSV or Excel) Here
+ </h3>
+ <p style="font-size:13px; color:var(--text-subtle); margin-bottom:16px;">
+ Model trained on <strong>1,000 baseline items</strong>. Upload your test file (<strong>.csv, .xlsx, .xls</strong>) for instant delay prediction
+ </p>
+ <div style="display:flex; justify-content:center; gap:12px; margin-bottom:16px;">
+ <button class="btn btn-primary" style="background:linear-gradient(135deg, #0284c7, #0369a1);" onclick="document.getElementById('file-import-input').click()">
+ <span>Browse Test File from Computer</span>
+ </button>
+ <button class="btn btn-secondary" onclick="loadSampleTestDataset()">
+ <span>Load SAMPLE DATA(Book2).csv</span>
+ </button>
+ </div>
+ <div style="display:flex; justify-content:center; gap:8px;">
+ <span class="pill pill-low" style="font-family:'JetBrains Mono', monospace;">.CSV</span>
+ <span class="pill pill-low" style="font-family:'JetBrains Mono', monospace;">.XLSX</span>
+ <span class="pill pill-low" style="font-family:'JetBrains Mono', monospace;">.XLS</span>
+ </div>
+ </div>
+
+ <!-- PROCESSING SPINNER -->
+ <div id="import-loading" style="display:none; text-align:center; padding:40px; background:var(--bg-surface); border-radius:var(--radius-md); border:1px solid var(--border-light); margin-bottom:24px;">
+ <div style="font-size:32px; display:inline-block; margin-bottom:12px;"></div>
+ <h4 style="font-size:16px; font-weight:600; color:var(--text-main);" id="import-loading-status">Analyzing Imported Task Data & Calculating Delay Predictions...</h4>
+ <p style="font-size:13px; color:var(--text-subtle); margin-top:4px;">Applying Calibrated Machine Learning Model & SHAP Feature Explanations</p>
+ </div>
+
+ <!-- IMPORTED RESULTS CONTAINER -->
+ <div id="imported-results-container" style="display:none;">
+ 
+ <!-- POWER BI SOLUTION POPUP BANNER -->
+ <div style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 1px solid #fde68a; border-radius: var(--radius-md); padding: 16px 20px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; box-shadow: var(--shadow-sm);">
+ <div style="display: flex; align-items: center; gap: 14px;">
+ <div style="font-size: 28px;"></div>
+ <div>
+ <h4 style="font-size: 15px; font-weight: 700; color: #92400e;">Prediction Session Complete — Power BI Dashboard Ready</h4>
+ <p style="font-size: 13px; color: #b45309; margin-top: 2px;">
+ View interactive dashboard with risk breakdown charts, mitigation plan, and export to Power BI compatible format.
+ </p>
+ </div>
+ </div>
+ <div style="display:flex; gap:8px;">
+ <button onclick="openPBIXDashboard()" class="btn btn-primary" style="background: #d97706; border-color: #d97706; color: #ffffff; font-weight: 700; white-space: nowrap;">
+ <span>View Dashboard &amp; Export</span>
+ </button>
+ </div>
+ </div>
+
+ <!-- PBIX MODAL DASHBOARD -->
+ <div id="pbix-modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.7); z-index:9999; overflow-y:auto; padding:24px;" onclick="closePBIXModal(event)">
+ <div onclick="event.stopPropagation()" style="background:#ffffff; border-radius:16px; max-width:1100px; margin:0 auto; box-shadow:0 25px 50px rgba(0,0,0,0.25); overflow:hidden;">
+ <!-- Modal Header -->
+ <div style="background:linear-gradient(135deg,#1e3a5f,#2563eb); padding:24px 28px; display:flex; align-items:center; justify-content:space-between;">
+ <div>
+ <div style="font-size:12px; font-weight:600; color:#93c5fd; letter-spacing:0.08em; text-transform:uppercase;">InterTech PRJ001 · Power BI Solution</div>
+ <h2 style="font-size:22px; font-weight:800; color:#ffffff; margin-top:4px; font-family:'Plus Jakarta Sans',sans-serif;">Project Delay Prediction Dashboard</h2>
+ <div style="font-size:12px; color:#bfdbfe; margin-top:4px;" id="pbix-subtitle">Calibrated ML Model · Target: Delay &gt; 0</div>
+ </div>
+ <div style="display:flex; gap:10px; align-items:center;">
+ <button id="pbix-header-notify-pm" onclick="sendSMTPAlert()" style="background:#dc2626; border:none; color:#fff; padding:10px 18px; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px; display:flex; align-items:center; gap:6px;" title="Notify PM via SMTP Email Alert for High Risk Tasks">
+ <span>Notify PM (SMTP Alert)</span>
+ <span id="pbix-modal-notify-badge" style="background:#ffffff; color:#dc2626; font-size:11px; font-weight:800; padding:1px 6px; border-radius:99px; display:none;">0</span>
+ </button>
+ <button onclick="exportPBIXAsExcel()" style="background:#d97706; border:none; color:#fff; padding:10px 18px; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;"> Export .pbix.xlsx</button>
+ <button onclick="closePBIXModal()" style="background:rgba(255,255,255,0.15); border:none; color:#fff; width:36px; height:36px; border-radius:8px; font-size:20px; cursor:pointer; line-height:1;">&times;</button>
+ </div>
+ </div>
+
+ <!-- KPI Row -->
+ <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:#e2e8f0;">
+ <div style="background:#fff; padding:20px 24px; text-align:center;">
+ <div style="font-size:11px; font-weight:600; color:#64748b; text-transform:uppercase; letter-spacing:0.06em;">Total Tasks</div>
+ <div style="font-size:34px; font-weight:800; color:#0f172a; font-family:'Plus Jakarta Sans',sans-serif;" id="pbix-kpi-total">0</div>
+ <div style="font-size:11px; color:#94a3b8;">Imported Dataset</div>
+ </div>
+ <div style="background:#fef2f2; padding:20px 24px; text-align:center;">
+ <div style="font-size:11px; font-weight:600; color:#dc2626; text-transform:uppercase; letter-spacing:0.06em;">High Risk</div>
+ <div style="font-size:34px; font-weight:800; color:#dc2626; font-family:'Plus Jakarta Sans',sans-serif;" id="pbix-kpi-high">0</div>
+ <div style="font-size:11px; color:#dc2626;" id="pbix-kpi-high-pct">NOTIFY PM + REALLOCATE</div>
+ </div>
+ <div style="background:#fffbeb; padding:20px 24px; text-align:center;">
+ <div style="font-size:11px; font-weight:600; color:#d97706; text-transform:uppercase; letter-spacing:0.06em;">Medium Risk</div>
+ <div style="font-size:34px; font-weight:800; color:#d97706; font-family:'Plus Jakarta Sans',sans-serif;" id="pbix-kpi-med">0</div>
+ <div style="font-size:11px; color:#d97706;">STATUS MEETING + UPDATES</div>
+ </div>
+ <div style="background:#f0fdf4; padding:20px 24px; text-align:center;">
+ <div style="font-size:11px; font-weight:600; color:#16a34a; text-transform:uppercase; letter-spacing:0.06em;">Avg Delay Score</div>
+ <div style="font-size:34px; font-weight:800; color:#16a34a; font-family:'Plus Jakarta Sans',sans-serif;" id="pbix-kpi-avg">0%</div>
+ <div style="font-size:11px; color:#16a34a;">Dataset Risk Level</div>
+ </div>
+ </div>
+
+ <!-- Charts Row -->
+ <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; padding:24px;">
+ <!-- Donut Chart -->
+ <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:20px;">
+ <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:16px;">Risk Distribution</h3>
+ <div style="display:flex; align-items:center; gap:24px;">
+ <canvas id="pbix-donut-chart" width="160" height="160" style="flex-shrink:0;"></canvas>
+ <div id="pbix-legend" style="flex:1;"></div>
  </div>
  </div>
  <!-- Bar Chart -->
@@ -2879,8 +3251,11 @@
  <div style="padding:0 24px 24px;">
  <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; overflow:hidden;">
  <div style="padding:16px 20px; border-bottom:1px solid #e2e8f0; background:#fff;">
- <h3 style="font-size:14px; font-weight:700; color:#0f172a;">Implementation Traceability</h3>
- <p style="font-size:12px; color:#64748b; margin-top:2px;">Delivered functionality mapped to the project brief; evaluation remains with the reviewer.</p>
+ <h3 style="font-size:14px; font-weight:700; color:#0f172a;">Spec Mapping</h3>
+ <p style="font-size:12px; color:#64748b; margin-top:2px;">Delivered functionality mapped to project brief specifications.</p>
+ <div style="background:#fffbe6; border:1px solid #ffe58f; padding:8px 12px; border-radius:6px; font-size:11px; color:#873800; margin-top:8px;">
+ <strong>⚠️ Limitations Note:</strong> Model trained on simulated data for demonstration purposes; unvalidated against live real-world outcomes.
+ </div>
  </div>
  <table style="width:100%; border-collapse:collapse; font-size:12px;">
  <thead><tr style="background:#1e3a5f; color:#fff;">

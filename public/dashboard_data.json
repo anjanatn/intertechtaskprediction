@@ -65,7 +65,62 @@
       "precision": 66.4,
       "recall": 72.4,
       "mcc": 43.7,
-      "auc_roc": 77.8
+      "auc_roc": 77.8,
+      "ci_95": {
+        "accuracy_ci_95": [
+          67.0,
+          77.1
+        ],
+        "f1_ci_95": [
+          62.3,
+          75.5
+        ],
+        "auc_ci_95": [
+          72.6,
+          83.5
+        ]
+      }
+    },
+    "temporal_validation": {
+      "available": true,
+      "cutoff_date": "2025-07-22",
+      "train_records": 225,
+      "test_records": 57,
+      "accuracy": 71.9,
+      "f1": 63.6,
+      "precision": 58.3,
+      "recall": 70.0,
+      "auc_roc": 79.5,
+      "mcc": 41.5,
+      "baseline_accuracy": 35.1,
+      "baseline_name": "Flag every task as high risk",
+      "always_ontime_accuracy": 64.9,
+      "temporal_lift_pp": 36.8
+    },
+    "baseline_comparison": {
+      "baseline_name": "Flag every task as High Risk",
+      "baseline_accuracy": 43.6,
+      "baseline_f1": 60.7,
+      "always_ontime_accuracy": 56.4,
+      "champion_name": "Random Forest",
+      "champion_accuracy": 72.0,
+      "champion_f1": 69.3,
+      "accuracy_lift_pp": 28.4,
+      "f1_lift_pp": 8.6
+    },
+    "confidence_intervals": {
+      "accuracy_ci_95": [
+        67.0,
+        77.1
+      ],
+      "f1_ci_95": [
+        62.3,
+        75.5
+      ],
+      "auc_ci_95": [
+        72.6,
+        83.5
+      ]
     }
   },
   "disc_stats": {
