@@ -335,7 +335,7 @@ def predict_imported_dataframe(df_raw, filename="imported_data.csv"):
  "mitigation": mitigations
  }
 
-def send_high_risk_delay_email(high_risk_tasks, manager_email=None, smtp_config=None):
+def send_high_risk_delay_email(high_risk_tasks, manager_email=None, smtp_config=None, alert_type=None):
  """
  Sends SMTP HTML email alert to Project Manager for high-risk delayed tasks.
  """
@@ -356,27 +356,37 @@ def send_high_risk_delay_email(high_risk_tasks, manager_email=None, smtp_config=
 
  task_rows_html = ""
  for t in high_risk_tasks:
- task_rows_html += f"""
+  checklist = t.get('_facilityChecklist') or []
+  checklist_html = f"<div style=\"font-size:11px; color:#475569; margin-top:4px;\"><strong>Facility checklist:</strong> {'; '.join(checklist)}</div>" if checklist else ""
+  root_cause = t.get('root_cause')
+  root_cause_html = f"<div style=\"font-size:11px; color:#92400e; margin-top:2px;\"><strong>Root cause:</strong> {root_cause}</div>" if root_cause else ""
+  task_rows_html += f"""
  <tr>
  <td style="padding:10px; border-bottom:1px solid #e2e8f0; font-weight:bold; color:#2563eb;">{t.get('id')}</td>
- <td style="padding:10px; border-bottom:1px solid #e2e8f0;">{t.get('desc')}</td>
+  <td style="padding:10px; border-bottom:1px solid #e2e8f0;">{t.get('desc')}{root_cause_html}{checklist_html}</td>
  <td style="padding:10px; border-bottom:1px solid #e2e8f0;">{t.get('disc')}</td>
  <td style="padding:10px; border-bottom:1px solid #e2e8f0; font-weight:bold; color:#dc2626;">{t.get('score')}%</td>
- <td style="padding:10px; border-bottom:1px solid #e2e8f0; font-weight:bold; color:#d97706;">NOTIFY_PM + REALLOCATE_RESOURCE</td>
+  <td style="padding:10px; border-bottom:1px solid #e2e8f0; font-weight:bold; color:#d97706;">{t.get('action') or 'NOTIFY_PM + REALLOCATE_RESOURCE'}</td>
  </tr>
  """
 
+ is_meeting = alert_type in ('schedule_meeting', 'site_inspection_meeting')
+ heading = 'ACTION REQUIRED: Schedule Status Meeting' if is_meeting else 'CRITICAL PM ALERT: High-Risk Task Delay Predicted'
+ intro = ('Please schedule a status meeting to review the delay risk, inspection finding, corrective actions, and owners.'
+          if is_meeting else f'The ML Delay Prediction Engine has flagged <strong>{len(high_risk_tasks)} High-Risk Task(s)</strong> with high probability of completion delay.')
+ action_items = ('<li>Schedule a status meeting with the project manager and delivery leads.</li><li>Confirm the mitigation owner, due date, and follow-up update cadence.</li>'
+                 if is_meeting else '<li>Reallocate senior personnel from closed or medium-risk projects immediately.</li><li>Schedule urgent site coordination sync with sub-contractor leads.</li>')
  html_content = f"""
  <html>
  <body style="font-family: Arial, sans-serif; color: #0f172a; line-height: 1.6;">
  <div style="max-width: 650px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
  <div style="background: #dc2626; color: #ffffff; padding: 20px; text-align: center;">
- <h2 style="margin: 0;">CRITICAL PM ALERT: High-Risk Task Delay Predicted</h2>
+  <h2 style="margin: 0;">{heading}</h2>
  <p style="margin: 5px 0 0 0; font-size: 14px;">InterTech Delay Intelligence Platform - Project PRJ001</p>
  </div>
  <div style="padding: 24px;">
  <p>Dear Project Manager,</p>
- <p>The ML Delay Prediction Engine has flagged <strong>{len(high_risk_tasks)} High-Risk Task(s)</strong> with high probability of completion delay.</p>
+  <p>{intro}</p>
  
  <h3 style="color: #0f172a; margin-top: 20px;">High-Risk Task Breakdown</h3>
  <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
@@ -397,8 +407,7 @@ def send_high_risk_delay_email(high_risk_tasks, manager_email=None, smtp_config=
  <div style="background: #fef2f2; border: 1px solid #fecaca; padding: 15px; border-radius: 6px; margin-top: 20px;">
  <strong style="color: #dc2626;">Action Required (per Problem Statement Mitigation Plan):</strong>
  <ul style="margin: 5px 0 0 20px; color: #991b1b;">
- <li>Reallocate senior personnel from closed or medium-risk projects immediately.</li>
- <li>Schedule urgent site coordination sync with sub-contractor leads.</li>
+  {action_items}
  </ul>
  </div>
  </div>
@@ -410,7 +419,8 @@ def send_high_risk_delay_email(high_risk_tasks, manager_email=None, smtp_config=
  if smtp_user and smtp_pass:
  try:
  msg = MIMEMultipart("alternative")
- msg["Subject"] = f"[CRITICAL PM ALERT] High-Risk Project Delay Alert ({len(high_risk_tasks)} Tasks Flagged)"
+ msg["Subject"] = (f"ACTION REQUIRED: Schedule Status Meeting ({len(high_risk_tasks)} Task{'s' if len(high_risk_tasks) != 1 else ''})"
+                   if is_meeting else f"[CRITICAL PM ALERT] High-Risk Project Delay Alert ({len(high_risk_tasks)} Tasks Flagged)")
  msg["From"] = sender_email
  msg["To"] = manager_email
  msg.attach(MIMEText(html_content, "html"))

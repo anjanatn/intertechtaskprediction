@@ -151,9 +151,10 @@ class CustomHandler(SimpleHTTPRequestHandler):
                 tasks = payload.get("tasks", [])
                 recipient = payload.get("recipient", "pm.intertech@gmail.com")
                 smtp_config = payload.get("smtp_config", {})
+                alert_type = payload.get("alert_type")
 
                 email_res = predict_file.send_high_risk_delay_email(
-                    tasks, recipient, smtp_config)
+                    tasks, recipient, smtp_config, alert_type)
 
                 self.send_response(200)
                 self.send_header("Content-type", "application/json")

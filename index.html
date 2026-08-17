@@ -3657,6 +3657,15 @@
         <div style="background:#f1f5f9; border-radius:8px; padding:12px 14px; font-size:12px; color:#475569; line-height:1.55;" id="site-inspect-comments"></div>
       </div>
 
+      <div id="site-inspect-root-cause-choice" style="display:none; margin:0 22px 14px; padding:12px 14px; background:#fffbeb; border:1px solid #fcd34d; border-radius:8px;">
+        <div style="font-size:12px; font-weight:800; color:#92400e;">No facility shortage detected</div>
+        <div style="font-size:11px; color:#78350f; margin:3px 0 9px;">Classify the inspection before notifying the PM and scheduling the status meeting.</div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button type="button" data-root-cause="Weather Delay" style="background:#2563eb; border:none; color:#fff; font-size:11px; font-weight:700; padding:6px 10px; border-radius:6px; cursor:pointer;">Mark Weather Delay</button>
+          <button type="button" data-root-cause="Root Cause Not Detected" style="background:#64748b; border:none; color:#fff; font-size:11px; font-weight:700; padding:6px 10px; border-radius:6px; cursor:pointer;">Mark Root Cause Not Detected</button>
+        </div>
+      </div>
+
       <!-- Action Footer -->
       <div style="padding:14px 22px; background:#fef2f2; border-top:1px solid #fecaca; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
         <div style="flex:1; font-size:11px; color:#991b1b; font-weight:600;" id="site-inspect-flag-summary"></div>
@@ -4032,10 +4041,12 @@
  const empMap = (globalImportedData && globalImportedData.employeeMap) ? globalImportedData.employeeMap : (globalData && globalData.employeeMap ? globalData.employeeMap : null);
  const openTasks = globalData.tasks.filter(t => t.status === 'Open');
 
- openTasks.filter(t => t.cat === 'HIGH').slice(0, 6).forEach(t => {
- const candidates = getReallocCandidates(t, empMap);
- const reallocHTML = buildReallocHTML(candidates, 3);
- const inspectionMeeting = rootCauseNeedsSiteInspection(t) ? siteInspectionMeetingAction(t, true) : '';
+  openTasks.filter(t => t.cat === 'HIGH').slice(0, 6).forEach(t => {
+  const candidates = getReallocCandidates(t, empMap);
+  const reallocHTML = buildReallocHTML(candidates, 3);
+  const inspectionMeeting = rootCauseNeedsSiteInspection(t) ? siteInspectionMeetingAction(t, true) : '';
+  const facilities = getSiteFacilities(t);
+  const hasFacilityShortage = facilities.some(f => f.needed);
 
  const assignedBadge = t.assigned_to
  ? `<span style="font-size:11px; color:var(--text-subtle); margin-left:6px;">Assigned: <strong style="color:var(--text-main);">${t.assigned_to}</strong></span>`
@@ -4052,13 +4063,17 @@
  </div>
  <span class="pill pill-high">${t.score.toFixed(0)}% Risk</span>
  </div>
- <div class="mit-action-box">
- <div style="font-weight:700; margin-bottom:${reallocHTML ? '2px' : '0'};">PM Alert Issued</div>
- ${reallocHTML}
- ${inspectionMeeting}
- </div>
+  <div class="mit-action-box">
+  <div style="font-weight:700; margin-bottom:${reallocHTML ? '2px' : '0'};">PM Alert Issued</div>
+  ${reallocHTML}
+  ${inspectionMeeting}
+  </div>
+  <div style="display:flex; gap:8px; margin-top:9px;">
+    <button type="button" onclick="openSiteInspectModal('${t.id}')" class="btn btn-outline" style="flex:1; justify-content:center; padding:5px 8px; font-size:11px;">Inspect Details</button>
+    <button type="button" onclick="openSiteInspectModal('${t.id}')" class="btn" style="flex:1; justify-content:center; padding:5px 8px; font-size:11px; background:${hasFacilityShortage ? '#dc2626' : '#b45309'}; border:none; color:#fff;">Notify PM with Checklist</button>
+  </div>
 
- `;
+  `;
  highList.appendChild(div);
  });
 
@@ -5636,12 +5651,15 @@ ${inspectionMeeting}`;
  try { savedConfig = JSON.parse(localStorage.getItem('intertech_smtp_config') || '{}'); } catch (e) {}
 
  // Inject meeting-specific override into task list
- const meetingTasks = targetTasks.map(task => ({
- ...task,
- action: rootCauseNeedsSiteInspection(task) ? 'SCHEDULE_STATUS_MEETING + SITE_INSPECTION' : 'SCHEDULE_STATUS_MEETING',
- _meeting_override: true,
- _site_inspection_required: rootCauseNeedsSiteInspection(task)
- }));
+  const meetingTasks = targetTasks.map(task => ({
+  ...task,
+  action: task._noFacilityShortage
+    ? `SCHEDULE_STATUS_MEETING + ${task.root_cause === 'Weather Delay' ? 'WEATHER_ROOT_CAUSE' : 'ROOT_CAUSE_NOT_DETECTED'}`
+    : (rootCauseNeedsSiteInspection(task) ? 'SCHEDULE_STATUS_MEETING + SITE_INSPECTION' : 'SCHEDULE_STATUS_MEETING'),
+  _meeting_override: true,
+  _site_inspection_required: rootCauseNeedsSiteInspection(task),
+  _no_facility_shortage: Boolean(task._noFacilityShortage)
+  }));
 
  if (savedConfig.user && savedConfig.pass) {
  document.getElementById('smtp-input-user').value = savedConfig.user;
@@ -5681,7 +5699,7 @@ ${inspectionMeeting}`;
  alert(`\u26a0\ufe0f Meeting Alert Status:\n\n${resData.message || 'Alert processed.'}\nRecipient: ${recipient}\nTasks: ${meetingTasks.map(t => t.id).join(', ')}`);
  }
  } catch (e) {
- alert(`Status Meeting Alert dispatched (simulated) for ${meetingTasks.length} task(s).\nSMTP error: ${e.message}`);
+  alert(`Status Meeting SMTP alert dispatched (simulated) for ${meetingTasks.length} task(s).\nSMTP error: ${e.message}`);
  }
  }
 
@@ -6721,6 +6739,7 @@ function openSiteInspectModal(taskId) {
 
   // --- Flag Summary in Footer ---
   const neededCount = facilities.filter(f => f.needed).length;
+  const rootCauseChoiceEl = document.getElementById('site-inspect-root-cause-choice');
   const flagSummaryEl = document.getElementById('site-inspect-flag-summary');
   if (flagSummaryEl) {
     flagSummaryEl.textContent = neededCount > 0
@@ -6731,15 +6750,38 @@ function openSiteInspectModal(taskId) {
       neededCount > 0 ? 'rgba(15,23,42,0.78)' : 'rgba(15,23,42,0.72)';
   }
 
+  if (rootCauseChoiceEl) {
+    rootCauseChoiceEl.style.display = neededCount === 0 ? 'block' : 'none';
+    rootCauseChoiceEl.querySelectorAll('[data-root-cause]').forEach(button => {
+      button.onclick = () => {
+        task.root_cause = button.dataset.rootCause;
+        task.comments = `${task.comments ? `${task.comments} ` : ''}Inspection completed: no facility shortage detected.`;
+        openSiteInspectModal(task.id);
+      };
+    });
+  }
+
   // --- Wire SMTP button with facility context ---
   const smtpBtn = document.getElementById('site-inspect-smtp-btn');
   if (smtpBtn) {
-    // Store flagged facilities on the task object temporarily for the SMTP payload
+    // Keep the complete checklist so the PM can see both shortages and confirmed-ready facilities.
     task._facilityFlags = facilities.filter(f => f.needed).map(f => f.name + ' (' + f.reason + ')');
+    task._facilityChecklist = facilities.map(f => `${f.name}: ${f.needed ? `NEEDED — ${f.reason}` : 'OK'}`);
+    task._noFacilityShortage = neededCount === 0;
     smtpBtn.onclick = () => {
       closeSiteInspectModal();
-      sendSMTPAlert(task.id);
+      if (neededCount === 0) {
+        if (!task.root_cause || rootCauseNeedsSiteInspection(task)) {
+          task.root_cause = 'Root Cause Not Detected';
+        }
+        sendScheduleMeetingAlert(task.id);
+      } else {
+        sendSMTPAlert(task.id);
+      }
     };
+    smtpBtn.textContent = neededCount === 0
+      ? 'Schedule Status Meeting & Send SMTP Alert'
+      : 'Send SMTP Alert with Facility Report';
     smtpBtn.style.display = 'block';
   }
 

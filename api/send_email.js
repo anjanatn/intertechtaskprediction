@@ -31,10 +31,16 @@ export default async function handler(req, res) {
     let taskRowsHTML = '';
     tasks.forEach(t => {
       const facFlags = t._facilityFlags && t._facilityFlags.length ? `<div style="font-size:11px; color:#dc2626; margin-top:2px;"><strong>Needed Facilities:</strong> ${t._facilityFlags.join(', ')}</div>` : '';
+      const facilityChecklist = t._facilityChecklist && t._facilityChecklist.length
+        ? `<div style="font-size:11px; color:#475569; margin-top:4px;"><strong>Facility checklist:</strong> ${t._facilityChecklist.join('; ')}</div>`
+        : '';
+      const rootCause = t.root_cause
+        ? `<div style="font-size:11px; color:#92400e; margin-top:2px;"><strong>Root cause:</strong> ${t.root_cause}</div>`
+        : '';
       taskRowsHTML += `
         <tr>
           <td style="padding:10px; border-bottom:1px solid #e2e8f0; font-weight:bold; color:#2563eb;">${t.id || t.task_id}</td>
-          <td style="padding:10px; border-bottom:1px solid #e2e8f0;">${t.desc || t.description}${facFlags}</td>
+          <td style="padding:10px; border-bottom:1px solid #e2e8f0;">${t.desc || t.description}${rootCause}${facFlags}${facilityChecklist}</td>
           <td style="padding:10px; border-bottom:1px solid #e2e8f0;">${t.disc || t.discipline}</td>
           <td style="padding:10px; border-bottom:1px solid #e2e8f0; font-weight:bold; color:#dc2626;">${t.score}%</td>
           <td style="padding:10px; border-bottom:1px solid #e2e8f0; font-weight:bold; color:#d97706;">${t.action || 'NOTIFY_PM + REALLOCATE_RESOURCE'}</td>
@@ -50,7 +56,7 @@ export default async function handler(req, res) {
     const alertIntro = isSiteInspectionMeeting
       ? `A high-risk task has no confirmed root cause. Please schedule a status meeting and inspect the site before selecting a mitigation plan.`
       : isScheduleMeeting
-      ? `Please schedule a status meeting to review the identified delay risk, agree corrective actions, and assign owners.`
+      ? `Please schedule a status meeting to review the identified delay risk, agree corrective actions, and assign owners.${tasks.some(t => t._no_facility_shortage) ? ' The facility checklist found no shortage; the inspection classification and checklist are included below.' : ''}`
       : `The ML Delay Prediction Engine has flagged <strong>${tasks.length} High-Risk Task(s)</strong> with high probability of completion delay.`;
     const actionRequired = isSiteInspectionMeeting
       ? `<li>Schedule a status meeting with the project manager, discipline lead, and site supervisor.</li>
