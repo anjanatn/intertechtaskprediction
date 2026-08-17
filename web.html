@@ -3402,198 +3402,130 @@
 
  <!-- FLOATING AI DIAGNOSTICS ASSISTANT (BOTTOM RIGHT CORNER) -->
  <div id="ai-diagnostics-widget-container" style="position: fixed; bottom: 24px; right: 24px; z-index: 9990;">
- <!-- Diagnostics & Assistant Popup Panel -->
+ <!-- AI Assistant Popup Panel -->
  <div id="ai-diagnostics-panel" style="display: none; position: absolute; bottom: 64px; right: 0; width: 580px; max-width: calc(100vw - 32px); height: 680px; max-height: calc(100vh - 100px); background: #ffffff; border-radius: 16px; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25); border: 1px solid var(--border-medium); overflow: hidden; flex-direction: column;">
  <!-- Panel Header -->
  <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
- <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
- <div style="width: 10px; height: 10px; background: #34d399; border-radius: 50%; box-shadow: 0 0 8px #34d399; flex-shrink: 0;"></div>
- <div>
- <h3 style="font-size: 15px; font-weight: 800; color: #ffffff; margin: 0;">AI Diagnostics & Assistant</h3>
- <span style="font-size: 11px; color: #94a3b8;">PRJ001 ML Intelligence Engine</span>
- </div>
- </div>
- <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
- <button onclick="clearAIChat()" style="background: rgba(239,68,68,0.3); border: 1.5px solid #f87171; color: #ffffff; font-size: 12px; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: 700; letter-spacing: 0.3px; transition: all 0.2s ease;" title="Clear Chat History" onmouseover="this.style.background='rgba(239,68,68,0.55)'" onmouseout="this.style.background='rgba(239,68,68,0.3)'">&#128465; Clear</button>
- <button onclick="toggleAIDiagnosticsWidget()" style="background: rgba(255,255,255,0.18); border: 1.5px solid rgba(255,255,255,0.5); color: #ffffff; font-size: 22px; font-weight: 700; cursor: pointer; width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; line-height: 1; transition: all 0.2s ease; flex-shrink: 0;" title="Close" onmouseover="this.style.background='rgba(255,255,255,0.35)'" onmouseout="this.style.background='rgba(255,255,255,0.18)'">&times;</button>
- </div>
+  <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
+   <div style="width: 10px; height: 10px; background: #34d399; border-radius: 50%; box-shadow: 0 0 8px #34d399; flex-shrink: 0;"></div>
+   <div>
+    <h3 style="font-size: 15px; font-weight: 800; color: #ffffff; margin: 0;">AI Assistant &amp; What-If Simulator</h3>
+    <span style="font-size: 11px; color: #94a3b8;">PRJ001 ML Intelligence Engine</span>
+   </div>
+  </div>
+  <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+   <button onclick="clearAIChat()" style="background: rgba(239,68,68,0.3); border: 1.5px solid #f87171; color: #ffffff; font-size: 12px; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: 700; letter-spacing: 0.3px; transition: all 0.2s ease;" title="Clear Chat" onmouseover="this.style.background='rgba(239,68,68,0.55)'" onmouseout="this.style.background='rgba(239,68,68,0.3)'">&#128465; Clear</button>
+   <button onclick="toggleAIDiagnosticsWidget()" style="background: rgba(255,255,255,0.18); border: 1.5px solid rgba(255,255,255,0.5); color: #ffffff; font-size: 22px; font-weight: 700; cursor: pointer; width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; line-height: 1; transition: all 0.2s ease; flex-shrink: 0;" title="Close" onmouseover="this.style.background='rgba(255,255,255,0.35)'" onmouseout="this.style.background='rgba(255,255,255,0.18)'">&times;</button>
+  </div>
  </div>
 
- <!-- Panel Tabs -->
+ <!-- Panel Tabs: Chat + What-If Simulator -->
  <div style="display: flex; border-bottom: 1px solid var(--border-light); background: var(--bg-subtle);">
- <button id="ai-tab-btn-chat" onclick="switchAIPanelTab('chat')" style="flex: 1; padding: 10px 4px; border: none; background: #ffffff; font-weight: 700; font-size: 12px; color: var(--brand-primary); border-bottom: 2px solid var(--brand-primary); cursor: pointer;">&#128488; Ask Assistant</button>
- <button id="ai-tab-btn-diag" onclick="switchAIPanelTab('diag')" style="flex: 1; padding: 10px 4px; border: none; background: transparent; font-weight: 600; font-size: 12px; color: var(--text-subtle); border-bottom: 2px solid transparent; cursor: pointer;">&#128202; Diagnostics</button>
- <button id="ai-tab-btn-audit" onclick="switchAIPanelTab('audit')" style="flex: 1; padding: 10px 4px; border: none; background: transparent; font-weight: 600; font-size: 12px; color: var(--text-subtle); border-bottom: 2px solid transparent; cursor: pointer;">&#128203; Audit Log</button>
+  <button id="ai-tab-btn-chat" onclick="switchAIPanelTab('chat')" style="flex: 1; padding: 10px 4px; border: none; background: #ffffff; font-weight: 700; font-size: 12px; color: var(--brand-primary); border-bottom: 2px solid var(--brand-primary); cursor: pointer;">&#128488; Ask Assistant</button>
+  <button id="ai-tab-btn-sim" onclick="switchAIPanelTab('sim')" style="flex: 1; padding: 10px 4px; border: none; background: transparent; font-weight: 600; font-size: 12px; color: var(--text-subtle); border-bottom: 2px solid transparent; cursor: pointer;">&#128300; What-If Simulator</button>
  </div>
 
- <!-- Tab 1: Diagnostics Content -->
- <div id="ai-panel-diag-content" style="display: none; padding: 16px; overflow-y: auto; flex: 1;">
- <div style="margin-bottom: 16px;">
- <h4 style="font-size: 12px; font-weight: 700; color: var(--text-main); margin-bottom: 8px;">Model Performance Leaderboard</h4>
- <div style="overflow-x: auto; font-size: 11px;">
- <table class="data-table" style="width: 100%;">
- <thead>
- <tr>
- <th>Model</th>
- <th>Accuracy</th>
- <th>Precision</th>
- <th>Recall</th>
- <th>F1</th>
- <th>AUC</th>
- </tr>
- </thead>
- <tbody id="ai-models-table-body"><tr>
- <td><strong>Logistic Regression</strong> </td>
- <td>72.3%</td>
- <td>67.7%</td>
- <td>69.9%</td>
- <td>68.8%</td>
- <td>80.5%</td>
- <td>44.0</td>
-</tr><tr>
- <td><strong>Random Forest</strong> <span class="pill pill-low" style="margin-left:4px; font-size:10px;">CHAMPION</span></td>
- <td>72.0%</td>
- <td>66.4%</td>
- <td>72.4%</td>
- <td>69.3%</td>
- <td>77.8%</td>
- <td>43.7</td>
-</tr><tr>
- <td><strong>Gradient Boosting</strong> </td>
- <td>70.2%</td>
- <td>65.6%</td>
- <td>66.7%</td>
- <td>66.1%</td>
- <td>74.6%</td>
- <td>39.6</td>
-</tr><tr>
- <td><strong>XGBoost</strong> </td>
- <td>69.5%</td>
- <td>63.9%</td>
- <td>69.1%</td>
- <td>66.4%</td>
- <td>75.7%</td>
- <td>38.7</td>
-</tr><tr>
- <td><strong>Stacking Ensemble</strong> </td>
- <td>70.6%</td>
- <td>65.2%</td>
- <td>69.9%</td>
- <td>67.5%</td>
- <td>78.8%</td>
- <td>40.7</td>
-</tr></tbody>
- </table>
- </div>
- </div>
- <div>
- <h4 style="font-size: 12px; font-weight: 700; color: var(--text-main); margin-bottom: 8px;">SHAP Global Risk Drivers</h4>
- <div id="ai-feat-list-container" style="font-size: 11px;"><div class="stat-row">
- <div class="stat-meta">
- <span class="stat-name">hours_per_day</span>
- <span class="stat-val">32.07% Impact</span>
- </div>
- <div class="bar-bg">
- <div class="bar-fill" style="width: 100%;"></div>
- </div>
-</div><div class="stat-row">
- <div class="stat-meta">
- <span class="stat-name">risk_enc</span>
- <span class="stat-val">26.31% Impact</span>
- </div>
- <div class="bar-bg">
- <div class="bar-fill" style="width: 82%;"></div>
- </div>
-</div><div class="stat-row">
- <div class="stat-meta">
- <span class="stat-name">Hours</span>
- <span class="stat-val">17.82% Impact</span>
- </div>
- <div class="bar-bg">
- <div class="bar-fill" style="width: 56%;"></div>
- </div>
-</div><div class="stat-row">
- <div class="stat-meta">
- <span class="stat-name">disc_hist_delay_rate</span>
- <span class="stat-val">11.99% Impact</span>
- </div>
- <div class="bar-bg">
- <div class="bar-fill" style="width: 37%;"></div>
- </div>
-</div><div class="stat-row">
- <div class="stat-meta">
- <span class="stat-name">high_pri_high_risk</span>
- <span class="stat-val">11.13% Impact</span>
- </div>
- <div class="bar-bg">
- <div class="bar-fill" style="width: 35%;"></div>
- </div>
-</div><div class="stat-row">
- <div class="stat-meta">
- <span class="stat-name">disc_PRJ-STR</span>
- <span class="stat-val">0.68% Impact</span>
- </div>
- <div class="bar-bg">
- <div class="bar-fill" style="width: 2%;"></div>
- </div>
-</div></div>
- </div>
- </div>
-
- <!-- Tab 2: Chat Assistant Content -->
+ <!-- TAB 1: Chat Assistant -->
  <div id="ai-panel-chat-content" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
- <!-- Scope Disclaimer Banner -->
- <div style="background:#eff6ff; border-bottom:1px solid #bfdbfe; padding:6px 12px; font-size:10.5px; color:#1d4ed8; display:flex; align-items:center; gap:6px;">
- <span><strong>Scoped AI</strong>: Grounded in project dataset. Probabilities calculated by Calibrated Random Forest engine.</span>
+  <!-- Scope Disclaimer Banner -->
+  <div style="background:#eff6ff; border-bottom:1px solid #bfdbfe; padding:6px 12px; font-size:10.5px; color:#1d4ed8; display:flex; align-items:center; gap:6px;">
+   <span><strong>Scoped AI</strong>: Grounded in project dataset. Probabilities calculated by Calibrated Random Forest engine.</span>
+  </div>
+
+  <div id="ai-chat-messages" style="flex: 1; min-height: 0; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; background: var(--bg-main);">
+   <!-- Dynamically populated by initAIChat() -->
+  </div>
+
+  <!-- Starter Question Chips -->
+  <div id="ai-chat-starter-chips" style="display:flex; gap:6px; overflow-x:auto; padding:6px 10px; background:var(--bg-subtle); border-top:1px solid var(--border-light); white-space:nowrap;">
+   <button onclick="askAIQuickPrompt('Simulate MEP task 120 hours 14 days high priority')" style="background:#fff0f0; border:1px solid #fca5a5; border-radius:12px; padding:3px 8px; font-size:10.5px; font-weight:700; color:#dc2626; cursor:pointer;">&#128300; Simulate MEP 120h/14d</button>
+   <button onclick="askAIQuickPrompt('What if STR task 80 hours 10 days medium priority?')" style="background:#fff7ed; border:1px solid #fdba74; border-radius:12px; padding:3px 8px; font-size:10.5px; font-weight:700; color:#c2410c; cursor:pointer;">&#128300; Simulate STR 80h/10d</button>
+   <button onclick="askAIQuickPrompt('What mitigation action is required for high risk tasks?')" style="background:#ffffff; border:1px solid #bfdbfe; border-radius:12px; padding:3px 8px; font-size:10.5px; font-weight:600; color:#1d4ed8; cursor:pointer;">High risk mitigations</button>
+   <button onclick="askAIQuickPrompt('Compare all scenarios')" style="background:#f5f3ff; border:1px solid #a5b4fc; border-radius:12px; padding:3px 8px; font-size:10.5px; font-weight:600; color:#4f46e5; cursor:pointer;">&#128202; Compare scenarios</button>
+   <button onclick="askAIQuickPrompt('help')" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:3px 8px; font-size:10.5px; font-weight:600; color:#475569; cursor:pointer;">&#10067; Help</button>
+  </div>
+
+  <div style="padding: 10px 12px; border-top: 1px solid var(--border-light); background: #ffffff; display: flex; gap: 8px;">
+   <input type="text" id="ai-chat-input" placeholder="Ask or type: simulate MEP 120 hours 14 days..." style="flex: 1; padding: 8px 12px; border: 1px solid var(--border-medium); border-radius: 8px; font-size: 12px;" onkeypress="if(event.key==='Enter') sendAIChatMessage()">
+   <button id="btn-send-ai" onclick="sendAIChatMessage()" class="btn btn-primary" style="padding: 8px 14px; font-size: 12px;">Send</button>
+  </div>
  </div>
 
- <div id="ai-chat-messages" style="flex: 1; min-height: 0; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; background: var(--bg-main);">
- <!-- Dynamically populated by initAIChat() -->
+ <!-- TAB 2: What-If Simulator (inline form) -->
+ <div id="ai-panel-sim-content" style="display: none; flex-direction: column; flex: 1; min-height: 0; overflow: hidden;">
+  <!-- Form area -->
+  <div style="padding: 14px 16px; border-bottom: 1px solid var(--border-light); background: #fff; flex-shrink: 0;">
+   <div style="font-size: 11px; font-weight: 800; color: #0f172a; margin-bottom: 10px; display:flex; align-items:center; gap:6px;">&#128300; Configure Scenario <span style="font-size:10px; font-weight:600; color:#64748b;">— SHAP-weighted delay probability</span></div>
+   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+    <!-- Discipline -->
+    <div>
+     <label style="font-size:10.5px; font-weight:700; color:#374151; display:block; margin-bottom:3px;">Discipline</label>
+     <select id="sim-form-disc" style="width:100%; padding:6px 8px; border:1px solid #d1d5db; border-radius:6px; font-size:11.5px; background:#f9fafb;">
+      <option value="MEP">MEP (Mechanical/Electrical)</option>
+      <option value="STR">STR (Structural)</option>
+      <option value="SITE">SITE (Civil/Site Works)</option>
+      <option value="ARC">ARC (Architectural)</option>
+      <option value="INT">INT (Interior Design)</option>
+     </select>
+    </div>
+    <!-- Priority -->
+    <div>
+     <label style="font-size:10.5px; font-weight:700; color:#374151; display:block; margin-bottom:3px;">Priority</label>
+     <select id="sim-form-priority" style="width:100%; padding:6px 8px; border:1px solid #d1d5db; border-radius:6px; font-size:11.5px; background:#f9fafb;">
+      <option value="High">High</option>
+      <option value="Medium">Medium</option>
+      <option value="Low">Low</option>
+     </select>
+    </div>
+    <!-- Hours -->
+    <div>
+     <label style="font-size:10.5px; font-weight:700; color:#374151; display:block; margin-bottom:3px;">Total Hours: <span id="sim-form-hours-val">120</span> hrs</label>
+     <input type="range" id="sim-form-hours" min="10" max="300" value="120" step="5"
+      style="width:100%; accent-color:#2563eb;"
+      oninput="document.getElementById('sim-form-hours-val').textContent=this.value">
+    </div>
+    <!-- Days -->
+    <div>
+     <label style="font-size:10.5px; font-weight:700; color:#374151; display:block; margin-bottom:3px;">Duration: <span id="sim-form-days-val">14</span> days</label>
+     <input type="range" id="sim-form-days" min="1" max="60" value="14" step="1"
+      style="width:100%; accent-color:#7c3aed;"
+      oninput="document.getElementById('sim-form-days-val').textContent=this.value">
+    </div>
+    <!-- Risk Tier -->
+    <div style="grid-column: span 2;">
+     <label style="font-size:10.5px; font-weight:700; color:#374151; display:block; margin-bottom:3px;">Pre-Assessed Risk Tier</label>
+     <div style="display:flex; gap:8px;">
+      <button id="sim-risk-High" onclick="setSimRisk('High')" style="flex:1; padding:5px; border:1.5px solid #dc2626; border-radius:6px; background:#fef2f2; color:#dc2626; font-size:11px; font-weight:700; cursor:pointer;">High</button>
+      <button id="sim-risk-Medium" onclick="setSimRisk('Medium')" style="flex:1; padding:5px; border:1.5px solid #d1d5db; border-radius:6px; background:#f9fafb; color:#6b7280; font-size:11px; font-weight:600; cursor:pointer;">Medium</button>
+      <button id="sim-risk-Low" onclick="setSimRisk('Low')" style="flex:1; padding:5px; border:1.5px solid #d1d5db; border-radius:6px; background:#f9fafb; color:#6b7280; font-size:11px; font-weight:600; cursor:pointer;">Low</button>
+     </div>
+    </div>
+   </div>
+   <!-- Run button -->
+   <button onclick="runInlineSimulator()" style="width:100%; margin-top:12px; padding:9px; background:linear-gradient(135deg,#1e3a5f,#2563eb); color:#fff; border:none; border-radius:8px; font-size:12px; font-weight:800; cursor:pointer; letter-spacing:0.3px;">&#9889; Run What-If Simulation</button>
+  </div>
+  <!-- Results area -->
+  <div id="sim-panel-results" style="flex:1; min-height:0; overflow-y:auto; padding:12px; background:var(--bg-main); display:flex; flex-direction:column; gap:8px;">
+   <div style="text-align:center; padding:32px 16px; color:#94a3b8; font-size:12px;">
+    <div style="font-size:32px; margin-bottom:8px;">&#128300;</div>
+    <div style="font-weight:700; color:#475569; margin-bottom:4px;">Configure &amp; Run a Scenario</div>
+    <div>Set parameters above and click <strong>Run</strong> to see SHAP-weighted delay probability, workload analysis, and mitigation actions.</div>
+   </div>
+  </div>
+  <!-- Sim footer actions -->
+  <div style="padding:8px 14px; border-top:1px solid var(--border-light); background:#f8fafc; display:flex; gap:6px; flex-shrink:0;">
+   <button onclick="exportScenariosToExcel()" style="flex:1; background:#16a34a; border:none; color:#fff; font-size:11px; font-weight:700; padding:7px; border-radius:6px; cursor:pointer;">&#128202; Export Excel</button>
+   <button onclick="exportScenariosToPDF()" style="flex:1; background:#7c3aed; border:none; color:#fff; font-size:11px; font-weight:700; padding:7px; border-radius:6px; cursor:pointer;">&#128196; Export PDF</button>
+   <button onclick="simScenarios=[]; document.getElementById('sim-panel-results').innerHTML='<div style=\'text-align:center;padding:32px 16px;color:#94a3b8;font-size:12px;\'><div style=\'font-size:32px;margin-bottom:8px;\'>&#128300;</div><div style=\'font-weight:700;color:#475569;margin-bottom:4px;\'>Scenarios Cleared</div><div>Run a new simulation above.</div></div>'; " style="flex:1; background:#dc2626; border:none; color:#fff; font-size:11px; font-weight:700; padding:7px; border-radius:6px; cursor:pointer;">&#128465; Clear All</button>
+  </div>
  </div>
 
- <!-- Starter Question Chips -->
- <div id="ai-chat-starter-chips" style="display:flex; gap:6px; overflow-x:auto; padding:6px 10px; background:var(--bg-subtle); border-top:1px solid var(--border-light); white-space:nowrap;">
-  <button onclick="askAIQuickPrompt('Simulate MEP task 120 hours 14 days high priority')" style="background:#fff0f0; border:1px solid #fca5a5; border-radius:12px; padding:3px 8px; font-size:10.5px; font-weight:700; color:#dc2626; cursor:pointer;">🔬 Simulate MEP 120h/14d</button>
-  <button onclick="askAIQuickPrompt('What if STR task 80 hours 10 days medium priority?')" style="background:#fff7ed; border:1px solid #fdba74; border-radius:12px; padding:3px 8px; font-size:10.5px; font-weight:700; color:#c2410c; cursor:pointer;">🔬 Simulate STR 80h/10d</button>
-  <button onclick="askAIQuickPrompt('What mitigation action is required for high risk tasks?')" style="background:#ffffff; border:1px solid #bfdbfe; border-radius:12px; padding:3px 8px; font-size:10.5px; font-weight:600; color:#1d4ed8; cursor:pointer;">High risk mitigations</button>
-  <button onclick="askAIQuickPrompt('Compare all scenarios')" style="background:#f5f3ff; border:1px solid #a5b4fc; border-radius:12px; padding:3px 8px; font-size:10.5px; font-weight:600; color:#4f46e5; cursor:pointer;">📊 Compare scenarios</button>
-  <button onclick="askAIQuickPrompt('help')" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:3px 8px; font-size:10.5px; font-weight:600; color:#475569; cursor:pointer;">❓ Help</button>
- </div>
-
- <div style="padding: 10px 12px; border-top: 1px solid var(--border-light); background: #ffffff; display: flex; gap: 8px;">
- <input type="text" id="ai-chat-input" placeholder="Ask project intelligence..." style="flex: 1; padding: 8px 12px; border: 1px solid var(--border-medium); border-radius: 8px; font-size: 12px;" onkeypress="if(event.key==='Enter') sendAIChatMessage()">
- <button id="btn-send-ai" onclick="sendAIChatMessage()" class="btn btn-primary" style="padding: 8px 14px; font-size: 12px;">Send</button>
- </div>
- </div>
-
- <!-- Tab 3: Usage Audit Log Content -->
- <div id="ai-panel-audit-content" style="display: none; flex-direction: column; flex: 1; padding: 14px; overflow-y: auto; background: var(--bg-main);">
- <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
- <h4 style="font-size: 12px; font-weight: 700; color: var(--text-main); margin:0;">AI Usage & Dispatch Audit Log</h4>
- <button onclick="clearAuditLog()" style="font-size:10.5px; color:#dc2626; border:1px solid #fecaca; background:#fff; padding:2px 8px; border-radius:4px; cursor:pointer;">Clear Log</button>
- </div>
- <div style="overflow-x:auto; font-size:11px;">
- <table class="data-table" style="width:100%;">
- <thead>
- <tr>
- <th>Timestamp</th>
- <th>Type</th>
- <th>Query / Event</th>
- <th>Grounded Citation</th>
- </tr>
- </thead>
- <tbody id="ai-audit-log-tbody">
- <!-- Rendered by renderAuditLog() -->
- </tbody>
- </table>
- </div>
- </div>
  </div>
 
  <!-- Toggle Button in Bottom Right -->
  <button id="ai-diagnostics-toggle-btn" onclick="toggleAIDiagnosticsWidget()" class="btn btn-primary" style="background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%); color: #ffffff; padding: 12px 20px; border-radius: 50px; font-weight: 700; font-size: 13px; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4); display: flex; align-items: center; gap: 8px; border: 1px solid rgba(255, 255, 255, 0.2); cursor: pointer; transition: all 0.2s ease;">
- <div style="width: 8px; height: 8px; background: #34d399; border-radius: 50%; box-shadow: 0 0 8px #34d399;"></div>
- <span>AI Diagnostics</span>
+  <div style="width: 8px; height: 8px; background: #34d399; border-radius: 50%; box-shadow: 0 0 8px #34d399;"></div>
+  <span>AI Assistant</span>
  </button>
  </div>
 
@@ -5838,7 +5770,7 @@ function toggleAIDiagnosticsWidget() {
 }
 
 function switchAIPanelTab(tab) {
-  const tabs = ['chat', 'diag', 'audit'];
+  const tabs = ['chat', 'sim'];
   tabs.forEach(t => {
     const btn = document.getElementById('ai-tab-btn-' + t);
     const content = document.getElementById('ai-panel-' + t + '-content');
@@ -5848,8 +5780,59 @@ function switchAIPanelTab(tab) {
     btn.style.fontWeight = isActive ? '700' : '600';
     btn.style.color = isActive ? 'var(--brand-primary)' : 'var(--text-subtle)';
     btn.style.borderBottom = isActive ? '2px solid var(--brand-primary)' : '2px solid transparent';
-    content.style.display = isActive ? (t === 'chat' ? 'flex' : 'block') : 'none';
+    content.style.display = isActive ? 'flex' : 'none';
   });
+}
+
+// --- Inline Simulator tab: risk button state ---
+let _simPanelRisk = 'High';
+function setSimRisk(r) {
+  _simPanelRisk = r;
+  ['High','Medium','Low'].forEach(v => {
+    const btn = document.getElementById('sim-risk-' + v);
+    if (!btn) return;
+    const active = (v === r);
+    const colors = { High: ['#fef2f2','#dc2626'], Medium: ['#fffbeb','#d97706'], Low: ['#f0fdf4','#16a34a'] };
+    btn.style.background = active ? colors[v][0] : '#f9fafb';
+    btn.style.borderColor = active ? colors[v][1] : '#d1d5db';
+    btn.style.color = active ? colors[v][1] : '#6b7280';
+    btn.style.fontWeight = active ? '700' : '600';
+  });
+}
+
+// --- Run simulation from the inline form tab ---
+function runInlineSimulator() {
+  const disc = document.getElementById('sim-form-disc').value;
+  const priority = document.getElementById('sim-form-priority').value;
+  const hours = parseFloat(document.getElementById('sim-form-hours').value);
+  const days = parseFloat(document.getElementById('sim-form-days').value);
+  const risk = _simPanelRisk;
+
+  const params = { disc, priority, risk, hours, days };
+  const result = calculateWhatIfRisk(params);
+  const scenarioNum = simScenarios.length + 1;
+
+  const resultsDiv = document.getElementById('sim-panel-results');
+  if (!resultsDiv) return;
+
+  // Clear placeholder, render bubble
+  resultsDiv.innerHTML = '';
+  const bubble = renderWhatIfBubble(params, result, scenarioNum);
+  // Adapt bubble width for the panel
+  bubble.style.maxWidth = '100%';
+  resultsDiv.appendChild(bubble);
+
+  // If ≥2 saved scenarios, render comparison below
+  if (simScenarios.length >= 2) {
+    const divider = document.createElement('div');
+    divider.style.cssText = 'font-size:11px; font-weight:700; color:#64748b; padding:6px 0 2px;';
+    divider.textContent = '📊 Saved Scenario Comparison';
+    resultsDiv.appendChild(divider);
+    const comp = renderScenarioComparison();
+    if (comp) { comp.style.maxWidth = '100%'; resultsDiv.appendChild(comp); }
+  }
+
+  requestAnimationFrame(() => { resultsDiv.scrollTop = 0; });
 }
 
 async function askAIQuickPrompt(promptText) {
