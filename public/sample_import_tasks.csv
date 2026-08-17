@@ -1,9 +1,36 @@
-TaskID,Description,ProjectDiscipline,Priority,Risk,Hours,Created,Target,Status,Location
-PRJ-TASK-001,HVAC Ductwork & Chiller Unit Installation,HVAC,High,High,120,2026-08-01,2026-08-15,Open,Building A - Level 3
-PRJ-TASK-002,Main Electrical Panel Wiring & Transformer Load Test,Electrical,High,Medium,85,2026-08-03,2026-08-12,Open,Substation 2
-PRJ-TASK-003,Structural Steel Column Reinforcement & Welding,Structural,Medium,High,160,2026-08-02,2026-08-20,Open,Podium Deck
-PRJ-TASK-004,Plumbing Main Riser Hydrostatic Pressure Testing,Plumbing,Medium,Low,32,2026-08-05,2026-08-10,Open,Core Shaft West
-PRJ-TASK-005,Architectural Drywall Partition Framing & Inspection,Architecture,Low,Low,45,2026-08-04,2026-08-14,Open,Level 1 Executive Lounge
-PRJ-TASK-006,Foundation Concrete Pouring & Curing Audit,Civil,High,High,200,2026-08-01,2026-08-18,Open,Basement B2
-PRJ-TASK-007,Fire Suppression Sprinkler Valve Calibration,Mechanical,Medium,Medium,50,2026-08-06,2026-08-13,Open,Mechanical Room 4
-PRJ-TASK-008,BEMS Automation Controller Commissioning,Electrical,Low,Medium,64,2026-08-05,2026-08-16,Open,Control Center
+TaskID,ProjectID,ProjectDiscipline,Status,Description,Location,Created,Target,Actual,Delay,Priority,Overdue,RootCause,Risk,Hours,Comments
+T-1015,PRJ001,PRJ-STR,Closed,Column Installation,Grid A5,2/1/2024,2/5/2024,2/7/2024,2.0,High,True,Crane Breakdown,High,56.0,Repaired after 1 day
+T-1016,PRJ001,PRJ-INT,Open,Paint Finishes,Lobby,5/10/2024,5/20/2024,,,Medium,False,,Medium,38.0,Awaiting color approval
+T-1017,PRJ001,PRJ-MEP,Closed,HVAC Ductwork,Mechanical,3/15/2024,3/22/2024,3/18/2024,-4.0,Medium,False,,Low,72.0,Ahead of schedule
+T-1018,PRJ001,PRJ-ARC,Closed,Curtain Wall Install,South Facade,4/1/2024,4/15/2024,4/20/2024,5.0,High,True,Design Revision,High,120.0,Required engineering sign-off
+T-1019,PRJ001,PRJ-SITE,Closed,Underground Utilities,West Yard,1/10/2024,1/25/2024,2/5/2024,11.0,High,True,Weather Delay,Medium,90.0,Heavy rains for 1 week
+T-1020,PRJ001,PRJ-STR,Closed,Deck Pour,Level 3,3/5/2024,3/8/2024,3/8/2024,,High,False,,High,64.0,Perfect weather conditions
+T-1021,PRJ001,PRJ-INT,Closed,Floor Tile,Restrooms,4/10/2024,4/12/2024,4/15/2024,3.0,Medium,True,Material Defect,Medium,45.0,Initial batch rejected
+T-1022,PRJ001,PRJ-MEP,Open,Fire Alarm Wiring,Level 2,5/1/2024,5/10/2024,,,Medium,False,,Medium,28.0,Coordinating with electrician
+T-1023,PRJ001,PRJ-ARC,Closed,Roof Membrane,Penthouse,2/20/2024,2/25/2024,2/24/2024,-1.0,High,False,,High,80.0,Completed before deadline
+T-1024,PRJ001,PRJ-SITE,Closed,Parking Lot Paving,North Lot,4/15/2024,4/20/2024,4/22/2024,2.0,Medium,True,Asphalt Shortage,Medium,60.0,Truck delivery delay
+T-1105,PRJ001,PRJ-STR,Closed,Post-Tensioning,Slab Area B2,3/1/2024,3/5/2024,3/3/2024,-2.0,High,False,,High,105.0,Optimal curing conditions
+T-1106,PRJ001,PRJ-INT,Closed,Elevator Interior,Shaft 2,4/5/2024,4/12/2024,4/15/2024,3.0,Medium,True,Vendor Delay,Medium,55.0,Custom panels arrived late
+T-1107,PRJ001,PRJ-MEP,Open,Fire Sprinklers,Level 7,5/20/2024,6/1/2024,,,High,False,,High,78.0,Coordinating with steel deck
+T-1108,PRJ001,PRJ-ARC,Closed,Stone Cladding,Entrance,2/15/2024,2/25/2024,3/5/2024,8.0,High,True,Design Change,High,115.0,Revised architectural details
+T-1109,PRJ001,PRJ-SITE,Closed,Fencing Installation,Security Zone,1/25/2024,2/1/2024,1/29/2024,-3.0,Low,False,,Low,42.0,Early completion
+T-1110,PRJ001,PRJ-STR,Closed,Metal Decking,Level 8,3/10/2024,3/15/2024,3/20/2024,5.0,High,True,Crew Shortage,High,88.0,Subcontractor staffing issue
+T-1111,PRJ001,PRJ-INT,Open,Millwork Installation,Executive Suite,6/5/2024,6/15/2024,,,Medium,False,,Medium,65.0,Custom fabrication in progress
+T-1112,PRJ001,PRJ-MEP,Closed,Electrical Terminations,Control Room,4/10/2024,4/15/2024,4/12/2024,-3.0,Medium,False,,Medium,48.0,Completed ahead of schedule
+T-1113,PRJ001,PRJ-ARC,Closed,Skylight Assembly,Atrium,3/5/2024,3/12/2024,3/18/2024,6.0,High,True,Glass Breakage,High,92.0,Replacement unit required
+T-1114,PRJ001,PRJ-SITE,Closed,Irrigation System,Landscape Area,2/1/2024,2/10/2024,2/15/2024,5.0,Low,True,Utility Conflict,Medium,50.0,Required water line relocation
+T-1001,PRJ001,PRJ-ARC,Closed,Foundation Pour,North Wing,1/5/2024,1/20/2024,1/22/2024,2.0,High,True,Weather Delay,Medium,120.0,Concrete test passed
+T-1002,PRJ001,PRJ-STR,Open,Steel Erection,East Tower,2/10/2024,3/15/2024,,,High,False,,High,85.0,Waiting for inspection
+T-1003,PRJ001,PRJ-MEP,Closed,Electrical Rough-in,Level 5,1/15/2024,2/1/2024,2/5/2024,4.0,Medium,True,Supplier Delay,Medium,65.0,Completed with 3 RFIs
+T-1004,PRJ001,PRJ-INT,Closed,Drywall Installation,Suite 401,3/1/2024,3/10/2024,3/8/2024,-2.0,Low,False,,Low,42.0,Early completion
+T-1005,PRJ001,PRJ-SITE,Closed,Excavation,West Lot,1/10/2024,1/25/2024,1/30/2024,5.0,High,True,Equipment Failure,High,150.0,Rock encounter required blasting
+T-1006,PRJ001,PRJ-STR,Closed,Column Installation,Grid A5,2/1/2024,2/5/2024,2/7/2024,2.0,High,True,Crane Breakdown,High,56.0,Repaired after 1 day
+T-1007,PRJ001,PRJ-INT,Open,Paint Finishes,Lobby,5/10/2024,5/20/2024,,,Medium,False,,Medium,38.0,Awaiting color approval
+T-1008,PRJ001,PRJ-MEP,Closed,HVAC Ductwork,Mechanical,3/15/2024,3/22/2024,3/18/2024,-4.0,Medium,False,,Low,72.0,Ahead of schedule
+T-1009,PRJ001,PRJ-ARC,Closed,Curtain Wall Install,South Facade,4/1/2024,4/15/2024,4/20/2024,5.0,High,True,Design Revision,High,120.0,Required engineering sign-off
+T-1010,PRJ001,PRJ-SITE,Closed,Underground Utilities,West Yard,1/10/2024,1/25/2024,2/5/2024,11.0,High,True,Weather Delay,Medium,90.0,Heavy rains for 1 week
+T-1196,PRJ001,PRJ-INT,Closed,Floor Tile,Restrooms,4/10/2024,4/12/2024,4/15/2024,3.0,Medium,True,Material Defect,Medium,45.0,Initial batch rejected
+T-1197,PRJ001,PRJ-MEP,Open,Fire Alarm Wiring,Level 2,5/1/2024,5/10/2024,,,Medium,False,,Medium,28.0,Coordinating with electrician
+T-1198,PRJ001,PRJ-ARC,Closed,Roof Membrane,Penthouse,2/20/2024,2/25/2024,2/24/2024,-1.0,High,False,,High,80.0,Completed before deadline
+T-1199,PRJ001,PRJ-SITE,Closed,Parking Lot Paving,North Lot,4/15/2024,4/20/2024,4/22/2024,2.0,Medium,True,Asphalt Shortage,Medium,60.0,Truck delivery delay
+T-1200,PRJ001,PRJ-ARC,Open,Glass Curtain Wall,North Elevation,6/1/2024,6/15/2024,,,High,False,,High,95.0,Sequencing with steel work
