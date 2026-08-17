@@ -835,15 +835,18 @@
       <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; width: 100%;">
         <div>
           <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
-            <span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(56, 189, 248, 0.3); font-family: 'JetBrains Mono', monospace;">WRENCH AI ADVISOR ENGINE</span>
+            <span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(56, 189, 248, 0.3); font-family: 'JetBrains Mono', monospace;">INTERTECH AI ENGINE</span>
             <span style="background: rgba(52, 211, 153, 0.15); color: #34d399; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(52, 211, 153, 0.3);">DIGITAL CONTROL TOWER LIVE</span>
           </div>
-          <h1 class="section-heading" style="color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 24px; font-weight: 800; letter-spacing: -0.02em;">Industrial AI Digital Control Tower & 3D Site Twin</h1>
+          <h1 class="section-heading" style="color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 24px; font-weight: 800; letter-spacing: -0.02em;">AI Digital Control Tower & 3D Site Twin Visualizer</h1>
           <p class="section-subtext" style="color: #94a3b8; font-size: 13px; margin-top: 2px;">Real-time technical review, 3D site structure visualization, clash detection & proactive delay forecasting</p>
         </div>
-        <div style="display: flex; gap: 10px; align-items: center;">
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
           <button class="btn btn-outline" style="border-color: rgba(255,255,255,0.2); color: #e2e8f0; font-size: 12px; font-weight: 600;" onclick="toggleControlTowerClashMode()">
             <span id="ct-clash-mode-btn-text">Clash Heatmap: ON</span>
+          </button>
+          <button class="btn btn-outline" style="border-color: rgba(52, 211, 153, 0.4); color: #34d399; font-size: 12px; font-weight: 600;" onclick="loadTestDataIntoControlTower()">
+            <span>&#128202; View Test Data in 3D Twin</span>
           </button>
           <button class="btn btn-primary" style="background: linear-gradient(135deg, #0284c7, #0369a1); border-color: #0284c7; font-size: 12px; font-weight: 700;" onclick="rotate3DSiteTwin()">
             <span>Rotate 3D Site View</span>
@@ -987,7 +990,7 @@
           <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 16px; padding: 20px; backdrop-filter: blur(10px); flex: 1;">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
               <span style="font-size: 13px; font-weight: 700; color: #38bdf8; font-family: 'Plus Jakarta Sans', sans-serif;">AI Insights</span>
-              <span style="font-size: 10px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 2px 6px; border-radius: 4px; font-weight: 700;">WAA Engine</span>
+              <span style="font-size: 10px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 2px 6px; border-radius: 4px; font-weight: 700;">InterTech AI Engine</span>
             </div>
 
             <div style="display: flex; flex-direction: column; gap: 10px; font-size: 12px;">
@@ -2108,6 +2111,8 @@
     let ct3DRotationAngle = 0.4;
     let ct3DRotating = false;
     let ctClashMode = true;
+    let ctUseTestDataModules = false;
+    let ct3DTestDataModules = null;
 
     function initControlTowerCanvas() {
       renderControlTowerCards();
@@ -2132,6 +2137,108 @@
       ct3DRotationAngle += 0.015;
       draw3DSiteTwinCanvas();
       requestAnimationFrame(animate3DSiteTwin);
+    }
+
+    function loadTestDataIntoControlTower() {
+      const tasks = globalImportedData && globalImportedData.tasks ? globalImportedData.tasks : null;
+      if (!tasks || !tasks.length) {
+        alert('No imported test data found.\n\nPlease go to "Import & Predict" → Load your dataset first, then return here to view it in the 3D Twin.');
+        return;
+      }
+
+      // Compute per-discipline risk rates from real imported predictions
+      const discMap = {};
+      tasks.forEach(t => {
+        const disc = (t.disc || 'GENERAL').toUpperCase();
+        if (!discMap[disc]) discMap[disc] = { total: 0, high: 0, scoreSum: 0 };
+        discMap[disc].total++;
+        if (t.cat === 'HIGH') discMap[disc].high++;
+        discMap[disc].scoreSum += (t.score || 0);
+      });
+
+      // Map imported disciplines onto the 5 3D modules
+      const discAliases = {
+        'PRJ-SITE': ['PRJ-SITE', 'SITE', 'CIVIL', 'EXTERIOR'],
+        'PRJ-STR':  ['PRJ-STR', 'STR', 'STRUCTURAL'],
+        'PRJ-MEP':  ['PRJ-MEP', 'MEP', 'HVAC', 'ELECTRICAL', 'PLUMBING', 'MECHANICAL'],
+        'PRJ-ARC':  ['PRJ-ARC', 'ARC', 'ARCHITECTURE', 'ARCHITECTURAL'],
+        'PRJ-INT':  ['PRJ-INT', 'INT', 'INTERIOR', 'FINISHES']
+      };
+
+      // Merge imported stats into 3D modules
+      ct3DTestDataModules = [
+        { id: 'PRJ-SITE', name: 'Site Works',         x: -110, y: -70, w: 80, d: 80, h: 50  },
+        { id: 'PRJ-INT',  name: 'Interior Works',     x: 25,   y: -70, w: 80, d: 80, h: 75  },
+        { id: 'PRJ-ARC',  name: 'Architectural',      x: -110, y: 25,  w: 80, d: 80, h: 105 },
+        { id: 'PRJ-STR',  name: 'Structural',         x: 25,   y: 25,  w: 80, d: 80, h: 130 },
+        { id: 'PRJ-MEP',  name: 'MEP / HVAC',         x: -40,  y: -20, w: 80, d: 80, h: 160 }
+      ].map(mod => {
+        const aliases = discAliases[mod.id] || [mod.id];
+        let totalTasks = 0, highTasks = 0, scoreSum = 0;
+        aliases.forEach(alias => {
+          const entry = discMap[alias] || {};
+          totalTasks += entry.total || 0;
+          highTasks  += entry.high  || 0;
+          scoreSum   += entry.scoreSum || 0;
+        });
+        const avgScore = totalTasks > 0 ? scoreSum / totalTasks : 0;
+        const riskColor = avgScore > 60 ? '#f87171' : avgScore > 35 ? '#fbbf24' : '#34d399';
+        return { ...mod, rate: avgScore, delayed: highTasks, total: totalTasks, color: riskColor };
+      });
+
+      // Switch 3D render to test data mode
+      ctUseTestDataModules = true;
+      draw3DSiteTwinCanvas();
+
+      // Update AI Analyzer card
+      const totalTasks = tasks.length;
+      const highRisk = tasks.filter(t => t.cat === 'HIGH').length;
+      const medRisk  = tasks.filter(t => t.cat === 'MEDIUM').length;
+      const avgScore = (tasks.reduce((s, t) => s + (t.score || 0), 0) / totalTasks).toFixed(1);
+
+      const progElem = document.getElementById('ct-overall-progress');
+      if (progElem) progElem.innerText = avgScore + '%';
+
+      const forecastElem = document.getElementById('ct-delay-forecast-num');
+      if (forecastElem) forecastElem.innerText = '+' + highRisk + ' tasks';
+
+      // Inject test data summary panel
+      const existingPanel = document.getElementById('ct-test-data-panel');
+      if (existingPanel) existingPanel.remove();
+
+      const twinContainer = document.querySelector('#view-controltower > div:last-child');
+      if (twinContainer) {
+        const panel = document.createElement('div');
+        panel.id = 'ct-test-data-panel';
+        panel.style.cssText = 'background:rgba(15,23,42,0.85); border:1px solid rgba(52,211,153,0.4); border-radius:16px; padding:18px 20px; margin-top:16px; color:#ffffff;';
+        panel.innerHTML = `
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+            <span style="font-size:14px; font-weight:700; color:#34d399; font-family:'Plus Jakarta Sans',sans-serif;">&#128202; Test Data Loaded — ${totalTasks} Tasks Analysed</span>
+            <button onclick="this.parentElement.parentElement.remove(); ctUseTestDataModules=false; draw3DSiteTwinCanvas();" style="background:transparent; border:1px solid rgba(255,255,255,0.2); color:#94a3b8; padding:3px 10px; border-radius:6px; font-size:11px; cursor:pointer;">&#10005; Reset to Baseline</button>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:12px; font-size:12px;">
+            <div style="background:rgba(248,113,113,0.15); border:1px solid rgba(248,113,113,0.3); border-radius:10px; padding:12px; text-align:center;">
+              <div style="font-size:22px; font-weight:800; color:#f87171; font-family:'JetBrains Mono',monospace;">${highRisk}</div>
+              <div style="color:#94a3b8; margin-top:3px;">High Risk Tasks</div>
+            </div>
+            <div style="background:rgba(251,191,36,0.15); border:1px solid rgba(251,191,36,0.3); border-radius:10px; padding:12px; text-align:center;">
+              <div style="font-size:22px; font-weight:800; color:#fbbf24; font-family:'JetBrains Mono',monospace;">${medRisk}</div>
+              <div style="color:#94a3b8; margin-top:3px;">Status Meeting Tasks</div>
+            </div>
+            <div style="background:rgba(52,211,153,0.15); border:1px solid rgba(52,211,153,0.3); border-radius:10px; padding:12px; text-align:center;">
+              <div style="font-size:22px; font-weight:800; color:#34d399; font-family:'JetBrains Mono',monospace;">${totalTasks - highRisk - medRisk}</div>
+              <div style="color:#94a3b8; margin-top:3px;">Low Risk Tasks</div>
+            </div>
+            <div style="background:rgba(56,189,248,0.15); border:1px solid rgba(56,189,248,0.3); border-radius:10px; padding:12px; text-align:center;">
+              <div style="font-size:22px; font-weight:800; color:#38bdf8; font-family:'JetBrains Mono',monospace;">${avgScore}%</div>
+              <div style="color:#94a3b8; margin-top:3px;">Avg Delay Score</div>
+            </div>
+          </div>
+          <div style="margin-top:12px; font-size:11px; color:#94a3b8; border-top:1px solid rgba(255,255,255,0.08); padding-top:10px;">
+            &#128204; 3D modules are now colour-coded by <strong style="color:#ffffff;">real predicted risk scores</strong> from your imported dataset. Red = High, Amber = Medium, Green = Low.
+          </div>`;
+        twinContainer.appendChild(panel);
+      }
     }
 
     function drawControlTowerAnalyzerChart() {
@@ -2205,14 +2312,15 @@
       ctx.save();
       ctx.translate(centerX, centerY);
 
-      // 5 Structural Discipline Modules matching InterTech PRJ001 disciplines
-      const modules = [
-        { id: 'PRJ-SITE', name: 'Site Works & Heavy Plant', x: -110, y: -70, w: 80, d: 80, h: 50, rate: 47.7, delayed: 31, total: 65, color: '#f87171' },
-        { id: 'PRJ-INT',  name: 'Interior Works Module',    x: 25,   y: -70, w: 80, d: 80, h: 75, rate: 45.6, delayed: 31, total: 68, color: '#f87171' },
+      // 5 Structural Discipline Modules — use test data if loaded, else baseline
+      const baselineModules = [
+        { id: 'PRJ-SITE', name: 'Site Works & Heavy Plant', x: -110, y: -70, w: 80, d: 80, h: 50,  rate: 47.7, delayed: 31, total: 65, color: '#f87171' },
+        { id: 'PRJ-INT',  name: 'Interior Works Module',    x: 25,   y: -70, w: 80, d: 80, h: 75,  rate: 45.6, delayed: 31, total: 68, color: '#f87171' },
         { id: 'PRJ-ARC',  name: 'Architectural Envelope',   x: -110, y: 25,  w: 80, d: 80, h: 105, rate: 45.1, delayed: 23, total: 51, color: '#fbbf24' },
         { id: 'PRJ-STR',  name: 'Structural Framework',     x: 25,   y: 25,  w: 80, d: 80, h: 130, rate: 40.7, delayed: 22, total: 54, color: '#fbbf24' },
         { id: 'PRJ-MEP',  name: 'MEP Piping & HVAC Plant',  x: -40,  y: -20, w: 80, d: 80, h: 160, rate: 36.4, delayed: 16, total: 44, color: '#34d399' }
       ];
+      const modules = (ctUseTestDataModules && ct3DTestDataModules) ? ct3DTestDataModules : baselineModules;
 
       // Draw Ground Isometric Plane Grid
       ctx.beginPath();
@@ -2445,6 +2553,10 @@
       a.href = URL.createObjectURL(blob);
       a.download = "InterTech_PRJ001_Task_Predictions.csv";
       a.click();
+    }
+
+    function sendScheduleMeetingAlert(taskId) {
+        alert('SMTP Meeting alert dispatched to Project Manager for task ' + taskId + ': STATUS_MEETING_SYNC');
     }
 
     async function triggerMLRetrain() {
@@ -2795,6 +2907,14 @@
               <span style="font-size:11px; font-weight:700; color:#dc2626;">NOTIFY_PM + REALLOCATE</span>
               <button onclick="sendSMTPAlert('${t.id}')" class="btn btn-primary" style="background:#dc2626; border-color:#dc2626; padding:3px 8px; font-size:11px; width:fit-content;">
                 <span>Notify PM</span>
+              </button>
+            </div>`;
+        } else if (t.cat === 'MEDIUM') {
+          actionHTML = `
+            <div style="display:flex; flex-direction:column; gap:4px;">
+              <span style="font-size:11px; font-weight:700; color:#d97706;">SCHEDULE_STATUS_MEETING</span>
+              <button onclick="sendScheduleMeetingAlert('${t.id}')" class="btn" style="background:#d97706; border:none; color:#fff; padding:3px 8px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer; width:fit-content;">
+                <span>&#128197; Schedule Alert</span>
               </button>
             </div>`;
         }
@@ -3297,6 +3417,70 @@
         await executeSMTPDispatch(targetTasks, savedConfig);
       } else {
         openSMTPModal();
+      }
+    }
+
+    async function sendScheduleMeetingAlert(taskId) {
+      // Find the task from imported or global data
+      const allTasks = (globalImportedData && globalImportedData.tasks ? globalImportedData.tasks : (globalData ? globalData.tasks : []));
+      let targetTasks = taskId ? allTasks.filter(t => t.id === taskId) : allTasks.filter(t => t.cat === 'MEDIUM');
+
+      if (!targetTasks.length) {
+        alert('No Medium-Risk tasks found for scheduling.');
+        return;
+      }
+
+      // Build a SMTP email specifically for SCHEDULE_STATUS_MEETING
+      const t = targetTasks[0];
+      pendingSMTPTaskId = taskId || null;
+
+      let savedConfig = {};
+      try { savedConfig = JSON.parse(localStorage.getItem('intertech_smtp_config') || '{}'); } catch (e) {}
+
+      // Inject meeting-specific override into task list
+      const meetingTasks = targetTasks.map(task => ({
+        ...task,
+        action: 'SCHEDULE_STATUS_MEETING',
+        _meeting_override: true
+      }));
+
+      if (savedConfig.user && savedConfig.pass) {
+        document.getElementById('smtp-input-user').value = savedConfig.user;
+        document.getElementById('smtp-input-pass').value = savedConfig.pass;
+        if (savedConfig.host) document.getElementById('smtp-input-host').value = savedConfig.host;
+        if (savedConfig.port) document.getElementById('smtp-input-port').value = savedConfig.port;
+        if (savedConfig.recipient) document.getElementById('smtp-input-recipient').value = savedConfig.recipient;
+        await executeScheduleMeetingSMTP(meetingTasks, savedConfig);
+      } else {
+        // Temporarily store pending meeting flag then open SMTP modal
+        window._pendingMeetingTasks = meetingTasks;
+        openSMTPModal();
+      }
+    }
+
+    async function executeScheduleMeetingSMTP(meetingTasks, smtpConfig) {
+      const recipient = smtpConfig.recipient || 'pm.intertech@gmail.com';
+      try {
+        const resp = await fetch('/api/send_email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            tasks: meetingTasks,
+            recipient: recipient,
+            smtp_config: smtpConfig,
+            alert_type: 'schedule_meeting'
+          })
+        });
+        const resData = await resp.json();
+        if (resData.success && resData.sent_live) {
+          alert(`\u2705 Status Meeting Alert Sent!\n\nA scheduling notification was dispatched to ${recipient}.\nTasks: ${meetingTasks.map(t => t.id).join(', ')}`);
+        } else if (resData.requires_credentials) {
+          openSMTPModal();
+        } else {
+          alert(`\u26a0\ufe0f Meeting Alert Status:\n\n${resData.message || 'Alert processed.'}\nRecipient: ${recipient}\nTasks: ${meetingTasks.map(t => t.id).join(', ')}`);
+        }
+      } catch (e) {
+        alert(`Status Meeting Alert dispatched (simulated) for ${meetingTasks.length} Medium-Risk task(s).\nSMTP error: ${e.message}`);
       }
     }
 
