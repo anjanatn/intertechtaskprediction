@@ -72,11 +72,40 @@ The classification target is `Delay > 0` for closed tasks. For uploaded files, t
 | 40–69% | Medium | Weekly status meeting |
 | 70–100% | High | Notify PM and reallocate a resource |
 
-## Important limitations
+## Limitations
 
-- The baseline dataset is synthetic and has not been validated against real project outcomes.
-- Predictions support project-manager judgment; they are not operational decisions by themselves.
-- The Advanced Analytics / 3D visualizer and illustrative ROI scenario are roadmap or exploratory views, not inputs to the prediction model.
+### Data and Training
+- **Synthetic Dataset**: The training dataset (`simulated_project_delay_dataset_1000.csv`) is entirely synthetic and generated for demonstration purposes. It does not reflect real-world project characteristics, task dependencies, or organizational practices.
+- **Unvalidated Against Real Outcomes**: Model predictions have not been validated against actual project data in any operational environment. Performance metrics observed in cross-validation may not transfer to real-world projects.
+- **Limited Historical Context**: The dataset contains only 1,000 records. Real project-delay prediction typically benefits from larger, multi-year historical archives that capture seasonal patterns, organizational changes, and industry-specific dynamics.
+- **No Domain Expert Review**: Features and risk thresholds have not been reviewed or validated by project-management professionals or domain experts from target industries.
+
+### Feature Engineering
+- **Small Feature Set**: The model uses only 7–8 core features (priority, risk, hours, planned duration, workload intensity, discipline). Real-world delay drivers include resource availability, external dependencies, scope changes, stakeholder communication gaps, and supply-chain events—most of which are absent.
+- **Post-Hoc Feature Removal**: While leakage from post-outcome fields (e.g., `RootCause`, `Overdue`) is prevented, the feature set remains minimal. Historical discipline delay rates are computed in-sample and may not generalize to new project types.
+- **No Temporal Features**: The model does not capture seasonality, fiscal-quarter patterns, team fatigue, or macroeconomic indicators that often influence project performance.
+- **Missing Interaction Terms**: Only one interaction term (`high_pri_high_risk`) is engineered. Complex multi-way interactions and nonlinear relationships may exist but are not modeled.
+
+### Model Uncertainty
+- **Confidence Intervals Not Included in UI**: While F1, accuracy, and AUC scores are reported, 95% confidence intervals are not displayed in the dashboard. Reported metrics should be interpreted with inherent sampling uncertainty.
+- **Calibration Limited**: Probability calibration uses isotonic regression on cross-validated predictions, but calibration is only valid for the synthetic training distribution. Real-world task characteristics may violate calibration assumptions.
+- **Class Imbalance**: The model is trained with balanced class weights, but if deployed to a population with different delay rates, predicted probabilities may be miscalibrated.
+
+### Deployment and Operational Risks
+- **No Real-World Testing**: The application has never been deployed in a live project-management environment. Unknown failure modes and user-interaction issues may emerge in production.
+- **Baseline Comparison**: The "flag every task as high risk" baseline is deliberately naive and may not represent a realistic alternative. Comparison to simpler models (e.g., hand-crafted heuristics) is absent.
+- **Not a Decision Substitute**: Predictions are intended to *support* project-manager judgment, not replace it. Over-reliance on model scores—especially for high-risk predictions—without manual review is inadvisable.
+- **No Active Learning or Feedback Loop**: The model is static. Performance degradation over time, concept drift, or systematic errors in a live environment are not monitored or corrected.
+
+### Fairness and Bias
+- **Discipline-Based Bias Risk**: The model includes historical discipline delay rates. If certain disciplines or teams have been systematically underfunded or under-resourced in historical data, the model may perpetuate or amplify those inequities.
+- **No Fairness Audit**: The model has not been evaluated for disparate impact across project types, teams, or organizational units.
+- **Interpretability Gaps**: While SHAP explanations show feature contributions, they may obscure latent biases in feature engineering or training data.
+
+### Scope and Roadmap
+- **Advanced Analytics Not Validated**: The 3D visualizer and illustrative ROI scenarios are exploratory views and do not inform the prediction model.
+- **No Forecasting Beyond Delay Probability**: The model predicts binary delay status only. Duration, cost, or resource-impact forecasts are not supported.
+- **Limited Scalability**: Performance with datasets larger than ~100,000 records has not been tested.
 
 ## Deployment
 

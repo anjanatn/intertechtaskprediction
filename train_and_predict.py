@@ -31,6 +31,7 @@ from sklearn.metrics import (f1_score, roc_auc_score, matthews_corrcoef,
  precision_score, recall_score, accuracy_score,
  classification_report)
 from sklearn.calibration import CalibratedClassifierCV
+from scipy import stats
 import xgboost as xgb
 import shap
 
@@ -187,11 +188,11 @@ else:
  cv_method = f"{n_splits}-Fold Stratified CV"
  cv_splitter = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=42)
 
-print("=" * 65)
+print("=" * 95)
 print(f" {cv_method} — Honest Benchmark (No Target Leakage)")
-print("=" * 65)
-print(f" {'Model':<25} {'Acc':>6} {'F1':>6} {'AUC':>6} {'Prec':>6} {'Rec':>6} {'MCC':>6}")
-print(f" {'-'*25} {'-'*6} {'-'*6} {'-'*6} {'-'*6} {'-'*6} {'-'*6}")
+print("=" * 95)
+print(f" {'Model':<25} {'Accuracy (95% CI)':>20} {'F1 (95% CI)':>20} {'AUC':>8}")
+print(f" {'-'*25} {'-'*20} {'-'*20} {'-'*8}")
 
 def fold_features(fit_idx, eval_idx):
  """Build features with discipline rates learned only from the fold's fit set."""

@@ -1,2 +1,0 @@
-﻿Line 6227: U+2605 (Γÿà) in: ${isChamp ? '<span class="champ-badge">Γÿà</span>' : ''}
-Line 6356: U+2605 (Γÿà) in: <div class="ai-model-matrix-row-name">${escapeAIText(name)}${name === meta.champion ? ' Γÿà' : ''}</di
