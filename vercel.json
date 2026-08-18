@@ -16,7 +16,6 @@
     { "source": "/api/model_registry", "destination": "/api/model_registry.js" },
     { "source": "/InterTech_Simple_Dashboard.html", "destination": "/InterTech_Simple_Dashboard.html" },
     { "source": "/dashboard_data.json", "destination": "/dashboard_data.json" },
-    { "source": "/web.html", "destination": "/web.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
