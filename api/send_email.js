@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import { createHighRiskResponseTicket } from './integrations/jira_connector.js';
+import { createHighRiskResponseTicket } from '../lib/jira_connector.js';
 
 const escapeHtml = value => String(value ?? '')
  .replace(/&/g, '&amp;')

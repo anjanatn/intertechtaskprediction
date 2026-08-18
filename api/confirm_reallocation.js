@@ -1,4 +1,4 @@
-import { addHighRiskResponseLog, markHighRiskResponseConfirmed } from './integrations/jira_connector.js';
+import { addHighRiskResponseLog, markHighRiskResponseConfirmed } from '../lib/jira_connector.js';
 
 function jiraConfig(payload) {
  const config = payload.jira_config || {};

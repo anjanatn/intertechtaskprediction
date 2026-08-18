@@ -6,7 +6,7 @@
  * since Vercel cannot run scikit-learn. This endpoint fetches and normalises
  * tasks from the PM tool; the frontend applies the scoring model.
  */
-import { fetchJiraTasks } from './integrations/jira_connector.js';
+import { fetchJiraTasks } from '../lib/jira_connector.js';
 
 export default async function handler(req, res) {
  res.setHeader('Access-Control-Allow-Origin', '*');
