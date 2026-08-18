@@ -103,7 +103,76 @@ class CustomHandler(SimpleHTTPRequestHandler):
         return super().do_GET()
 
     def do_POST(self):
-        if self.path == "/api/predict_file":
+        if self.path == "/api/public_dataset":
+            try:
+                content_length = int(self.headers.get('Content-Length', 0))
+                body = self.rfile.read(content_length)
+                payload = json.loads(body.decode('utf-8')) if body else {}
+                from dataset_workflow import fetch_public_dataset
+                data, filename, content_type = fetch_public_dataset(payload.get("url", ""))
+                self.send_response(200)
+                self.send_header("Content-type", content_type)
+                self.send_header("Content-Disposition", f'attachment; filename="{filename}"')
+                self.send_header("X-Dataset-Filename", filename)
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
+                self.wfile.write(data)
+            except Exception as e:
+                self.send_response(400)
+                self.send_header("Content-type", "application/json")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": False, "error": str(e)}).encode("utf-8"))
+            return
+        elif self.path == "/api/prepare_training_data":
+            try:
+                content_length = int(self.headers.get('Content-Length', 0))
+                body = self.rfile.read(content_length)
+                payload = json.loads(body.decode('utf-8')) if body else {}
+                from dataset_workflow import prepare_training_schema
+                result = prepare_training_schema(payload.get("headers", []), payload.get("sample_rows", []))
+                self.send_response(200)
+                self.send_header("Content-type", "application/json")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
+                self.wfile.write(json.dumps(result).encode("utf-8"))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header("Content-type", "application/json")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": False, "error": str(e)}).encode("utf-8"))
+            return
+        elif self.path == "/api/use_training_data":
+            try:
+                content_length = int(self.headers.get('Content-Length', 0))
+                body = self.rfile.read(content_length)
+                payload = json.loads(body.decode('utf-8')) if body else {}
+                from dataset_workflow import validate_training_csv
+                validation = validate_training_csv(payload.get("csv_text", ""))
+
+                training_path = os.path.join(BASE_DIR, "uploaded_training_dataset.csv")
+                temp_path = training_path + ".tmp"
+                with open(temp_path, "w", encoding="utf-8", newline="") as f:
+                    f.write(payload["csv_text"])
+                os.replace(temp_path, training_path)
+                run_ml_pipeline()
+                _data_cache["expires"] = 0
+
+                result = {"success": True, "training_file": os.path.basename(training_path), **validation}
+                self.send_response(200)
+                self.send_header("Content-type", "application/json")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
+                self.wfile.write(json.dumps(result).encode("utf-8"))
+            except Exception as e:
+                self.send_response(400)
+                self.send_header("Content-type", "application/json")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": False, "error": str(e)}).encode("utf-8"))
+            return
+        elif self.path == "/api/predict_file":
             try:
                 content_length = int(self.headers.get('Content-Length', 0))
                 body = self.rfile.read(content_length)

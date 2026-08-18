@@ -135,3 +135,137 @@ export async function pushRiskScoresToJira(scoredTasks, config) {
  }
  return results;
 }
+
+/**
+ * Create the response ticket used to coordinate a model-generated high-risk
+ * alert. Keeping this in the Jira connector means the SMTP workflow does not
+ * need to expose Jira credentials to the browser.
+ */
+export async function createHighRiskResponseTicket(task, config) {
+ const { baseUrl, email, apiToken, project, issueType = 'Task' } = config;
+ if (!baseUrl || !email || !apiToken || !project) {
+  return { created: false, status: 'not_configured' };
+ }
+
+ const taskId = task.id || task.task_id || task.TaskID || 'HIGH-RISK-TASK';
+ const score = Math.round(Number(task.score ?? task.delay_score ?? 0));
+ const auth = Buffer.from(`${email}:${apiToken}`).toString('base64');
+ const description = [
+  `The delay model flagged ${taskId} as HIGH RISK (${score}%).`,
+  '',
+  'Required response:',
+  '• Reallocate a resource from a closed or medium-risk task.',
+  '• Hold a 15-minute Resource Review Call with the PM, Resource Manager, and task lead.',
+  '• Record the reallocation confirmation with date/time, who moved, and why.',
+  '• Run a 9:00 AM daily stand-up for the next two weeks.',
+  '• Escalate if no PM confirmation is recorded within two hours.',
+  '',
+  'Tracking rule: alert when planned hours exceed 80% and task completion remains below 75%.',
+  'Upon completion, record the outcome for model retraining.'
+ ].join('\n');
+ const payload = {
+  fields: {
+   project: { key: project },
+   summary: `URGENT: Reallocate resources for ${taskId}`,
+   issuetype: { name: issueType },
+   labels: ['intertech-ai', 'high-risk', 'resource-reallocation'],
+   description: {
+    type: 'doc', version: 1,
+    content: description.split('\n').map(text => ({
+     type: 'paragraph',
+     content: text ? [{ type: 'text', text }] : []
+    }))
+   }
+  }
+ };
+
+ const response = await fetch(`${baseUrl.replace(/\/$/, '')}/rest/api/3/issue`, {
+  method: 'POST',
+  headers: {
+   Authorization: `Basic ${auth}`,
+   'Content-Type': 'application/json',
+   Accept: 'application/json'
+  },
+  body: JSON.stringify(payload)
+ });
+ const data = await response.json().catch(() => ({}));
+ if (!response.ok) {
+  throw new Error(`Jira ticket creation failed (${response.status}): ${data.errorMessages?.join(', ') || data.message || 'unknown error'}`);
+ }
+ return {
+  created: true,
+  key: data.key,
+  id: data.id,
+  url: `${baseUrl.replace(/\/$/, '')}/browse/${data.key}`
+ };
+}
+
+/** Log a PM's reallocation decision in the response ticket. */
+export async function addHighRiskResponseLog(entry, config) {
+ const { baseUrl, email, apiToken } = config;
+ if (!baseUrl || !email || !apiToken || !entry.ticketKey) {
+  return { logged: false, status: 'not_configured' };
+ }
+ const auth = Buffer.from(`${email}:${apiToken}`).toString('base64');
+ const text = [
+  '[InterTech AI] Resource reallocation confirmed',
+  `Date/time: ${entry.loggedAt}`,
+  `Confirmed by: ${entry.who}`,
+  `Assignment: ${entry.assignment}`,
+  `Reason: ${entry.why}`
+ ].join('\n');
+ const response = await fetch(`${baseUrl.replace(/\/$/, '')}/rest/api/3/issue/${encodeURIComponent(entry.ticketKey)}/comment`, {
+  method: 'POST',
+  headers: {
+   Authorization: `Basic ${auth}`,
+   'Content-Type': 'application/json',
+   Accept: 'application/json'
+  },
+  body: JSON.stringify({
+   body: {
+    type: 'doc', version: 1,
+    content: text.split('\n').map(line => ({
+     type: 'paragraph', content: [{ type: 'text', text: line }]
+    }))
+   }
+  })
+ });
+ if (!response.ok) {
+  const detail = await response.text();
+  throw new Error(`Jira response log failed (${response.status}): ${detail}`);
+ }
+ return { logged: true, ticketKey: entry.ticketKey };
+}
+
+/**
+ * The bundled n8n escalation treats the Jira "In Progress" status as the
+ * PM-confirmed signal. Move the response ticket there after the confirmation
+ * comment is successfully recorded, when that transition exists in the
+ * project's workflow.
+ */
+export async function markHighRiskResponseConfirmed(ticketKey, config) {
+ const { baseUrl, email, apiToken } = config;
+ if (!baseUrl || !email || !apiToken || !ticketKey) {
+  return { updated: false, status: 'not_configured' };
+ }
+ const root = baseUrl.replace(/\/$/, '');
+ const auth = Buffer.from(`${email}:${apiToken}`).toString('base64');
+ const headers = { Authorization: `Basic ${auth}`, Accept: 'application/json' };
+ const transitionsResponse = await fetch(`${root}/rest/api/3/issue/${encodeURIComponent(ticketKey)}/transitions`, { headers });
+ if (!transitionsResponse.ok) {
+  throw new Error(`Jira transition lookup failed (${transitionsResponse.status})`);
+ }
+ const transitions = (await transitionsResponse.json()).transitions || [];
+ const target = transitions.find(item => String(item.to?.name || '').toLowerCase() === 'in progress');
+ if (!target) return { updated: false, status: 'in_progress_transition_not_available' };
+ const updateResponse = await fetch(`${root}/rest/api/3/issue/${encodeURIComponent(ticketKey)}/transitions`, {
+  method: 'POST',
+  headers: { ...headers, 'Content-Type': 'application/json' },
+  body: JSON.stringify({ transition: { id: target.id } })
+ });
+ if (!updateResponse.ok) {
+  const detail = await updateResponse.text();
+  throw new Error(`Jira confirmation transition failed (${updateResponse.status}): ${detail}`);
+ }
+ return { updated: true, status: 'In Progress', ticketKey };
+}

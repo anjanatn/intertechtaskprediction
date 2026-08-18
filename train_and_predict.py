@@ -48,6 +48,8 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 csv_path = None
 for candidate in [
+    # Written only after the user explicitly activates LLM-prepared historical data.
+    os.path.join(BASE_DIR, "uploaded_training_dataset.csv"),
     os.path.join(BASE_DIR, "simulated_project_delay_dataset_1000.csv"),
     os.path.join(BASE_DIR, "SAMPLE DATA(Book2).csv"),
     os.path.join(BASE_DIR, "..", "simulated_project_delay_dataset_1000.csv"),

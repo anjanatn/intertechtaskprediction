@@ -1,83 +1,144 @@
 {
-  "name": "InterTech PRJ001 — High Risk Project Delay & PM SMTP Alert Workflow",
+  "name": "InterTech — High-Risk PM Confirmation Escalation",
   "nodes": [
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "high-risk-delay-alert",
+        "path": "high-risk-pm-confirmation",
+        "responseMode": "onReceived",
         "options": {}
       },
-      "name": "Webhook Trigger (High Risk Delay)",
+      "name": "High-Risk Response Received",
       "type": "n8n-nodes-base.webhook",
-      "typeVersion": 1,
+      "typeVersion": 2,
       "position": [
-        250,
+        260,
         300
       ]
     },
     {
       "parameters": {
-        "values": {
-          "string": [
-            {
-              "name": "manager_email",
-              "value": "pm.intertech@gmail.com"
-            },
-            {
-              "name": "subject",
-              "value": "🚨 URGENT: High-Risk Project Delay Alert from InterTech Platform"
-            }
-          ]
-        },
-        "options": {}
+        "amount": 2,
+        "unit": "hours"
       },
-      "name": "Set PM Notification Meta",
-      "type": "n8n-nodes-base.set",
+      "name": "Wait for PM Confirmation (2 Hours)",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        500,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "issue",
+        "operation": "get",
+        "issueKey": "={{ $json.jira_ticket.key }}"
+      },
+      "name": "Read Jira Confirmation Status",
+      "type": "n8n-nodes-base.jira",
       "typeVersion": 1,
       "position": [
-        450,
+        740,
+        300
+      ],
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "name": "InterTech Jira Cloud"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.fields.status.name }}",
+              "operation": "equals",
+              "value2": "In Progress"
+            }
+          ]
+        }
+      },
+      "name": "PM Confirmed Reallocation?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        980,
         300
       ]
     },
     {
       "parameters": {
         "fromEmail": "alerts@intertech.com",
-        "toEmail": "={{ $json.manager_email }}",
-        "subject": "={{ $json.subject }}",
-        "html": "<h2>🚨 CRITICAL PM ALERT: High-Risk Task Delay Predicted</h2><p>The InterTech ML Engine has flagged high-risk task completion delays.</p><p><strong>Mitigation Strategy:</strong> NOTIFY_PM + REALLOCATE_RESOURCE (Reallocate senior employee from closed or medium risk project immediately).</p>",
+        "toEmail": "={{ $node['High-Risk Response Received'].json.resource_manager_email }}",
+        "subject": "={{ 'ESCALATION: ' + $node['High-Risk Response Received'].json.task_id + ' reallocation has not been confirmed' }}",
+        "html": "=<h2>Escalation: PM confirmation overdue</h2><p><strong>{{ $node['High-Risk Response Received'].json.task_id }}</strong> remains high risk at <strong>{{ $node['High-Risk Response Received'].json.risk_score }}%</strong>.</p><p>The PM did not mark the response ticket <strong>{{ $node['High-Risk Response Received'].json.jira_ticket.key }}</strong> <em>In Progress</em> within two hours. Please secure a resource, document the decision, and update the ticket.</p><p>Tracking rule: {{ $node['High-Risk Response Received'].json.tracking_rule }}</p>",
         "options": {}
       },
-      "name": "SMTP Email Node (Send PM Alert)",
+      "name": "Email Resource Manager Escalation",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 1,
       "position": [
-        680,
-        300
-      ]
+        1220,
+        410
+      ],
+      "credentials": {
+        "smtp": {
+          "name": "InterTech SMTP"
+        }
+      }
     }
   ],
   "connections": {
-    "Webhook Trigger (High Risk Delay)": {
+    "High-Risk Response Received": {
       "main": [
         [
           {
-            "node": "Set PM Notification Meta",
+            "node": "Wait for PM Confirmation (2 Hours)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Set PM Notification Meta": {
+    "Wait for PM Confirmation (2 Hours)": {
       "main": [
         [
           {
-            "node": "SMTP Email Node (Send PM Alert)",
+            "node": "Read Jira Confirmation Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Jira Confirmation Status": {
+      "main": [
+        [
+          {
+            "node": "PM Confirmed Reallocation?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PM Confirmed Reallocation?": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Email Resource Manager Escalation",
             "type": "main",
             "index": 0
           }
         ]
       ]
     }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
   }
 }

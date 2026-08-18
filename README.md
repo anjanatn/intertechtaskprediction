@@ -7,7 +7,8 @@ A demonstration decision-support application for predicting task-delay risk, exp
 - Scores each task with a calibrated delay probability and Low / Medium / High risk tier.
 - Explains individual predictions with SHAP feature contributions.
 - Recommends a risk-based project-manager action.
-- Lets users import CSV or Excel task data for browser-side predictions.
+- Lets users import CSV, TSV, JSON, or Excel task data for browser-side predictions, including a direct public HTTPS dataset URL.
+- Uses an optional Gemini LLM step to map imported historical columns into the training schema; only headers and up to eight sample rows are sent for mapping, and the app never fabricates delay outcomes.
 - Evaluates the model with stratified cross-validation and a chronological holdout: older tasks train the model and the newest tasks are used as a future-data test set.
 - Compares the model with a naive `flag every task as high risk` baseline.
 
@@ -62,7 +63,23 @@ The simulated sample uses fields including:
 
 `TaskID`, `ProjectID`, `ProjectDiscipline`, `Status`, `Description`, `Location`, `Created`, `Target`, `Actual`, `Delay`, `Priority`, `Risk`, `Hours`, `AssignedTo`, and `TeamCapacityHours`.
 
-The classification target is `Delay > 0` for closed tasks. For uploaded files, the interface accepts `.csv`, `.xlsx`, and `.xls` formats; download samples are included in `public/`.
+The classification target is `Delay > 0` for closed tasks. For uploaded files, the interface accepts `.csv`, `.tsv`, `.json`, `.xlsx`, and `.xls` formats; download samples are included in `public/`.
+
+## Public datasets and LLM-assisted training
+
+The **Import & Predict** cards accept a direct public HTTPS download URL for a CSV, TSV, JSON, XLSX, or XLS file (up to 3.5 MB). Use the actual file URL rather than a catalogue, repository, or landing page URL. The importer rejects private-network destinations and follows only validated public redirects.
+
+After importing historical data, select **Prepare Imported Data for Training (LLM)**. The schema assistant maps source columns to the application training schema and downloads a reviewable `*_training_ready.csv`. It only sees the column names and the first eight rows. It will not invent `Delay` values, change outcomes, or activate data missing the required historical fields.
+
+To enable LLM mapping, configure a Gemini API key in the environment used by the server:
+
+```text
+GEMINI_API_KEY=your-key
+# Optional; defaults to gemini-2.5-flash
+GEMINI_MODEL=gemini-2.5-flash
+```
+
+Without a key, the app uses deterministic exact/alias header matching and clearly reports that fallback. A local activation requires at least 30 closed historical tasks, including at least five delayed and five on-time outcomes. The explicit **Activate Prepared Training Data (Local)** action writes `uploaded_training_dataset.csv` and retrains the local model. Vercel's serverless deployment provides the downloadable prepared CSV but intentionally does not persist a training-data replacement.
 
 ## Risk policy
 
@@ -71,6 +88,39 @@ The classification target is `Delay > 0` for closed tasks. For uploaded files, t
 | 0–39% | Low | Normal monitoring |
 | 40–69% | Medium | Weekly status meeting |
 | 70–100% | High | Notify PM and reallocate a resource |
+
+## High-risk SMTP response
+
+Sending an alert for a high-risk task now starts a four-phase response. For a task such as `T-1107` at `98%`, the SMTP subject is `T-1107 HIGH RISK`; the email acts as the immediate action notification, creates the Jira ticket `URGENT: Reallocate resources for T-1107`, and carries calendar invitations for the response.
+
+- **Hour 0:** email the PM and action owners; create the Jira response ticket.
+- **Hour 1:** attach a 15-minute Resource Review Call with its agenda and reminder.
+- **Hour 2+:** attach a 9:00 AM daily stand-up for 14 days and require an audited reallocation confirmation (who, when, and why). The tracking rule is `Hours >80%` while completion is `<75%`.
+- **Ongoing:** maintain stand-up notes, perform a weekly hours-versus-plan review, and record the outcome for model retraining.
+
+Set these deployment variables to enable the live integrations. SMTP values can also be supplied in the dashboard modal; Jira values stay server-side.
+
+```text
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=alerts@example.com
+SMTP_PASS=your-provider-app-password
+SMTP_SENDER=alerts@example.com
+MANAGER_EMAIL=pm@example.com
+RESOURCE_MANAGER_EMAIL=resource.manager@example.com
+TASK_LEAD_EMAIL=t1107.lead@example.com
+CALENDAR_TIMEZONE=Asia/Kolkata
+
+JIRA_BASE_URL=https://your-org.atlassian.net
+JIRA_EMAIL=automation@example.com
+JIRA_API_TOKEN=your-jira-api-token
+JIRA_PROJECT=PRJ001
+JIRA_HIGH_RISK_ISSUE_TYPE=Task
+
+N8N_HIGH_RISK_WEBHOOK_URL=https://n8n.example.com/webhook/high-risk-pm-confirmation
+```
+
+Import [`intertech_n8n_workflow.json`](intertech_n8n_workflow.json) into n8n, configure its `InterTech Jira Cloud` and `InterTech SMTP` credentials, then activate it. It waits two hours, treats a Jira ticket moved to **In Progress** as the PM confirmation, and emails the Resource Manager only when confirmation is still missing. The dashboard's **Log PM Reallocation Confirmation** action writes the audit comment and performs that status transition when the project workflow permits it.
 
 ## Limitations
 

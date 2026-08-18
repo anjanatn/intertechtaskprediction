@@ -1607,9 +1607,16 @@
  <!-- VIEW 2: TASK RISK MATRIX -->
  <section id="view-tasks" class="tab-view">
  <div class="section-title-bar">
+ <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; width:100%;">
  <div>
  <h1 class="section-heading">Task Risk Matrix</h1>
- <p class="section-subtext">Search, filter, and inspect AI delay risk scores for all 1,000 project tasks</p>
+ <p class="section-subtext" id="task-matrix-data-note">Train data · Search, filter, and inspect AI delay risk scores for all 1,000 project tasks</p>
+ </div>
+ <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+ <span style="font-size:11px; font-weight:700; color:var(--text-subtle); text-transform:uppercase; letter-spacing:.04em;">Data view</span>
+ <button id="task-matrix-train-btn" type="button" class="btn" onclick="setTaskMatrixDataset('train')" style="padding:6px 10px; font-size:11px; background:#0284c7; border-color:#0284c7; color:#fff;">Train Data</button>
+ <button id="task-matrix-test-btn" type="button" class="btn btn-outline" onclick="setTaskMatrixDataset('test')" style="padding:6px 10px; font-size:11px;">View Test Data</button>
+ </div>
  </div>
  </div>
 
@@ -2571,9 +2578,16 @@
  <!-- VIEW 3: MITIGATION PLANNER -->
  <section id="view-mitigation" class="tab-view">
  <div class="section-title-bar">
+ <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; width:100%;">
  <div>
  <h1 class="section-heading">Action & Mitigation Planner</h1>
- <p class="section-subtext">Actionable PM playbooks and resource reallocation plans for active open tasks</p>
+ <p class="section-subtext" id="mitigation-data-note">Train data · Actionable PM playbooks and resource reallocation plans for active open tasks</p>
+ </div>
+ <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+ <span style="font-size:11px; font-weight:700; color:var(--text-subtle); text-transform:uppercase; letter-spacing:.04em;">Data view</span>
+ <button id="mitigation-train-btn" type="button" class="btn" onclick="setMitigationDataset('train')" style="padding:6px 10px; font-size:11px; background:#0284c7; border-color:#0284c7; color:#fff;">Train Data</button>
+ <button id="mitigation-test-btn" type="button" class="btn btn-outline" onclick="setMitigationDataset('test')" style="padding:6px 10px; font-size:11px;">View Test Data</button>
+ </div>
  </div>
  </div>
 
@@ -3005,7 +3019,7 @@
  <div class="section-title-bar">
  <div>
  <h1 class="section-heading">Test Data Import & ML Delay Risk Forecasting</h1>
- <p class="section-subtext">Model trained on <strong>1,000 historical tasks</strong>. Upload test dataset (.csv, .xlsx, .xls) to predict delays, risk tiers, and mitigation actions.</p>
+ <p class="section-subtext">Model trained on <strong>1,000 historical tasks</strong>. Upload a test dataset or use a direct public HTTPS file URL (.csv, .tsv, .json, .xlsx, .xls) to predict delays, risk tiers, and mitigation actions.</p>
  </div>
  <div style="display:flex; gap:10px;">
  <button class="btn btn-primary" style="background:#0284c7; border-color:#0284c7; font-size:12px;" onclick="loadSampleTestDataset()">
@@ -3022,13 +3036,13 @@
 
  <!-- FILE DROPZONE CARD -->
  <div class="card" style="padding:36px; text-align:center; border:2px dashed var(--border-medium); background:var(--bg-subtle); border-radius:var(--radius-lg); margin-bottom:24px; transition:all 0.2s ease;" id="import-dropzone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleFileDrop(event)">
- <input type="file" id="file-import-input" accept=".csv, .xlsx, .xls" style="display:none;" onchange="handleFileSelected(event)">
+ <input type="file" id="file-import-input" accept=".csv, .tsv, .json, .xlsx, .xls" style="display:none;" onchange="handleFileSelected(event)">
  <div style="font-size:48px; margin-bottom:12px;"></div>
  <h3 style="font-family:'Plus Jakarta Sans', sans-serif; font-size:18px; font-weight:700; color:var(--text-main); margin-bottom:6px;">
- Drag & Drop Test Dataset (CSV or Excel) Here
+ Drag & Drop Test Dataset (CSV, TSV, JSON, or Excel) Here
  </h3>
  <p style="font-size:13px; color:var(--text-subtle); margin-bottom:16px;">
- Model trained on <strong>1,000 baseline items</strong>. Upload your test file (<strong>.csv, .xlsx, .xls</strong>) for instant delay prediction
+ Model trained on <strong>1,000 baseline items</strong>. Upload your test file (<strong>.csv, .tsv, .json, .xlsx, .xls</strong>) for instant delay prediction
  </p>
  <div style="display:flex; justify-content:center; gap:12px; margin-bottom:16px;">
  <button class="btn btn-primary" style="background:linear-gradient(135deg, #0284c7, #0369a1);" onclick="document.getElementById('file-import-input').click()">
@@ -3040,6 +3054,8 @@
  </div>
  <div style="display:flex; justify-content:center; gap:8px;">
  <span class="pill pill-low" style="font-family:'JetBrains Mono', monospace;">.CSV</span>
+ <span class="pill pill-low" style="font-family:'JetBrains Mono', monospace;">.TSV</span>
+ <span class="pill pill-low" style="font-family:'JetBrains Mono', monospace;">.JSON</span>
  <span class="pill pill-low" style="font-family:'JetBrains Mono', monospace;">.XLSX</span>
  <span class="pill pill-low" style="font-family:'JetBrains Mono', monospace;">.XLS</span>
  </div>
@@ -3127,7 +3143,7 @@
  <div id="pbix-legend" style="flex:1;"></div>
  <div>
  <h1 class="section-heading">Test Data Import & ML Delay Risk Forecasting</h1>
- <p class="section-subtext">Model trained on <strong>1,000 historical tasks</strong>. Upload test dataset (.csv, .xlsx, .xls) to predict delays, risk tiers, and mitigation actions.</p>
+ <p class="section-subtext">Model trained on <strong>1,000 historical tasks</strong>. Upload a test dataset or use a direct public HTTPS file URL (.csv, .tsv, .json, .xlsx, .xls) to predict delays, risk tiers, and mitigation actions.</p>
  </div>
  <div style="display:flex; gap:10px;">
  <button class="btn btn-primary" style="background:#0284c7; border-color:#0284c7; font-size:12px;" onclick="loadSampleTestDataset()">
@@ -3144,13 +3160,13 @@
 
  <!-- FILE DROPZONE CARD -->
  <div class="card" style="padding:36px; text-align:center; border:2px dashed var(--border-medium); background:var(--bg-subtle); border-radius:var(--radius-lg); margin-bottom:24px; transition:all 0.2s ease;" id="import-dropzone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleFileDrop(event)">
- <input type="file" id="file-import-input" accept=".csv, .xlsx, .xls" style="display:none;" onchange="handleFileSelected(event)">
+ <input type="file" id="file-import-input" accept=".csv, .tsv, .json, .xlsx, .xls" style="display:none;" onchange="handleFileSelected(event)">
  <div style="font-size:48px; margin-bottom:12px;"></div>
  <h3 style="font-family:'Plus Jakarta Sans', sans-serif; font-size:18px; font-weight:700; color:var(--text-main); margin-bottom:6px;">
- Drag & Drop Test Dataset (CSV or Excel) Here
+ Drag & Drop Test Dataset (CSV, TSV, JSON, or Excel) Here
  </h3>
  <p style="font-size:13px; color:var(--text-subtle); margin-bottom:16px;">
- Model trained on <strong>1,000 baseline items</strong>. Upload your test file (<strong>.csv, .xlsx, .xls</strong>) for instant delay prediction
+ Model trained on <strong>1,000 baseline items</strong>. Upload your test file (<strong>.csv, .tsv, .json, .xlsx, .xls</strong>) for instant delay prediction
  </p>
  <div style="display:flex; justify-content:center; gap:12px; margin-bottom:16px;">
  <button class="btn btn-primary" style="background:linear-gradient(135deg, #0284c7, #0369a1);" onclick="document.getElementById('file-import-input').click()">
@@ -3162,6 +3178,8 @@
  </div>
  <div style="display:flex; justify-content:center; gap:8px;">
  <span class="pill pill-low" style="font-family:'JetBrains Mono', monospace;">.CSV</span>
+ <span class="pill pill-low" style="font-family:'JetBrains Mono', monospace;">.TSV</span>
+ <span class="pill pill-low" style="font-family:'JetBrains Mono', monospace;">.JSON</span>
  <span class="pill pill-low" style="font-family:'JetBrains Mono', monospace;">.XLSX</span>
  <span class="pill pill-low" style="font-family:'JetBrains Mono', monospace;">.XLS</span>
  </div>
@@ -3627,6 +3645,17 @@
  <label style="display:block; font-size:12px; font-weight:700; color:#334155; margin-bottom:6px;">PM / Manager Recipient Email</label>
  <input type="email" id="smtp-input-recipient" value="pm.intertech@gmail.com" class="btn btn-outline" style="width:100%; text-align:left; font-weight:normal;">
  </div>
+ <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;">
+ <div>
+ <label style="display:block; font-size:12px; font-weight:700; color:#334155; margin-bottom:6px;">Resource Manager Email</label>
+ <input type="email" id="smtp-input-resource-manager" placeholder="resource.manager@company.com" class="btn btn-outline" style="width:100%; text-align:left; font-weight:normal;">
+ </div>
+ <div>
+ <label style="display:block; font-size:12px; font-weight:700; color:#334155; margin-bottom:6px;">Task Lead Email</label>
+ <input type="email" id="smtp-input-task-lead" placeholder="task.lead@company.com" class="btn btn-outline" style="width:100%; text-align:left; font-weight:normal;">
+ </div>
+ </div>
+ <p style="font-size:11px; color:#64748b; margin:-8px 0 16px;">Both roles receive the Resource Review Call and two-week daily stand-up calendar invitations.</p>
  <div style="display:grid; grid-template-columns:2fr 1fr; gap:12px; margin-bottom:16px;">
  <div>
  <label style="display:block; font-size:12px; font-weight:700; color:#334155; margin-bottom:6px;">SMTP Host</label>
@@ -3662,7 +3691,7 @@
       <div style="background:linear-gradient(135deg,#0f172a,#1e3a5f); padding:18px 22px; display:flex; align-items:center; justify-content:space-between;">
         <div>
           <div style="font-size:10px; font-weight:700; color:#93c5fd; letter-spacing:0.1em; text-transform:uppercase;">Site Supervisor Hub</div>
-          <h2 style="font-size:17px; font-weight:800; color:#fff; margin:4px 0 0; font-family:'Plus Jakarta Sans',sans-serif;">Task Inspection &amp; Facility Status</h2>
+          <h2 style="font-size:17px; font-weight:800; color:#fff; margin:4px 0 0; font-family:'Plus Jakarta Sans',sans-serif;">Task Inspection Protocol &amp; Status</h2>
         </div>
         <button onclick="closeSiteInspectModal()" style="background:rgba(255,255,255,0.15); border:none; color:#fff; width:34px; height:34px; border-radius:8px; font-size:20px; cursor:pointer; line-height:1;">&times;</button>
       </div>
@@ -3670,10 +3699,10 @@
       <!-- Task Summary Strip -->
       <div id="site-inspect-summary" style="padding:14px 22px; background:#f8fafc; border-bottom:1px solid #e2e8f0; display:flex; flex-wrap:wrap; gap:10px; align-items:center;"></div>
 
-      <!-- Facilities Checklist -->
+      <!-- Protocol Checklist -->
       <div style="padding:18px 22px;">
-        <div style="font-size:12px; font-weight:700; color:#374151; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.06em;">Required Facilities Checklist</div>
-        <div style="font-size:11px; color:#64748b; margin-bottom:12px;">Items flagged as NEEDED are inferred from the task's discipline and recorded root cause. Mark as resolved before closing.</div>
+        <div style="font-size:12px; font-weight:700; color:#374151; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.06em;">Inspection Protocol Checklist</div>
+        <div style="font-size:11px; color:#64748b; margin-bottom:12px;">Confirm each control before closing the inspection. Any exception is linked to the recorded root cause and included in the PM report.</div>
         <div id="site-inspect-facilities" style="display:flex; flex-direction:column; gap:6px;"></div>
       </div>
 
@@ -3683,7 +3712,7 @@
       </div>
 
       <div id="site-inspect-root-cause-choice" style="display:none; margin:0 22px 14px; padding:12px 14px; background:#fffbeb; border:1px solid #fcd34d; border-radius:8px;">
-        <div style="font-size:12px; font-weight:800; color:#92400e;">No facility shortage detected</div>
+        <div style="font-size:12px; font-weight:800; color:#92400e;">No protocol exception detected</div>
         <div style="font-size:11px; color:#78350f; margin:3px 0 9px;">Classify the inspection before notifying the PM and scheduling the status meeting.</div>
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
           <button type="button" data-root-cause="Weather Delay" style="background:#2563eb; border:none; color:#fff; font-size:11px; font-weight:700; padding:6px 10px; border-radius:6px; cursor:pointer;">Mark Weather Delay</button>
@@ -3695,7 +3724,7 @@
       <div style="padding:14px 22px; background:#fef2f2; border-top:1px solid #fecaca; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
         <div style="flex:1; font-size:11px; color:#991b1b; font-weight:600;" id="site-inspect-flag-summary"></div>
         <button onclick="closeSiteInspectModal()" style="background:#f1f5f9; border:1px solid #cbd5e1; color:#374151; font-size:12px; font-weight:600; padding:8px 16px; border-radius:8px; cursor:pointer;">Close</button>
-        <button id="site-inspect-smtp-btn" style="background:#dc2626; border:none; color:#fff; font-size:12px; font-weight:700; padding:8px 16px; border-radius:8px; cursor:pointer;">Send SMTP Alert with Facility Report</button>
+        <button id="site-inspect-smtp-btn" style="background:#dc2626; border:none; color:#fff; font-size:12px; font-weight:700; padding:8px 16px; border-radius:8px; cursor:pointer;">Send SMTP Alert with Inspection Report</button>
       </div>
 
     </div>
@@ -3772,6 +3801,72 @@
  let globalData = null;
  let filteredTasks = [];
  let displayedTaskCount = 50;
+ let taskMatrixDatasetMode = 'train';
+ let mitigationDatasetMode = 'train';
+
+ function hasImportedTestData() {
+ return Boolean(globalImportedData && Array.isArray(globalImportedData.tasks) && globalImportedData.tasks.length);
+ }
+
+ function getTaskMatrixDataset() {
+ return taskMatrixDatasetMode === 'test' && hasImportedTestData() ? globalImportedData : globalData;
+ }
+
+ function getMitigationDataset() {
+ return mitigationDatasetMode === 'test' && hasImportedTestData() ? globalImportedData : globalData;
+ }
+
+ function updateDataViewControls() {
+ const testAvailable = hasImportedTestData();
+ const importedLabel = testAvailable ? `${globalImportedData.filename || 'Imported test data'} · ${globalImportedData.tasks.length} predicted tasks` : 'No test data imported — use Import & Predict first';
+ const controls = [
+  { mode: taskMatrixDatasetMode, train: 'task-matrix-train-btn', test: 'task-matrix-test-btn', note: 'task-matrix-data-note', base: 'Search, filter, and inspect AI delay risk scores' },
+  { mode: mitigationDatasetMode, train: 'mitigation-train-btn', test: 'mitigation-test-btn', note: 'mitigation-data-note', base: 'Actionable PM playbooks and resource reallocation plans for active open tasks' }
+ ];
+ controls.forEach(control => {
+  const trainButton = document.getElementById(control.train);
+  const testButton = document.getElementById(control.test);
+  const note = document.getElementById(control.note);
+  if (trainButton) {
+   trainButton.style.background = control.mode === 'train' ? '#0284c7' : '#ffffff';
+   trainButton.style.borderColor = control.mode === 'train' ? '#0284c7' : 'var(--border-medium)';
+   trainButton.style.color = control.mode === 'train' ? '#ffffff' : 'var(--text-main)';
+   trainButton.setAttribute('aria-pressed', String(control.mode === 'train'));
+  }
+  if (testButton) {
+   testButton.disabled = !testAvailable;
+   testButton.style.opacity = testAvailable ? '1' : '.55';
+   testButton.style.cursor = testAvailable ? 'pointer' : 'not-allowed';
+   testButton.style.background = control.mode === 'test' ? '#0284c7' : '#ffffff';
+   testButton.style.borderColor = control.mode === 'test' ? '#0284c7' : 'var(--border-medium)';
+   testButton.style.color = control.mode === 'test' ? '#ffffff' : 'var(--text-main)';
+   testButton.setAttribute('aria-pressed', String(control.mode === 'test'));
+   testButton.title = testAvailable ? 'Show imported test-data predictions' : 'Import or load sample test data first';
+  }
+  if (note) note.textContent = control.mode === 'test' ? `Test data · ${importedLabel}` : `Train data · ${control.base}`;
+ });
+ }
+
+ function setTaskMatrixDataset(mode) {
+ if (mode === 'test' && !hasImportedTestData()) {
+  alert('Import a CSV/Excel file or load the sample test data before viewing test predictions here.');
+  return;
+ }
+ taskMatrixDatasetMode = mode;
+ filterTasks();
+ updateDataViewControls();
+ }
+
+ function setMitigationDataset(mode) {
+ if (mode === 'test' && !hasImportedTestData()) {
+  alert('Import a CSV/Excel file or load the sample test data before viewing its mitigation plan.');
+  return;
+ }
+ mitigationDatasetMode = mode;
+ renderMitigationHub();
+ renderEmployeeReallocationRoster();
+ updateDataViewControls();
+ }
 
   document.addEventListener("DOMContentLoaded", () => {
   if (window.INITIAL_DASHBOARD_DATA) {
@@ -3894,7 +3989,9 @@
 
  // 4. Tasks Setup
  if (d.tasks) {
+ if (taskMatrixDatasetMode !== 'test' || !hasImportedTestData()) {
  filteredTasks = d.tasks;
+ }
  if (!d.employeeMap) {
  const empMap = {};
  d.tasks.forEach(t => {
@@ -3930,10 +4027,15 @@
  });
  d.employeeMap = empMap;
  }
-  renderTasksTable();
+  if (taskMatrixDatasetMode === 'test' && hasImportedTestData()) {
+   filterTasks();
+  } else {
+   renderTasksTable();
+  }
   renderHighRiskAlerts();
   renderMitigationHub();
   renderEmployeeReallocationRoster();
+  updateDataViewControls();
   }
 
  // 5. Diagnostics Leaderboard
@@ -3975,8 +4077,8 @@
   </div>`;
   }
 
-  function getReallocCandidates(targetTask, employeeMap) {
-  const activeData = (globalImportedData && globalImportedData.tasks) ? globalImportedData : globalData;
+  function getReallocCandidates(targetTask, employeeMap, dataset) {
+  const activeData = dataset || ((globalImportedData && globalImportedData.tasks) ? globalImportedData : globalData);
   const tasks = activeData && Array.isArray(activeData.tasks) ? activeData.tasks : [];
   const closedCandidates = tasks
   .filter(task => String(task.status || '').toLowerCase() === 'closed' && task.cat !== 'HIGH')
@@ -4007,7 +4109,7 @@
 
   function renderEmployeeReallocationRoster() {
   const roster = document.getElementById('employee-reallocation-roster');
-  const activeData = (globalImportedData && globalImportedData.tasks) ? globalImportedData : globalData;
+  const activeData = getMitigationDataset();
   if (!roster || !activeData || !Array.isArray(activeData.tasks)) return;
   const targets = activeData.tasks.filter(task => ['open', 'in progress'].includes(String(task.status || '').toLowerCase()) && task.cat === 'HIGH');
   const sources = activeData.tasks
@@ -4084,13 +4186,14 @@
  }
 
  function filterTasks() {
- if (!globalData || !globalData.tasks) return;
+ const activeData = getTaskMatrixDataset();
+ if (!activeData || !activeData.tasks) return;
  const search = document.getElementById("task-search-input").value.toLowerCase();
  const disc = document.getElementById("filter-discipline").value;
  const risk = document.getElementById("filter-risk").value;
  const status = document.getElementById("filter-status").value;
 
- filteredTasks = globalData.tasks.filter(t => {
+ filteredTasks = activeData.tasks.filter(t => {
  const matchesSearch = !search || t.id.toLowerCase().includes(search) || t.desc.toLowerCase().includes(search) || (t.location && t.location.toLowerCase().includes(search));
  const matchesDisc = disc === 'ALL' || t.disc === disc;
  const matchesRisk = risk === 'ALL' || t.cat === risk;
@@ -4138,16 +4241,17 @@
  function renderMitigationHub() {
  const highList = document.getElementById("mit-list-high");
  const medList = document.getElementById("mit-list-med");
- if (!highList || !medList || !globalData) return;
+ const activeData = getMitigationDataset();
+ if (!highList || !medList || !activeData || !Array.isArray(activeData.tasks)) return;
 
  highList.innerHTML = "";
  medList.innerHTML = "";
 
- const empMap = (globalImportedData && globalImportedData.employeeMap) ? globalImportedData.employeeMap : (globalData && globalData.employeeMap ? globalData.employeeMap : null);
- const openTasks = globalData.tasks.filter(t => t.status === 'Open');
+ const empMap = activeData.employeeMap || null;
+ const openTasks = activeData.tasks.filter(t => ['open', 'in progress'].includes(String(t.status || '').toLowerCase()));
 
   openTasks.filter(t => t.cat === 'HIGH').slice(0, 6).forEach(t => {
-  const candidates = getReallocCandidates(t, empMap);
+  const candidates = getReallocCandidates(t, empMap, activeData);
   const reallocHTML = buildReallocHTML(candidates, 3);
   const inspectionMeeting = rootCauseNeedsSiteInspection(t) ? siteInspectionMeetingAction(t, true) : '';
   const facilities = getSiteFacilities(t);
@@ -4721,6 +4825,7 @@
  drawerActionEl.innerHTML = `
 <div style="font-weight:700; color:#dc2626; margin-bottom:6px;">NOTIFY PM + REALLOCATE RESOURCE</div>
 ${reallocHTML || '<div style="font-size:12px; color:var(--text-subtle);">No available reallocation candidates.</div>'}
+<button type="button" onclick="confirmResourceReallocation('${t.id}')" class="btn" style="margin-top:8px;background:#166534;border:none;color:#fff;padding:6px 10px;font-size:11px;font-weight:700;border-radius:6px;cursor:pointer;">Log PM Reallocation Confirmation</button>
 ${inspectionMeeting}`;
  } else if (t.cat === 'MEDIUM') {
  drawerActionEl.innerText = 'SCHEDULE STATUS MEETING + DAILY UPDATES';
@@ -4838,10 +4943,57 @@ ${inspectionMeeting}`;
 
  /* BATCH FILE IMPORT & PREDICTION LOGIC */
  let globalImportedData = null;
+ let lastImportedRawRows = [];
+ let lastImportedFilename = '';
+ let preparedTrainingCsv = '';
+
+ function setImportLoading(isLoading, status) {
+ document.querySelectorAll('#import-loading').forEach(loading => {
+ loading.style.display = isLoading ? 'block' : 'none';
+ const label = loading.querySelector('#import-loading-status');
+ if (label && status) label.innerText = status;
+ });
+ if (isLoading) document.querySelectorAll('#imported-results-container').forEach(container => { container.style.display = 'none'; });
+ }
+
+ function rememberImportedRows(rows, filename) {
+ lastImportedRawRows = Array.isArray(rows) ? rows : [];
+ lastImportedFilename = filename || 'imported_dataset.csv';
+ preparedTrainingCsv = '';
+ document.querySelectorAll('[data-training-activate]').forEach(button => { button.disabled = true; button.style.opacity = '0.55'; });
+ document.querySelectorAll('[data-training-status]').forEach(status => {
+ status.textContent = `${lastImportedRawRows.length.toLocaleString()} source rows loaded from ${lastImportedFilename}.`;
+ status.style.display = 'block';
+ status.style.color = '#475569';
+ });
+ }
+
+ function initialiseDatasetWorkflow() {
+ document.querySelectorAll('#import-dropzone').forEach((dropzone, index) => {
+ if (dropzone.parentElement.querySelector(`[data-dataset-workflow="${index}"]`)) return;
+ const panel = document.createElement('div');
+ panel.dataset.datasetWorkflow = String(index);
+ panel.style.cssText = 'margin:-8px 0 24px;padding:16px 18px;border:1px solid #bfdbfe;border-radius:12px;background:#f8fbff;display:grid;gap:10px;';
+ panel.innerHTML = `
+ <div style="font-size:13px;font-weight:800;color:#0f3d69;">Use a public dataset</div>
+ <div style="font-size:12px;color:#475569;line-height:1.45;">Paste a direct public HTTPS download URL. CSV, TSV, JSON, XLSX, and XLS files are accepted as test data (up to 3.5 MB).</div>
+ <div style="display:flex;gap:8px;flex-wrap:wrap;">
+   <input data-public-dataset-url type="url" placeholder="https://data.example.org/tasks.csv" aria-label="Public dataset URL" style="flex:1;min-width:240px;padding:9px 10px;border:1px solid #93c5fd;border-radius:7px;font-size:12px;">
+   <button type="button" class="btn btn-outline" onclick="loadPublicTestDataset(this)" style="border-color:#2563eb;color:#1d4ed8;">Use Public Dataset as Test Data</button>
+ </div>
+ <div style="border-top:1px solid #dbeafe;padding-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+   <button type="button" class="btn btn-secondary" onclick="prepareImportedDataAsTraining()" style="font-size:12px;">Prepare Imported Data for Training (LLM)</button>
+   <button type="button" class="btn btn-outline" data-training-activate disabled onclick="activatePreparedTrainingData()" style="font-size:12px;opacity:.55;">Activate Prepared Training Data (Local)</button>
+   <span data-training-status style="display:none;font-size:11px;line-height:1.35;"></span>
+ </div>
+ <div style="font-size:11px;color:#64748b;line-height:1.4;">The LLM receives only headers and up to eight sample rows to map fields. It does not generate delay labels; datasets need observed outcomes before they can be trained.</div>`;
+ dropzone.insertAdjacentElement('afterend', panel);
+ });
+ }
 
  function handleDragOver(e) {
  e.preventDefault();
- const dropzone = document.getElementById('import-dropzone');
+ const dropzone = e.currentTarget || document.getElementById('import-dropzone');
  if (dropzone) {
  dropzone.style.borderColor = 'var(--brand-primary)';
  dropzone.style.background = 'rgba(2, 132, 199, 0.05)';
@@ -4850,7 +5002,7 @@ ${inspectionMeeting}`;
 
  function handleDragLeave(e) {
  e.preventDefault();
- const dropzone = document.getElementById('import-dropzone');
+ const dropzone = e.currentTarget || document.getElementById('import-dropzone');
  if (dropzone) {
  dropzone.style.borderColor = 'var(--border-medium)';
  dropzone.style.background = 'var(--bg-subtle)';
@@ -4872,10 +5024,7 @@ ${inspectionMeeting}`;
  }
 
  async function loadSampleTestDataset() {
- const loading = document.getElementById('import-loading');
- const resultsContainer = document.getElementById('imported-results-container');
- if (loading) loading.style.display = 'block';
- if (resultsContainer) resultsContainer.style.display = 'none';
+ setImportLoading(true, 'Loading the bundled sample dataset...');
 
  try {
  const resp = await fetch('/public/sample_import_tasks.csv');
@@ -4890,6 +5039,7 @@ ${inspectionMeeting}`;
  headers.forEach((h, i) => { obj[h] = vals[i] || ''; });
  return obj;
  });
+ rememberImportedRows(rows, 'SAMPLE DATA(Book2).csv');
  const resData = predictTasksClientSide(rows, 'SAMPLE DATA(Book2).csv');
  renderImportedResults(resData);
  }
@@ -4897,65 +5047,198 @@ ${inspectionMeeting}`;
  } catch (e) {
  alert('Could not load sample test dataset: ' + e.message);
  } finally {
- if (loading) loading.style.display = 'none';
+ setImportLoading(false);
  }
  }
 
  async function processUploadedFile(file) {
- const loading = document.getElementById('import-loading');
- const resultsContainer = document.getElementById('imported-results-container');
- if (loading) loading.style.display = 'block';
- if (resultsContainer) resultsContainer.style.display = 'none';
-
  const reader = new FileReader();
+ reader.onload = async function(e) { await processDatasetArrayBuffer(e.target.result, file.name); };
 
- reader.onload = async function(e) {
- const arrayBuffer = e.target.result;
- 
- // Attempt sending to Python server API first
+ reader.readAsArrayBuffer(file);
+ }
+
+ function getFilenameFromResponse(response, fallback) {
+ const supplied = response.headers.get('X-Dataset-Filename');
+ if (supplied) {
+ try { return decodeURIComponent(supplied); } catch (_) { return supplied; }
+ }
+ const contentDisposition = response.headers.get('content-disposition') || '';
+ const match = contentDisposition.match(/filename="?([^";]+)"?/i);
+ return match ? match[1] : fallback;
+ }
+
+ async function loadPublicTestDataset(button) {
+ const panel = button.closest('[data-dataset-workflow]');
+ const input = panel && panel.querySelector('[data-public-dataset-url]');
+ const url = (input && input.value || '').trim();
+ if (!url) {
+ alert('Paste a direct public HTTPS dataset download URL first.');
+ return;
+ }
  try {
- const base64Data = arrayBufferToBase64(arrayBuffer);
- const resp = await fetch('/api/predict_file', {
- method: 'POST',
- headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({
- filename: file.name,
- filedata_b64: base64Data
- })
+ const parsed = new URL(url);
+ if (parsed.protocol !== 'https:') throw new Error('Only public HTTPS URLs are accepted.');
+ setImportLoading(true, 'Downloading the public dataset securely...');
+ const response = await fetch('/api/public_dataset', {
+ method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url })
  });
+ if (!response.ok) {
+ const error = await response.json().catch(() => ({}));
+ throw new Error(error.error || `Download failed (${response.status}).`);
+ }
+ await processDatasetArrayBuffer(await response.arrayBuffer(), getFilenameFromResponse(response, 'public_dataset.csv'));
+ } catch (error) {
+ setImportLoading(false);
+ alert(`Could not import the public dataset: ${error.message}`);
+ }
+ }
 
- if (resp.ok) {
- const resData = await resp.json();
- if (resData.success && resData.tasks) {
- renderImportedResults(resData);
- if (loading) loading.style.display = 'none';
+ function parseDatasetRows(arrayBuffer, filename) {
+ const lowerName = String(filename || '').toLowerCase().split('?')[0];
+ if (lowerName.endsWith('.json')) {
+ const parsed = JSON.parse(new TextDecoder().decode(arrayBuffer));
+ const rows = Array.isArray(parsed) ? parsed : ['data', 'records', 'results', 'tasks'].map(key => parsed && parsed[key]).find(Array.isArray);
+ if (!Array.isArray(rows) || !rows.every(row => row && typeof row === 'object' && !Array.isArray(row))) {
+ throw new Error('JSON must be an array of records, or contain a data, records, results, or tasks array.');
+ }
+ return rows;
+ }
+ if (typeof XLSX === 'undefined') throw new Error('Spreadsheet parser is still loading. Please try again in a moment.');
+ const workbook = XLSX.read(new Uint8Array(arrayBuffer), { type: 'array' });
+ const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+ const rows = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+ if (!rows.length) throw new Error('The dataset does not contain any data rows.');
+ return rows;
+ }
+
+ async function processDatasetArrayBuffer(arrayBuffer, filename) {
+ setImportLoading(true, 'Reading dataset and calculating delay predictions...');
+ let rawRows;
+ try {
+ rawRows = parseDatasetRows(arrayBuffer, filename);
+ rememberImportedRows(rawRows, filename);
+ } catch (error) {
+ setImportLoading(false);
+ alert('Error reading dataset: ' + error.message);
+ return;
+ }
+
+ try {
+ // The local Python API provides calibrated predictions; browser prediction remains
+ // available for public formats and hosted deployments with request-size limits.
+ if (arrayBuffer.byteLength <= 3_000_000 && !/\.(json|tsv)$/i.test(String(filename || ''))) {
+ const response = await fetch('/api/predict_file', {
+ method: 'POST', headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ filename, filedata_b64: arrayBufferToBase64(arrayBuffer) })
+ });
+ if (response.ok) {
+ const result = await response.json();
+ if (result.success && Array.isArray(result.tasks) && result.tasks.length === rawRows.length) {
+ renderImportedResults(result);
+ setImportLoading(false);
  return;
  }
  }
- } catch (err) {
- console.log('Server API unreachable, using client-side parsing & ML predictions.');
+ }
+ } catch (error) {
+ console.log('Prediction API unavailable or incompatible with this file; using browser-side predictions.', error);
  }
 
- // Fallback: Client-Side Parsing via SheetJS (xlsx)
  try {
- if (typeof XLSX === 'undefined') {
- throw new Error('XLSX library loading. Please try again in a moment.');
- }
- const workbook = XLSX.read(new Uint8Array(arrayBuffer), { type: 'array' });
- const firstSheet = workbook.SheetNames[0];
- const worksheet = workbook.Sheets[firstSheet];
- const rawRows = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
- 
- const clientRes = predictTasksClientSide(rawRows, file.name);
- renderImportedResults(clientRes);
- } catch (parseErr) {
- alert('Error processing file: ' + parseErr.message);
+ renderImportedResults(predictTasksClientSide(rawRows, filename));
+ } catch (error) {
+ alert('Error calculating predictions: ' + error.message);
  } finally {
- if (loading) loading.style.display = 'none';
+ setImportLoading(false);
  }
- };
+ }
 
- reader.readAsArrayBuffer(file);
+ function normaliseTrainingRows(mapping) {
+ const defaults = { ProjectID: 'IMPORTED', Description: '', Location: '', Actual: '', AssignedTo: '', TeamCapacityHours: '', RootCause: '', Comments: '' };
+ return lastImportedRawRows.map((row, index) => {
+ const normalised = {};
+ ['TaskID', 'ProjectID', 'ProjectDiscipline', 'Status', 'Description', 'Location', 'Created', 'Target', 'Actual', 'Delay', 'Priority', 'Risk', 'Hours', 'AssignedTo', 'TeamCapacityHours', 'RootCause', 'Comments'].forEach(field => {
+ const source = mapping[field];
+ const value = source ? row[source] : undefined;
+ normalised[field] = value === undefined || value === null || value === '' ? (defaults[field] || '') : String(value).trim();
+ });
+ if (!normalised.TaskID) normalised.TaskID = `IMPORTED-${index + 1}`;
+ return normalised;
+ });
+ }
+
+ function rowsToCsv(rows) {
+ const headers = ['TaskID', 'ProjectID', 'ProjectDiscipline', 'Status', 'Description', 'Location', 'Created', 'Target', 'Actual', 'Delay', 'Priority', 'Risk', 'Hours', 'AssignedTo', 'TeamCapacityHours', 'RootCause', 'Comments'];
+ const quote = value => `"${String(value ?? '').replace(/"/g, '""')}"`;
+ return [headers.map(quote).join(','), ...rows.map(row => headers.map(header => quote(row[header])).join(','))].join('\r\n');
+ }
+
+ function downloadPreparedTrainingData() {
+ const blob = new Blob([preparedTrainingCsv], { type: 'text/csv;charset=utf-8' });
+ const link = document.createElement('a');
+ link.href = URL.createObjectURL(blob);
+ link.download = `${lastImportedFilename.replace(/\.[^.]+$/, '') || 'dataset'}_training_ready.csv`;
+ document.body.appendChild(link);
+ link.click();
+ link.remove();
+ URL.revokeObjectURL(link.href);
+ }
+
+ function setTrainingStatus(message, color) {
+ document.querySelectorAll('[data-training-status]').forEach(status => {
+ status.textContent = message;
+ status.style.display = 'inline';
+ status.style.color = color || '#475569';
+ });
+ }
+
+ async function prepareImportedDataAsTraining() {
+ if (!lastImportedRawRows.length) {
+ alert('Import a dataset first, then prepare it for training.');
+ return;
+ }
+ const headers = [...new Set(lastImportedRawRows.flatMap(row => Object.keys(row)))];
+ setTrainingStatus('LLM is reviewing the schema using headers and a small sample...', '#1d4ed8');
+ try {
+ const response = await fetch('/api/prepare_training_data', {
+ method: 'POST', headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ headers, sample_rows: lastImportedRawRows.slice(0, 8) })
+ });
+ const result = await response.json();
+ if (!response.ok || !result.success) throw new Error(result.error || 'Training schema preparation failed.');
+ if (result.missing_required && result.missing_required.length) {
+ setTrainingStatus(`Not training-ready: missing ${result.missing_required.join(', ')}. ${result.warnings?.[0] || ''}`, '#b45309');
+ return;
+ }
+ preparedTrainingCsv = rowsToCsv(normaliseTrainingRows(result.mapping));
+ downloadPreparedTrainingData();
+ document.querySelectorAll('[data-training-activate]').forEach(button => { button.disabled = false; button.style.opacity = '1'; });
+ const mode = result.llm_used ? `LLM mapped the schema with ${result.provider}` : 'deterministic header matching was used';
+ setTrainingStatus(`Training-ready CSV downloaded (${mode}). Review it, then activate local retraining. ${result.warnings?.[0] || ''}`, '#166534');
+ } catch (error) {
+ setTrainingStatus(`Training preparation failed: ${error.message}`, '#b91c1c');
+ }
+ }
+
+ async function activatePreparedTrainingData() {
+ if (!preparedTrainingCsv) {
+ alert('Prepare the imported dataset for training first.');
+ return;
+ }
+ if (!confirm('Activate this prepared dataset as the local training data and retrain the model? This replaces the previous local uploaded training dataset.')) return;
+ setTrainingStatus('Validating historical outcomes and retraining the local model. This can take a few minutes...', '#1d4ed8');
+ try {
+ const response = await fetch('/api/use_training_data', {
+ method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ csv_text: preparedTrainingCsv })
+ });
+ const result = await response.json();
+ if (!response.ok || !result.success) throw new Error(result.error || 'Local training activation failed.');
+ setTrainingStatus(`Local training complete: ${result.closed_rows} closed tasks were used.`, '#166534');
+ await fetchData();
+ } catch (error) {
+ setTrainingStatus(`Prepared CSV remains downloaded. ${error.message}`, '#b45309');
+ }
  }
 
  function arrayBufferToBase64(buffer) {
@@ -5721,6 +6004,8 @@ ${inspectionMeeting}`;
  if (savedConfig.host) document.getElementById('smtp-input-host').value = savedConfig.host;
  if (savedConfig.port) document.getElementById('smtp-input-port').value = savedConfig.port;
  if (savedConfig.recipient) document.getElementById('smtp-input-recipient').value = savedConfig.recipient;
+ if (savedConfig.resource_manager_email) document.getElementById('smtp-input-resource-manager').value = savedConfig.resource_manager_email;
+ if (savedConfig.task_lead_email) document.getElementById('smtp-input-task-lead').value = savedConfig.task_lead_email;
  
  await executeSMTPDispatch(targetTasks, savedConfig);
  } else {
@@ -5772,6 +6057,8 @@ ${inspectionMeeting}`;
  if (savedConfig.host) document.getElementById('smtp-input-host').value = savedConfig.host;
  if (savedConfig.port) document.getElementById('smtp-input-port').value = savedConfig.port;
  if (savedConfig.recipient) document.getElementById('smtp-input-recipient').value = savedConfig.recipient;
+ if (savedConfig.resource_manager_email) document.getElementById('smtp-input-resource-manager').value = savedConfig.resource_manager_email;
+ if (savedConfig.task_lead_email) document.getElementById('smtp-input-task-lead').value = savedConfig.task_lead_email;
  await executeScheduleMeetingSMTP(meetingTasks, savedConfig);
  } else {
  // Temporarily store pending meeting flag then open SMTP modal
@@ -5824,13 +6111,15 @@ ${inspectionMeeting}`;
  const port = parseInt(document.getElementById('smtp-input-port').value.trim() || '587');
  const user = document.getElementById('smtp-input-user').value.trim();
  const pass = document.getElementById('smtp-input-pass').value.trim();
+ const resourceManagerEmail = document.getElementById('smtp-input-resource-manager').value.trim();
+ const taskLeadEmail = document.getElementById('smtp-input-task-lead').value.trim();
 
  if (!user || !pass) {
  alert('Please enter your SMTP Username (email) and App Password.');
  return;
  }
 
- const smtpConfig = { host, port, user, pass, recipient };
+ const smtpConfig = { host, port, user, pass, recipient, resource_manager_email: resourceManagerEmail, task_lead_email: taskLeadEmail };
  try {
  localStorage.setItem('intertech_smtp_config', JSON.stringify(smtpConfig));
  } catch (e) {}
@@ -5862,12 +6151,34 @@ ${inspectionMeeting}`;
  body: JSON.stringify({
  tasks: targetTasks,
  recipient: recipient,
- smtp_config: smtpConfig
+ smtp_config: smtpConfig,
+ alert_type: 'high_risk_response',
+ resource_manager_email: smtpConfig.resource_manager_email,
+ task_lead_email: smtpConfig.task_lead_email
  })
  });
  const resData = await resp.json();
  if (resData.success && resData.sent_live) {
- alert(` SMTP Live Email Alert Dispatched Successfully!\n\n${resData.message}\nRecipient: ${recipient}\nHigh-Risk Tasks Notified: ${targetTasks.length}`);
+ const ticket = resData.workflow && resData.workflow.phase1 && resData.workflow.phase1.jira_ticket;
+ try {
+  const records = JSON.parse(localStorage.getItem('intertech_high_risk_response_records') || '{}');
+  targetTasks.forEach(task => {
+   records[task.id] = {
+    task_id: task.id,
+    jira_ticket_key: ticket && ticket.key,
+    dispatched_at: new Date().toISOString(),
+    confirmation_due_at: resData.workflow && resData.workflow.phase3 && resData.workflow.phase3.confirmation_due_at
+   };
+  });
+  localStorage.setItem('intertech_high_risk_response_records', JSON.stringify(records));
+ } catch (e) {}
+ const ticketText = ticket && ticket.created ? `\nJira ticket: ${ticket.key}` : '\nJira ticket: not configured';
+ const calendarText = resData.workflow && resData.workflow.phase2 && resData.workflow.phase2.missing_roles && resData.workflow.phase2.missing_roles.length
+  ? `\nCalendar invite missing roles: ${resData.workflow.phase2.missing_roles.join(', ')}`
+  : '\nResource Review + daily stand-up invitations sent.';
+ const escalation = resData.workflow && resData.workflow.phase3 && resData.workflow.phase3.escalation;
+ const escalationText = escalation && escalation.queued ? '\nTwo-hour escalation: queued.' : '\nTwo-hour escalation: configure N8N_HIGH_RISK_WEBHOOK_URL to automate.';
+ alert(` High-Risk Response Dispatched Successfully!\n\n${resData.message}\nRecipient: ${recipient}${ticketText}${calendarText}${escalationText}`);
  } else if (resData.requires_credentials) {
  openSMTPModal();
  } else if (resData.error || resData.success === false) {
@@ -5878,6 +6189,48 @@ ${inspectionMeeting}`;
  }
  } catch (e) {
  alert(`PM Notification Dispatch Error:\n\n${e.message}\nHigh-Risk task alert payload generated for ${recipient}.`);
+ }
+ }
+
+ async function confirmResourceReallocation(taskId) {
+ const task = (globalImportedData && globalImportedData.tasks ? globalImportedData.tasks : (globalData ? globalData.tasks : [])).find(item => item.id === taskId);
+ if (!task) {
+  alert(`Task not found: ${taskId}`);
+  return;
+ }
+ const who = prompt('Who is confirming this reallocation?');
+ if (!who || !who.trim()) return;
+ const resource = prompt(`Which person was moved to ${taskId}?`, task.assigned_to || '');
+ if (!resource || !resource.trim()) return;
+ const why = prompt('Why was this resource reallocated?', 'Model high-risk response');
+ if (!why || !why.trim()) return;
+
+ let records = {};
+ try { records = JSON.parse(localStorage.getItem('intertech_high_risk_response_records') || '{}'); } catch (e) {}
+ const record = records[taskId] || { task_id: taskId };
+ const assignment = `${resource.trim()} moved to ${taskId}`;
+ const confirmation = { who: who.trim(), assignment, why: why.trim(), logged_at: new Date().toISOString() };
+ record.confirmation = confirmation;
+ records[taskId] = record;
+ try { localStorage.setItem('intertech_high_risk_response_records', JSON.stringify(records)); } catch (e) {}
+
+ try {
+  const resp = await fetch('/api/confirm_reallocation', {
+   method: 'POST',
+   headers: { 'Content-Type': 'application/json' },
+   body: JSON.stringify({
+    task_id: taskId,
+    who: confirmation.who,
+    assignment: confirmation.assignment,
+    why: confirmation.why,
+    jira_ticket_key: record.jira_ticket_key || ''
+   })
+  });
+  const result = await resp.json();
+  if (!result.success) throw new Error(result.error || 'Unable to log the confirmation');
+  alert(`Reallocation confirmed for ${taskId}.\n\n${result.message}`);
+ } catch (error) {
+  alert(`Reallocation recorded in this browser for ${taskId}.\n\nShared ticket log pending: ${error.message}`);
  }
  }
 
@@ -6705,73 +7058,49 @@ function calculateROI() {
 }
 
 /* =====================================================================
-   SITE INSPECTOR — Facilities Checklist + Active Notify PM
+   SITE INSPECTOR — Protocol Checklist + Active Notify PM
    ===================================================================== */
 
-// Facility definitions: which disciplines require each facility,
-// and which root_cause values flag it as NEEDED.
+// Standard inspection controls. They apply to every task; a recorded root
+// cause determines which control is pre-flagged for follow-up.
 const SITE_FACILITIES = [
   {
-    name: 'Scaffolding & Access Platforms',
-    discs: ['PRJ-STR', 'PRJ-ARC', 'PRJ-SITE'],
-    flagCauses: ['Site Constraint'],
-    allTasks: true
+    name: 'Pre-task plan, permit, and scope verified',
+    flagCauses: ['Approval Delay']
   },
   {
-    name: 'Crane & Lifting Equipment',
-    discs: ['PRJ-STR', 'PRJ-SITE', 'PRJ-MEP'],
-    flagCauses: ['Crane Breakdown'],
-    allTasks: false
+    name: 'Work area access, isolation, and housekeeping confirmed',
+    flagCauses: ['Site Constraint']
   },
   {
-    name: 'MEP Tools & Specialist Equipment',
-    discs: ['PRJ-MEP', 'PRJ-INT'],
-    flagCauses: ['Equipment Failure'],
-    allTasks: false
+    name: 'Personnel readiness and competency confirmed',
+    flagCauses: ['Labor Shortage']
   },
   {
-    name: 'Labor Team & Crew Availability',
-    discs: null,  // all disciplines
-    flagCauses: ['Labor Shortage'],
-    allTasks: true
+    name: 'Tools, plant, and equipment pre-use check completed',
+    flagCauses: ['Equipment Failure', 'Crane Breakdown']
   },
   {
-    name: 'Materials & Supplies On Site',
-    discs: null,
-    flagCauses: ['Material Delay'],
-    allTasks: true
+    name: 'Materials availability and approved substitutions checked',
+    flagCauses: ['Material Delay']
   },
   {
-    name: 'Design Drawings & Approved Plans',
-    discs: ['PRJ-ARC', 'PRJ-INT', 'PRJ-STR'],
-    flagCauses: ['Design Revision', 'Approval Delay'],
-    allTasks: false
+    name: 'Latest drawings and method statement reviewed',
+    flagCauses: ['Design Revision']
   },
   {
-    name: 'Permits & Regulatory Approvals',
-    discs: null,
-    flagCauses: ['Approval Delay'],
-    allTasks: true
+    name: 'Weather and environmental controls assessed',
+    flagCauses: ['Weather Delay']
   },
   {
-    name: 'Weather Shelter & Site Protection',
-    discs: ['PRJ-SITE', 'PRJ-STR', 'PRJ-ARC'],
-    flagCauses: ['Weather Delay'],
-    allTasks: false
-  },
-  {
-    name: 'Safety Equipment & PPE',
-    discs: null,
-    flagCauses: [],
-    allTasks: true  // always required — never flagged, always green
+    name: 'Risk controls, emergency response, and communication briefing completed',
+    flagCauses: []
   }
 ];
 
 function getSiteFacilities(task) {
-  const disc = (task.disc || '').toUpperCase();
   const cause = (task.root_cause || '').trim();
   return SITE_FACILITIES
-    .filter(f => f.allTasks || (f.discs && f.discs.some(d => disc.includes(d.replace('PRJ-', '')))))
     .map(f => {
       const needed = f.flagCauses.length > 0 && f.flagCauses.some(c => cause.toLowerCase().includes(c.toLowerCase()));
       return { name: f.name, needed, reason: needed ? cause : null };
@@ -6796,7 +7125,7 @@ function openSiteInspectModal(taskId) {
     summaryEl.innerHTML = `
       <span style="font-family:'JetBrains Mono',monospace; font-weight:800; font-size:13px; color:#2563eb;">${task.id}</span>
       <span style="font-weight:700; font-size:13px; color:#0f172a;">${task.desc}</span>
-      <span style="background:#eff6ff; color:#1d4ed8; font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:10px;">${task.disc}</span>
+      <span style="background:#eff6ff; color:#1d4ed8; font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:10px;">Protocol-based inspection</span>
       <span style="background:#f0fdf4; color:#166534; font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:10px;">${task.location || 'Site'}</span>
       <span style="background:${tierBg}; color:${tierColor}; font-size:10.5px; font-weight:800; padding:2px 8px; border-radius:10px; border:1px solid ${tierColor};">${task.cat} RISK — ${Math.round(task.score || 0)}%</span>
       <span style="background:#f1f5f9; color:#475569; font-size:10.5px; font-weight:600; padding:2px 8px; border-radius:10px;">Priority: ${task.priority}</span>
@@ -6804,7 +7133,7 @@ function openSiteInspectModal(taskId) {
     `;
   }
 
-  // --- Facilities Checklist ---
+  // --- Protocol Checklist ---
   const facilities = getSiteFacilities(task);
   const facilitiesEl = document.getElementById('site-inspect-facilities');
   if (facilitiesEl) {
@@ -6820,7 +7149,7 @@ function openSiteInspectModal(taskId) {
                color:${f.needed ? '#991b1b' : '#374151'}; cursor:pointer; line-height:1.4;">${f.name}</label>
         ${f.needed
           ? `<span style="background:#dc2626; color:#fff; font-size:10px; font-weight:800;
-                          padding:2px 8px; border-radius:12px; white-space:nowrap; flex-shrink:0;">NEEDED — ${f.reason}</span>`
+                          padding:2px 8px; border-radius:12px; white-space:nowrap; flex-shrink:0;">ACTION REQUIRED — ${f.reason}</span>`
           : `<span style="background:#dcfce7; color:#166534; font-size:10px; font-weight:700;
                           padding:2px 8px; border-radius:12px; flex-shrink:0;">OK</span>`
         }
@@ -6848,8 +7177,8 @@ function openSiteInspectModal(taskId) {
   const flagSummaryEl = document.getElementById('site-inspect-flag-summary');
   if (flagSummaryEl) {
     flagSummaryEl.textContent = neededCount > 0
-      ? `${neededCount} facilit${neededCount === 1 ? 'y' : 'ies'} flagged as NEEDED — SMTP alert will include facility report`
-      : 'All required facilities are in order — no critical shortages detected';
+      ? `${neededCount} protocol check${neededCount === 1 ? '' : 's'} require action — SMTP alert will include the inspection report`
+      : 'All protocol checks are clear — no critical exception detected';
     flagSummaryEl.style.color = neededCount > 0 ? '#991b1b' : '#166534';
     document.getElementById('site-inspect-modal').style.background =
       neededCount > 0 ? 'rgba(15,23,42,0.78)' : 'rgba(15,23,42,0.72)';
@@ -6860,7 +7189,7 @@ function openSiteInspectModal(taskId) {
     rootCauseChoiceEl.querySelectorAll('[data-root-cause]').forEach(button => {
       button.onclick = () => {
         task.root_cause = button.dataset.rootCause;
-        task.comments = `${task.comments ? `${task.comments} ` : ''}Inspection completed: no facility shortage detected.`;
+        task.comments = `${task.comments ? `${task.comments} ` : ''}Inspection completed: no protocol exception detected.`;
         openSiteInspectModal(task.id);
       };
     });
@@ -6869,7 +7198,7 @@ function openSiteInspectModal(taskId) {
   // --- Wire SMTP button with facility context ---
   const smtpBtn = document.getElementById('site-inspect-smtp-btn');
   if (smtpBtn) {
-    // Keep the complete checklist so the PM can see both shortages and confirmed-ready facilities.
+    // Keep the complete protocol checklist so the PM can see exceptions and confirmed controls.
     task._facilityFlags = facilities.filter(f => f.needed).map(f => f.name + ' (' + f.reason + ')');
     task._facilityChecklist = facilities.map(f => `${f.name}: ${f.needed ? `NEEDED — ${f.reason}` : 'OK'}`);
     task._noFacilityShortage = neededCount === 0;
@@ -6886,7 +7215,7 @@ function openSiteInspectModal(taskId) {
     };
     smtpBtn.textContent = neededCount === 0
       ? 'Schedule Status Meeting & Send SMTP Alert'
-      : 'Send SMTP Alert with Facility Report';
+      : 'Send SMTP Alert with Inspection Report';
     smtpBtn.style.display = 'block';
   }
 
@@ -6906,7 +7235,7 @@ function updateFacilityRow(checkbox, idx) {
     row.style.background = '#f0fdf4';
     row.style.borderColor = '#86efac';
     const badge = row.querySelector('span:last-child');
-    if (badge && badge.textContent.startsWith('NEEDED')) {
+    if (badge && badge.textContent.startsWith('ACTION REQUIRED')) {
       badge.textContent = 'Resolved';
       badge.style.background = '#dcfce7';
       badge.style.color = '#166534';
@@ -6951,8 +7280,8 @@ function renderSiteView() {
     // Count flagged facilities for badge
     const facilityFlags = getSiteFacilities(t).filter(f => f.needed);
     const facilityBadge = facilityFlags.length > 0
-      ? `<span style="background:#dc2626; color:#fff; font-size:10px; font-weight:700; padding:2px 7px; border-radius:10px; margin-left:6px;">${facilityFlags.length} Facilit${facilityFlags.length === 1 ? 'y' : 'ies'} Needed</span>`
-      : `<span style="background:#dcfce7; color:#166534; font-size:10px; font-weight:700; padding:2px 7px; border-radius:10px; margin-left:6px;">Facilities OK</span>`;
+      ? `<span style="background:#dc2626; color:#fff; font-size:10px; font-weight:700; padding:2px 7px; border-radius:10px; margin-left:6px;">${facilityFlags.length} Protocol Check${facilityFlags.length === 1 ? '' : 's'} Pending</span>`
+      : `<span style="background:#dcfce7; color:#166534; font-size:10px; font-weight:700; padding:2px 7px; border-radius:10px; margin-left:6px;">Protocol Checks Clear</span>`;
 
     card.innerHTML = `
       <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:6px;">
@@ -7120,6 +7449,7 @@ function debounce(func, wait) {
 const debouncedFilterTasks = debounce(filterTasks, 200);
 
 document.addEventListener("DOMContentLoaded", function() {
+  initialiseDatasetWorkflow();
   initAIChat();
   const searchInput = document.getElementById("task-search-input");
   if (searchInput) {

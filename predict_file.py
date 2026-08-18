@@ -336,131 +336,110 @@ def predict_imported_dataframe(df_raw, filename="imported_data.csv"):
  }
 
 def send_high_risk_delay_email(high_risk_tasks, manager_email=None, smtp_config=None, alert_type=None):
- """
- Sends SMTP HTML email alert to Project Manager for high-risk delayed tasks.
- """
- import smtplib
- from email.mime.multipart import MIMEMultipart
- from email.mime.text import MIMEText
+    """Send the four-phase high-risk response email from the local server."""
+    import datetime as dt
+    import html
+    import smtplib
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.text import MIMEText
+    from zoneinfo import ZoneInfo
 
- if not high_risk_tasks:
- return {"success": False, "message": "No high-risk delayed tasks to notify."}
+    if not high_risk_tasks:
+        return {"success": False, "message": "No high-risk delayed tasks to notify."}
 
- smtp_config = smtp_config or {}
- smtp_host = smtp_config.get("host") or os.environ.get("SMTP_HOST", "smtp.gmail.com")
- smtp_port = int(smtp_config.get("port") or os.environ.get("SMTP_PORT", 587))
- smtp_user = smtp_config.get("user") or os.environ.get("SMTP_USER", "")
- smtp_pass = smtp_config.get("pass") or os.environ.get("SMTP_PASS", "")
- sender_email = smtp_config.get("sender") or os.environ.get("SMTP_SENDER", smtp_user or "alerts@intertech.com")
- manager_email = manager_email or smtp_config.get("recipient") or os.environ.get("MANAGER_EMAIL", "pm.intertech@gmail.com")
+    smtp_config = smtp_config or {}
+    smtp_host = smtp_config.get("host") or os.environ.get("SMTP_HOST", "smtp.gmail.com")
+    smtp_port = int(smtp_config.get("port") or os.environ.get("SMTP_PORT", 587))
+    smtp_user = smtp_config.get("user") or os.environ.get("SMTP_USER", "")
+    smtp_pass = smtp_config.get("pass") or os.environ.get("SMTP_PASS", "")
+    sender_email = smtp_config.get("sender") or os.environ.get("SMTP_SENDER", smtp_user or "alerts@intertech.com")
+    manager_email = manager_email or smtp_config.get("recipient") or os.environ.get("MANAGER_EMAIL", "pm.intertech@gmail.com")
+    is_response = alert_type in (None, "high_risk_response")
+    is_meeting = alert_type in ("schedule_meeting", "site_inspection_meeting")
+    first = high_risk_tasks[0]
+    task_id = first.get("id") or first.get("task_id") or first.get("TaskID") or "HIGH-RISK-TASK"
+    score = round(float(first.get("score") or first.get("delay_score") or 0))
+    resource_manager = smtp_config.get("resource_manager_email") or os.environ.get("RESOURCE_MANAGER_EMAIL", "")
+    task_lead = smtp_config.get("task_lead_email") or os.environ.get("TASK_LEAD_EMAIL", "")
+    attendees = list(dict.fromkeys(email for email in [manager_email, resource_manager, task_lead] if email and "@" in email))
 
- task_rows_html = ""
- for t in high_risk_tasks:
-  checklist = t.get('_facilityChecklist') or []
-  checklist_html = f"<div style=\"font-size:11px; color:#475569; margin-top:4px;\"><strong>Facility checklist:</strong> {'; '.join(checklist)}</div>" if checklist else ""
-  root_cause = t.get('root_cause')
-  root_cause_html = f"<div style=\"font-size:11px; color:#92400e; margin-top:2px;\"><strong>Root cause:</strong> {root_cause}</div>" if root_cause else ""
-  task_rows_html += f"""
- <tr>
- <td style="padding:10px; border-bottom:1px solid #e2e8f0; font-weight:bold; color:#2563eb;">{t.get('id')}</td>
-  <td style="padding:10px; border-bottom:1px solid #e2e8f0;">{t.get('desc')}{root_cause_html}{checklist_html}</td>
- <td style="padding:10px; border-bottom:1px solid #e2e8f0;">{t.get('disc')}</td>
- <td style="padding:10px; border-bottom:1px solid #e2e8f0; font-weight:bold; color:#dc2626;">{t.get('score')}%</td>
-  <td style="padding:10px; border-bottom:1px solid #e2e8f0; font-weight:bold; color:#d97706;">{t.get('action') or 'NOTIFY_PM + REALLOCATE_RESOURCE'}</td>
- </tr>
- """
+    rows = "".join(
+        f"<tr><td style='padding:10px;border-bottom:1px solid #e2e8f0;font-weight:700;color:#2563eb'>{html.escape(str(t.get('id') or t.get('TaskID') or ''))}</td>"
+        f"<td style='padding:10px;border-bottom:1px solid #e2e8f0'>{html.escape(str(t.get('desc') or t.get('description') or t.get('Description') or ''))}</td>"
+        f"<td style='padding:10px;border-bottom:1px solid #e2e8f0'>{html.escape(str(t.get('disc') or t.get('discipline') or t.get('ProjectDiscipline') or 'General'))}</td>"
+        f"<td style='padding:10px;border-bottom:1px solid #e2e8f0;font-weight:800;color:#dc2626'>{round(float(t.get('score') or t.get('delay_score') or 0))}%</td>"
+        f"<td style='padding:10px;border-bottom:1px solid #e2e8f0;font-weight:700;color:#b45309'>{html.escape(str(t.get('action') or 'NOTIFY_PM + REALLOCATE_RESOURCE'))}</td></tr>"
+        for t in high_risk_tasks
+    )
+    table = f"<h3>High-Risk Task Breakdown</h3><table style='width:100%;border-collapse:collapse;font-size:13px'><thead><tr style='background:#f8fafc;text-align:left'><th style='padding:10px'>Task ID</th><th style='padding:10px'>Description</th><th style='padding:10px'>Discipline</th><th style='padding:10px'>Risk score</th><th style='padding:10px'>Action</th></tr></thead><tbody>{rows}</tbody></table>"
+    due_at = dt.datetime.now(dt.timezone.utc) + dt.timedelta(hours=2)
 
- is_meeting = alert_type in ('schedule_meeting', 'site_inspection_meeting')
- heading = 'ACTION REQUIRED: Schedule Status Meeting' if is_meeting else 'CRITICAL PM ALERT: High-Risk Task Delay Predicted'
- intro = ('Please schedule a status meeting to review the delay risk, inspection finding, corrective actions, and owners.'
-          if is_meeting else f'The ML Delay Prediction Engine has flagged <strong>{len(high_risk_tasks)} High-Risk Task(s)</strong> with high probability of completion delay.')
- action_items = ('<li>Schedule a status meeting with the project manager and delivery leads.</li><li>Confirm the mitigation owner, due date, and follow-up update cadence.</li>'
-                 if is_meeting else '<li>Reallocate senior personnel from closed or medium-risk projects immediately.</li><li>Schedule urgent site coordination sync with sub-contractor leads.</li>')
- html_content = f"""
- <html>
- <body style="font-family: Arial, sans-serif; color: #0f172a; line-height: 1.6;">
- <div style="max-width: 650px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
- <div style="background: #dc2626; color: #ffffff; padding: 20px; text-align: center;">
-  <h2 style="margin: 0;">{heading}</h2>
- <p style="margin: 5px 0 0 0; font-size: 14px;">InterTech Delay Intelligence Platform - Project PRJ001</p>
- </div>
- <div style="padding: 24px;">
- <p>Dear Project Manager,</p>
-  <p>{intro}</p>
- 
- <h3 style="color: #0f172a; margin-top: 20px;">High-Risk Task Breakdown</h3>
- <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
- <thead>
- <tr style="background: #f8fafc; text-align: left;">
- <th style="padding: 10px; border-bottom: 2px solid #cbd5e1;">Task ID</th>
- <th style="padding: 10px; border-bottom: 2px solid #cbd5e1;">Description</th>
- <th style="padding: 10px; border-bottom: 2px solid #cbd5e1;">Discipline</th>
- <th style="padding: 10px; border-bottom: 2px solid #cbd5e1;">Risk Score</th>
- <th style="padding: 10px; border-bottom: 2px solid #cbd5e1;">Action Proposal</th>
- </tr>
- </thead>
- <tbody>
- {task_rows_html}
- </tbody>
- </table>
- 
- <div style="background: #fef2f2; border: 1px solid #fecaca; padding: 15px; border-radius: 6px; margin-top: 20px;">
- <strong style="color: #dc2626;">Action Required (per Problem Statement Mitigation Plan):</strong>
- <ul style="margin: 5px 0 0 20px; color: #991b1b;">
-  {action_items}
- </ul>
- </div>
- </div>
- </div>
- </body>
- </html>
- """
+    if is_response:
+        subject = f"{task_id} HIGH RISK"
+        phase_html = f"""
+        <div style='border-left:4px solid #dc2626;background:#fef2f2;padding:14px 16px;margin-top:18px'><strong>PHASE 1 — IMMEDIATE ALERT (Hour 0)</strong><ul><li>PM alert issued: <strong>{html.escape(task_id)} HIGH RISK</strong>.</li><li>Action notification issued by email: <strong>Needs action NOW</strong>.</li><li>Create Jira ticket: <strong>URGENT: Reallocate resources for {html.escape(task_id)}</strong>.</li></ul></div>
+        <div style='border-left:4px solid #2563eb;background:#eff6ff;padding:14px 16px;margin-top:12px'><strong>PHASE 2 — STRUCTURED ACTION (Hour 1)</strong><ul><li>15-minute Resource Review Call invitation attached for PM, Resource Manager, and task lead.</li><li>Agenda: who to reallocate; daily stand-ups; escalation path if no resources are available.</li><li>Calendar reminder included.</li></ul></div>
+        <div style='border-left:4px solid #b45309;background:#fffbeb;padding:14px 16px;margin-top:12px'><strong>PHASE 3 — EXECUTION TRACKING (Hour 2+)</strong><ul><li>Record who moved, date/time, and why in the ticket.</li><li>Daily 9:00 AM stand-up for two weeks attached.</li><li>Alert if hours are above 80% while completion remains below 75%.</li><li>Escalate if PM confirmation is missing after two hours.</li></ul></div>
+        <div style='border-left:4px solid #475569;background:#f8fafc;padding:14px 16px;margin-top:12px'><strong>PHASE 4 — ONGOING MONITORING</strong><ul><li>Log stand-up notes and review weekly hours versus plan.</li><li>Log the outcome for model-retraining review when the task completes.</li></ul></div>"""
+        heading = f"{html.escape(task_id)} HIGH RISK ({score}%)"
+        intro = f"The model has flagged <strong>{html.escape(task_id)}</strong> as <strong style='color:#b91c1c'>HIGH RISK ({score}%)</strong>. This email is the immediate action notification in place of Slack."
+    else:
+        subject = f"ACTION REQUIRED: Schedule Status Meeting ({len(high_risk_tasks)} Task{'s' if len(high_risk_tasks) != 1 else ''})" if is_meeting else f"URGENT: High-Risk Project Delay Alert ({len(high_risk_tasks)} Tasks Flagged)"
+        heading = "ACTION REQUIRED: Schedule Status Meeting" if is_meeting else "CRITICAL PM ALERT: High-Risk Task Delay Predicted"
+        intro = "Schedule a status meeting to review the delay risk, owners, and update cadence." if is_meeting else f"The ML Delay Prediction Engine has flagged <strong>{len(high_risk_tasks)} High-Risk Task(s)</strong> with a high probability of completion delay."
+        phase_html = "<div style='background:#fef2f2;border:1px solid #fecaca;padding:15px;border-radius:6px;margin-top:20px'><strong style='color:#dc2626'>Action required:</strong><ul><li>Reallocate senior personnel from closed or medium-risk tasks.</li><li>Schedule an urgent coordination sync with delivery leads.</li></ul></div>"
 
- if smtp_user and smtp_pass:
- try:
- msg = MIMEMultipart("alternative")
- msg["Subject"] = (f"ACTION REQUIRED: Schedule Status Meeting ({len(high_risk_tasks)} Task{'s' if len(high_risk_tasks) != 1 else ''})"
-                   if is_meeting else f"[CRITICAL PM ALERT] High-Risk Project Delay Alert ({len(high_risk_tasks)} Tasks Flagged)")
- msg["From"] = sender_email
- msg["To"] = manager_email
- msg.attach(MIMEText(html_content, "html"))
+    html_content = f"""<html><body style='font-family:Arial,sans-serif;color:#0f172a;line-height:1.55'><div style='max-width:680px;margin:0 auto;border:1px solid #fecaca;border-radius:9px;overflow:hidden'><div style='background:#b91c1c;color:#fff;padding:22px;text-align:center'><h1 style='font-size:24px;margin:0'>{heading}</h1><p style='margin:5px 0 0;font-size:13px'>InterTech Delay Intelligence Platform — PRJ001</p></div><div style='padding:24px'><p>Dear Project Manager,</p><p>{intro}</p>{table}{phase_html}</div></div></body></html>"""
 
- if smtp_port == 465:
- with smtplib.SMTP_SSL(smtp_host, smtp_port, timeout=15) as server:
- server.login(smtp_user, smtp_pass)
- server.sendmail(sender_email, [manager_email], msg.as_string())
- else:
- with smtplib.SMTP(smtp_host, smtp_port, timeout=15) as server:
- server.starttls()
- server.login(smtp_user, smtp_pass)
- server.sendmail(sender_email, [manager_email], msg.as_string())
+    if not (smtp_user and smtp_pass):
+        return {"success": False, "sent_live": False, "simulated": True, "requires_credentials": True, "recipient": manager_email, "tasks_notified": len(high_risk_tasks), "html_preview": html_content, "message": f"SMTP credentials are missing. Add an SMTP username and app password before sending the {task_id} response."}
 
- return {
- "success": True,
- "sent_live": True,
- "recipient": manager_email,
- "tasks_notified": len(high_risk_tasks),
- "message": f"SMTP email alert successfully sent to {manager_email}"
- }
- except Exception as e:
- return {
- "success": False,
- "sent_live": False,
- "error": str(e),
- "html_preview": html_content,
- "message": f"SMTP live dispatch error ({str(e)}). Please check SMTP host, port, user, and password/app password."
- }
- else:
- return {
- "success": False,
- "sent_live": False,
- "simulated": True,
- "requires_credentials": True,
- "recipient": manager_email,
- "tasks_notified": len(high_risk_tasks),
- "html_preview": html_content,
- "message": f"SMTP Credentials Missing. Please provide SMTP Username & App Password to send live email to {manager_email}."
- }
+    try:
+        msg = MIMEMultipart("mixed")
+        msg["Subject"] = subject
+        msg["From"] = sender_email
+        msg["To"] = manager_email
+        if resource_manager or task_lead:
+            msg["Cc"] = ", ".join(email for email in [resource_manager, task_lead] if email and email != manager_email)
+        alternative = MIMEMultipart("alternative")
+        alternative.attach(MIMEText(html_content, "html"))
+        msg.attach(alternative)
+
+        if is_response:
+            timezone_name = smtp_config.get("calendar_timezone") or os.environ.get("CALENDAR_TIMEZONE", "Asia/Kolkata")
+            try:
+                tz = ZoneInfo(timezone_name)
+            except Exception:
+                timezone_name, tz = "UTC", dt.timezone.utc
+            now = dt.datetime.now(dt.timezone.utc)
+            review_start, review_end = now + dt.timedelta(hours=1), now + dt.timedelta(hours=1, minutes=15)
+            local_tomorrow = (dt.datetime.now(tz) + dt.timedelta(days=1)).date()
+            standup_start = dt.datetime.combine(local_tomorrow, dt.time(9), tzinfo=tz).astimezone(dt.timezone.utc)
+            standup_end = standup_start + dt.timedelta(minutes=15)
+            def ics_time(value): return value.strftime("%Y%m%dT%H%M%SZ")
+            def invite(uid, summary, description, start, end, recurrence=""):
+                people = "\r\n".join(f"ATTENDEE;ROLE=REQ-PARTICIPANT;RSVP=TRUE:mailto:{email}" for email in attendees)
+                return "\r\n".join(["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//InterTech//High Risk Response//EN", "METHOD:REQUEST", "BEGIN:VEVENT", f"UID:{uid}", f"DTSTAMP:{ics_time(now)}", f"DTSTART:{ics_time(start)}", f"DTEND:{ics_time(end)}", f"SUMMARY:{summary}", f"DESCRIPTION:{description}", f"ORGANIZER:mailto:{sender_email}", people, recurrence, "BEGIN:VALARM", "TRIGGER:-PT15M", "ACTION:DISPLAY", f"DESCRIPTION:{summary}", "END:VALARM", "END:VEVENT", "END:VCALENDAR"])
+            review_ics = invite(f"{task_id}-resource-review-{int(review_start.timestamp())}@intertech", f"Resource Review Call — {task_id} HIGH RISK", "Agenda: reallocate from closed/medium-risk tasks; daily stand-ups; escalation path.", review_start, review_end)
+            standup_ics = invite(f"{task_id}-daily-standup-{int(standup_start.timestamp())}@intertech", f"Daily Stand-up — {task_id} Resource Recovery", f"Daily 9:00 AM {timezone_name} stand-up for the next two weeks.", standup_start, standup_end, "RRULE:FREQ=DAILY;COUNT=14")
+            for filename, content in [(f"{task_id}-resource-review.ics", review_ics), (f"{task_id}-daily-standup.ics", standup_ics)]:
+                part = MIMEText(content, "calendar", "utf-8")
+                part.add_header("Content-Disposition", "attachment", filename=filename)
+                msg.attach(part)
+
+        recipients = list(dict.fromkeys([manager_email] + [email for email in [resource_manager, task_lead] if email]))
+        if smtp_port == 465:
+            with smtplib.SMTP_SSL(smtp_host, smtp_port, timeout=15) as server:
+                server.login(smtp_user, smtp_pass)
+                server.sendmail(sender_email, recipients, msg.as_string())
+        else:
+            with smtplib.SMTP(smtp_host, smtp_port, timeout=15) as server:
+                server.starttls()
+                server.login(smtp_user, smtp_pass)
+                server.sendmail(sender_email, recipients, msg.as_string())
+        return {"success": True, "sent_live": True, "recipient": manager_email, "tasks_notified": len(high_risk_tasks), "subject": subject, "workflow": {"phase1": {"pm_email": "sent", "jira_ticket": {"created": False, "status": "configure Jira in the Vercel API for ticket creation"}}, "phase2": {"resource_review_invite": "sent", "attendees": attendees}, "phase3": {"daily_standup_invite": "sent", "confirmation_due_at": due_at.isoformat(), "tracking_rule": "Alert if Hours >80% without task completion >75%"}} if is_response else None, "message": f"SMTP high-risk response sent to {manager_email}."}
+    except Exception as exc:
+        return {"success": False, "sent_live": False, "error": str(exc), "html_preview": html_content, "message": f"SMTP dispatch error ({exc}). Check the SMTP host, port, user, and app password."}
 
 def trigger_n8n_webhook(high_risk_tasks, webhook_url=None, manager_email="pm.intertech@gmail.com"):
  """
